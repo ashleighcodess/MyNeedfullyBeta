@@ -1,0 +1,137 @@
+Website Description
+MyNeedfully.com is a wishlist-based donation platform designed to help people in need—such as families after disasters, nonprofits, or individuals in crisis—create and share wishlists of specific items they require. Donors can browse needs, select items, and purchase them directly for recipients via affiliate retailers like Amazon, Walmart, and others. The platform emphasizes transparency, trust, and direct support, making it easier to connect those who want to help with those who need it most.
+
+Tech Stack / App Architecture
+Frontend
+Framework: Next.js (React-based, supports SSR and static generation)
+
+Styling: Tailwind CSS
+
+State Management: Context API (with some Redux for wishlist and user sessions)
+
+APIs Consumed: Amazon PA API, Walmart, Rainforest API (for product search and affiliate integration)
+
+Backend
+Framework: NestJS (Node.js, modular TypeScript backend framework)
+
+Database: MongoDB (hosted on MongoDB Atlas)
+
+ORM: Mongoose
+
+API Layer: RESTful endpoints (with some GraphQL planned for future)
+
+Authentication: JWT-based, with OAuth planned for Google/Microsoft integration
+
+Infrastructure / DevOps
+Hosting: Vercel (frontend/Next.js), Heroku or DigitalOcean (backend/NestJS)
+
+CI/CD: GitHub Actions (deploys on push to main)
+
+Environment Management: .env.local files for secrets, separate for dev/stage/prod
+
+Other Services:
+
+Email: SendGrid API for transactional emails
+
+File Storage: AWS S3 for user profile images and documents
+
+Developer Onboarding
+Getting Started (Local Development)
+Clone the Repos:
+
+Frontend: git clone [repo-url]/myneedfully-frontend.git
+
+Backend: git clone [repo-url]/myneedfully-backend.git
+
+Environment Variables:
+
+Request .env.local files from project admin for both frontend and backend
+
+Keys required: database URI, API credentials (Amazon, Walmart, Rainforest), JWT secret, SendGrid key, S3 bucket info
+
+Install Dependencies:
+
+Frontend: npm install
+
+Backend: npm install
+
+Run Local Dev:
+
+Frontend: npm run dev (defaults to localhost:3000)
+
+Backend: npm run start:dev (defaults to localhost:4000)
+
+Connect to Staging DB (Optional):
+
+Use provided MONGO_URI for staging if working with live-ish data
+
+Basic Features (MVP)
+User Registration & Login
+
+Wishlist Creation & Sharing
+
+Product Search/Import from Affiliate APIs
+
+Wishlist Item Management (mark fulfilled, update, remove)
+
+Public Profiles for Recipients
+
+Donor Checkout (redirect to affiliate retailer for purchase)
+
+Admin Panel (for managing users, wishlists, abuse monitoring)
+
+Key Code/Folder Structure
+frontend/:
+
+/components (React components)
+
+/pages (Next.js routes)
+
+/contexts (React context for state)
+
+/utils (helper functions, API calls)
+
+backend/:
+
+/src/modules (NestJS modules)
+
+/src/models (Mongoose schemas)
+
+/src/controllers (API endpoints)
+
+/src/services (business logic)
+
+/src/middleware (auth, logging)
+
+Other Notes for Developers
+API Credentials: New affiliate API keys are often required, so requests for new access (especially Amazon PA API) can take time and may require sales or test data.
+
+Affiliate Links: All product links should wrap with affiliate codes/tracking for monetization.
+
+Error Logging: Use integrated logging (NestJS built-in + Sentry for error reporting).
+
+Testing: Jest for backend unit tests, React Testing Library for frontend.
+
+Next Steps for New Developers
+Make sure you have access to all repos and secrets
+
+Set up local environment as above
+
+Read the latest README and onboarding.md in each repo for details
+
+Join the Slack/Discord (if available) for team support
+
+Review recent pull requests to get up to speed on coding conventions and workflow
+
+If you need any more specifics (sample code, .env templates, API doc links, etc.), just ask!
+
+
+
+
+
+
+
+
+
+Ask ChatGPT
+
