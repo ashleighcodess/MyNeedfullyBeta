@@ -423,90 +423,99 @@ export default function WishlistDetail() {
               </CardHeader>
               <CardContent>
                 {wishlist.items && wishlist.items.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {wishlist.items.map((item: any) => (
-                      <div key={item.id} className="flex bg-white rounded-lg border border-gray-200 overflow-hidden">
-                        {/* Product Image and Info */}
-                        <div className="flex-1 flex">
-                          <div className="w-24 h-24 flex-shrink-0">
-                            <img
-                              src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
-                              alt={item.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1 p-4">
-                            <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
-                            <p className="text-sm text-gray-600 mb-2">{item.description || 'Essential item needed'}</p>
-                            <div className="text-lg font-bold text-coral">
+                      <div key={item.id} className="flex bg-white rounded-lg border border-gray-200 overflow-hidden h-20">
+                        {/* Product Image */}
+                        <div className="w-20 h-20 flex-shrink-0">
+                          <img
+                            src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
+                            alt={item.title}
+                            className="w-full h-full object-cover rounded-l-lg"
+                          />
+                        </div>
+                        
+                        {/* Product Info */}
+                        <div className="flex-1 flex items-center justify-between px-4">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold text-gray-900 text-sm truncate">{item.title}</h3>
+                            <p className="text-xs text-gray-600 mt-1">{item.description || 'Pots, Pans, And Cooking Utensils Set'}</p>
+                            <div className="text-lg font-bold text-gray-900 mt-1">
                               ${item.price || '99.00'}
                             </div>
                           </div>
+                          
+                          {/* Trash icon for owner */}
+                          {isOwner && (
+                            <div className="ml-4">
+                              <button className="text-gray-400 hover:text-gray-600">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                          )}
                         </div>
 
                         {/* Buying Options */}
-                        <div className="bg-red-50 p-4 flex flex-col justify-center min-w-[200px]">
-                          <h4 className="font-semibold text-gray-900 mb-3">Buying Options</h4>
+                        <div className="bg-red-50 px-4 py-2 flex flex-col justify-center min-w-[200px]">
+                          <h4 className="font-semibold text-gray-900 text-sm mb-2">Buying Options</h4>
                           
-                          {item.productUrl && (
-                            <div className="space-y-2 mb-3">
+                          <div className="space-y-1">
+                            {item.productUrl && (
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center">
-                                  <div className="w-4 h-4 bg-orange-500 rounded mr-2"></div>
-                                  <span className="text-sm">Amazon</span>
+                                  <div className="w-3 h-3 bg-orange-500 rounded mr-2"></div>
+                                  <span className="text-xs">Amazon</span>
+                                  <span className="text-xs font-semibold ml-auto mr-2">${item.price || '99.00'}</span>
                                 </div>
-                                <span className="text-sm font-semibold">${item.price || '99.00'}</span>
+                                <a 
+                                  href={item.productUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="bg-coral text-white py-1 px-2 rounded text-xs hover:bg-coral/90 transition-colors"
+                                >
+                                  View on
+                                </a>
                               </div>
-                              <a 
-                                href={item.productUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="block w-full text-center bg-coral text-white py-1 px-3 rounded text-sm hover:bg-coral/90 transition-colors"
-                              >
+                            )}
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+                                <span className="text-xs">Target</span>
+                                <span className="text-xs font-semibold ml-auto mr-2">${item.price || '99.00'}</span>
+                              </div>
+                              <button className="bg-coral text-white py-1 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
                                 View on
-                              </a>
+                              </button>
                             </div>
-                          )}
 
-                          <div className="space-y-2 mb-3">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center">
-                                <div className="w-4 h-4 bg-red-600 rounded-full mr-2"></div>
-                                <span className="text-sm">Target</span>
+                                <div className="w-3 h-3 bg-blue-600 rounded-full mr-2"></div>
+                                <span className="text-xs">Walmart</span>
+                                <span className="text-xs font-semibold ml-auto mr-2">${item.price || '99.00'}</span>
                               </div>
-                              <span className="text-sm font-semibold">${item.price || '99.00'}</span>
+                              <button className="bg-coral text-white py-1 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
+                                View on
+                              </button>
                             </div>
-                            <button className="w-full bg-coral text-white py-1 px-3 rounded text-sm hover:bg-coral/90 transition-colors">
-                              View on
-                            </button>
-                          </div>
-
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <div className="w-4 h-4 bg-blue-600 rounded-full mr-2"></div>
-                                <span className="text-sm">Walmart</span>
-                              </div>
-                              <span className="text-sm font-semibold">${item.price || '99.00'}</span>
-                            </div>
-                            <button className="w-full bg-coral text-white py-1 px-3 rounded text-sm hover:bg-coral/90 transition-colors">
-                              View on
-                            </button>
                           </div>
 
                           {!isOwner && !item.isFulfilled && (
                             <button
                               onClick={() => fulfillItemMutation.mutate(item.id)}
                               disabled={fulfillItemMutation.isPending}
-                              className="w-full mt-3 bg-green-600 text-white py-2 px-3 rounded text-sm hover:bg-green-700 transition-colors disabled:opacity-50"
+                              className="w-full mt-2 bg-green-600 text-white py-1 px-2 rounded text-xs hover:bg-green-700 transition-colors disabled:opacity-50"
                             >
                               {fulfillItemMutation.isPending ? 'Fulfilling...' : 'Mark as Fulfilled'}
                             </button>
                           )}
 
                           {item.isFulfilled && (
-                            <div className="mt-3 text-center">
-                              <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                            <div className="mt-2 text-center">
+                              <span className="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
                                 ✓ Fulfilled
                               </span>
                             </div>
