@@ -115,6 +115,12 @@ export default function Navigation() {
                   <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
+                <Link href="/">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Users className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </DropdownMenuItem>
+                </Link>
                 <Link href="/profile">
                   <DropdownMenuItem className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
