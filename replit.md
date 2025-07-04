@@ -113,6 +113,8 @@ Changelog:
 - July 04, 2025: Added comprehensive footer component with navigation links, branding, and legal pages throughout the website
 - July 04, 2025: Implemented multi-provider OAuth authentication system (Replit, Google, Facebook) with professional signup flow and updated messaging
 - July 04, 2025: Added comprehensive edit functionality for needs lists including image management, address autocomplete, and owner-only access controls
+- July 04, 2025: Fixed critical edit functionality authorization bug - corrected API endpoint from `/api/wishlists` to `/api/wishlists/${id}` for proper data fetching
+- July 04, 2025: Resolved FormData upload issue in edit mutation with proper fetch implementation for file uploads
 ```
 
 ## User Preferences

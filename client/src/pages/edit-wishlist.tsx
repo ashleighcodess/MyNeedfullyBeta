@@ -82,10 +82,18 @@ export default function EditWishlist() {
   // Update wishlist mutation
   const updateWishlistMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      return await apiRequest(`/api/wishlists/${id}`, {
+      const response = await fetch(`/api/wishlists/${id}`, {
         method: 'PUT',
         body: data,
+        credentials: 'include',
       });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`${response.status}: ${errorText}`);
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       toast({
