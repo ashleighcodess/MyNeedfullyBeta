@@ -466,7 +466,7 @@ export default function WishlistDetail() {
                           <div className="space-y-1">
                             <div className="flex items-center justify-between text-xs">
                               <div className="flex items-center">
-                                <img src="/logos/amazon-logo.svg" alt="Amazon" className="w-4 h-4 mr-1" />
+                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-4 h-4 mr-1 rounded-full" />
                                 <span>Amazon</span>
                               </div>
                               <span className="font-semibold">${item.price || '99.00'}</span>
@@ -482,7 +482,7 @@ export default function WishlistDetail() {
 
                             <div className="flex items-center justify-between text-xs">
                               <div className="flex items-center">
-                                <img src="/logos/target-logo.svg" alt="Target" className="w-4 h-4 mr-1" />
+                                <img src="/logos/target-logo.png" alt="Target" className="w-4 h-4 mr-1 rounded-full" />
                                 <span>Target</span>
                               </div>
                               <span className="font-semibold">${item.price || '99.00'}</span>
@@ -493,7 +493,7 @@ export default function WishlistDetail() {
 
                             <div className="flex items-center justify-between text-xs">
                               <div className="flex items-center">
-                                <img src="/logos/walmart-logo.svg" alt="Walmart" className="w-4 h-4 mr-1" />
+                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-4 h-4 mr-1 rounded-full" />
                                 <span>Walmart</span>
                               </div>
                               <span className="font-semibold">${item.price || '99.00'}</span>

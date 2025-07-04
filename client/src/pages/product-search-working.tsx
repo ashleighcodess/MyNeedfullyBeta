@@ -370,9 +370,18 @@ export default function ProductSearchWorking() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardTitle className="text-lg mb-2 line-clamp-2">
-                      {product.title}
-                    </CardTitle>
+                    <div className="flex items-start justify-between mb-2">
+                      <CardTitle className="text-lg line-clamp-2 flex-1 mr-2">
+                        {product.title}
+                      </CardTitle>
+                      <div className="flex items-center">
+                        <img 
+                          src="/logos/amazon-logo.png" 
+                          alt="Amazon" 
+                          className="w-6 h-6 rounded-full"
+                        />
+                      </div>
+                    </div>
                     
                     <div className="space-y-2 mb-4">
                       <div className="text-2xl font-bold text-coral-600">
@@ -461,9 +470,9 @@ export default function ProductSearchWorking() {
                           {product.retailer && (
                             <div className="flex items-center">
                               <img 
-                                src={`/logos/${product.retailer}-logo.svg`} 
+                                src={`/logos/${product.retailer}-logo.png`} 
                                 alt={product.retailer} 
-                                className="w-5 h-5"
+                                className="w-6 h-6 rounded-full"
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   target.style.display = 'none';
