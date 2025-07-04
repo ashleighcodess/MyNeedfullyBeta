@@ -43,14 +43,14 @@ export default function Profile() {
     // Check for hash fragment in URL and navigate to appropriate section
     const hash = window.location.hash;
     if (hash === '#my-lists') {
-      setActiveTab('my-lists');
+      setActiveTab('lists');
     }
     
     // Listen for hash changes
     const handleHashChange = () => {
       const newHash = window.location.hash;
       if (newHash === '#my-lists') {
-        setActiveTab('my-lists');
+        setActiveTab('lists');
       }
     };
     
