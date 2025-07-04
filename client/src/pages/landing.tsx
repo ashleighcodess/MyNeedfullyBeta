@@ -6,6 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
+import amazonLogo from "@assets/amazon_1751644244382.png";
+import targetLogo from "@assets/target_1751644244383.png";
+import walmartLogo from "@assets/walmart_1751644244383.png";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
@@ -573,7 +576,7 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=400&h=200&fit=crop"
+                  src="https://images.unsplash.com/photo-1544424503-b0e43c9ab8c6?w=400&h=200&fit=crop"
                   alt="Emergency Food Kit"
                   className="w-full h-full object-cover"
                 />
@@ -593,9 +596,9 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Ready-to-eat meals, canned goods, and emergency water supply for disaster preparedness</p>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
                   <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
@@ -611,12 +614,12 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400&h=200&fit=crop"
+                  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=200&fit=crop"
                   alt="Emergency Clothing"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-3 left-3">
-                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-navy text-white px-3 py-1 rounded-full text-sm font-medium">
                     Clothes
                   </span>
                 </div>
@@ -631,9 +634,9 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Basic clothing items including shirts, pants, and undergarments for emergency situations</p>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
                   <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
@@ -645,17 +648,17 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Groceries Product Card */}
+            {/* Baby Essentials Product Card */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=200&fit=crop"
-                  alt="Emergency Groceries"
+                  src="https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=200&fit=crop"
+                  alt="Baby Essentials"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-3 left-3">
-                  <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Groceries
+                  <span className="bg-warm-orange text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Baby & Kids
                   </span>
                 </div>
                 <div className="absolute top-3 right-3">
@@ -669,9 +672,9 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Diapers, formula, baby food, and family necessities for emergency preparedness</p>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
                   <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
@@ -683,17 +686,17 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Skincare Product Card */}
+            {/* Crisis Hygiene Product Card */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=200&fit=crop"
-                  alt="Personal Care Items"
+                  src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=200&fit=crop"
+                  alt="Crisis Hygiene Kit"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-3 left-3">
-                  <span className="bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Skincare
+                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Crisis Care
                   </span>
                 </div>
                 <div className="absolute top-3 right-3">
@@ -703,17 +706,17 @@ export default function Landing() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-semibold text-navy mb-2">Personal Care Kit</h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Essential hygiene and personal care items including toiletries and health supplies</p>
+                <h3 className="font-semibold text-navy mb-2">Crisis Hygiene Kit</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Toothbrushes, soap, feminine products, toilet paper, and essential hygiene items for emergencies</p>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
-                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
-                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
                   <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
-                <Link href="/product-search?q=personal+care+hygiene">
+                <Link href="/product-search?q=hygiene+toothbrush+soap+feminine">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
                     View Products
                   </Button>

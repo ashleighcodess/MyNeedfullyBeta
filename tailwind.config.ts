@@ -67,6 +67,9 @@ export default {
           600: "var(--coral)",
           700: "hsl(0, 85%, 55%)",
         },
+        "warm-orange": "var(--warm-orange)",
+        "warm-bg": "var(--warm-bg)",
+        navy: "var(--navy)",
       },
       keyframes: {
         "accordion-down": {
