@@ -137,7 +137,7 @@ export default function Navigation() {
                     Dashboard
                   </DropdownMenuItem>
                 </Link>
-                <Link href="/browse?my-lists=true">
+                <Link href="/my-needs-lists">
                   <DropdownMenuItem className="cursor-pointer">
                     <Heart className="mr-2 h-4 w-4" />
                     My Needs Lists
