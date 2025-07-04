@@ -241,28 +241,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
               title: "ASUS VivoBook 15 Thin and Light Laptop",
               price: { value: 399.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B0B7BP6J6Q",
               rating: 4.3,
               ratings_total: 2847,
-              position: 1
+              position: 1,
+              is_prime: true,
+              delivery: "FREE delivery Thu, Jul 11"
             },
             {
               title: "HP Pavilion 15.6\" FHD Laptop",
               price: { value: 529.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B09BK3L2N7",
               rating: 4.1,
               ratings_total: 1923,
-              position: 2
+              position: 2,
+              is_prime: true,
+              delivery: "FREE delivery Thu, Jul 11"
             },
             {
               title: "Lenovo IdeaPad 3 15.6\" Laptop",
               price: { value: 449.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B08DKP73G9",
               rating: 4.2,
               ratings_total: 3421,
-              position: 3
+              position: 3,
+              is_prime: true,
+              delivery: "FREE delivery Fri, Jul 12"
             }
           ],
           backpack: [
@@ -270,19 +276,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
               title: "JanSport SuperBreak Plus Backpack",
               price: { value: 39.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B07MDXQ2JQ",
               rating: 4.5,
               ratings_total: 8472,
-              position: 1
+              position: 1,
+              is_prime: true,
+              delivery: "FREE delivery Wed, Jul 10"
             },
             {
               title: "Nike Heritage 2.0 Backpack",
               price: { value: 29.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B01BA0LHTA",
               rating: 4.4,
               ratings_total: 5219,
-              position: 2
+              position: 2,
+              is_prime: true,
+              delivery: "FREE delivery Wed, Jul 10"
             }
           ],
           phone: [
@@ -290,19 +300,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
               title: "Samsung Galaxy A54 5G",
               price: { value: 299.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B0BT9CQHQ4",
               rating: 4.3,
               ratings_total: 6847,
-              position: 1
+              position: 1,
+              is_prime: true,
+              delivery: "FREE delivery Fri, Jul 12"
             },
             {
               title: "Apple iPhone SE (3rd Generation)",
               price: { value: 429.99, currency: "USD" },
               image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=300&h=300&fit=crop",
-              link: "#",
+              asin: "B09V3HN1KC",
               rating: 4.6,
               ratings_total: 12394,
-              position: 2
+              position: 2,
+              is_prime: true,
+              delivery: "FREE delivery Thu, Jul 11"
             }
           ]
         };
@@ -321,19 +335,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
             title: `${searchTerm} - Premium Quality`,
             price: { value: 99.99, currency: "USD" },
             image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=300&fit=crop",
-            link: "#",
+            asin: "B084DWKG3M",
             rating: 4.2,
             ratings_total: 1847,
-            position: 1
+            position: 1,
+            is_prime: true,
+            delivery: "FREE delivery Thu, Jul 11"
           },
           {
             title: `${searchTerm} - Value Pack`,
             price: { value: 49.99, currency: "USD" },
             image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop",
-            link: "#",
+            asin: "B09M3K2N7P",
             rating: 4.0,
             ratings_total: 924,
-            position: 2
+            position: 2,
+            is_prime: true,
+            delivery: "FREE delivery Fri, Jul 12"
           }
         ];
       };

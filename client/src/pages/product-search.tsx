@@ -75,6 +75,12 @@ export default function ProductSearch() {
     );
   };
 
+  // Build Amazon affiliate link using ASIN
+  const buildAmazonAffiliateLink = (asin: string, tag: string = 'needfully-20') => {
+    if (!asin) return '#';
+    return `https://www.amazon.com/dp/${asin}?tag=${tag}`;
+  };
+
   return (
     <div className="min-h-screen bg-warm-bg">
       <Navigation />
@@ -287,17 +293,17 @@ export default function ProductSearch() {
                         )}
 
                         <div className="space-y-2">
-                          <Button 
-                            className="w-full bg-coral hover:bg-coral/90"
-                            onClick={() => {
-                              if (product.link) {
-                                window.open(product.link, '_blank');
-                              }
-                            }}
+                          <a 
+                            href={buildAmazonAffiliateLink(product.asin)}
+                            target="_blank"
+                            rel="nofollow sponsored"
+                            className="block"
                           >
-                            <ShoppingCart className="mr-2 h-4 w-4" />
-                            Buy on Amazon
-                          </Button>
+                            <Button className="w-full bg-coral hover:bg-coral/90">
+                              <ShoppingCart className="mr-2 h-4 w-4" />
+                              Buy on Amazon
+                            </Button>
+                          </a>
                           
                           <Button 
                             variant="outline" 
@@ -312,19 +318,18 @@ export default function ProductSearch() {
                           </Button>
                         </div>
 
-                        {product.link && (
-                          <div className="mt-2 text-center">
-                            <a 
-                              href={product.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-gray-500 hover:text-coral inline-flex items-center"
-                            >
-                              <ExternalLink className="mr-1 h-3 w-3" />
-                              View Details
-                            </a>
-                          </div>
-                        )}
+                        {/* Product details link */}
+                        <div className="mt-2 text-center">
+                          <a 
+                            href={buildAmazonAffiliateLink(product.asin)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-gray-500 hover:text-coral inline-flex items-center"
+                          >
+                            <ExternalLink className="mr-1 h-3 w-3" />
+                            View Details
+                          </a>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
