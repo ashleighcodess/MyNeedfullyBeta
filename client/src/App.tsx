@@ -16,36 +16,42 @@ import PrivacySettings from "@/pages/privacy-settings";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AboutUs from "@/pages/about-us";
 import NotFound from "@/pages/not-found";
+import Footer from "@/components/footer";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <Switch>
-      {/* Public routes available to everyone */}
-      <Route path="/about-us" component={AboutUs} />
-      <Route path="/about" component={AboutUs} />
-      
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/browse" component={BrowseWishlists} />
-          <Route path="/find" component={BrowseWishlists} />
-          <Route path="/create" component={CreateWishlist} />
-          <Route path="/needslist/:id" component={WishlistDetail} />
-          <Route path="/wishlist/:id" component={WishlistDetail} />
-          <Route path="/products" component={ProductSearch} />
-          <Route path="/search" component={ProductSearch} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/profile/edit" component={EditProfile} />
-          <Route path="/profile/privacy" component={PrivacySettings} />
-          <Route path="/admin" component={AdminDashboard} />
-        </>
-      )}
-      <Route component={NotFound} />
-    </Switch>
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1">
+        <Switch>
+          {/* Public routes available to everyone */}
+          <Route path="/about-us" component={AboutUs} />
+          <Route path="/about" component={AboutUs} />
+          
+          {isLoading || !isAuthenticated ? (
+            <Route path="/" component={Landing} />
+          ) : (
+            <>
+              <Route path="/" component={Home} />
+              <Route path="/browse" component={BrowseWishlists} />
+              <Route path="/find" component={BrowseWishlists} />
+              <Route path="/create" component={CreateWishlist} />
+              <Route path="/needslist/:id" component={WishlistDetail} />
+              <Route path="/wishlist/:id" component={WishlistDetail} />
+              <Route path="/products" component={ProductSearch} />
+              <Route path="/search" component={ProductSearch} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/profile/edit" component={EditProfile} />
+              <Route path="/profile/privacy" component={PrivacySettings} />
+              <Route path="/admin" component={AdminDashboard} />
+            </>
+          )}
+          <Route component={NotFound} />
+        </Switch>
+      </div>
+      <Footer />
+    </div>
   );
 }
 
