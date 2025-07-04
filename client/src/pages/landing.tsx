@@ -308,6 +308,100 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* About Us Section */}
+      <section className="py-20 bg-warm-bg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Content and Stats */}
+            <div>
+              <div className="mb-4">
+                <span className="text-coral text-sm font-semibold tracking-wider uppercase">About Us</span>
+              </div>
+              
+              <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
+                Our <span className="text-coral">Dream</span> Is To Transform<br />
+                The Way To <span className="text-navy font-black">Fulfill Needs</span><br />
+                Of <span className="text-navy font-black">People In Need.</span>
+              </h2>
+              
+              <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                MyNeedfully Was Born From Personal Experience.
+              </p>
+              
+              {/* Animated Ticker Stats */}
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {/* Needs List Fulfilled */}
+                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-white/20 p-2 rounded-lg mr-3">
+                      <Gift className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold">000+</div>
+                      <div className="text-sm opacity-90">Needs List Fulfilled</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Needs List Created */}
+                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-coral/10 p-2 rounded-lg mr-3">
+                      <Users className="h-6 w-6 text-coral" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-navy">450+</div>
+                      <div className="text-sm text-gray-600">Needs List Created</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Smiles Spread */}
+                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-coral/10 p-2 rounded-lg mr-3">
+                      <Heart className="h-6 w-6 text-coral" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-navy">000k</div>
+                      <div className="text-sm text-gray-600">Smiles Spread</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Products Delivered */}
+                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-white/20 p-2 rounded-lg mr-3">
+                      <Gift className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold">000k</div>
+                      <div className="text-sm opacity-90">Products Delivered</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <Button className="bg-transparent border-2 border-navy text-navy hover:bg-navy hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300">
+                Discover More
+              </Button>
+            </div>
+            
+            {/* Right side - Heart Tree Image */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                <img 
+                  src="/attached_assets/NeedfullyHeartTree_1751655258585.png"
+                  alt="Heart Tree representing community giving"
+                  className="w-full max-w-md h-auto rounded-3xl shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Wishlists */}
       <section id="browse" className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
