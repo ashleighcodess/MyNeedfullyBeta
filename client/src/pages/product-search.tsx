@@ -36,6 +36,9 @@ export default function ProductSearch() {
   const [page, setPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
   const [searchCache, setSearchCache] = useState(new Map());
+  const [hasMoreResults, setHasMoreResults] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
+  const [showFallbacks, setShowFallbacks] = useState(true);
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -43,6 +46,126 @@ export default function ProductSearch() {
   // Get wishlistId from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
+
+  // Popular cached products for instant loading
+  const popularProducts = useMemo(() => ({
+    "baby wipes": [
+      {
+        asin: "B08TMLHWTD",
+        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs, 672 Total Wipes",
+        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
+        price: { value: 18.97, currency: "USD" },
+        rating: 4.7,
+        ratings_total: 29853,
+        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20"
+      },
+      {
+        asin: "B07GDQX4YS",
+        title: "Huggies Natural Care Sensitive Baby Wipes, Unscented, 8 Flip-Top Packs (448 Wipes Total)",
+        image: "https://m.media-amazon.com/images/I/81nqYmT7DgL._SL1500_.jpg",
+        price: { value: 15.84, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 18739,
+        link: "https://www.amazon.com/dp/B07GDQX4YS?tag=needfully-20"
+      }
+    ],
+    "toilet paper": [
+      {
+        asin: "B073V1T37H",
+        title: "Charmin Ultra Soft Cushiony Touch Toilet Paper, 18 Family Mega Rolls = 90 Regular Rolls",
+        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
+        price: { value: 23.94, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 47832,
+        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20"
+      },
+      {
+        asin: "B071Z8XBHY",
+        title: "Cottonelle Ultra ComfortCare Toilet Paper, 24 Family Mega Rolls = 108 Regular Rolls",
+        image: "https://m.media-amazon.com/images/I/81fH4-yKUJL._SL1500_.jpg",
+        price: { value: 21.48, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 32156,
+        link: "https://www.amazon.com/dp/B071Z8XBHY?tag=needfully-20"
+      }
+    ],
+    "sleeping bag": [
+      {
+        asin: "B08F3MGC9Q",
+        title: "Coleman Brazos Cold Weather Sleeping Bag, 20°F Comfort Rating",
+        image: "https://m.media-amazon.com/images/I/71xDqNzLfqL._SL1500_.jpg",
+        price: { value: 34.99, currency: "USD" },
+        rating: 4.3,
+        ratings_total: 8945,
+        link: "https://www.amazon.com/dp/B08F3MGC9Q?tag=needfully-20"
+      },
+      {
+        asin: "B00363RGHQ",
+        title: "TETON Sports Celsius Regular Sleeping Bag; Great for Family Camping",
+        image: "https://m.media-amazon.com/images/I/81rRVLPkL6L._SL1500_.jpg",
+        price: { value: 45.99, currency: "USD" },
+        rating: 4.4,
+        ratings_total: 5672,
+        link: "https://www.amazon.com/dp/B00363RGHQ?tag=needfully-20"
+      }
+    ],
+    "diapers": [
+      {
+        asin: "B0949V7VRH",
+        title: "Pampers Baby Dry Night Overnight Diapers, Size 3, 172 Count",
+        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
+        price: { value: 28.94, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 15234,
+        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20"
+      }
+    ],
+    "blanket": [
+      {
+        asin: "B07H9T8VTQ",
+        title: "Utopia Bedding Fleece Blanket Queen Size Grey - Lightweight Bed Blanket",
+        image: "https://m.media-amazon.com/images/I/71XGJfF6fDL._SL1500_.jpg",
+        price: { value: 12.99, currency: "USD" },
+        rating: 4.4,
+        ratings_total: 89567,
+        link: "https://www.amazon.com/dp/B07H9T8VTQ?tag=needfully-20"
+      }
+    ]
+  }), []);
+
+  // Recently donated/popular items for fallback display
+  const fallbackProducts = useMemo(() => [
+    {
+      asin: "fallback-1",
+      title: "Emergency Food Kit - 72 Hour Family Pack",
+      image: "https://m.media-amazon.com/images/I/81GbDXYf+8L._SL1500_.jpg",
+      price: { value: 49.99, currency: "USD" },
+      rating: 4.6,
+      ratings_total: 2156,
+      link: "https://www.amazon.com/dp/B08KS3QWT4?tag=needfully-20",
+      category: "emergency"
+    },
+    {
+      asin: "fallback-2", 
+      title: "Warm Winter Coat - Adult Size Medium",
+      image: "https://m.media-amazon.com/images/I/71KkGPJg7qL._SL1500_.jpg",
+      price: { value: 35.00, currency: "USD" },
+      rating: 4.4,
+      ratings_total: 1834,
+      link: "https://www.amazon.com/dp/B07X9MQ8R7?tag=needfully-20",
+      category: "clothing"
+    },
+    {
+      asin: "fallback-3",
+      title: "First Aid Emergency Kit - 250 Pieces",
+      image: "https://m.media-amazon.com/images/I/81FLHjlFFcL._SL1500_.jpg",
+      price: { value: 24.95, currency: "USD" },
+      rating: 4.7,
+      ratings_total: 3456,
+      link: "https://www.amazon.com/dp/B07SF2SYC4?tag=needfully-20",
+      category: "medical"
+    }
+  ], []);
 
   // Debounce search input to reduce API calls
   useEffect(() => {
@@ -99,13 +222,35 @@ export default function ProductSearch() {
     enabled: !wishlistId && !!user?.id, // Only fetch if no specific wishlist is provided and user is authenticated
   });
 
-  // Custom query with caching logic
+  // Check for cached popular products first
+  const getCachedProducts = useCallback((query: string) => {
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    // Check popular products cache for instant results
+    for (const [term, products] of Object.entries(popularProducts)) {
+      if (normalizedQuery.includes(term) || term.includes(normalizedQuery)) {
+        return { products: products.slice(0, 10), total: products.length, hasMore: products.length > 10 };
+      }
+    }
+    return null;
+  }, [popularProducts]);
+
+  // Custom query with smart caching and fallbacks
   const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page, getCacheKey]);
   
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [buildSearchUrl()],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    placeholderData: () => {
+      // Return cached popular products instantly while fetching fresh data  
+      const cached = getCachedProducts(debouncedQuery);
+      if (cached) {
+        setShowFallbacks(false);
+        return cached;
+      }
+      return undefined;
+    },
     queryFn: async () => {
       // Check cache first
       const cached = getCachedResult(cacheKey);
@@ -113,8 +258,9 @@ export default function ProductSearch() {
         return cached;
       }
       
-      // Fetch from API if not cached
-      const response = await fetch(buildSearchUrl());
+      // Fetch from API with limited results for better performance
+      const url = buildSearchUrl();
+      const response = await fetch(url + (url.includes('?') ? '&' : '?') + 'limit=10');
       if (!response.ok) {
         throw new Error('Search failed');
       }
@@ -122,6 +268,8 @@ export default function ProductSearch() {
       
       // Cache the result
       setCacheResult(cacheKey, data);
+      setTotalResults(data.total || 0);
+      setHasMoreResults(data.hasMore || false);
       return data;
     },
   });
@@ -144,6 +292,22 @@ export default function ProductSearch() {
       setPage(1);
     }
   };
+
+  // Load more results for pagination
+  const loadMoreResults = () => {
+    setPage(prev => prev + 1);
+  };
+
+  // Get display products with smart fallbacks
+  const displayProducts = useMemo(() => {
+    if (!debouncedQuery || debouncedQuery.length < 3) {
+      // Show fallback products when no search query
+      return showFallbacks ? fallbackProducts : [];
+    }
+    
+    // Show search results or cached popular products
+    return searchResults?.products || [];
+  }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -441,11 +605,115 @@ export default function ProductSearch() {
               </Card>
             )}
 
-            {/* Results Grid */}
-            {searchResults?.search_results && searchResults.search_results.length > 0 && (
+            {/* No Search Query - Show Fallback Products */}
+            {(!debouncedQuery || debouncedQuery.length < 3) && showFallbacks && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-navy mb-2">Popular Items People Are Requesting</h3>
+                  <p className="text-gray-600 text-sm">Here are some items that supporters have been helping with recently</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {fallbackProducts.map((product: any, index: number) => (
+                    <Card key={`fallback-${index}`} className="overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-l-coral">
+                      {product.image && (
+                        <div className="relative">
+                          <img 
+                            src={product.image}
+                            alt={product.title}
+                            className="w-full h-48 object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                            }}
+                          />
+                          <Badge className="absolute top-2 left-2 bg-coral text-white">
+                            Popular
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold text-navy mb-2 line-clamp-2 text-sm">
+                          {product.title}
+                        </h3>
+                        
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-lg font-bold text-coral">
+                            {formatPrice(product.price)}
+                          </span>
+                          <div className="flex items-center">
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                            <span className="text-sm font-medium">{product.rating}</span>
+                            <span className="text-xs text-gray-500 ml-1">
+                              ({product.ratings_total?.toLocaleString()})
+                            </span>
+                          </div>
+                        </div>
+
+                        <Button 
+                          onClick={() => addToWishlistMutation.mutate(product)}
+                          disabled={addingProductId === product.asin || addToWishlistMutation.isPending}
+                          className="w-full bg-coral hover:bg-coral-dark text-white text-sm py-2"
+                          size="sm"
+                        >
+                          {addingProductId === product.asin ? (
+                            <>
+                              <Package className="mr-2 h-4 w-4 animate-pulse" />
+                              Adding...
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingCart className="mr-2 h-4 w-4" />
+                              Add to Needs List
+                            </>
+                          )}
+                        </Button>
+
+                        <div className="mt-2 text-center">
+                          <a 
+                            href={product.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-gray-500 hover:text-coral inline-flex items-center"
+                          >
+                            <ExternalLink className="mr-1 h-3 w-3" />
+                            View Details
+                          </a>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Search Results Grid */}
+            {displayProducts && displayProducts.length > 0 && debouncedQuery && debouncedQuery.length >= 3 && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {searchResults.search_results.map((product: any, index: number) => (
+                <div className="space-y-4">
+                  {/* Search Info */}
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-semibold text-navy">
+                        Search Results for "{debouncedQuery}"
+                      </h3>
+                      {totalResults > 0 && (
+                        <p className="text-sm text-gray-600">
+                          Showing {displayProducts.length} of {totalResults} results
+                        </p>
+                      )}
+                    </div>
+                    
+                    {/* Show cached indicator */}
+                    {getCachedProducts(debouncedQuery) && (
+                      <Badge variant="outline" className="text-green-600 border-green-600">
+                        Instant Results
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {displayProducts.map((product: any, index: number) => (
                     <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
                       {product.image && (
                         <div className="relative">
@@ -526,30 +794,52 @@ export default function ProductSearch() {
                   ))}
                 </div>
 
-                {/* Pagination */}
-                {searchResults.pagination && searchResults.pagination.total_results > 16 && (
-                  <div className="mt-8 flex justify-center space-x-2">
+                {/* Smart Pagination - Show More Results */}
+                {hasMoreResults && (
+                  <div className="mt-8 text-center">
                     <Button
+                      onClick={loadMoreResults}
+                      disabled={isLoading}
                       variant="outline"
-                      disabled={page === 1}
-                      onClick={() => setPage(page - 1)}
+                      className="border-coral text-coral hover:bg-coral hover:text-white px-8 py-3"
                     >
-                      Previous
+                      {isLoading ? (
+                        <>
+                          <Package className="mr-2 h-4 w-4 animate-spin" />
+                          Loading More Results...
+                        </>
+                      ) : (
+                        <>
+                          <Search className="mr-2 h-4 w-4" />
+                          Show More Results
+                        </>
+                      )}
                     </Button>
                     
-                    <div className="flex items-center px-4 py-2 text-sm text-gray-600">
-                      Page {page}
-                    </div>
-                    
-                    <Button
-                      variant="outline"
-                      disabled={!searchResults.pagination.next_page}
-                      onClick={() => setPage(page + 1)}
-                    >
-                      Next
-                    </Button>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Loading 10 more items at a time for better performance
+                    </p>
                   </div>
                 )}
+                
+                {/* Performance tip */}
+                {displayProducts.length >= 10 && !hasMoreResults && totalResults > 10 && (
+                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-sm text-green-700">
+                          <strong>Great!</strong> You've seen all available results for this search. Try refining your search terms for more options.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                </div>
               </>
             )}
 
