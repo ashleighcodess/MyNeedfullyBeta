@@ -63,27 +63,33 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <Plus className="h-5 w-5 text-coral mt-1" />
-                <div>
-                  <h3 className="font-semibold">Create Your First Wishlist</h3>
-                  <p className="text-gray-600">Share what you need with our caring community</p>
+              <Link href="/create">
+                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Plus className="h-5 w-5 text-coral mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Create Your First Needs List</h3>
+                    <p className="text-gray-600">Share what you need with our caring community</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Heart className="h-5 w-5 text-coral mt-1" />
-                <div>
-                  <h3 className="font-semibold">Browse and Help Others</h3>
-                  <p className="text-gray-600">Find wishlists where you can make a difference</p>
+              </Link>
+              <Link href="/browse">
+                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Heart className="h-5 w-5 text-coral mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Browse and Help Others</h3>
+                    <p className="text-gray-600">Find needs lists where you can make a difference</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Gift className="h-5 w-5 text-coral mt-1" />
-                <div>
-                  <h3 className="font-semibold">Search for Specific Items</h3>
-                  <p className="text-gray-600">Use our product search to find exactly what's needed</p>
+              </Link>
+              <Link href="/search">
+                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Gift className="h-5 w-5 text-coral mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Search for Specific Items</h3>
+                    <p className="text-gray-600">Use our product search to find exactly what's needed</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
           </CardContent>
         </Card>
