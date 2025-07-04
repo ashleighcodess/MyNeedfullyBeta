@@ -131,6 +131,7 @@ Changelog:
 - July 04, 2025: Successfully implemented complete multi-retailer search integration with SerpAPI - replaced colored dots with authentic Amazon, Walmart, and Target SVG logos throughout interface, created enhanced search endpoint combining RainforestAPI (Amazon) with SerpAPI (Walmart/Target), updated product search pages to display real retailer information, and confirmed live functionality with actual product data from all three retailers - MULTI-RETAILER SEARCH FULLY OPERATIONAL
 - July 04, 2025: Upgraded retailer logos from SVG to high-quality PNG images provided by user - updated all logo references in product search pages and needs list detail pages, fixed missing retailer icons in buying options panels, added proper logo display with rounded styling throughout the interface - RETAILER LOGO UPGRADE COMPLETED
 - July 04, 2025: Fixed critical database connection failure by migrating from Neon WebSocket connection to HTTP connection - resolved serverless compatibility issues causing app startup crashes, updated database configuration in server/db.ts to use drizzle-orm/neon-http adapter instead of neon-serverless Pool - APPLICATION NOW FULLY OPERATIONAL
+- July 04, 2025: Resolved missing needs lists in user dashboard profile - fixed API endpoint references from user ID-based URLs to authenticated endpoints, updated profile.tsx to use /api/user/wishlists and /api/user/donations, added missing user donations endpoint in routes.ts - USER DASHBOARD LISTS NOW DISPLAY CORRECTLY
 ```
 
 ## User Preferences
