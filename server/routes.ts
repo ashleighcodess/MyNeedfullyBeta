@@ -243,19 +243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Verify user owns the wishlist
       const existingWishlist = await storage.getWishlist(wishlistId);
-      console.log('Server Auth Debug:', {
-        userId,
-        existingWishlistUserId: existingWishlist?.userId,
-        userIdString: userId.toString(),
-        wishlistUserIdString: existingWishlist?.userId?.toString(),
-        comparison: existingWishlist?.userId.toString() === userId.toString()
-      });
-      
       if (!existingWishlist || existingWishlist.userId.toString() !== userId.toString()) {
-        console.log('Authorization failed:', {
-          wishlistExists: !!existingWishlist,
-          userMatch: existingWishlist?.userId.toString() === userId.toString()
-        });
         return res.status(403).json({ message: "Forbidden" });
       }
       

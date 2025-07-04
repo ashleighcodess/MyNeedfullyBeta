@@ -48,7 +48,7 @@ export default function EditWishlist() {
 
   // Fetch existing wishlist data
   const { data: wishlist, isLoading } = useQuery({
-    queryKey: ['/api/wishlists', id],
+    queryKey: [`/api/wishlists/${id}`],
     enabled: !!id,
   });
 
@@ -78,17 +78,6 @@ export default function EditWishlist() {
 
   // Check if user is owner
   const isOwner = user?.id?.toString() === wishlist?.userId?.toString();
-  
-  // Debug logging
-  console.log('Auth Debug:', {
-    userId: user?.id,
-    wishlistUserId: wishlist?.userId,
-    userIdString: user?.id?.toString(),
-    wishlistUserIdString: wishlist?.userId?.toString(),
-    isOwner,
-    userObject: user,
-    wishlistObject: wishlist
-  });
 
   // Update wishlist mutation
   const updateWishlistMutation = useMutation({
