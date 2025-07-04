@@ -174,13 +174,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Product Search routes with fallback data
+  // Product Search routes with RainforestAPI integration and fallback
   app.get('/api/products/search', async (req, res) => {
     try {
       const { query, category, min_price, max_price, page = 1 } = req.query;
       
       if (!query) {
         return res.status(400).json({ message: "Search query is required" });
+      }
+
+      // Try RainforestAPI first if available
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        try {
+          const params = new URLSearchParams({
+            api_key: RAINFOREST_API_KEY,
+            type: "search",
+            amazon_domain: "amazon.com",
+            search_term: query as string,
+          });
+
+          if (category && category !== 'all') {
+            params.append('category_id', category as string);
+          }
+          if (min_price) {
+            params.append('min_price', min_price as string);
+          }
+          if (max_price) {
+            params.append('max_price', max_price as string);
+          }
+          if (page && page !== '1') {
+            params.append('page', page as string);
+          }
+          
+          console.log(`Trying RainforestAPI: ${RAINFOREST_API_URL}?${params.toString()}`);
+          
+          const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('RainforestAPI success:', Object.keys(data));
+            
+            // Record analytics event
+            await storage.recordEvent({
+              eventType: "product_search",
+              userId: (req as any).user?.claims?.sub,
+              data: { query, category, resultsCount: data.search_results?.length || 0, source: 'rainforest' },
+              userAgent: req.get('User-Agent'),
+              ipAddress: req.ip,
+            });
+            
+            return res.json(data);
+          } else {
+            const errorText = await response.text();
+            console.log(`RainforestAPI failed (${response.status}), falling back to demo data`);
+          }
+        } catch (apiError) {
+          console.log('RainforestAPI error, falling back to demo data:', apiError.message);
+        }
       }
 
       // Generate realistic sample products based on search query
