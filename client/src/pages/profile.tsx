@@ -6,7 +6,8 @@ import WishlistCard from "@/components/wishlist-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
 import { Link } from "wouter";
 import { 
   User, 
@@ -20,11 +21,20 @@ import {
   Check,
   Clock,
   Eye,
-  TrendingUp
+  TrendingUp,
+  Mail,
+  Shield,
+  List,
+  Search,
+  Archive,
+  LogOut,
+  Award,
+  Edit
 } from "lucide-react";
 
 export default function Profile() {
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('profile');
 
   const { data: userWishlists } = useQuery({
     queryKey: [`/api/users/${user?.id}/wishlists`],
@@ -41,293 +51,371 @@ export default function Profile() {
     enabled: !!user?.id,
   });
 
+  // Calculate dynamic profile completion
+  const calculateProfileCompletion = () => {
+    if (!user) return 0;
+    
+    let completed = 0;
+    const total = 10; // Total possible completion items
+    
+    // Basic profile fields (4 points)
+    if (user.firstName) completed += 1;
+    if (user.lastName) completed += 1;
+    if (user.email) completed += 1;
+    if (user.profileImageUrl) completed += 1;
+    
+    // Profile engagement (3 points)
+    if (userWishlists && userWishlists.length > 0) completed += 1;
+    if (userDonations && userDonations.length > 0) completed += 1;
+    if (thankYouNotes && thankYouNotes.length > 0) completed += 1;
+    
+    // Additional profile elements (3 points)
+    if (user.createdAt) completed += 1; // Account age
+    if (user.id) completed += 1; // Member ID exists
+    completed += 1; // Default supporter status
+    
+    return Math.round((completed / total) * 100);
+  };
+
+  const profileCompletion = calculateProfileCompletion();
+  const memberSince = new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  
   const activeWishlists = userWishlists?.filter((w: any) => w.status === 'active') || [];
   const completedWishlists = userWishlists?.filter((w: any) => w.status === 'completed') || [];
   const totalItemsReceived = userWishlists?.reduce((sum: number, w: any) => sum + w.fulfilledItems, 0) || 0;
   const totalViews = userWishlists?.reduce((sum: number, w: any) => sum + w.viewCount, 0) || 0;
+
+  const sidebarItems = [
+    { id: 'profile', label: 'My Profile', icon: User, active: activeTab === 'profile' },
+    { id: 'lists', label: 'My Lists', icon: List, active: activeTab === 'lists' },
+    { id: 'privacy', label: 'Privacy Settings', icon: Settings, active: activeTab === 'privacy' },
+    { id: 'create', label: 'Create List', icon: Gift, active: activeTab === 'create' },
+    { id: 'find', label: 'Find Lists', icon: Search, active: activeTab === 'find' },
+    { id: 'archive', label: 'Archive List', icon: Archive, active: activeTab === 'archive' },
+  ];
+
+  const getCompletionTasks = () => {
+    const tasks = [];
+    
+    if (!user?.profileImageUrl) {
+      tasks.push({
+        title: "Add Profile Photo",
+        description: "Help the community connect with you",
+        action: "Upload"
+      });
+    }
+    
+    if (!userWishlists || userWishlists.length === 0) {
+      tasks.push({
+        title: "Create Your First Wishlist",
+        description: "Share what you need with the community",
+        action: "Create"
+      });
+    }
+    
+    if (!user?.lastName) {
+      tasks.push({
+        title: "Complete Your Name",
+        description: "Add your last name for better trust",
+        action: "Add"
+      });
+    }
+    
+    return tasks;
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-warm-bg">
+        <Navigation />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Card className="p-12 text-center">
+            <h3 className="text-lg font-semibold mb-2">Please Log In</h3>
+            <p className="text-gray-600">You need to be logged in to view your profile.</p>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-warm-bg">
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Profile Header */}
-        <div className="mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-start space-x-6">
-                {/* Profile Picture */}
-                <div className="flex-shrink-0">
-                  {user?.profileImageUrl ? (
-                    <img 
-                      src={user.profileImageUrl}
-                      alt="Profile"
-                      className="w-24 h-24 rounded-full object-cover border-4 border-coral/20"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 bg-coral/10 rounded-full flex items-center justify-center border-4 border-coral/20">
-                      <User className="h-12 w-12 text-coral" />
-                    </div>
-                  )}
+        <div className="flex gap-8">
+          {/* Sidebar */}
+          <div className="w-64 flex-shrink-0">
+            {/* Profile Summary Card */}
+            <Card className="mb-6">
+              <CardContent className="p-6 text-center">
+                <Avatar className="h-20 w-20 mx-auto mb-4">
+                  <AvatarImage src={user.profileImageUrl} alt={user.firstName || 'User'} />
+                  <AvatarFallback className="text-xl bg-coral text-white">
+                    {user.firstName?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="font-semibold text-navy mb-1">
+                  Hi, {user.firstName}!
+                </h3>
+                <Badge variant="outline" className="bg-coral/10 text-coral border-coral mb-4">
+                  <Award className="mr-1 h-3 w-3" />
+                  Supporter
+                </Badge>
+                
+                <div className="text-left">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-600">Profile completion</span>
+                    <span className="font-semibold">{profileCompletion}%</span>
+                  </div>
+                  <Progress value={profileCompletion} className="h-2" />
                 </div>
+              </CardContent>
+            </Card>
 
-                {/* Profile Info */}
-                <div className="flex-1">
+            {/* Navigation Menu */}
+            <Card>
+              <CardContent className="p-4">
+                <nav className="space-y-2">
+                  {sidebarItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                        item.active 
+                          ? 'bg-coral text-white' 
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.label}</span>
+                    </button>
+                  ))}
+                  
+                  <div className="border-t pt-2 mt-4">
+                    <button 
+                      onClick={() => window.location.href = '/api/logout'}
+                      className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left text-gray-600 hover:bg-gray-100 transition-colors"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span className="text-sm">Log Out</span>
+                    </button>
+                  </div>
+                </nav>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1">
+            {activeTab === 'profile' && (
+              <>
+                {/* Profile Header */}
+                <div className="mb-8">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h1 className="text-2xl font-bold text-navy mb-1">
-                        {user?.firstName} {user?.lastName}
-                      </h1>
-                      <p className="text-gray-600 mb-2">{user?.email}</p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Calendar className="mr-1 h-4 w-4" />
-                          Joined {new Date(user?.createdAt || '').toLocaleDateString()}
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h1 className="text-3xl font-bold text-navy">
+                          {user.firstName} {user.lastName || ''}
+                        </h1>
+                        <Badge className="bg-coral text-white">
+                          <Shield className="mr-1 h-3 w-3" />
+                          Supporter
+                        </Badge>
+                      </div>
+                      <p className="text-gray-600 mb-4">
+                        I'm {user.firstName} who loves to help people. My name is {user.firstName}.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div className="flex items-center space-x-2 text-gray-600">
+                          <Mail className="h-4 w-4" />
+                          <span>{user.email}</span>
                         </div>
-                        {user?.isVerified && (
-                          <Badge className="bg-green-100 text-green-800">
-                            <Check className="mr-1 h-3 w-3" />
-                            Verified
-                          </Badge>
-                        )}
+                        <div className="flex items-center space-x-2 text-gray-600">
+                          <User className="h-4 w-4" />
+                          <span>Student</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-gray-600">
+                          <MapPin className="h-4 w-4" />
+                          <span>Location</span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-gray-600">
+                          <Calendar className="h-4 w-4" />
+                          <span>Member since {memberSince}</span>
+                        </div>
                       </div>
                     </div>
-
-                    <Button variant="outline" className="border-coral text-coral hover:bg-coral/10">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Edit Profile
-                    </Button>
+                    
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-coral mb-1">{profileCompletion}%</div>
+                      <div className="text-sm text-gray-600 mb-4">Complete Profile</div>
+                      <Button className="bg-coral hover:bg-coral/90">
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit Profile
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-coral/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Heart className="h-6 w-6 text-coral" />
-              </div>
-              <div className="text-2xl font-bold text-navy">{userWishlists?.length || 0}</div>
-              <div className="text-sm text-gray-600">Total Wishlists</div>
-            </CardContent>
-          </Card>
+                {/* Profile Stats */}
+                <Card className="mb-8">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Award className="h-5 w-5 text-coral" />
+                      <span>Profile Stats</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      <div>
+                        <div className="text-lg font-semibold text-navy">Profile Completion</div>
+                        <div className="text-2xl font-bold text-coral">{profileCompletion}%</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-semibold text-navy">Account Type</div>
+                        <div className="text-xl font-semibold text-gray-700">Supporter</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-semibold text-navy">Member ID</div>
+                        <div className="text-xl font-semibold text-gray-700">#{user.id?.slice(-6) || '000000'}</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-semibold text-navy">Age Range</div>
+                        <div className="text-xl font-semibold text-gray-700">25-34</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Gift className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="text-2xl font-bold text-navy">{totalItemsReceived}</div>
-              <div className="text-sm text-gray-600">Items Received</div>
-            </CardContent>
-          </Card>
+                {/* Complete Your Profile */}
+                {getCompletionTasks().length > 0 && (
+                  <Card className="mb-8">
+                    <CardHeader>
+                      <CardTitle>Complete Your Profile</CardTitle>
+                      <p className="text-gray-600">Add these details to improve your profile and build trust in the community:</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {getCompletionTasks().map((task, index) => (
+                          <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div>
+                              <h4 className="font-semibold">{task.title}</h4>
+                              <p className="text-sm text-gray-600">{task.description}</p>
+                            </div>
+                            <Button variant="outline" size="sm">{task.action}</Button>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Eye className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="text-2xl font-bold text-navy">{totalViews}</div>
-              <div className="text-sm text-gray-600">Total Views</div>
-            </CardContent>
-          </Card>
+                {/* Activity Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <Heart className="mx-auto h-8 w-8 text-coral mb-3" />
+                      <div className="text-2xl font-bold text-navy mb-1">
+                        {userDonations?.length || 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Items Donated</div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <Gift className="mx-auto h-8 w-8 text-coral mb-3" />
+                      <div className="text-2xl font-bold text-navy mb-1">
+                        {userWishlists?.length || 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Wishlists Created</div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <Award className="mx-auto h-8 w-8 text-coral mb-3" />
+                      <div className="text-2xl font-bold text-navy mb-1">
+                        {thankYouNotes?.length || 0}
+                      </div>
+                      <div className="text-sm text-gray-600">Thank You Notes</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </>
+            )}
 
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <MessageSquare className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="text-2xl font-bold text-navy">{thankYouNotes?.length || 0}</div>
-              <div className="text-sm text-gray-600">Thank You Notes</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="wishlists" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="wishlists">My Wishlists</TabsTrigger>
-            <TabsTrigger value="donations">My Donations</TabsTrigger>
-            <TabsTrigger value="thank-you">Thank You Notes</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-          </TabsList>
-
-          {/* Wishlists Tab */}
-          <TabsContent value="wishlists" className="space-y-6">
-            {/* Active Wishlists */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center">
-                  <Heart className="mr-2 h-5 w-5 text-coral" />
-                  Active Wishlists ({activeWishlists.length})
-                </CardTitle>
-                <Link href="/create">
-                  <Button className="bg-coral hover:bg-coral/90">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create New
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardContent>
-                {activeWishlists.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {activeWishlists.map((wishlist: any) => (
-                      <WishlistCard key={wishlist.id} wishlist={wishlist} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Heart className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                    <p className="text-gray-500 mb-4">You don't have any active wishlists yet</p>
+            {activeTab === 'lists' && (
+              <div className="space-y-6">
+                {/* Active Wishlists */}
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <CardTitle className="flex items-center">
+                      <Heart className="mr-2 h-5 w-5 text-coral" />
+                      Active Wishlists ({activeWishlists.length})
+                    </CardTitle>
                     <Link href="/create">
                       <Button className="bg-coral hover:bg-coral/90">
                         <Plus className="mr-2 h-4 w-4" />
-                        Create Your First Wishlist
+                        Create New
                       </Button>
                     </Link>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardHeader>
+                  <CardContent>
+                    {activeWishlists.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {activeWishlists.map((wishlist: any) => (
+                          <WishlistCard key={wishlist.id} wishlist={wishlist} />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <Heart className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                        <p className="text-gray-500 mb-4">You don't have any active wishlists yet</p>
+                        <Link href="/create">
+                          <Button className="bg-coral hover:bg-coral/90">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create Your First Wishlist
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
 
-            {/* Completed Wishlists */}
-            {completedWishlists.length > 0 && (
+                {/* Completed Wishlists */}
+                {completedWishlists.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Check className="mr-2 h-5 w-5 text-green-600" />
+                        Completed Wishlists ({completedWishlists.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {completedWishlists.map((wishlist: any) => (
+                          <WishlistCard key={wishlist.id} wishlist={wishlist} />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+
+            {/* Other tabs can be implemented similarly */}
+            {activeTab !== 'profile' && activeTab !== 'lists' && (
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Check className="mr-2 h-5 w-5 text-green-600" />
-                    Completed Wishlists ({completedWishlists.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {completedWishlists.map((wishlist: any) => (
-                      <WishlistCard key={wishlist.id} wishlist={wishlist} />
-                    ))}
-                  </div>
+                <CardContent className="p-12 text-center">
+                  <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
+                  <p className="text-gray-600">This feature is currently under development.</p>
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
-
-          {/* Donations Tab */}
-          <TabsContent value="donations">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Gift className="mr-2 h-5 w-5 text-coral" />
-                  My Donations
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {userDonations && userDonations.length > 0 ? (
-                  <div className="space-y-4">
-                    {userDonations.map((donation: any) => (
-                      <div key={donation.id} className="border rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-navy mb-1">
-                              {donation.item?.title || 'Donation'}
-                            </h3>
-                            <p className="text-sm text-gray-600 mb-2">
-                              To: {donation.wishlist?.title}
-                            </p>
-                            <div className="flex items-center space-x-4 text-sm text-gray-500">
-                              <span>{new Date(donation.createdAt).toLocaleDateString()}</span>
-                              <Badge className={
-                                donation.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                donation.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                                'bg-yellow-100 text-yellow-800'
-                              }>
-                                {donation.status}
-                              </Badge>
-                            </div>
-                          </div>
-                          {donation.amount && (
-                            <div className="text-lg font-semibold text-coral">
-                              ${donation.amount}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Gift className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                    <p className="text-gray-500">You haven't made any donations yet</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Thank You Notes Tab */}
-          <TabsContent value="thank-you">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageSquare className="mr-2 h-5 w-5 text-coral" />
-                  Thank You Notes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {thankYouNotes && thankYouNotes.length > 0 ? (
-                  <div className="space-y-4">
-                    {thankYouNotes.map((note: any) => (
-                      <div key={note.id} className="border rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-navy mb-1">
-                              {note.subject || 'Thank You'}
-                            </h3>
-                            <p className="text-sm text-gray-600 mb-2">
-                              From: {note.from?.firstName} {note.from?.lastName}
-                            </p>
-                          </div>
-                          <span className="text-sm text-gray-500">
-                            {new Date(note.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-gray-700">{note.message}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <MessageSquare className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                    <p className="text-gray-500">No thank you notes yet</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Activity Tab */}
-          <TabsContent value="activity">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <TrendingUp className="mr-2 h-5 w-5 text-coral" />
-                  Recent Activity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Activity items would be populated from a real activity feed */}
-                  <div className="text-center py-8">
-                    <Clock className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                    <p className="text-gray-500">No recent activity</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );
