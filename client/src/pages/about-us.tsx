@@ -76,7 +76,7 @@ export default function AboutUs() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <div 
-          className="text-center mb-8 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
+          className="text-center mb-4 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
           style={{ 
             backgroundImage: `url(${howItWorksBackground})`,
             minHeight: '400px'
