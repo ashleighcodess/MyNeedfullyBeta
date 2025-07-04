@@ -14,6 +14,7 @@ import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
+import { BrandLoader, BrandLoaderWithText } from "@/components/brand-loader";
 
 export default function ProductSearchWorking() {
   // Stable state management
@@ -457,7 +458,10 @@ export default function ProductSearchWorking() {
                       size="sm"
                     >
                       {addingProductId === product.asin ? (
-                        <>Adding...</>
+                        <>
+                          <BrandLoader size="sm" variant="coral" className="mr-1" />
+                          Adding...
+                        </>
                       ) : (
                         <>
                           <ShoppingCart className="h-4 w-4 mr-1" />
@@ -477,9 +481,13 @@ export default function ProductSearchWorking() {
           <>
             {isLoading && (
               <div className="text-center py-12">
-                <div className="animate-spin h-8 w-8 border-4 border-coral-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-gray-600">Searching for products...</p>
-                <p className="text-sm text-gray-500 mt-2">This may take a few seconds for live data</p>
+                <BrandLoaderWithText 
+                  text="Searching for products..." 
+                  size="lg" 
+                  variant="coral"
+                  className="mb-4"
+                />
+                <p className="text-sm text-gray-500">This may take a few seconds for live data</p>
               </div>
             )}
 
@@ -557,7 +565,10 @@ export default function ProductSearchWorking() {
                             size="sm"
                           >
                             {addingProductId === (product.asin || product.id || index.toString()) ? (
-                              <>Adding...</>
+                              <>
+                                <BrandLoader size="sm" variant="coral" className="mr-1" />
+                                Adding...
+                              </>
                             ) : (
                               <>
                                 <ShoppingCart className="h-4 w-4 mr-1" />

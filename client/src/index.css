@@ -158,4 +158,33 @@
       opacity: 0.6;
     }
   }
+
+  /* Brand Loader Animations */
+  .brand-loader-spin {
+    animation: brand-spin 1.5s linear infinite;
+  }
+
+  .brand-loader-pulse {
+    animation: brand-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes brand-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes brand-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+  }
 }
