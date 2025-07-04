@@ -74,15 +74,17 @@ export default function Signup() {
             {/* Auth Options */}
             <Card className="p-6 shadow-lg">
               <div className="space-y-4">
-                {/* Replit */}
-                <Button
-                  onClick={() => handleAuthProvider('replit')}
-                  variant="outline"
-                  className="w-full h-12 text-left justify-start space-x-3 hover:bg-gray-50"
-                >
-                  <SiReplit className="w-5 h-5 text-orange-500" />
-                  <span>Continue with Replit</span>
-                </Button>
+                {/* Show Replit only in development */}
+                {import.meta.env.DEV && (
+                  <Button
+                    onClick={() => handleAuthProvider('replit')}
+                    variant="outline"
+                    className="w-full h-12 text-left justify-start space-x-3 hover:bg-gray-50"
+                  >
+                    <SiReplit className="w-5 h-5 text-orange-500" />
+                    <span>Continue with Replit (Dev Only)</span>
+                  </Button>
+                )}
 
                 {/* Google */}
                 <Button
