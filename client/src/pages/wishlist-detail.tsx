@@ -150,7 +150,7 @@ export default function WishlistDetail() {
     ? Math.round((wishlist.fulfilledItems / wishlist.totalItems) * 100) 
     : 0;
 
-  const isOwner = user?.id === wishlist?.userId;
+  const isOwner = user?.id?.toString() === wishlist?.userId?.toString();
 
   if (isLoading) {
     return (

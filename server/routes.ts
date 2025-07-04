@@ -73,6 +73,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+
   // User profile routes
   app.patch('/api/users/:userId', isAuthenticated, async (req: any, res) => {
     try {

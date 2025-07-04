@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
 import { Input } from "@/components/ui/input";
 import { FormControl } from "@/components/ui/form";
+import { useQuery } from "@tanstack/react-query";
 
 interface AddressComponent {
   long_name: string;
@@ -33,6 +34,12 @@ export default function AddressAutocomplete({
   className = "",
 }: AddressAutocompleteProps) {
   const [inputValue, setInputValue] = useState(value || "");
+
+  // Fetch Google Maps API key
+  const { data: config } = useQuery({
+    queryKey: ['/api/config/google-maps-key'],
+    retry: false,
+  });
 
   useEffect(() => {
     setInputValue(value || "");
@@ -87,38 +94,8 @@ export default function AddressAutocomplete({
     onChange?.(newValue);
   };
 
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Fetch the API key from the server
-    fetch('/api/config/google-maps-key')
-      .then(response => response.json())
-      .then(data => {
-        setApiKey(data.apiKey);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <FormControl>
-        <Input
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder="Loading address suggestions..."
-          className={className}
-          disabled
-        />
-      </FormControl>
-    );
-  }
-
   // If Google Maps API key is not available, fall back to regular input
-  if (!apiKey) {
+  if (!config?.apiKey) {
     return (
       <FormControl>
         <Input
@@ -134,7 +111,7 @@ export default function AddressAutocomplete({
   return (
     <FormControl>
       <Autocomplete
-        apiKey={apiKey}
+        apiKey={config.apiKey}
         onPlaceSelected={handlePlaceSelected}
         onChange={handleInputChange}
         value={inputValue}

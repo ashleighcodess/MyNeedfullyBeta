@@ -77,7 +77,7 @@ export default function EditWishlist() {
   }, [wishlist]);
 
   // Check if user is owner
-  const isOwner = user?.id === wishlist?.userId;
+  const isOwner = user?.id?.toString() === wishlist?.userId?.toString();
 
   // Update wishlist mutation
   const updateWishlistMutation = useMutation({
