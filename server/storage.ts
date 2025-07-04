@@ -54,6 +54,7 @@ export interface IStorage {
   // Wishlist Item operations
   addWishlistItem(item: InsertWishlistItem): Promise<WishlistItem>;
   getWishlistItems(wishlistId: number): Promise<WishlistItem[]>;
+  getWishlistItem(id: number): Promise<WishlistItem | undefined>;
   updateWishlistItem(id: number, updates: Partial<WishlistItem>): Promise<WishlistItem>;
   fulfillWishlistItem(id: number, fulfilledBy: string): Promise<WishlistItem>;
   deleteWishlistItem(id: number): Promise<void>;
@@ -258,6 +259,15 @@ export class DatabaseStorage implements IStorage {
       .from(wishlistItems)
       .where(eq(wishlistItems.wishlistId, wishlistId))
       .orderBy(asc(wishlistItems.priority), desc(wishlistItems.createdAt));
+  }
+
+  async getWishlistItem(id: number): Promise<WishlistItem | undefined> {
+    const [item] = await db
+      .select()
+      .from(wishlistItems)
+      .where(eq(wishlistItems.id, id))
+      .limit(1);
+    return item;
   }
 
   async updateWishlistItem(id: number, updates: Partial<WishlistItem>): Promise<WishlistItem> {

@@ -1288,9 +1288,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const itemId = parseInt(req.params.itemId);
       
-      // Get item by querying the database directly via storage
-      const allItems = await storage.getWishlistItems(0); // Get all items first
-      const item = allItems.find(item => item.id === itemId);
+      // Get item directly using the new method
+      const item = await storage.getWishlistItem(itemId);
       
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
