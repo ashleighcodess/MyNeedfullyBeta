@@ -816,22 +816,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const serpResults = await serpService.searchBothStores(query as string, '60602', Math.floor(Number(limit) / 3));
           
           // Transform SerpAPI results to match RainforestAPI format
-          const transformedResults = serpResults.map((product: SerpProduct) => ({
-            title: product.title,
-            price: {
-              value: parseFloat(product.price.replace(/[^0-9.]/g, '') || '0'),
-              currency: 'USD',
-              raw: product.price
-            },
-            image: product.image_url,
-            link: product.product_url,
-            rating: parseFloat(product.rating || '0'),
-            retailer: product.retailer,
-            retailer_logo: `/logos/${product.retailer}-logo.svg`,
-            product_id: product.product_id,
-            brand: product.brand,
-            description: product.description
-          }));
+          const transformedResults = serpResults.map((product: SerpProduct) => {
+            let priceValue = 0;
+            try {
+              // Handle different price formats
+              if (typeof product.price === 'number') {
+                priceValue = product.price;
+              } else if (typeof product.price === 'string') {
+                priceValue = parseFloat(product.price.replace(/[^0-9.]/g, '') || '0');
+              } else if (product.price && typeof product.price === 'object') {
+                // Handle price objects like { value: 10.99, currency: 'USD' }
+                const priceObj = product.price as any;
+                priceValue = parseFloat(String(priceObj.value || priceObj.amount || '0').replace(/[^0-9.]/g, '') || '0');
+              }
+            } catch (err) {
+              console.error('Price parsing error:', err, 'for product:', product.title);
+              priceValue = 0;
+            }
+
+            return {
+              title: product.title,
+              price: {
+                value: priceValue,
+                currency: 'USD',
+                raw: product.price
+              },
+              image: product.image_url,
+              link: product.product_url,
+              rating: parseFloat(product.rating || '0'),
+              retailer: product.retailer,
+              retailer_logo: `/logos/${product.retailer}-logo.svg`,
+              product_id: product.product_id,
+              brand: product.brand,
+              description: product.description
+            };
+          });
 
           results.push(...transformedResults);
         } catch (error) {
