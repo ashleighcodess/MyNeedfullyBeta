@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import aboutUsImage from "@assets/AboutUsIMage2_1751592833990.png";
 import missionImage from "@assets/AboutUsImage3_1751592935275.png";
+import howItWorksBackground from "@assets/HowIcons_1751593054903.png";
 
 export default function AboutUs() {
   const stats = [
@@ -147,24 +148,33 @@ export default function AboutUs() {
         </div>
 
         {/* How It Works */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-navy text-center mb-4">How MyNeedfully Works</h2>
-          <p className="text-lg text-gray-600 text-center mb-12">
-            A Simple Process To Connect People In Need With Those Who Want To Help.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {howItWorks.map((step, index) => (
-              <Card key={index} className="text-center">
-                <CardContent className="p-6">
-                  <div className={`w-16 h-16 rounded-full ${step.color} flex items-center justify-center mx-auto mb-4`}>
-                    <step.icon className="h-8 w-8" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-navy mb-3">{step.title}</h3>
-                  <p className="text-gray-600 text-sm">{step.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+        <div 
+          className="mb-16 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
+          style={{ 
+            backgroundImage: `url(${howItWorksBackground})`,
+            minHeight: '500px'
+          }}
+        >
+          <div className="absolute inset-0 bg-white/85"></div>
+          <div className="relative z-10 p-8 md:p-12">
+            <h2 className="text-3xl font-bold text-navy text-center mb-4">How MyNeedfully Works</h2>
+            <p className="text-lg text-gray-600 text-center mb-12">
+              A Simple Process To Connect People In Need With Those Who Want To Help.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {howItWorks.map((step, index) => (
+                <Card key={index} className="text-center bg-white/90 backdrop-blur-sm">
+                  <CardContent className="p-6">
+                    <div className={`w-16 h-16 rounded-full ${step.color} flex items-center justify-center mx-auto mb-4`}>
+                      <step.icon className="h-8 w-8" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-navy mb-3">{step.title}</h3>
+                    <p className="text-gray-600 text-sm">{step.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
 
