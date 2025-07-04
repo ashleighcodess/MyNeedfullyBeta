@@ -13,6 +13,7 @@ import {
   Package,
   Smile
 } from "lucide-react";
+import aboutUsImage from "@assets/AboutUsIMage2_1751592833990.png";
 
 export default function AboutUs() {
   const stats = [
@@ -120,17 +121,28 @@ export default function AboutUs() {
           </CardContent>
         </Card>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          {stats.map((stat, index) => (
-            <Card key={index} className="text-center">
-              <CardContent className="p-6">
-                <stat.icon className={`h-12 w-12 mx-auto mb-4 ${stat.color}`} />
-                <div className="text-3xl font-bold text-navy mb-2">{stat.value}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Image and Statistics Section */}
+        <div className="mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
+            <div>
+              <img 
+                src={aboutUsImage} 
+                alt="Community helping and supporting each other" 
+                className="w-full h-auto rounded-xl shadow-lg"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              {stats.map((stat, index) => (
+                <Card key={index} className="text-center">
+                  <CardContent className="p-6">
+                    <stat.icon className={`h-12 w-12 mx-auto mb-4 ${stat.color}`} />
+                    <div className="text-3xl font-bold text-navy mb-2">{stat.value}</div>
+                    <div className="text-sm text-gray-600">{stat.label}</div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* How It Works */}
