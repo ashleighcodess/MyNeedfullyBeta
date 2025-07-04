@@ -788,5 +788,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Add download route for project backup
+  app.get('/download', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'download.html'));
+  });
+
+  app.get('/myneedfully-backup.tar.gz', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'myneedfully-backup.tar.gz');
+    res.download(filePath, 'myneedfully-backup.tar.gz', (err) => {
+      if (err) {
+        console.error('Download error:', err);
+        res.status(404).send('File not found');
+      }
+    });
+  });
+
   return httpServer;
 }
