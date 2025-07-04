@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/navigation";
 import { Link } from "wouter";
+import submarkLogo from "@assets/Logo_5_1751594497665.png";
 import { 
   Home, 
   Utensils, 
@@ -163,12 +164,22 @@ export default function Resources() {
   };
 
   return (
-    <div className="min-h-screen bg-warm-bg">
+    <div className="min-h-screen bg-warm-bg relative">
       <Navigation />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Background Submark */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img 
+          src={submarkLogo} 
+          alt="" 
+          className="w-96 h-96 opacity-[0.03] select-none"
+        />
+      </div>
+      
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative">
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 w-24 h-1 bg-coral rounded-full"></div>
           <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">Resources</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
             Helpful Links And Contacts For Those In Need Of Support Beyond Material Items.
@@ -176,8 +187,9 @@ export default function Resources() {
         </div>
 
         {/* Finding Help Section */}
-        <Card className="mb-8 bg-gradient-to-r from-coral/10 to-coral/20">
-          <CardContent className="p-8 text-center">
+        <Card className="mb-8 bg-gradient-to-r from-coral/10 to-coral/20 border-l-4 border-coral shadow-lg">
+          <CardContent className="p-8 text-center relative">
+            <div className="absolute top-4 right-4 w-8 h-8 bg-coral/20 rounded-full"></div>
             <h2 className="text-2xl font-bold text-navy mb-4">Finding Help</h2>
             <p className="text-gray-700 mb-6">
               Beyond Needs Lists, There Are Many Organizations And Programs That Can Provide Assistance During Difficult Times. 
@@ -188,11 +200,15 @@ export default function Resources() {
 
         {/* Resources Tabs */}
         <Tabs defaultValue="housing" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8 bg-gray-100 p-1 rounded-lg">
             {Object.entries(resourceCategories).map(([key, category]) => {
               const IconComponent = category.icon;
               return (
-                <TabsTrigger key={key} value={key} className="flex items-center gap-2">
+                <TabsTrigger 
+                  key={key} 
+                  value={key} 
+                  className="flex items-center gap-2 data-[state=active]:bg-coral data-[state=active]:text-white transition-all"
+                >
                   <IconComponent className="h-4 w-4" />
                   <span className="hidden sm:inline">{category.title}</span>
                 </TabsTrigger>
@@ -204,12 +220,14 @@ export default function Resources() {
             <TabsContent key={key} value={key}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {category.resources.map((resource, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <Card key={index} className="hover:shadow-lg transition-all hover:border-coral/30 border-l-4 border-coral/20 hover:border-l-coral relative group">
                     <CardContent className="p-6">
+                      <div className="absolute top-2 right-2 w-2 h-2 bg-coral rounded-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                      
                       <div className="flex items-start justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-navy">{resource.name}</h3>
+                        <h3 className="text-lg font-semibold text-navy group-hover:text-coral/90 transition-colors">{resource.name}</h3>
                         {resource.website && (
-                          <ExternalLink className="h-5 w-5 text-gray-400" />
+                          <ExternalLink className="h-5 w-5 text-gray-400 group-hover:text-coral transition-colors" />
                         )}
                       </div>
                       
@@ -218,7 +236,7 @@ export default function Resources() {
                       </p>
                       
                       <div className="space-y-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 p-2 bg-coral/5 rounded-lg">
                           <Phone className="h-4 w-4 text-coral" />
                           <span className="font-semibold text-navy">{resource.phone}</span>
                         </div>
@@ -227,7 +245,7 @@ export default function Resources() {
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            className="w-full"
+                            className="w-full border-coral/30 hover:bg-coral hover:text-white transition-colors"
                             onClick={() => window.open(resource.website, '_blank')}
                           >
                             Visit Website
@@ -244,20 +262,24 @@ export default function Resources() {
         </Tabs>
 
         {/* Emergency Notice */}
-        <Card className="mt-8 bg-red-50 border-red-200">
-          <CardContent className="p-6 text-center">
+        <Card className="mt-8 bg-red-50 border-red-200 border-l-4 border-l-red-500 shadow-lg">
+          <CardContent className="p-6 text-center relative">
+            <div className="absolute top-2 right-2 w-3 h-3 bg-red-400 rounded-full animate-pulse"></div>
             <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-red-800 mb-2">Emergency Notice</h3>
             <p className="text-red-700">
               If You Or Someone You Know Is In Immediate Danger, Please Call Emergency Services At{" "}
-              <span className="font-bold">911</span>.
+              <span className="font-bold bg-red-100 px-2 py-1 rounded">911</span>.
             </p>
           </CardContent>
         </Card>
 
         {/* Call to Action */}
-        <Card className="mt-8 bg-gradient-to-r from-coral/10 to-coral/20">
-          <CardContent className="p-8 text-center">
+        <Card className="mt-8 bg-gradient-to-r from-coral/10 to-coral/20 border-l-4 border-coral shadow-lg">
+          <CardContent className="p-8 text-center relative">
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 w-16 h-1 bg-coral rounded-full"></div>
+            <div className="absolute top-4 right-4 w-6 h-6 bg-coral/20 rounded-full"></div>
+            <div className="absolute bottom-4 left-4 w-4 h-4 bg-coral/30 rounded-full"></div>
             <h2 className="text-2xl font-bold text-navy mb-4">
               Need Material Support Too?
             </h2>
@@ -266,12 +288,12 @@ export default function Resources() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/browse">
-                <Button size="lg" className="bg-coral hover:bg-coral/90">
+                <Button size="lg" className="bg-coral hover:bg-coral/90 shadow-lg hover:shadow-xl transition-all">
                   Browse Needs Lists
                 </Button>
               </Link>
               <Link href="/create">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white transition-all">
                   Create Your Needs List
                 </Button>
               </Link>
