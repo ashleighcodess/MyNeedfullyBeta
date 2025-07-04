@@ -163,18 +163,24 @@ export default function WishlistDetail() {
     setShowImageCarousel(true);
   };
 
+  const getStoryImages = () => {
+    return (wishlist as any)?.storyImages || [];
+  };
+
   const nextImage = () => {
-    if (wishlist && (wishlist as any).storyImages) {
+    const images = getStoryImages();
+    if (images.length > 0) {
       setCurrentImageIndex((prev) => 
-        prev === (wishlist as any).storyImages.length - 1 ? 0 : prev + 1
+        prev === images.length - 1 ? 0 : prev + 1
       );
     }
   };
 
   const prevImage = () => {
-    if (wishlist && (wishlist as any).storyImages) {
+    const images = getStoryImages();
+    if (images.length > 0) {
       setCurrentImageIndex((prev) => 
-        prev === 0 ? (wishlist as any).storyImages.length - 1 : prev - 1
+        prev === 0 ? images.length - 1 : prev - 1
       );
     }
   };
@@ -296,11 +302,11 @@ export default function WishlistDetail() {
                 )}
                 
                 {/* Story Images */}
-                {(wishlist as any).storyImages && (wishlist as any).storyImages.length > 0 && (
+                {getStoryImages().length > 0 && (
                   <>
                     <Separator className="my-4" />
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {(wishlist as any).storyImages.map((imagePath: string, index: number) => (
+                      {getStoryImages().map((imagePath: string, index: number) => (
                         <div 
                           key={index} 
                           className="relative group cursor-pointer"
@@ -315,7 +321,7 @@ export default function WishlistDetail() {
                             <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
                           </div>
                           <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                            {index + 1} of {(wishlist as any).storyImages.length}
+                            {index + 1} of {getStoryImages().length}
                           </div>
                         </div>
                       ))}
@@ -519,7 +525,7 @@ export default function WishlistDetail() {
       </div>
 
       {/* Image Carousel Modal */}
-      {showImageCarousel && (wishlist as any).storyImages && (
+      {showImageCarousel && getStoryImages().length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
           {/* Close Button */}
           <Button
@@ -532,7 +538,7 @@ export default function WishlistDetail() {
           </Button>
 
           {/* Previous Button */}
-          {(wishlist as any).storyImages.length > 1 && (
+          {getStoryImages().length > 1 && (
             <Button
               variant="ghost"
               size="sm"
@@ -544,7 +550,7 @@ export default function WishlistDetail() {
           )}
 
           {/* Next Button */}
-          {(wishlist as any).storyImages.length > 1 && (
+          {getStoryImages().length > 1 && (
             <Button
               variant="ghost"
               size="sm"
@@ -558,21 +564,21 @@ export default function WishlistDetail() {
           {/* Main Image */}
           <div className="max-w-4xl max-h-[80vh] mx-auto px-4">
             <img
-              src={(wishlist as any).storyImages[currentImageIndex]}
+              src={getStoryImages()[currentImageIndex]}
               alt={`Story image ${currentImageIndex + 1}`}
               className="w-full h-full object-contain rounded-lg"
             />
             
             {/* Image Counter */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white px-4 py-2 rounded-full">
-              {currentImageIndex + 1} of {(wishlist as any).storyImages.length}
+              {currentImageIndex + 1} of {getStoryImages().length}
             </div>
           </div>
 
           {/* Thumbnail Strip */}
-          {(wishlist as any).storyImages.length > 1 && (
+          {getStoryImages().length > 1 && (
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-16 flex space-x-2 max-w-md overflow-x-auto">
-              {(wishlist as any).storyImages.map((imagePath: string, index: number) => (
+              {getStoryImages().map((imagePath: string, index: number) => (
                 <div
                   key={index}
                   className={`flex-shrink-0 cursor-pointer border-2 rounded ${
