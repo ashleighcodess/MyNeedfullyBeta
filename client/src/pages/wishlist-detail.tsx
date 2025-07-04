@@ -38,7 +38,9 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  GitMerge
+  GitMerge,
+  Trash2,
+  Minus
 } from "lucide-react";
 
 export default function WishlistDetail() {
