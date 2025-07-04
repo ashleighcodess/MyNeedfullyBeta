@@ -596,8 +596,25 @@ export default function Landing() {
             <Button 
               className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg"
               onClick={() => {
+                const store = (document.getElementById('store-select') as HTMLSelectElement)?.value || '';
                 const category = (document.getElementById('category-select') as HTMLSelectElement)?.value || 'emergency';
-                window.location.href = `/product-search?q=${category}+essentials`;
+                const priceRange = (document.getElementById('price-select') as HTMLSelectElement)?.value || '';
+                
+                let searchQuery = `${category}+essentials`;
+                let params = new URLSearchParams();
+                params.set('q', searchQuery);
+                
+                if (store) {
+                  params.set('retailer', store);
+                }
+                
+                if (priceRange) {
+                  const [min, max] = priceRange.includes('-') ? priceRange.split('-') : ['', priceRange.replace('+', '')];
+                  if (min) params.set('min_price', min);
+                  if (max && max !== '+') params.set('max_price', max);
+                }
+                
+                window.location.href = `/product-search?${params.toString()}`;
               }}
             >
               Search

@@ -40,6 +40,8 @@ export default function ProductSearchWorking() {
   const wishlistId = urlParams.get('wishlistId');
   const initialQuery = urlParams.get('q') || "";
   const initialCategory = urlParams.get('category') || "all";
+  const initialMinPrice = urlParams.get('min_price') || "";
+  const initialMaxPrice = urlParams.get('max_price') || "";
 
   // Initialize search from URL parameters
   useEffect(() => {
@@ -50,7 +52,13 @@ export default function ProductSearchWorking() {
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
     }
-  }, [initialQuery, initialCategory]);
+    if (initialMinPrice) {
+      setMinPrice(initialMinPrice);
+    }
+    if (initialMaxPrice) {
+      setMaxPrice(initialMaxPrice);
+    }
+  }, [initialQuery, initialCategory, initialMinPrice, initialMaxPrice]);
 
   // Fetch popular products from API
   const { data: popularProductsData } = useQuery({
