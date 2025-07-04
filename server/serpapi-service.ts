@@ -108,12 +108,13 @@ export class SerpAPIService {
             if (result.link.includes(pattern)) return false;
           }
           
-          // Include only actual product pages
-          return (result.link.includes('/p/') || result.link.includes('/A-')) &&
-                 result.title && 
-                 result.title.length > 20 && // Ensure it's a real product title
+          // Include only actual product pages - be more permissive
+          return result.title && 
+                 result.title.length > 10 && // Less restrictive title length
                  !result.title.toLowerCase().includes('sale :') &&
-                 !result.title.toLowerCase().includes('shop ');
+                 !result.title.toLowerCase().includes('shop ') &&
+                 !result.title.toLowerCase().includes('category') &&
+                 !result.title.toLowerCase().includes('browse ');
         })
         .slice(0, limit)
         .map((result: any) => {
@@ -157,6 +158,15 @@ export class SerpAPIService {
         });
       
       console.log(`Target search found ${targetResults.length} products after filtering`);
+      
+      // Debug: Log the first few raw results before filtering
+      if (response.organic_results.length > 0) {
+        console.log('Sample Target URLs found:', response.organic_results.slice(0, 3).map(r => ({
+          url: r.link,
+          title: r.title?.substring(0, 50)
+        })));
+      }
+      
       return targetResults;
     } catch (error) {
       console.error('Error searching Target:', error);

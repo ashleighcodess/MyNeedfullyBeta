@@ -13,7 +13,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Progress } from "@/components/ui/progress";
+
 import { BrandLoader, BrandLoaderWithText } from "@/components/brand-loader";
 
 export default function ProductSearchWorking() {
@@ -25,14 +25,35 @@ export default function ProductSearchWorking() {
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [showProgress, setShowProgress] = useState(false);
-  const [progressValue, setProgressValue] = useState(0);
-  const [progressMessage, setProgressMessage] = useState("");
   const [searchMetrics, setSearchMetrics] = useState({ totalResults: 0, searchTime: 0 });
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const [addingProductId, setAddingProductId] = useState<string | null>(null);
   const [showFallbacks, setShowFallbacks] = useState(true);
   
   const [location, navigate] = useLocation();
+  
+  // Rotating messages for interactive loading experience
+  const loadingMessages = [
+    "Searching for products across multiple retailers...",
+    "MyNeedfully connects supporters with families in need",
+    "Over 450 needs lists have been created on our platform",
+    "Every purchase makes a real difference in someone's life",
+    "We partner with Amazon, Walmart, and Target for you",
+    "Your support helps families recover from hardships"
+  ];
+  
+  // Rotate loading messages every 2 seconds
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+      }, 2000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading, loadingMessages.length]);
   const { toast } = useToast();
   const { user } = useAuth();
   
@@ -118,21 +139,14 @@ export default function ProductSearchWorking() {
     queryFn: async () => {
       if (!searchUrl) return null;
       
-      setShowProgress(true);
-      setProgressValue(20);
-      setProgressMessage("Searching for products...");
-      
       try {
         const response = await fetch(searchUrl);
-        setProgressValue(60);
         
         if (!response.ok) {
           throw new Error(`Search failed: ${response.status}`);
         }
         
         const data = await response.json();
-        setProgressValue(100);
-        setProgressMessage("Search complete!");
         
         // Update metrics
         setSearchMetrics({
@@ -140,10 +154,8 @@ export default function ProductSearchWorking() {
           searchTime: data.request_info?.credits_used || 0
         });
         
-        setTimeout(() => setShowProgress(false), 1000);
         return data;
       } catch (error) {
-        setShowProgress(false);
         throw error;
       }
     }
@@ -386,14 +398,20 @@ export default function ProductSearchWorking() {
           </CollapsibleContent>
         </Collapsible>
 
-        {/* Progress Bar */}
-        {showProgress && (
-          <div className="mb-6 p-4 bg-white rounded-lg border">
-            <div className="flex items-center space-x-3 mb-2">
-              <Clock className="h-4 w-4 text-coral-500" />
-              <span className="text-sm font-medium">{progressMessage}</span>
+        {/* Loading State with Rotating Messages */}
+        {isLoading && (
+          <div className="mb-6 p-6 bg-white rounded-lg border">
+            <div className="flex items-center justify-center space-x-4">
+              <BrandLoader size={32} />
+              <div className="text-center">
+                <p className="text-lg font-medium text-gray-800 mb-1">
+                  {loadingMessages[loadingMessageIndex]}
+                </p>
+                <p className="text-sm text-gray-500">
+                  This may take 5-10 seconds for real-time data
+                </p>
+              </div>
             </div>
-            <Progress value={progressValue} className="w-full" />
           </div>
         )}
 
