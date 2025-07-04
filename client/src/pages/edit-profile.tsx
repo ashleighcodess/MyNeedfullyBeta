@@ -71,25 +71,59 @@ export default function EditProfile() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Please select an image smaller than 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid File Type",
+        description: "Please select a valid image file (JPG, PNG, or GIF).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploadingImage(true);
     
-    // Simulate image upload - in real implementation, upload to cloud storage
     try {
-      // For demo, we'll use a placeholder URL
-      const imageUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.firstName}&backgroundColor=coral`;
-      form.setValue("profileImageUrl", imageUrl);
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64String = e.target?.result as string;
+        form.setValue("profileImageUrl", base64String);
+        
+        toast({
+          title: "Image Uploaded",
+          description: "Profile picture updated successfully.",
+        });
+        
+        setUploadingImage(false);
+      };
       
-      toast({
-        title: "Image Uploaded",
-        description: "Profile picture updated successfully.",
-      });
+      reader.onerror = () => {
+        toast({
+          title: "Upload Failed",
+          description: "Failed to read the image file. Please try again.",
+          variant: "destructive",
+        });
+        setUploadingImage(false);
+      };
+      
+      reader.readAsDataURL(file);
     } catch (error) {
       toast({
         title: "Upload Failed",
         description: "Failed to upload image. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setUploadingImage(false);
     }
   };

@@ -316,7 +316,17 @@ export default function Profile() {
                               <h4 className="font-semibold">{task.title}</h4>
                               <p className="text-sm text-gray-600">{task.description}</p>
                             </div>
-                            <Button variant="outline" size="sm">{task.action}</Button>
+                            {task.title === "Add Profile Photo" ? (
+                              <Link href="/profile/edit">
+                                <Button variant="outline" size="sm">{task.action}</Button>
+                              </Link>
+                            ) : task.title === "Create Your First Needs List" ? (
+                              <Link href="/create">
+                                <Button variant="outline" size="sm">{task.action}</Button>
+                              </Link>
+                            ) : (
+                              <Button variant="outline" size="sm">{task.action}</Button>
+                            )}
                           </div>
                         ))}
                       </div>
