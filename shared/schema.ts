@@ -37,6 +37,7 @@ export const users = pgTable("users", {
   location: varchar("location"),
   bio: text("bio"),
   userType: varchar("user_type").notNull().default("user"), // 'user', 'admin'
+  userPreference: varchar("user_preference").default("supporter"), // 'supporter', 'creator', 'both'
   isVerified: boolean("is_verified").default(false),
   showNeedsListsLive: boolean("show_needs_lists_live").default(true),
   hideNeedsListsFromPublic: boolean("hide_needs_lists_from_public").default(false),

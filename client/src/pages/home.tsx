@@ -13,6 +13,9 @@ import {
 
 export default function Home() {
   const { user } = useAuth();
+  
+  // Check if user preference is supporter (default) or creator
+  const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
 
   return (
     <div className="min-h-screen bg-warm-bg">
@@ -34,18 +37,29 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link href="/create">
-                <Button className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
-                  <Plus className="h-6 w-6" />
-                  <span>Create Wishlist</span>
-                </Button>
-              </Link>
-              <Link href="/browse">
+              {isSupporter ? (
+                <Link href="/browse">
+                  <Button className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
+                    <Search className="h-6 w-6" />
+                    <span>Find Needs Lists</span>
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/create">
+                  <Button className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
+                    <Plus className="h-6 w-6" />
+                    <span>Create Needs List</span>
+                  </Button>
+                </Link>
+              )}
+              
+              <Link href={isSupporter ? "/create" : "/browse"}>
                 <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
-                  <Search className="h-6 w-6" />
-                  <span>Browse Wishlists</span>
+                  {isSupporter ? <Plus className="h-6 w-6" /> : <Search className="h-6 w-6" />}
+                  <span>{isSupporter ? "Create Needs List" : "Browse Needs Lists"}</span>
                 </Button>
               </Link>
+              
               <Link href="/products">
                 <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
                   <Gift className="h-6 w-6" />

@@ -78,6 +78,31 @@ export default function Profile() {
   };
 
   const profileCompletion = calculateProfileCompletion();
+  
+  // Determine user badges
+  const getUserBadges = () => {
+    const badges = [];
+    
+    // Always show supporter badge
+    badges.push({
+      label: "Supporter",
+      color: "bg-coral/10 text-coral border-coral",
+      icon: Award
+    });
+    
+    // Show "In Need" badge if user has created any needs lists
+    if (userWishlists && userWishlists.length > 0) {
+      badges.push({
+        label: "In Need",
+        color: "bg-blue-50 text-blue-600 border-blue-200",
+        icon: Heart
+      });
+    }
+    
+    return badges;
+  };
+  
+  const userBadges = getUserBadges();
   const memberSince = new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   
   const activeWishlists = userWishlists?.filter((w: any) => w.status === 'active') || [];
@@ -158,10 +183,17 @@ export default function Profile() {
                 <h3 className="font-semibold text-navy mb-1">
                   Hi, {user.firstName}!
                 </h3>
-                <Badge variant="outline" className="bg-coral/10 text-coral border-coral mb-4">
-                  <Award className="mr-1 h-3 w-3" />
-                  Supporter
-                </Badge>
+                <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                  {userBadges.map((badge, index) => {
+                    const IconComponent = badge.icon;
+                    return (
+                      <Badge key={index} variant="outline" className={badge.color}>
+                        <IconComponent className="mr-1 h-3 w-3" />
+                        {badge.label}
+                      </Badge>
+                    );
+                  })}
+                </div>
                 
                 <div className="text-left">
                   <div className="flex justify-between text-sm mb-2">
@@ -287,7 +319,9 @@ export default function Profile() {
                       </div>
                       <div>
                         <div className="text-lg font-semibold text-navy">Account Type</div>
-                        <div className="text-xl font-semibold text-gray-700">Supporter</div>
+                        <div className="text-xl font-semibold text-gray-700">
+                          {userWishlists && userWishlists.length > 0 ? "Supporter & Creator" : "Supporter"}
+                        </div>
                       </div>
                       <div>
                         <div className="text-lg font-semibold text-navy">Member ID</div>

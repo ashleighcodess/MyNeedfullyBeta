@@ -128,7 +128,7 @@ export default function Landing() {
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input 
-                    placeholder="Search wishlists by keywords, location, or needs..." 
+                    placeholder="Search needs lists by keywords, location, or needs..." 
                     className="pl-12 py-4 text-lg border-0 focus:ring-2 focus:ring-coral/50"
                   />
                 </div>
@@ -252,8 +252,8 @@ export default function Landing() {
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
                 <i className="fas fa-list-ul text-white text-2xl"></i>
               </div>
-              <h3 className="text-2xl font-semibold text-navy mb-4">Create Your Wishlist</h3>
-              <p className="text-gray-600 leading-relaxed">Recipients create detailed wishlists with specific items they need. Add photos, descriptions, and verify your story to build trust.</p>
+              <h3 className="text-2xl font-semibold text-navy mb-4">Create Your Needs List</h3>
+              <p className="text-gray-600 leading-relaxed">Recipients create detailed needs lists with specific items they need. Add photos, descriptions, and verify your story to build trust.</p>
             </div>
 
             {/* Step 2 */}

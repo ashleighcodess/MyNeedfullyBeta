@@ -177,8 +177,8 @@ export default function WishlistDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card className="p-12 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Wishlist Not Found</h3>
-            <p className="text-gray-600 mb-4">The wishlist you're looking for doesn't exist or has been removed.</p>
+            <h3 className="text-lg font-semibold mb-2">Needs List Not Found</h3>
+            <p className="text-gray-600 mb-4">The needs list you're looking for doesn't exist or has been removed.</p>
             <Button onClick={() => window.history.back()} variant="outline">
               Go Back
             </Button>

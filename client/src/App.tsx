@@ -16,6 +16,7 @@ import PrivacySettings from "@/pages/privacy-settings";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AboutUs from "@/pages/about-us";
 import Resources from "@/pages/resources";
+import Signup from "@/pages/signup";
 import NotFound from "@/pages/not-found";
 import Footer from "@/components/footer";
 
@@ -30,6 +31,8 @@ function Router() {
           <Route path="/about-us" component={AboutUs} />
           <Route path="/about" component={AboutUs} />
           <Route path="/resources" component={Resources} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/sign-up" component={Signup} />
           
           {isLoading || !isAuthenticated ? (
             <Route path="/" component={Landing} />
