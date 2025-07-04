@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -48,6 +48,7 @@ export default function WishlistDetail() {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [showThankYouNote, setShowThankYouNote] = useState(false);
   const [showImageCarousel, setShowImageCarousel] = useState(false);
+  const [itemPricing, setItemPricing] = useState<Record<string, any>>({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -79,6 +80,22 @@ export default function WishlistDetail() {
     }
   };
 
+  // Function to fetch live pricing for an item
+  const fetchItemPricing = async (itemId: number) => {
+    try {
+      const response = await fetch(`/api/items/${itemId}/pricing`);
+      if (response.ok) {
+        const pricingData = await response.json();
+        setItemPricing(prev => ({
+          ...prev,
+          [itemId]: pricingData
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching pricing for item:', itemId, error);
+    }
+  };
+
   // Fetch real recent activity data from API
   const { data: recentActivitiesData, isLoading: activitiesLoading } = useQuery({
     queryKey: ['/api/activity/recent'],
@@ -99,6 +116,17 @@ export default function WishlistDetail() {
     queryKey: [`/api/wishlists/${id}`],
     enabled: !!id,
   });
+
+  // Fetch pricing data for each item when wishlist loads
+  useEffect(() => {
+    if (wishlist?.items && Array.isArray(wishlist.items)) {
+      wishlist.items.forEach((item: any) => {
+        if (item.id && !itemPricing[item.id]) {
+          fetchItemPricing(item.id);
+        }
+      });
+    }
+  }, [wishlist?.items]);
 
 
 
@@ -515,7 +543,12 @@ export default function WishlistDetail() {
                                 <img src="/logos/amazon-logo.png" alt="Amazon" className="w-6 h-6 rounded-full" />
                                 <div>
                                   <div className="text-sm font-medium text-gray-900">Amazon</div>
-                                  <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
+                                  <div className="text-lg font-bold text-gray-900">
+                                    ${itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00'}
+                                    {itemPricing[item.id]?.pricing?.amazon?.available && (
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                               <button 
@@ -549,7 +582,12 @@ export default function WishlistDetail() {
                                 <img src="/logos/target-logo.png" alt="Target" className="w-6 h-6 rounded-full" />
                                 <div>
                                   <div className="text-sm font-medium text-gray-900">Target</div>
-                                  <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
+                                  <div className="text-lg font-bold text-gray-900">
+                                    ${itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00'}
+                                    {itemPricing[item.id]?.pricing?.target?.available && (
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                               <button 
@@ -583,7 +621,12 @@ export default function WishlistDetail() {
                                 <img src="/logos/walmart-logo.png" alt="Walmart" className="w-6 h-6 rounded-full" />
                                 <div>
                                   <div className="text-sm font-medium text-gray-900">Walmart</div>
-                                  <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
+                                  <div className="text-lg font-bold text-gray-900">
+                                    ${itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00'}
+                                    {itemPricing[item.id]?.pricing?.walmart?.available && (
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                               <button 

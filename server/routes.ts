@@ -1283,6 +1283,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Real-time pricing lookup for wishlist items
+  app.get('/api/items/:itemId/pricing', async (req, res) => {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      const item = await storage.getWishlistItems(itemId);
+      
+      if (!item || item.length === 0) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+
+      const wishlistItem = item[0];
+      const searchQuery = wishlistItem.title;
+      
+      const serpService = getSerpAPIService();
+      const results: any = {
+        amazon: { price: wishlistItem.price || '99.00', available: false },
+        walmart: { price: wishlistItem.price || '99.00', available: false },
+        target: { price: wishlistItem.price || '99.00', available: false }
+      };
+
+      // Amazon pricing via RainforestAPI
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        try {
+          const amazonParams = new URLSearchParams({
+            api_key: RAINFOREST_API_KEY,
+            type: "search",
+            amazon_domain: "amazon.com",
+            search_term: searchQuery,
+          });
+
+          const amazonResponse = await fetch(`${RAINFOREST_API_URL}?${amazonParams.toString()}`);
+          if (amazonResponse.ok) {
+            const amazonData = await amazonResponse.json();
+            if (amazonData.search_results && amazonData.search_results.length > 0) {
+              const bestMatch = amazonData.search_results[0];
+              results.amazon = {
+                price: bestMatch.price?.value || bestMatch.price?.raw || wishlistItem.price,
+                available: true,
+                link: `https://amazon.com/dp/${bestMatch.asin}?tag=needfully-20`
+              };
+            }
+          }
+        } catch (error) {
+          console.error('Amazon pricing lookup error:', error);
+        }
+      }
+
+      // Walmart & Target pricing via SerpAPI
+      if (serpService) {
+        try {
+          const [walmartResults, targetResults] = await Promise.all([
+            serpService.searchWalmart(searchQuery, '60602', 3),
+            serpService.searchTarget(searchQuery, '10001', 3)
+          ]);
+
+          if (walmartResults.length > 0) {
+            const bestWalmartMatch = walmartResults[0];
+            let walmartPrice = bestWalmartMatch.price;
+            if (typeof walmartPrice === 'string') {
+              walmartPrice = parseFloat(walmartPrice.replace(/[^0-9.]/g, '')) || wishlistItem.price;
+            }
+            results.walmart = {
+              price: (walmartPrice || 0).toString(),
+              available: true,
+              link: bestWalmartMatch.product_url
+            };
+          }
+
+          if (targetResults.length > 0) {
+            const bestTargetMatch = targetResults[0];
+            let targetPrice = bestTargetMatch.price;
+            if (typeof targetPrice === 'string') {
+              targetPrice = parseFloat(targetPrice.replace(/[^0-9.]/g, '')) || wishlistItem.price;
+            }
+            results.target = {
+              price: (targetPrice || 0).toString(),
+              available: true,
+              link: bestTargetMatch.product_url
+            };
+          }
+        } catch (error) {
+          console.error('SerpAPI pricing lookup error:', error);
+        }
+      }
+
+      res.json({
+        itemId: itemId,
+        title: wishlistItem.title,
+        originalPrice: wishlistItem.price,
+        pricing: results,
+        lastUpdated: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error fetching item pricing:", error);
+      res.status(500).json({ message: "Failed to fetch item pricing" });
+    }
+  });
+
   // Test email endpoint (for development only)
   app.post('/api/test-email', isAuthenticated, async (req: any, res) => {
     try {
