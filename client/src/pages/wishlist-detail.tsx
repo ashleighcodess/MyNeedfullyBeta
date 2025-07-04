@@ -460,44 +460,44 @@ export default function WishlistDetail() {
                         </div>
 
                         {/* Buying Options */}
-                        <div className="bg-red-50 px-4 py-4 flex flex-col justify-center w-[240px] flex-shrink-0">
-                          <h4 className="font-semibold text-gray-900 text-sm mb-3">Buying Options</h4>
+                        <div className="bg-red-50 px-4 py-4 flex flex-col justify-center w-[200px] flex-shrink-0">
+                          <h4 className="font-semibold text-gray-900 text-sm mb-2">Buying Options</h4>
                           
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center flex-1">
-                                <div className="w-3 h-3 bg-orange-500 rounded mr-3"></div>
-                                <span className="text-sm">Amazon</span>
-                                <span className="text-sm font-semibold ml-auto">${item.price || '99.00'}</span>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center">
+                                <div className="w-2 h-2 bg-orange-500 rounded mr-1"></div>
+                                <span>Amazon</span>
                               </div>
+                              <span className="font-semibold">${item.price || '99.00'}</span>
                               <a 
                                 href={item.productUrl || '#'} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="bg-coral text-white py-1.5 px-3 rounded text-sm hover:bg-coral/90 transition-colors ml-3"
+                                className="bg-coral text-white py-0.5 px-2 rounded text-xs hover:bg-coral/90 transition-colors"
                               >
                                 View on
                               </a>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center flex-1">
-                                <div className="w-3 h-3 bg-red-600 rounded-full mr-3"></div>
-                                <span className="text-sm">Target</span>
-                                <span className="text-sm font-semibold ml-auto">${item.price || '99.00'}</span>
+                            <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center">
+                                <div className="w-2 h-2 bg-red-600 rounded-full mr-1"></div>
+                                <span>Target</span>
                               </div>
-                              <button className="bg-coral text-white py-1.5 px-3 rounded text-sm hover:bg-coral/90 transition-colors ml-3">
+                              <span className="font-semibold">${item.price || '99.00'}</span>
+                              <button className="bg-coral text-white py-0.5 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
                                 View on
                               </button>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center flex-1">
-                                <div className="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
-                                <span className="text-sm">Walmart</span>
-                                <span className="text-sm font-semibold ml-auto">${item.price || '99.00'}</span>
+                            <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center">
+                                <div className="w-2 h-2 bg-blue-600 rounded-full mr-1"></div>
+                                <span>Walmart</span>
                               </div>
-                              <button className="bg-coral text-white py-1.5 px-3 rounded text-sm hover:bg-coral/90 transition-colors ml-3">
+                              <span className="font-semibold">${item.price || '99.00'}</span>
+                              <button className="bg-coral text-white py-0.5 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
                                 View on
                               </button>
                             </div>
@@ -507,15 +507,15 @@ export default function WishlistDetail() {
                             <button
                               onClick={() => fulfillItemMutation.mutate(item.id)}
                               disabled={fulfillItemMutation.isPending}
-                              className="w-full mt-4 bg-green-600 text-white py-2 px-3 rounded text-sm hover:bg-green-700 transition-colors disabled:opacity-50"
+                              className="w-full mt-2 bg-green-600 text-white py-1 px-2 rounded text-xs hover:bg-green-700 transition-colors disabled:opacity-50"
                             >
                               {fulfillItemMutation.isPending ? 'Fulfilling...' : 'Mark as Fulfilled'}
                             </button>
                           )}
 
                           {item.isFulfilled && (
-                            <div className="mt-4 text-center">
-                              <span className="inline-block bg-green-100 text-green-800 px-3 py-1.5 rounded-full text-sm">
+                            <div className="mt-2 text-center">
+                              <span className="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
                                 ✓ Fulfilled
                               </span>
                             </div>
