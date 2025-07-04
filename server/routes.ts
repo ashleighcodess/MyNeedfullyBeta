@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import multer from "multer";
@@ -53,6 +54,9 @@ const upload = multer({
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupMultiAuth(app);
+
+  // Serve uploaded files statically
+  app.use('/uploads', express.static(uploadsDir));
 
   // Config routes
   app.get('/api/config/google-maps-key', (req, res) => {
