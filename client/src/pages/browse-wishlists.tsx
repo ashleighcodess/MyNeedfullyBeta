@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
 import WishlistCard from "@/components/wishlist-card";
@@ -10,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Filter } from "lucide-react";
 
 export default function BrowseWishlists() {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     category: "",
@@ -19,28 +21,70 @@ export default function BrowseWishlists() {
   });
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Check if this is "My Needs Lists" view
+  const urlParams = new URLSearchParams(window.location.search);
+  const isMyListsView = urlParams.get('my-lists') === 'true';
 
   const { data: wishlistsData, isLoading } = useQuery({
-    queryKey: ['/api/wishlists', { ...filters, query: searchQuery, page }],
+    queryKey: [isMyListsView ? '/api/user/wishlists' : '/api/wishlists', { ...filters, query: searchQuery, page }],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        ...filters,
-        query: searchQuery,
-        page: page.toString(),
-        limit: "20",
-      });
-      
-      // Remove empty params
-      Object.keys(filters).forEach(key => {
-        if (!params.get(key)) {
-          params.delete(key);
+      if (isMyListsView) {
+        // For "My Lists" view, use the user wishlists endpoint
+        const response = await fetch('/api/user/wishlists');
+        if (!response.ok) throw new Error('Failed to fetch your wishlists');
+        const userWishlists = await response.json();
+        
+        // Apply filtering to user's wishlists
+        let filteredWishlists = userWishlists;
+        
+        if (searchQuery) {
+          filteredWishlists = filteredWishlists.filter((w: any) => 
+            w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            w.description.toLowerCase().includes(searchQuery.toLowerCase())
+          );
         }
-      });
-      
-      const response = await fetch(`/api/wishlists?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch wishlists');
-      return response.json();
+        
+        if (filters.category) {
+          filteredWishlists = filteredWishlists.filter((w: any) => w.category === filters.category);
+        }
+        
+        if (filters.urgencyLevel) {
+          filteredWishlists = filteredWishlists.filter((w: any) => w.urgencyLevel === filters.urgencyLevel);
+        }
+        
+        if (filters.location) {
+          filteredWishlists = filteredWishlists.filter((w: any) => 
+            w.location.toLowerCase().includes(filters.location.toLowerCase())
+          );
+        }
+        
+        return {
+          wishlists: filteredWishlists,
+          total: filteredWishlists.length
+        };
+      } else {
+        // For public browse, use the public wishlists endpoint
+        const params = new URLSearchParams({
+          ...filters,
+          query: searchQuery,
+          page: page.toString(),
+          limit: "20",
+        });
+        
+        // Remove empty params
+        Object.keys(filters).forEach(key => {
+          if (!params.get(key)) {
+            params.delete(key);
+          }
+        });
+        
+        const response = await fetch(`/api/wishlists?${params}`);
+        if (!response.ok) throw new Error('Failed to fetch wishlists');
+        return response.json();
+      }
     },
+    enabled: !isMyListsView || !!user,
   });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -64,8 +108,15 @@ export default function BrowseWishlists() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
-          <p className="text-gray-600">Find families and organizations who need your support</p>
+          <h1 className="text-3xl font-bold text-navy mb-2">
+            {isMyListsView ? 'My Needs Lists' : 'Browse Needs Lists'}
+          </h1>
+          <p className="text-gray-600">
+            {isMyListsView 
+              ? 'Manage and track your needs lists'
+              : 'Find families and organizations who need your support'
+            }
+          </p>
         </div>
 
         {/* Search Bar */}
