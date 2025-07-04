@@ -627,7 +627,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: "Apple MacBook Air 13-inch Laptop",
             price: { value: 999.99, currency: "USD", raw: "$999.99" },
-            image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=400&fit=crop",
+            image: "",
             asin: "B08N5WRWNW",
             rating: 4.5,
             ratings_total: 15420,
@@ -638,7 +638,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: "Sony WH-1000XM4 Wireless Headphones",
             price: { value: 299.99, currency: "USD", raw: "$299.99" },
-            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+            image: "",
             asin: "B0863TXGM3",
             rating: 4.6,
             ratings_total: 89234,
@@ -649,7 +649,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: "Instant Pot Duo 7-in-1 Electric Pressure Cooker",
             price: { value: 79.99, currency: "USD", raw: "$79.99" },
-            image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop",
+            image: "",
             asin: "B00FLYWNYQ",
             rating: 4.7,
             ratings_total: 234567,
@@ -660,7 +660,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: "Amazon Echo Dot (4th Gen) Smart Speaker",
             price: { value: 49.99, currency: "USD", raw: "$49.99" },
-            image: "https://images.unsplash.com/photo-1543512214-318c7553f230?w=400&h=400&fit=crop",
+            image: "",
             asin: "B07XJ8C8F7",
             rating: 4.4,
             ratings_total: 45678,
@@ -671,7 +671,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: "Kindle Paperwhite E-reader",
             price: { value: 139.99, currency: "USD", raw: "$139.99" },
-            image: "https://images.unsplash.com/photo-1481887328591-3e277f9473dc?w=400&h=400&fit=crop",
+            image: "",
             asin: "B08KTZ8249",
             rating: 4.3,
             ratings_total: 12345,
@@ -682,7 +682,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: "Ninja Foodi Personal Blender",
             price: { value: 59.99, currency: "USD", raw: "$59.99" },
-            image: "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=400&h=400&fit=crop",
+            image: "",
             asin: "B07GPDQTYY",
             rating: 4.5,
             ratings_total: 8765,
@@ -765,7 +765,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "ASUS VivoBook 15 Thin and Light Laptop",
               price: { value: 399.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop",
+              image: "",
               asin: "B0B7BP6J6Q",
               rating: 4.3,
               ratings_total: 2847,
@@ -776,7 +776,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "HP Pavilion 15.6\" FHD Laptop",
               price: { value: 529.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300&h=300&fit=crop",
+              image: "",
               asin: "B09BK3L2N7",
               rating: 4.1,
               ratings_total: 1923,
@@ -787,7 +787,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "Lenovo IdeaPad 3 15.6\" Laptop",
               price: { value: 449.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&h=300&fit=crop",
+              image: "",
               asin: "B08DKP73G9",
               rating: 4.2,
               ratings_total: 3421,
@@ -800,7 +800,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "JanSport SuperBreak Plus Backpack",
               price: { value: 39.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
+              image: "",
               asin: "B07MDXQ2JQ",
               rating: 4.5,
               ratings_total: 8472,
@@ -811,7 +811,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "Nike Heritage 2.0 Backpack",
               price: { value: 29.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=300&h=300&fit=crop",
+              image: "",
               asin: "B01BA0LHTA",
               rating: 4.4,
               ratings_total: 5219,
@@ -824,7 +824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "Samsung Galaxy A54 5G",
               price: { value: 299.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop",
+              image: "",
               asin: "B0BT9CQHQ4",
               rating: 4.3,
               ratings_total: 6847,
@@ -835,7 +835,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             {
               title: "Apple iPhone SE (3rd Generation)",
               price: { value: 429.99, currency: "USD" },
-              image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=300&h=300&fit=crop",
+              image: "",
               asin: "B09V3HN1KC",
               rating: 4.6,
               ratings_total: 12394,
@@ -859,7 +859,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: `${searchTerm} - Premium Quality`,
             price: { value: 99.99, currency: "USD" },
-            image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=300&fit=crop",
+            image: "",
             asin: "B084DWKG3M",
             rating: 4.2,
             ratings_total: 1847,
@@ -870,7 +870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           {
             title: `${searchTerm} - Value Pack`,
             price: { value: 49.99, currency: "USD" },
-            image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop",
+            image: "",
             asin: "B09M3K2N7P",
             rating: 4.0,
             ratings_total: 924,

@@ -186,41 +186,9 @@ export class SerpAPIService {
             }
           }
           
-          // Advanced Target image extraction and fallback system
+          // No fallback images - let frontend handle missing images properly
           if (!imageUrl) {
-            // First, try to extract actual product images from Target URLs
-            const targetUrl = result.link;
-            if (targetUrl && targetUrl.includes('target.com')) {
-              // Try to get actual Target product image by making a request to the product page
-              try {
-                const response = await fetch(targetUrl, {
-                  headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                  },
-                  timeout: 3000
-                });
-                
-                if (response.ok) {
-                  const html = await response.text();
-                  // Look for Target's product image patterns
-                  const imageMatches = html.match(/https:\/\/target\.scene7\.com\/is\/image\/Target\/[^"]+/g);
-                  if (imageMatches && imageMatches.length > 0) {
-                    imageUrl = imageMatches[0];
-                  }
-                }
-              } catch (error) {
-                // Continue to fallback if extraction fails
-                console.log('Failed to extract Target image, using fallback');
-              }
-            }
-            
-            // If still no image, leave empty to let frontend handle fallback
-            // This prevents showing unrelated stock photos for Target products
-            if (!imageUrl) {
-              // Don't set a placeholder - let the frontend show a proper "No Image Available" state
-              // or the Target logo instead of misleading product images
-              imageUrl = '';
-            }
+            imageUrl = '';
           }
           
           console.log(`Target product: ${result.title.substring(0, 50)}... | Price: ${extractedPrice} | Image: ${imageUrl ? 'YES' : 'NO'}`);
