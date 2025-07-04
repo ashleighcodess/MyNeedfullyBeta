@@ -266,19 +266,29 @@ export default function WishlistDetail() {
             </div>
           </div>
 
-          {/* Progress */}
-          <div className="bg-white rounded-lg p-4 border">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Progress</span>
-              <span className="text-sm text-gray-600">
-                {wishlist.fulfilledItems} of {wishlist.totalItems} items fulfilled
-              </span>
+          {/* Featured Image */}
+          {getStoryImages().length > 0 && (
+            <div className="mb-8">
+              <div 
+                className="relative h-80 w-full rounded-lg overflow-hidden cursor-pointer group"
+                onClick={() => openCarousel(0)}
+              >
+                <img
+                  src={getStoryImages()[0]}
+                  alt={wishlist.title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                  <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
+                </div>
+                {getStoryImages().length > 1 && (
+                  <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full">
+                    +{getStoryImages().length - 1} more photos
+                  </div>
+                )}
+              </div>
             </div>
-            <Progress value={completionPercentage} className="h-3" />
-            <div className="text-center mt-2">
-              <span className="text-lg font-bold text-coral">{completionPercentage}% Complete</span>
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -330,6 +340,20 @@ export default function WishlistDetail() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Progress */}
+            <div className="bg-white rounded-lg p-4 border mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">Progress</span>
+                <span className="text-sm text-gray-600">
+                  {wishlist.fulfilledItems} of {wishlist.totalItems} items fulfilled
+                </span>
+              </div>
+              <Progress value={completionPercentage} className="h-3" />
+              <div className="text-center mt-2">
+                <span className="text-lg font-bold text-coral">{completionPercentage}% Complete</span>
+              </div>
+            </div>
 
             {/* Items */}
             <Card>
@@ -521,6 +545,47 @@ export default function WishlistDetail() {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="mt-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Heart className="mr-2 h-5 w-5 text-coral" />
+                Recent Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3 text-sm">
+                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
+                  <span className="text-gray-600">A supporter purchased an item off this list</span>
+                  <span className="text-gray-400 ml-auto">5 minutes ago</span>
+                </div>
+                <div className="flex items-center space-x-3 text-sm">
+                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
+                  <span className="text-gray-600">A supporter shared this list</span>
+                  <span className="text-gray-400 ml-auto">10 minutes ago</span>
+                </div>
+                <div className="flex items-center space-x-3 text-sm">
+                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
+                  <span className="text-gray-600">A supporter viewed this needs list</span>
+                  <span className="text-gray-400 ml-auto">15 minutes ago</span>
+                </div>
+                <div className="flex items-center space-x-3 text-sm">
+                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
+                  <span className="text-gray-600">A supporter purchased 2 items from this list</span>
+                  <span className="text-gray-400 ml-auto">1 hour ago</span>
+                </div>
+                <div className="flex items-center space-x-3 text-sm">
+                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
+                  <span className="text-gray-600">A supporter shared this list with friends</span>
+                  <span className="text-gray-400 ml-auto">2 hours ago</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
