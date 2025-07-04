@@ -112,12 +112,6 @@ export default function ProductSearchWorking() {
         setProgressValue(100);
         setProgressMessage("Search complete!");
         
-        // Debug logging to see the data structure
-        if (data.search_results && data.search_results.length > 0) {
-          console.log('First product sample:', data.search_results[0]);
-          console.log('Retailer info:', data.search_results[0].retailer);
-        }
-        
         // Update metrics
         setSearchMetrics({
           totalResults: data.search_information?.total_result_count || data.products?.length || 0,
