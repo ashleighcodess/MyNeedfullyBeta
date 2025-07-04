@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import Navigation from "@/components/navigation";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +19,8 @@ import {
   ExternalLink,
   Heart,
   DollarSign,
-  Package
+  Package,
+  ChevronLeft
 } from "lucide-react";
 
 export default function ProductSearch() {
@@ -26,6 +30,12 @@ export default function ProductSearch() {
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
+  const [location, navigate] = useLocation();
+  const { toast } = useToast();
+  
+  // Get wishlistId from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const wishlistId = urlParams.get('wishlistId');
 
   // Build query URL with parameters
   const buildSearchUrl = () => {
@@ -99,6 +109,43 @@ export default function ProductSearch() {
     return `https://www.amazon.com/dp/${cleanAsin}?tag=${tag}`;
   };
 
+  // Mutation for adding products to wishlist
+  const addToWishlistMutation = useMutation({
+    mutationFn: async (product: any) => {
+      if (!wishlistId) {
+        throw new Error("No wishlist selected");
+      }
+      
+      const itemData = {
+        title: product.title,
+        description: product.title,
+        imageUrl: product.image,
+        price: product.price?.value || product.price?.raw,
+        currency: "USD",
+        productUrl: buildAmazonAffiliateLink(product.asin),
+        retailer: "Amazon",
+        quantity: 1,
+        priority: 3, // medium priority
+      };
+      
+      return await apiRequest("POST", `/api/wishlists/${wishlistId}/items`, itemData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Item Added!",
+        description: "The item has been added to your needs list.",
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${wishlistId}`] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to add item to your needs list.",
+        variant: "destructive",
+      });
+    },
+  });
+
   return (
     <div className="min-h-screen bg-warm-bg">
       <Navigation />
@@ -106,8 +153,25 @@ export default function ProductSearch() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Product Search</h1>
-          <p className="text-gray-600">Find products from trusted retailers to add to your wishlist</p>
+          {wishlistId && (
+            <Button 
+              variant="ghost" 
+              className="mb-4 text-coral hover:bg-coral/10"
+              onClick={() => navigate(`/wishlist/${wishlistId}`)}
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Back to Needs List
+            </Button>
+          )}
+          <h1 className="text-3xl font-bold text-navy mb-2">
+            {wishlistId ? "Add Items to Your Needs List" : "Product Search"}
+          </h1>
+          <p className="text-gray-600">
+            {wishlistId 
+              ? "Search for products to add to your needs list" 
+              : "Find products from trusted retailers to add to your wishlist"
+            }
+          </p>
         </div>
 
         {/* Search Controls */}
@@ -326,13 +390,11 @@ export default function ProductSearch() {
                           <Button 
                             variant="outline" 
                             className="w-full border-coral text-coral hover:bg-coral/10"
-                            onClick={() => {
-                              // TODO: Add to wishlist functionality
-                              console.log('Add to wishlist:', product);
-                            }}
+                            onClick={() => addToWishlistMutation.mutate(product)}
+                            disabled={addToWishlistMutation.isPending || !wishlistId}
                           >
                             <Heart className="mr-2 h-4 w-4" />
-                            Add to Wishlist
+                            {addToWishlistMutation.isPending ? "Adding..." : "Add to Wishlist"}
                           </Button>
                         </div>
 

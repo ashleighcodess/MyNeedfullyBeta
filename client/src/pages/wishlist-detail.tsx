@@ -299,7 +299,11 @@ export default function WishlistDetail() {
                   Items Needed ({wishlist.items?.length || 0})
                 </CardTitle>
                 {isOwner && (
-                  <Button size="sm" className="bg-coral hover:bg-coral/90">
+                  <Button 
+                    size="sm" 
+                    className="bg-coral hover:bg-coral/90"
+                    onClick={() => navigate(`/products?wishlistId=${id}`)}
+                  >
                     <Plus className="mr-2 h-4 w-4" />
                     Add Items
                   </Button>
@@ -323,7 +327,10 @@ export default function WishlistDetail() {
                     <Gift className="mx-auto h-12 w-12 text-gray-300 mb-4" />
                     <p className="text-gray-500">No items added yet</p>
                     {isOwner && (
-                      <Button className="mt-4 bg-coral hover:bg-coral/90">
+                      <Button 
+                        className="mt-4 bg-coral hover:bg-coral/90"
+                        onClick={() => navigate(`/products?wishlistId=${id}`)}
+                      >
                         <Plus className="mr-2 h-4 w-4" />
                         Add Your First Item
                       </Button>
