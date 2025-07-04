@@ -120,7 +120,7 @@ export default function ProductSearch() {
         title: product.title,
         description: product.title,
         imageUrl: product.image,
-        price: product.price?.value || product.price?.raw,
+        price: (product.price?.value || product.price?.raw)?.toString(), // Convert to string for decimal field
         currency: "USD",
         productUrl: buildAmazonAffiliateLink(product.asin),
         retailer: "Amazon",

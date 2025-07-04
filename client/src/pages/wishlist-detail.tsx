@@ -650,26 +650,43 @@ export default function WishlistDetail() {
                       </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
-                      {recentActivities.map((activity, index) => (
-                        <div 
-                          key={activity.id}
-                          className={`flex items-start space-x-3 p-3 rounded-lg border transition-all duration-200 hover:shadow-md hover:border-coral/30 ${
-                            activity.animate ? 'bg-coral/5 border-coral/20' : 'bg-gray-50'
-                          }`}
-                          style={{ 
-                            animationDelay: `${index * 100}ms`,
-                            animation: 'fadeInUp 0.3s ease-out forwards'
-                          }}
-                        >
-                          <div className="flex-shrink-0 w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
-                            <Heart className="h-4 w-4 text-coral" />
+                      {activitiesLoading ? (
+                        // Loading skeleton for modal
+                        Array.from({ length: 8 }).map((_, index) => (
+                          <div key={index} className="flex items-start space-x-3 p-3">
+                            <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+                            <div className="flex-1 space-y-2">
+                              <Skeleton className="h-4 w-3/4" />
+                              <Skeleton className="h-3 w-1/2" />
+                            </div>
                           </div>
-                          <div className="flex-1">
-                            <p className="text-gray-800 font-medium">{activity.message}</p>
-                            <p className="text-gray-500 text-sm mt-1">{activity.timestamp}</p>
+                        ))
+                      ) : recentActivities.length > 0 ? (
+                        recentActivities.map((activity: any, index: number) => (
+                          <div 
+                            key={activity.id}
+                            className={`flex items-start space-x-3 p-3 rounded-lg border transition-all duration-200 hover:shadow-md hover:border-coral/30 ${
+                              activity.animate ? 'bg-coral/5 border-coral/20' : 'bg-gray-50'
+                            }`}
+                            style={{ 
+                              animationDelay: `${index * 100}ms`,
+                              animation: 'fadeInUp 0.3s ease-out forwards'
+                            }}
+                          >
+                            <div className="flex-shrink-0 w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                              <div className="text-coral">
+                                {getActivityIcon(activity.icon)}
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-gray-800 font-medium">{activity.message}</p>
+                              <p className="text-gray-500 text-sm mt-1">{activity.timestamp}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-center py-8">No recent activity</p>
+                      )}
                     </div>
                   </DialogContent>
                 </Dialog>
