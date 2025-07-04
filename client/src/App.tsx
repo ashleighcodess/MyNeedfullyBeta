@@ -36,6 +36,9 @@ function Router() {
           <Route path="/resources" component={Resources} />
           <Route path="/signup" component={Signup} />
           <Route path="/sign-up" component={Signup} />
+          <Route path="/products" component={ProductSearchWorking} />
+          <Route path="/product-search" component={ProductSearchWorking} />
+          <Route path="/search" component={ProductSearchWorking} />
           
           {isLoading || !isAuthenticated ? (
             <Route path="/" component={Landing} />
