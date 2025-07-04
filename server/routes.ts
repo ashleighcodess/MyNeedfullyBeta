@@ -9,6 +9,7 @@ import { storage } from "./storage";
 import { setupMultiAuth, isAuthenticated } from "./auth/multiAuth";
 import { z } from "zod";
 import { getSerpAPIService, SerpProduct } from "./serpapi-service";
+import { emailService } from "./email-service";
 import {
   insertWishlistSchema,
   insertWishlistItemSchema,
@@ -427,29 +428,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const item = await storage.fulfillWishlistItem(itemId, fulfilledBy);
       
-      // Get wishlist info to create notification
+      // Get wishlist and supporter info
       const wishlist = await storage.getWishlist(item.wishlistId);
-      if (wishlist) {
-        // Create notification for wishlist owner
+      const supporter = await storage.getUser(fulfilledBy);
+      
+      if (wishlist && supporter) {
+        // Create donation record
+        const donation = await storage.createDonation({
+          wishlistId: wishlist.id,
+          itemId: item.id,
+          supporterId: fulfilledBy,
+          amount: item.price || "0",
+          status: "completed",
+        });
+
+        // Create notification for wishlist owner (recipient)
         await storage.createNotification({
           userId: wishlist.userId,
           type: "item_fulfilled",
-          title: "Item Fulfilled!",
-          message: `Someone has purchased "${item.title}" from your needs list`,
-          data: { itemId: item.id, wishlistId: wishlist.id },
+          title: "Item Purchased!",
+          message: `${supporter.firstName || 'A supporter'} has purchased "${item.title}" from your needs list "${wishlist.title}"`,
+          data: { 
+            itemId: item.id, 
+            wishlistId: wishlist.id, 
+            donationId: donation.id,
+            supporterId: fulfilledBy 
+          },
+        });
+
+        // Create notification for supporter (confirmation)
+        await storage.createNotification({
+          userId: fulfilledBy,
+          type: "purchase_confirmed",
+          title: "Purchase Confirmed!",
+          message: `Thank you for purchasing "${item.title}" for ${wishlist.title}. Your support makes a difference!`,
+          data: { 
+            itemId: item.id, 
+            wishlistId: wishlist.id, 
+            donationId: donation.id 
+          },
         });
         
-        // Send real-time notification
-        const ws = wsConnections.get(wishlist.userId);
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({
+        // Send real-time notification to wishlist owner
+        const ownerWs = wsConnections.get(wishlist.userId);
+        if (ownerWs && ownerWs.readyState === WebSocket.OPEN) {
+          ownerWs.send(JSON.stringify({
             type: "notification",
             data: {
               type: "item_fulfilled",
-              title: "Item Fulfilled!",
-              message: `Someone has purchased "${item.title}" from your needs list`,
+              title: "Item Purchased!",
+              message: `${supporter.firstName || 'A supporter'} has purchased "${item.title}" from your needs list`,
+              canSendThankYou: true,
+              donationId: donation.id,
             },
           }));
+        }
+
+        // Send real-time notification to supporter
+        const supporterWs = wsConnections.get(fulfilledBy);
+        if (supporterWs && supporterWs.readyState === WebSocket.OPEN) {
+          supporterWs.send(JSON.stringify({
+            type: "notification",
+            data: {
+              type: "purchase_confirmed",
+              title: "Purchase Confirmed!",
+              message: `Thank you for purchasing "${item.title}". Your support makes a difference!`,
+            },
+          }));
+        }
+
+        // Send email notifications (if email service is configured)
+        const wishlistOwner = await storage.getUser(wishlist.userId);
+        if (supporter.email) {
+          await emailService.sendPurchaseConfirmation(
+            supporter.email,
+            supporter.firstName || 'Supporter',
+            item.title,
+            wishlist.title,
+            wishlistOwner?.firstName || 'the recipient'
+          );
         }
       }
 
@@ -1114,6 +1171,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           },
         }));
       }
+
+      // Send email notification to supporter
+      const supporter = await storage.getUser(noteData.toUserId);
+      const sender = await storage.getUser(fromUserId);
+      
+      if (supporter?.email && sender) {
+        await emailService.sendThankYouNoteNotification(
+          supporter.email,
+          supporter.firstName || 'Supporter',
+          sender.firstName || 'A grateful recipient',
+          noteData.subject,
+          noteData.message
+        );
+      }
       
       res.status(201).json(note);
     } catch (error) {
@@ -1156,6 +1227,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error marking notification as read:", error);
       res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  app.post('/api/notifications/mark-all-read', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      await storage.markAllNotificationsAsRead(userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      res.status(500).json({ message: "Failed to mark all notifications as read" });
     }
   });
 

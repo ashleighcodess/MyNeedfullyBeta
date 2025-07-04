@@ -1,216 +1,229 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bell, Check, Heart, Gift, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { isUnauthorizedError } from "@/lib/authUtils";
-import { Bell, Check, Heart, Gift, MessageSquare, AlertCircle, X } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import ThankYouNote from "./thank-you-note";
 
 interface Notification {
   id: number;
   type: string;
   title: string;
   message: string;
-  data?: any;
   isRead: boolean;
   createdAt: string;
+  data?: {
+    itemId?: number;
+    wishlistId?: number;
+    donationId?: number;
+    supporterId?: string;
+    canSendThankYou?: boolean;
+  };
 }
 
-export default function NotificationCenter() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
+interface NotificationCenterProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-  const { data: notifications, refetch } = useQuery({
+export default function NotificationCenter({ isOpen, onClose }: NotificationCenterProps) {
+  const { toast } = useToast();
+  const [showThankYouNote, setShowThankYouNote] = useState<{ supporterId: string; donationId: number } | null>(null);
+
+  const { data: notifications = [], isLoading } = useQuery({
     queryKey: ['/api/notifications'],
-    enabled: !!user,
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   const markAsReadMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return await apiRequest("POST", `/api/notifications/${id}/read`);
-    },
+    mutationFn: (notificationId: number) =>
+      apiRequest('POST', `/api/notifications/${notificationId}/read`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
     },
-    onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('POST', '/api/notifications/mark-all-read'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      toast({
+        title: "All notifications marked as read",
+      });
     },
   });
 
-  // Listen for real-time notifications
-  useEffect(() => {
-    const handleNewNotification = (event: CustomEvent) => {
-      refetch();
-    };
-
-    window.addEventListener('newNotification', handleNewNotification as EventListener);
-    
-    return () => {
-      window.removeEventListener('newNotification', handleNewNotification as EventListener);
-    };
-  }, [refetch]);
-
-  const unreadCount = notifications?.filter((n: Notification) => !n.isRead).length || 0;
-
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'donation_received':
-        return <Gift className="h-4 w-4 text-green-600" />;
       case 'item_fulfilled':
-        return <Check className="h-4 w-4 text-blue-600" />;
+        return <Gift className="h-5 w-5 text-green-600" />;
+      case 'purchase_confirmed':
+        return <Check className="h-5 w-5 text-blue-600" />;
       case 'thank_you_received':
-        return <MessageSquare className="h-4 w-4 text-purple-600" />;
-      case 'wishlist_viewed':
-        return <Heart className="h-4 w-4 text-coral" />;
+        return <Heart className="h-5 w-5 text-coral" />;
       default:
-        return <Bell className="h-4 w-4 text-gray-600" />;
+        return <Bell className="h-5 w-5 text-gray-600" />;
     }
   };
 
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+  const getNotificationStyle = (type: string, isRead: boolean) => {
+    const baseStyle = "p-4 border-l-4 transition-colors hover:bg-gray-50";
+    const readStyle = isRead ? "bg-gray-50" : "bg-white";
     
-    if (diffInMinutes < 1) {
-      return 'Just now';
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes}m ago`;
-    } else if (diffInMinutes < 1440) {
-      const hours = Math.floor(diffInMinutes / 60);
-      return `${hours}h ago`;
-    } else {
-      const days = Math.floor(diffInMinutes / 1440);
-      return `${days}d ago`;
+    switch (type) {
+      case 'item_fulfilled':
+        return `${baseStyle} ${readStyle} border-l-green-500`;
+      case 'purchase_confirmed':
+        return `${baseStyle} ${readStyle} border-l-blue-500`;
+      case 'thank_you_received':
+        return `${baseStyle} ${readStyle} border-l-coral`;
+      default:
+        return `${baseStyle} ${readStyle} border-l-gray-400`;
     }
   };
 
-  const handleMarkAsRead = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    markAsReadMutation.mutate(id);
+  const handleSendThankYou = (supporterId: string, donationId: number) => {
+    setShowThankYouNote({ supporterId, donationId });
   };
 
-  if (!user) return null;
+  const unreadCount = notifications.filter((n: Notification) => !n.isRead).length;
 
   return (
-    <Card>
-      <CardHeader 
-        className="cursor-pointer hover:bg-gray-50 transition-colors"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <CardTitle className="flex items-center justify-between text-lg">
-          <div className="flex items-center">
-            <Bell className="mr-2 h-5 w-5 text-coral" />
-            Notifications
-            {unreadCount > 0 && (
-              <Badge variant="destructive" className="ml-2">
-                {unreadCount}
-              </Badge>
-            )}
-          </div>
-          <Button variant="ghost" size="sm">
-            {isOpen ? <X className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      
-      {isOpen && (
-        <CardContent className="p-0 max-h-96">
-          <ScrollArea className="h-full">
-            {notifications && notifications.length > 0 ? (
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Bell className="mr-2 h-5 w-5" />
+                Notifications
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                {unreadCount > 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => markAllAsReadMutation.mutate()}
+                    disabled={markAllAsReadMutation.isPending}
+                  >
+                    Mark all read
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="overflow-y-auto max-h-96">
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral"></div>
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="text-center py-8">
+                <Bell className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                <p className="text-gray-500">No notifications yet</p>
+                <p className="text-sm text-gray-400">
+                  You'll see updates about your needs lists and donations here
+                </p>
+              </div>
+            ) : (
               <div className="space-y-1">
                 {notifications.map((notification: Notification) => (
-                  <div key={notification.id}>
-                    <div 
-                      className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer relative ${
-                        !notification.isRead ? 'bg-blue-50 border-l-4 border-blue-500' : ''
-                      }`}
-                      onClick={() => {
-                        if (!notification.isRead) {
-                          markAsReadMutation.mutate(notification.id);
-                        }
-                      }}
-                    >
-                      <div className="flex items-start space-x-3">
+                  <div
+                    key={notification.id}
+                    className={getNotificationStyle(notification.type, notification.isRead)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3 flex-1">
                         <div className="flex-shrink-0 mt-1">
                           {getNotificationIcon(notification.type)}
                         </div>
-                        
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <p className="font-medium text-sm text-navy">
-                                {notification.title}
-                              </p>
-                              <p className="text-sm text-gray-600 mt-1">
-                                {notification.message}
-                              </p>
-                              <p className="text-xs text-gray-500 mt-2">
-                                {formatTimeAgo(notification.createdAt)}
-                              </p>
-                            </div>
-                            
-                            {!notification.isRead && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => handleMarkAsRead(notification.id, e)}
-                                className="ml-2 p-1 h-auto hover:bg-blue-100"
-                              >
-                                <Check className="h-3 w-3" />
-                              </Button>
-                            )}
-                          </div>
+                          <h4 className={`text-sm font-medium ${!notification.isRead ? 'text-gray-900' : 'text-gray-700'}`}>
+                            {notification.title}
+                          </h4>
+                          <p className={`text-sm ${!notification.isRead ? 'text-gray-700' : 'text-gray-500'}`}>
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                          </p>
                         </div>
                       </div>
+                      
+                      <div className="flex items-center space-x-2 ml-4">
+                        {/* Send Thank You button for item fulfilled notifications */}
+                        {notification.type === 'item_fulfilled' && 
+                         notification.data?.supporterId && 
+                         notification.data?.donationId && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSendThankYou(notification.data.supporterId!, notification.data.donationId!)}
+                            className="text-coral border-coral hover:bg-coral hover:text-white"
+                          >
+                            <Heart className="h-4 w-4 mr-1" />
+                            Say Thanks
+                          </Button>
+                        )}
+                        
+                        {/* Mark as read button */}
+                        {!notification.isRead && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => markAsReadMutation.mutate(notification.id)}
+                            disabled={markAsReadMutation.isPending}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                    
-                    {notification !== notifications[notifications.length - 1] && (
-                      <Separator />
-                    )}
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="p-8 text-center">
-                <Bell className="mx-auto h-8 w-8 text-gray-300 mb-2" />
-                <p className="text-sm text-gray-500">No notifications yet</p>
-              </div>
             )}
-          </ScrollArea>
-          
-          {unreadCount > 0 && (
-            <div className="p-3 border-t">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full text-coral hover:text-coral hover:bg-coral/10"
-                onClick={() => {
-                  // Mark all as read functionality could be implemented here
-                }}
-              >
-                Mark all as read
-              </Button>
-            </div>
-          )}
-        </CardContent>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Thank You Note Modal */}
+      {showThankYouNote && (
+        <Dialog open={!!showThankYouNote} onOpenChange={() => setShowThankYouNote(null)}>
+          <DialogContent className="max-w-md">
+            <ThankYouNote
+              toUserId={showThankYouNote.supporterId}
+              donationId={showThankYouNote.donationId}
+              onSent={() => {
+                setShowThankYouNote(null);
+                toast({
+                  title: "Thank you note sent!",
+                  description: "Your message of gratitude has been delivered.",
+                });
+              }}
+            />
+          </DialogContent>
+        </Dialog>
       )}
-    </Card>
+    </>
   );
 }

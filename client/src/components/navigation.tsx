@@ -14,11 +14,13 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3 } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
+import NotificationCenter from "./notification-center";
 
 export default function Navigation() {
   const { user } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
 
   const { data: notifications } = useQuery({
     queryKey: ['/api/notifications'],
@@ -76,19 +78,26 @@ export default function Navigation() {
           {/* Right Side */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <div className="relative" data-tip="notifications">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {unreadCount}
-                  </Badge>
-                )}
-              </Button>
-            </div>
+            {user && (
+              <div className="relative" data-tip="notifications">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="relative"
+                  onClick={() => setNotificationCenterOpen(true)}
+                >
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                    >
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </div>
+            )}
 
             {/* User Menu */}
             <DropdownMenu>
@@ -202,6 +211,12 @@ export default function Navigation() {
           </div>
         </div>
       </div>
+
+      {/* Notification Center */}
+      <NotificationCenter 
+        isOpen={notificationCenterOpen}
+        onClose={() => setNotificationCenterOpen(false)}
+      />
     </nav>
   );
 }
