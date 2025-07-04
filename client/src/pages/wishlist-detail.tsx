@@ -513,6 +513,44 @@ export default function WishlistDetail() {
               </div>
             )}
 
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                  <Heart className="mr-2 h-5 w-5 text-coral" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-2 text-sm">
+                    <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-gray-600">A supporter purchased an item off this list</p>
+                      <p className="text-gray-400 text-xs">5 minutes ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-2 text-sm">
+                    <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-gray-600">A supporter shared this list</p>
+                      <p className="text-gray-400 text-xs">10 minutes ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-2 text-sm">
+                    <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-gray-600">A supporter viewed this needs list</p>
+                      <p className="text-gray-400 text-xs">15 minutes ago</p>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" className="w-full mt-4">
+                  See all
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* Stats */}
             <Card>
               <CardHeader>
@@ -547,46 +585,7 @@ export default function WishlistDetail() {
           </div>
         </div>
 
-        {/* Recent Activity */}
-        <div className="mt-12">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Heart className="mr-2 h-5 w-5 text-coral" />
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3 text-sm">
-                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
-                  <span className="text-gray-600">A supporter purchased an item off this list</span>
-                  <span className="text-gray-400 ml-auto">5 minutes ago</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
-                  <span className="text-gray-600">A supporter shared this list</span>
-                  <span className="text-gray-400 ml-auto">10 minutes ago</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
-                  <span className="text-gray-600">A supporter viewed this needs list</span>
-                  <span className="text-gray-400 ml-auto">15 minutes ago</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
-                  <span className="text-gray-600">A supporter purchased 2 items from this list</span>
-                  <span className="text-gray-400 ml-auto">1 hour ago</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <Heart className="h-4 w-4 text-coral flex-shrink-0" />
-                  <span className="text-gray-600">A supporter shared this list with friends</span>
-                  <span className="text-gray-400 ml-auto">2 hours ago</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+
       </div>
 
       {/* Image Carousel Modal */}
