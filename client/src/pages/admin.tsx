@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,9 +23,15 @@ import {
   BarChart3,
   CheckCircle,
   Clock,
-  Zap
+  Zap,
+  Trash2,
+  Flag,
+  FileText,
+  Search,
+  AlertTriangle,
+  Database,
+  RefreshCw
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -761,27 +769,238 @@ export default function AdminDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Administrative Actions</CardTitle>
-                <CardDescription>System maintenance and configuration tools</CardDescription>
+                <CardDescription>System maintenance and user management tools</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-20 flex flex-col">
-                    <Calendar className="h-6 w-6 mb-2" />
-                    <span>Export Reports</span>
-                    <span className="text-xs text-gray-500">Download analytics data</span>
-                  </Button>
-                  
-                  <Button variant="outline" className="h-20 flex flex-col">
-                    <Mail className="h-6 w-6 mb-2" />
-                    <span>Send Broadcast</span>
-                    <span className="text-xs text-gray-500">Email all users</span>
-                  </Button>
-                  
-                  <Button variant="outline" className="h-20 flex flex-col">
-                    <AlertCircle className="h-6 w-6 mb-2" />
-                    <span>System Alerts</span>
-                    <span className="text-xs text-gray-500">Configure notifications</span>
-                  </Button>
+                <div className="space-y-6">
+                  {/* User Management Actions */}
+                  <div>
+                    <h4 className="font-medium mb-3 text-sm">User Management</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={() => {
+                          // Export user data
+                          window.open('/api/admin/export/users', '_blank');
+                        }}
+                      >
+                        <Users className="h-4 w-4 mb-1" />
+                        <span>Export Users</span>
+                        <span className="text-xs text-gray-400">CSV download</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          const email = window.prompt('Enter user email to promote to admin:');
+                          if (email) {
+                            try {
+                              await apiRequest('POST', '/api/admin/promote-user', { email });
+                              toast({ title: "Success", description: "User promoted to admin" });
+                              queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Failed to promote user", variant: "destructive" });
+                            }
+                          }
+                        }}
+                      >
+                        <Shield className="h-4 w-4 mb-1" />
+                        <span>Promote User</span>
+                        <span className="text-xs text-gray-400">Make admin</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          if (confirm('Send welcome email to all new users from this week?')) {
+                            try {
+                              await apiRequest('POST', '/api/admin/send-welcome-emails');
+                              toast({ title: "Success", description: "Welcome emails sent" });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Failed to send emails", variant: "destructive" });
+                            }
+                          }
+                        }}
+                      >
+                        <Mail className="h-4 w-4 mb-1" />
+                        <span>Send Welcome</span>
+                        <span className="text-xs text-gray-400">New users</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          try {
+                            await apiRequest('POST', '/api/admin/cleanup-inactive');
+                            toast({ title: "Success", description: "Cleanup completed" });
+                            queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+                          } catch (error) {
+                            toast({ title: "Error", description: "Cleanup failed", variant: "destructive" });
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 mb-1" />
+                        <span>Cleanup</span>
+                        <span className="text-xs text-gray-400">Inactive users</span>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Content Moderation */}
+                  <div>
+                    <h4 className="font-medium mb-3 text-sm">Content Moderation</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          try {
+                            const response = await apiRequest('GET', '/api/admin/flagged-content');
+                            const data = await response.json();
+                            alert(`Found ${data.count} flagged items requiring review`);
+                          } catch (error) {
+                            toast({ title: "Error", description: "Failed to check flagged content", variant: "destructive" });
+                          }
+                        }}
+                      >
+                        <Flag className="h-4 w-4 mb-1" />
+                        <span>Review Flags</span>
+                        <span className="text-xs text-gray-400">Check reports</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          if (confirm('Approve all pending needs lists?')) {
+                            try {
+                              await apiRequest('POST', '/api/admin/approve-pending');
+                              toast({ title: "Success", description: "Pending lists approved" });
+                              queryClient.invalidateQueries({ queryKey: ['/api/admin/wishlists'] });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Approval failed", variant: "destructive" });
+                            }
+                          }
+                        }}
+                      >
+                        <CheckCircle className="h-4 w-4 mb-1" />
+                        <span>Approve All</span>
+                        <span className="text-xs text-gray-400">Pending lists</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={() => {
+                          window.open('/api/admin/export/content-report', '_blank');
+                        }}
+                      >
+                        <FileText className="h-4 w-4 mb-1" />
+                        <span>Content Report</span>
+                        <span className="text-xs text-gray-400">Export data</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          try {
+                            await apiRequest('POST', '/api/admin/update-search-index');
+                            toast({ title: "Success", description: "Search index updated" });
+                          } catch (error) {
+                            toast({ title: "Error", description: "Index update failed", variant: "destructive" });
+                          }
+                        }}
+                      >
+                        <Search className="h-4 w-4 mb-1" />
+                        <span>Update Index</span>
+                        <span className="text-xs text-gray-400">Refresh search</span>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* System Maintenance */}
+                  <div>
+                    <h4 className="font-medium mb-3 text-sm">System Maintenance</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={() => {
+                          const startDate = window.prompt('Enter start date (YYYY-MM-DD):');
+                          const endDate = window.prompt('Enter end date (YYYY-MM-DD):');
+                          if (startDate && endDate) {
+                            window.open(`/api/admin/export/analytics?start=${startDate}&end=${endDate}`, '_blank');
+                          }
+                        }}
+                      >
+                        <Calendar className="h-4 w-4 mb-1" />
+                        <span>Export Reports</span>
+                        <span className="text-xs text-gray-400">Date range</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          try {
+                            const response = await apiRequest('POST', '/api/admin/backup-database');
+                            const data = await response.json();
+                            toast({ title: "Success", description: `Backup created: ${data.filename}` });
+                          } catch (error) {
+                            toast({ title: "Error", description: "Backup failed", variant: "destructive" });
+                          }
+                        }}
+                      >
+                        <Database className="h-4 w-4 mb-1" />
+                        <span>Backup DB</span>
+                        <span className="text-xs text-gray-400">Create backup</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          if (confirm('Clear all cached data? This may slow down the site temporarily.')) {
+                            try {
+                              await apiRequest('POST', '/api/admin/clear-cache');
+                              toast({ title: "Success", description: "Cache cleared" });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Cache clear failed", variant: "destructive" });
+                            }
+                          }
+                        }}
+                      >
+                        <RefreshCw className="h-4 w-4 mb-1" />
+                        <span>Clear Cache</span>
+                        <span className="text-xs text-gray-400">Reset cache</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="destructive" 
+                        className="h-16 flex flex-col text-xs"
+                        onClick={async () => {
+                          const confirmation = window.prompt('Type "EMERGENCY SHUTDOWN" to confirm:');
+                          if (confirmation === 'EMERGENCY SHUTDOWN') {
+                            try {
+                              await apiRequest('POST', '/api/admin/emergency-maintenance');
+                              toast({ title: "Maintenance Mode", description: "Site in maintenance mode" });
+                            } catch (error) {
+                              toast({ title: "Error", description: "Failed to enable maintenance mode", variant: "destructive" });
+                            }
+                          }
+                        }}
+                      >
+                        <AlertTriangle className="h-4 w-4 mb-1" />
+                        <span>Emergency</span>
+                        <span className="text-xs text-gray-400">Maintenance</span>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

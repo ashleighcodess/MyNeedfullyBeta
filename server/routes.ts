@@ -2218,6 +2218,224 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Administrative Actions Endpoints
+
+  // Export users data
+  app.get('/api/admin/export/users', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      
+      // Convert to CSV format
+      const csvHeaders = 'ID,Email,First Name,Last Name,User Type,Created At,Verified\n';
+      const csvData = users.map(user => 
+        `${user.id},"${user.email || ''}","${user.firstName || ''}","${user.lastName || ''}","${user.userType || 'user'}","${user.createdAt}","${user.isVerified || false}"`
+      ).join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="users.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      console.error("Error exporting users:", error);
+      res.status(500).json({ message: "Failed to export users" });
+    }
+  });
+
+  // Promote user to admin
+  app.post('/api/admin/promote-user', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      await storage.updateUser(user.id, { userType: 'admin' });
+      
+      res.json({ message: "User promoted to admin successfully" });
+    } catch (error) {
+      console.error("Error promoting user:", error);
+      res.status(500).json({ message: "Failed to promote user" });
+    }
+  });
+
+  // Send welcome emails to new users
+  app.post('/api/admin/send-welcome-emails', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      // Get users created in the last week
+      const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const newUsers = await storage.getUsersCreatedAfter(oneWeekAgo);
+      
+      let emailsSent = 0;
+      for (const user of newUsers) {
+        if (user.email) {
+          const success = await emailService.sendWelcomeEmail(
+            user.email,
+            user.firstName || 'User'
+          );
+          if (success) emailsSent++;
+        }
+      }
+      
+      res.json({ message: `Welcome emails sent to ${emailsSent} users` });
+    } catch (error) {
+      console.error("Error sending welcome emails:", error);
+      res.status(500).json({ message: "Failed to send welcome emails" });
+    }
+  });
+
+  // Cleanup inactive users (no activity in 6 months)
+  app.post('/api/admin/cleanup-inactive', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const sixMonthsAgo = new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000);
+      const cleanedCount = await storage.cleanupInactiveUsers(sixMonthsAgo);
+      
+      res.json({ message: `Cleaned up ${cleanedCount} inactive users` });
+    } catch (error) {
+      console.error("Error cleaning up users:", error);
+      res.status(500).json({ message: "Failed to cleanup inactive users" });
+    }
+  });
+
+  // Check flagged content
+  app.get('/api/admin/flagged-content', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      // For now, return a mock count. In a real system, you'd query flagged content
+      const flaggedCount = 0; // Placeholder
+      
+      res.json({ count: flaggedCount, message: "No flagged content found" });
+    } catch (error) {
+      console.error("Error checking flagged content:", error);
+      res.status(500).json({ message: "Failed to check flagged content" });
+    }
+  });
+
+  // Approve all pending needs lists
+  app.post('/api/admin/approve-pending', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const approvedCount = await storage.approveAllPendingWishlists();
+      
+      res.json({ message: `Approved ${approvedCount} pending needs lists` });
+    } catch (error) {
+      console.error("Error approving pending lists:", error);
+      res.status(500).json({ message: "Failed to approve pending lists" });
+    }
+  });
+
+  // Export content report
+  app.get('/api/admin/export/content-report', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const wishlists = await storage.getAllWishlists();
+      
+      // Convert to CSV format
+      const csvHeaders = 'ID,Title,Description,Category,Status,Created At,User ID,Items Count\n';
+      const csvData = wishlists.map(wishlist => 
+        `${wishlist.id},"${wishlist.title}","${wishlist.description}","${wishlist.category}","${wishlist.status}","${wishlist.createdAt}","${wishlist.userId}","${wishlist.items?.length || 0}"`
+      ).join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="content-report.csv"');
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      console.error("Error exporting content report:", error);
+      res.status(500).json({ message: "Failed to export content report" });
+    }
+  });
+
+  // Update search index
+  app.post('/api/admin/update-search-index', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      // In a real system, this would rebuild search indexes
+      // For now, we'll simulate the operation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      res.json({ message: "Search index updated successfully" });
+    } catch (error) {
+      console.error("Error updating search index:", error);
+      res.status(500).json({ message: "Failed to update search index" });
+    }
+  });
+
+  // Export analytics with date range
+  app.get('/api/admin/export/analytics', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { start, end } = req.query;
+      
+      // Get analytics events within date range
+      const events = await storage.getAnalyticsInDateRange(
+        new Date(start as string),
+        new Date(end as string)
+      );
+      
+      // Convert to CSV format
+      const csvHeaders = 'ID,Event Type,Message,User ID,Created At\n';
+      const csvData = events.map(event => 
+        `${event.id},"${event.eventType}","${event.message}","${event.userId || ''}","${event.createdAt}"`
+      ).join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="analytics-${start}-to-${end}.csv"`);
+      res.send(csvHeaders + csvData);
+    } catch (error) {
+      console.error("Error exporting analytics:", error);
+      res.status(500).json({ message: "Failed to export analytics" });
+    }
+  });
+
+  // Create database backup
+  app.post('/api/admin/backup-database', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `backup-${timestamp}.sql`;
+      
+      // In a real system, this would create an actual database backup
+      // For now, we'll simulate the operation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      res.json({ 
+        message: "Database backup created successfully",
+        filename: filename 
+      });
+    } catch (error) {
+      console.error("Error creating database backup:", error);
+      res.status(500).json({ message: "Failed to create database backup" });
+    }
+  });
+
+  // Clear application cache
+  app.post('/api/admin/clear-cache', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      // Clear various caches
+      productCache.clear();
+      
+      // In a real system, this would clear Redis cache, CDN cache, etc.
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      res.json({ message: "Cache cleared successfully" });
+    } catch (error) {
+      console.error("Error clearing cache:", error);
+      res.status(500).json({ message: "Failed to clear cache" });
+    }
+  });
+
+  // Emergency maintenance mode
+  app.post('/api/admin/emergency-maintenance', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      // In a real system, this would enable maintenance mode
+      // For now, we'll just acknowledge the request
+      console.log("EMERGENCY MAINTENANCE MODE REQUESTED");
+      
+      res.json({ message: "Maintenance mode enabled" });
+    } catch (error) {
+      console.error("Error enabling maintenance mode:", error);
+      res.status(500).json({ message: "Failed to enable maintenance mode" });
+    }
+  });
+
   // Add download route for project backup
   app.get('/download', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'download.html'));

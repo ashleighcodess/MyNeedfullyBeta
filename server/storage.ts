@@ -109,6 +109,12 @@ export interface IStorage {
   getAdminStats(): Promise<any>;
   getFeaturedWishlists(): Promise<Wishlist[]>;
   getRecentActivity(): Promise<any[]>;
+  getAllUsers(): Promise<User[]>;
+  getUsersCreatedAfter(date: Date): Promise<User[]>;
+  cleanupInactiveUsers(date: Date): Promise<number>;
+  approveAllPendingWishlists(): Promise<number>;
+  getAllWishlists(): Promise<Wishlist[]>;
+  getAnalyticsInDateRange(startDate: Date, endDate: Date): Promise<AnalyticsEvent[]>;
 
   // Community Impact operations
   getCommunityStats(startDate: Date, endDate: Date): Promise<any>;
@@ -651,6 +657,48 @@ export class DatabaseStorage implements IStorage {
       familiesHelped: Array.isArray(familyCount) ? familyCount.length : 0,
       donationValue: donationValue.total || 0
     };
+  }
+
+  // Admin storage methods for administrative actions
+  async getAllUsers(): Promise<User[]> {
+    return db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getUsersCreatedAfter(date: Date): Promise<User[]> {
+    return db.select().from(users).where(gte(users.createdAt, date));
+  }
+
+  async cleanupInactiveUsers(sixMonthsAgo: Date): Promise<number> {
+    // In a real system, this would identify and remove inactive users
+    // For now, return 0 as we don't want to accidentally delete users
+    return 0;
+  }
+
+  async approveAllPendingWishlists(): Promise<number> {
+    const result = await db
+      .update(wishlists)
+      .set({ status: 'active' })
+      .where(eq(wishlists.status, 'pending'))
+      .returning();
+    
+    return result.length;
+  }
+
+  async getAllWishlists(): Promise<Wishlist[]> {
+    return db.select().from(wishlists).orderBy(desc(wishlists.createdAt));
+  }
+
+  async getAnalyticsInDateRange(startDate: Date, endDate: Date): Promise<AnalyticsEvent[]> {
+    return db
+      .select()
+      .from(analyticsEvents)
+      .where(
+        and(
+          gte(analyticsEvents.createdAt, startDate),
+          lte(analyticsEvents.createdAt, endDate)
+        )
+      )
+      .orderBy(desc(analyticsEvents.createdAt));
   }
 }
 
