@@ -196,9 +196,22 @@ export default function ProductSearchWorking() {
   // Format utilities
   const formatPrice = useCallback((price: any) => {
     if (!price) return 'Price not available';
-    if (price.value !== undefined) return `$${price.value.toFixed(2)}`;
-    if (price.raw !== undefined) return `$${price.raw.toFixed(2)}`;
+    
+    // Handle price objects from API
+    if (typeof price === 'object') {
+      // If price.value exists and is > 0, use it
+      if (price.value !== undefined && price.value > 0) {
+        return `$${price.value.toFixed(2)}`;
+      }
+      // Otherwise use raw price string
+      if (price.raw !== undefined) {
+        return price.raw; // This is already a formatted string like "$7.99" or "Price varies"
+      }
+    }
+    
+    // Handle string prices directly
     if (typeof price === 'string') return price;
+    
     return 'Price not available';
   }, []);
 

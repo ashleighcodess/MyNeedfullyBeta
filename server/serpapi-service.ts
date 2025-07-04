@@ -186,11 +186,22 @@ export class SerpAPIService {
             }
           }
           
-          // If still no image, try to use a basic Target placeholder
+          // Enhanced fallback image system for Target products
           if (!imageUrl) {
-            // For now, we'll leave image empty rather than using broken placeholder URLs
-            // In a production environment, you'd want to implement Target's product API
-            imageUrl = '';
+            // Provide category-based placeholder images for better UX
+            const title = result.title.toLowerCase();
+            if (title.includes('shampoo') || title.includes('hair')) {
+              imageUrl = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center';
+            } else if (title.includes('body wash') || title.includes('soap')) {
+              imageUrl = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&crop=center';
+            } else if (title.includes('skincare') || title.includes('lotion')) {
+              imageUrl = 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop&crop=center';
+            } else if (title.includes('baby') || title.includes('infant')) {
+              imageUrl = 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop&crop=center';
+            } else {
+              // Generic product placeholder
+              imageUrl = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop&crop=center';
+            }
           }
           
           console.log(`Target product: ${result.title.substring(0, 50)}... | Price: ${extractedPrice} | Image: ${imageUrl ? 'YES' : 'NO'}`);
