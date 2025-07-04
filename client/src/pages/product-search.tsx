@@ -205,7 +205,7 @@ export default function ProductSearch() {
   }, []);
 
   // Build query URL with parameters
-  const buildSearchUrl = () => {
+  const buildSearchUrl = useCallback(() => {
     const params = new URLSearchParams();
     if (debouncedQuery) params.append('query', debouncedQuery);
     if (category && category !== 'all') params.append('category', category);
@@ -214,7 +214,7 @@ export default function ProductSearch() {
     if (page && page !== 1) params.append('page', page.toString());
     
     return `/api/products/search?${params.toString()}`;
-  };
+  }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
@@ -238,7 +238,7 @@ export default function ProductSearch() {
   // Custom query with smart caching and fallbacks
   const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page]);
   
-  const searchUrl = useMemo(() => buildSearchUrl(), [debouncedQuery, category, minPrice, maxPrice, page]);
+  const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [searchUrl],
