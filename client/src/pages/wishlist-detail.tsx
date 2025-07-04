@@ -423,79 +423,101 @@ export default function WishlistDetail() {
                 {wishlist.items && wishlist.items.length > 0 ? (
                   <div className="space-y-4">
                     {wishlist.items.map((item: any) => (
-                      <div key={item.id} className={`bg-white rounded-lg border overflow-hidden ${
+                      <div key={item.id} className={`flex bg-white rounded-lg border overflow-hidden min-h-[160px] ${
                         item.isFulfilled ? 'border-gray-300 opacity-60' : 'border-gray-200'
                       }`}>
-                        <div className="flex h-auto min-h-[140px]">
-                          {/* Product Image */}
-                          <div className="w-32 h-32 flex-shrink-0 relative m-4">
-                            <img
-                              src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
-                              alt={item.title}
-                              className={`w-full h-full object-cover rounded-lg ${
-                                item.isFulfilled ? 'grayscale' : ''
-                              }`}
-                            />
-                            {item.isFulfilled && (
-                              <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center rounded-lg">
-                                <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                  ✓ Fulfilled
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Product Info - Now takes full width */}
-                          <div className="flex-1 flex flex-col justify-between p-4 pr-0">
-                            <div className="flex-1">
-                              <div className="flex justify-between items-start mb-3">
-                                <div className="flex-1 pr-4">
-                                  <h3 className={`font-semibold text-base leading-snug mb-2 ${
-                                    item.isFulfilled ? 'text-gray-500 line-through' : 'text-gray-900'
-                                  }`}>
-                                    {item.title}
-                                  </h3>
-                                  <p className={`text-sm mb-3 ${
-                                    item.isFulfilled ? 'text-gray-400' : 'text-gray-600'
-                                  }`}>{item.description || 'Essential item needed for daily living'}</p>
-                                  <div className={`text-xl font-bold ${
-                                    item.isFulfilled ? 'text-gray-400 line-through' : 'text-gray-900'
-                                  }`}>
-                                    ${item.price || '99.00'}
-                                  </div>
-                                </div>
-                                
-                                {/* Trash icon for owner */}
-                                {isOwner && (
-                                  <button className="text-gray-400 hover:text-gray-600 p-1">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                  </button>
-                                )}
+                        {/* Product Image */}
+                        <div className="w-32 h-32 flex-shrink-0 relative m-4">
+                          <img
+                            src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
+                            alt={item.title}
+                            className={`w-full h-full object-cover rounded-lg ${
+                              item.isFulfilled ? 'grayscale' : ''
+                            }`}
+                          />
+                          {item.isFulfilled && (
+                            <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center rounded-lg">
+                              <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                ✓ Fulfilled
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                         
-                        {/* Buying Options - Now full width at bottom */}
-                        <div className={`px-6 py-4 border-t ${
-                          item.isFulfilled ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-100'
+                        {/* Product Info */}
+                        <div className="flex-1 flex flex-col justify-between p-4 pr-6">
+                          <div className="flex-1">
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1">
+                                <h3 className={`font-semibold text-lg leading-snug mb-3 ${
+                                  item.isFulfilled ? 'text-gray-500 line-through' : 'text-gray-900'
+                                }`}>
+                                  {item.title}
+                                </h3>
+                                <p className={`text-sm mb-3 ${
+                                  item.isFulfilled ? 'text-gray-400' : 'text-gray-600'
+                                }`}>{item.description || 'Essential item needed for daily living'}</p>
+                                <div className={`text-2xl font-bold ${
+                                  item.isFulfilled ? 'text-gray-400 line-through' : 'text-gray-900'
+                                }`}>
+                                  ${item.price || '99.00'}
+                                </div>
+                              </div>
+                              
+                              {/* Trash icon for owner */}
+                              {isOwner && (
+                                <button className="text-gray-400 hover:text-gray-600 p-1 ml-4">
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Mark as Fulfilled button (for non-owners) */}
+                          {!isOwner && !item.isFulfilled && (
+                            <div className="mt-4">
+                              <button
+                                onClick={() => fulfillItemMutation.mutate(item.id)}
+                                disabled={fulfillItemMutation.isPending}
+                                className="bg-green-600 text-white py-2 px-4 rounded text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+                              >
+                                {fulfillItemMutation.isPending ? 'Marking as Fulfilled...' : 'Mark as Fulfilled'}
+                              </button>
+                            </div>
+                          )}
+
+                          {item.isFulfilled && (
+                            <div className="mt-4">
+                              <span className="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <Check className="w-4 h-4 mr-2" />
+                                Item Fulfilled
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Buying Options - Back on the right side */}
+                        <div className={`px-6 py-6 flex flex-col justify-center w-[280px] flex-shrink-0 ${
+                          item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
                         }`}>
-                          <h4 className={`font-semibold text-sm mb-3 ${
+                          <h4 className={`font-semibold text-base mb-4 text-center ${
                             item.isFulfilled ? 'text-gray-500' : 'text-gray-900'
                           }`}>
                             {item.isFulfilled ? 'Item Fulfilled' : 'Buying Options'}
                           </h4>
                           
-                          <div className="grid grid-cols-3 gap-4">
+                          <div className="space-y-3">
                             {/* Amazon */}
-                            <div className="flex flex-col items-center space-y-2">
-                              <div className="flex items-center space-x-2">
-                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-5 h-5 rounded-full" />
-                                <span className="text-sm font-medium">Amazon</span>
+                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-3">
+                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-6 h-6 rounded-full" />
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">Amazon</div>
+                                  <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
+                                </div>
                               </div>
-                              <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
                               <button 
                                 onClick={() => {
                                   if (!item.isFulfilled) {
@@ -511,23 +533,25 @@ export default function WishlistDetail() {
                                   }
                                 }}
                                 disabled={item.isFulfilled}
-                                className={`w-full py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
                                   item.isFulfilled 
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
-                                {item.isFulfilled ? 'Fulfilled' : 'View on Amazon'}
+                                {item.isFulfilled ? 'Fulfilled' : 'View'}
                               </button>
                             </div>
 
                             {/* Target */}
-                            <div className="flex flex-col items-center space-y-2">
-                              <div className="flex items-center space-x-2">
-                                <img src="/logos/target-logo.png" alt="Target" className="w-5 h-5 rounded-full" />
-                                <span className="text-sm font-medium">Target</span>
+                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-3">
+                                <img src="/logos/target-logo.png" alt="Target" className="w-6 h-6 rounded-full" />
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">Target</div>
+                                  <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
+                                </div>
                               </div>
-                              <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
                               <button 
                                 onClick={() => {
                                   if (!item.isFulfilled) {
@@ -543,23 +567,25 @@ export default function WishlistDetail() {
                                   }
                                 }}
                                 disabled={item.isFulfilled}
-                                className={`w-full py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
                                   item.isFulfilled 
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
-                                {item.isFulfilled ? 'Fulfilled' : 'View on Target'}
+                                {item.isFulfilled ? 'Fulfilled' : 'View'}
                               </button>
                             </div>
 
                             {/* Walmart */}
-                            <div className="flex flex-col items-center space-y-2">
-                              <div className="flex items-center space-x-2">
-                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-5 h-5 rounded-full" />
-                                <span className="text-sm font-medium">Walmart</span>
+                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-3">
+                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-6 h-6 rounded-full" />
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">Walmart</div>
+                                  <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
+                                </div>
                               </div>
-                              <div className="text-lg font-bold text-gray-900">${item.price || '99.00'}</div>
                               <button 
                                 onClick={() => {
                                   if (!item.isFulfilled) {
@@ -575,37 +601,16 @@ export default function WishlistDetail() {
                                   }
                                 }}
                                 disabled={item.isFulfilled}
-                                className={`w-full py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
                                   item.isFulfilled 
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
-                                {item.isFulfilled ? 'Fulfilled' : 'View on Walmart'}
+                                {item.isFulfilled ? 'Fulfilled' : 'View'}
                               </button>
                             </div>
                           </div>
-
-                          {!isOwner && !item.isFulfilled && (
-                            <div className="mt-4 pt-4 border-t border-gray-200">
-                              <button
-                                onClick={() => fulfillItemMutation.mutate(item.id)}
-                                disabled={fulfillItemMutation.isPending}
-                                className="w-full bg-green-600 text-white py-2 px-4 rounded font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
-                              >
-                                {fulfillItemMutation.isPending ? 'Marking as Fulfilled...' : 'Mark as Fulfilled'}
-                              </button>
-                            </div>
-                          )}
-
-                          {item.isFulfilled && (
-                            <div className="mt-4 pt-4 border-t border-gray-200 text-center">
-                              <span className="inline-flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
-                                <Check className="w-4 h-4 mr-2" />
-                                Item Fulfilled
-                              </span>
-                            </div>
-                          )}
                         </div>
                       </div>
                     ))}
