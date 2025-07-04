@@ -119,11 +119,26 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="text-green-600 border-green-600">
+              <Badge 
+                variant="outline" 
+                className={`${
+                  systemHealth?.status === 'healthy' 
+                    ? 'text-green-600 border-green-600' 
+                    : 'text-red-600 border-red-600'
+                }`}
+              >
                 <Activity className="h-3 w-3 mr-1" />
-                System Online
+                {systemHealth?.status === 'healthy' ? 'System Online' : 'System Issues'}
               </Badge>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  const today = new Date().toISOString().split('T')[0];
+                  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                  window.open(`/api/admin/export/analytics?start=${oneWeekAgo}&end=${today}`, '_blank');
+                }}
+              >
                 <Calendar className="h-4 w-4 mr-2" />
                 Export Report
               </Button>
