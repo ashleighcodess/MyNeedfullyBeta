@@ -178,8 +178,7 @@ export default function Resources() {
       
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-8 relative">
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 w-24 h-1 bg-coral rounded-full"></div>
+        <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">Resources</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
             Helpful Links And Contacts For Those In Need Of Support Beyond Material Items.
@@ -207,7 +206,7 @@ export default function Resources() {
                 <TabsTrigger 
                   key={key} 
                   value={key} 
-                  className="flex items-center gap-2 data-[state=active]:bg-coral data-[state=active]:text-white transition-all"
+                  className="flex items-center gap-2 bg-orange-100 text-orange-700 hover:bg-orange-200 data-[state=active]:bg-coral data-[state=active]:text-white transition-all"
                 >
                   <IconComponent className="h-4 w-4" />
                   <span className="hidden sm:inline">{category.title}</span>
