@@ -68,6 +68,7 @@ export default function EditProfile() {
   });
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Upload function triggered', event.target.files);
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -186,13 +187,26 @@ export default function EditProfile() {
                       onChange={handleImageUpload}
                       className="hidden"
                       id="profile-image"
+                      ref={(input) => {
+                        if (input) {
+                          (window as any).profileImageInput = input;
+                        }
+                      }}
                     />
-                    <Label htmlFor="profile-image" className="cursor-pointer">
-                      <Button type="button" disabled={uploadingImage} className="w-full">
-                        <Upload className="mr-2 h-4 w-4" />
-                        {uploadingImage ? "Uploading..." : "Upload Photo"}
-                      </Button>
-                    </Label>
+                    <Button 
+                      type="button" 
+                      disabled={uploadingImage} 
+                      className="w-full"
+                      onClick={() => {
+                        console.log('Upload button clicked');
+                        const input = document.getElementById('profile-image') as HTMLInputElement;
+                        console.log('Input element:', input);
+                        input?.click();
+                      }}
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      {uploadingImage ? "Uploading..." : "Upload Photo"}
+                    </Button>
                     
                     <p className="text-sm text-gray-500">
                       JPG, PNG or GIF. Max size 5MB.
