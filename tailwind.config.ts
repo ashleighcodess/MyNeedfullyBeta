@@ -61,6 +61,12 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
+        coral: {
+          DEFAULT: "var(--coral)",
+          50: "var(--coral-light)",
+          600: "var(--coral)",
+          700: "hsl(0, 85%, 55%)",
+        },
       },
       keyframes: {
         "accordion-down": {

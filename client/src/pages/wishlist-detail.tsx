@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import Navigation from "@/components/navigation";
 import ProductCard from "@/components/product-card";
 import ThankYouNote from "@/components/thank-you-note";
+import PurchaseConfirmationModal from "@/components/purchase-confirmation-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +49,8 @@ export default function WishlistDetail() {
   const [showThankYouNote, setShowThankYouNote] = useState(false);
   const [showImageCarousel, setShowImageCarousel] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showAllActivity, setShowAllActivity] = useState(false);
 
   // Helper function to format relative time
@@ -97,38 +100,32 @@ export default function WishlistDetail() {
     enabled: !!id,
   });
 
+
+
+  // Fulfillment mutation
   const fulfillItemMutation = useMutation({
-    mutationFn: async (itemId: number) => {
-      return await apiRequest("POST", `/api/donations`, {
-        wishlistId: parseInt(id!),
-        itemId,
-        status: "confirmed",
-        message: "Item fulfilled through MyNeedfully",
-      });
-    },
+    mutationFn: (itemId: number) => 
+      apiRequest(`/api/wishlist-items/${itemId}/fulfill`, 'PATCH'),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
       toast({
-        title: "Thank You!",
-        description: "Your donation has been recorded. The recipient will be notified.",
+        title: "Thank you!",
+        description: "Item marked as purchased. The creator will be notified.",
       });
+      setShowPurchaseModal(false);
+      setSelectedProduct(null);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error("Error fulfilling item:", error);
+      
       if (isUnauthorizedError(error)) {
-        toast({
-          title: "Please Sign In",
-          description: "You need to be signed in to make a donation.",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
+        navigate("/login");
         return;
       }
       
       toast({
         title: "Error",
-        description: "Failed to process donation. Please try again.",
+        description: "Failed to mark item as purchased. Please try again.",
         variant: "destructive",
       });
     },
@@ -425,24 +422,41 @@ export default function WishlistDetail() {
                 {wishlist.items && wishlist.items.length > 0 ? (
                   <div className="space-y-4">
                     {wishlist.items.map((item: any) => (
-                      <div key={item.id} className="flex bg-white rounded-lg border border-gray-200 overflow-hidden h-28">
+                      <div key={item.id} className={`flex bg-white rounded-lg border overflow-hidden h-28 ${
+                        item.isFulfilled ? 'border-gray-300 opacity-60' : 'border-gray-200'
+                      }`}>
                         {/* Product Image */}
-                        <div className="w-28 h-28 flex-shrink-0">
+                        <div className="w-28 h-28 flex-shrink-0 relative">
                           <img
                             src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
                             alt={item.title}
-                            className="w-full h-full object-cover rounded-l-lg"
+                            className={`w-full h-full object-cover rounded-l-lg ${
+                              item.isFulfilled ? 'grayscale' : ''
+                            }`}
                           />
+                          {item.isFulfilled && (
+                            <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center">
+                              <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                ✓ Fulfilled
+                              </div>
+                            </div>
+                          )}
                         </div>
                         
                         {/* Product Info */}
                         <div className="flex-1 flex items-center justify-between px-6 py-4">
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-semibold text-gray-900 text-base mb-2">
+                            <h3 className={`font-semibold text-base mb-2 ${
+                              item.isFulfilled ? 'text-gray-500 line-through' : 'text-gray-900'
+                            }`}>
                               {item.title?.split(',')[0] || item.title}
                             </h3>
-                            <p className="text-sm text-gray-600 mb-2">{item.description || 'Pots, Pans, And Cooking Utensils Set'}</p>
-                            <div className="text-xl font-bold text-gray-900">
+                            <p className={`text-sm mb-2 ${
+                              item.isFulfilled ? 'text-gray-400' : 'text-gray-600'
+                            }`}>{item.description || 'Pots, Pans, And Cooking Utensils Set'}</p>
+                            <div className={`text-xl font-bold ${
+                              item.isFulfilled ? 'text-gray-400 line-through' : 'text-gray-900'
+                            }`}>
                               ${item.price || '99.00'}
                             </div>
                           </div>
@@ -460,8 +474,14 @@ export default function WishlistDetail() {
                         </div>
 
                         {/* Buying Options */}
-                        <div className="bg-red-50 px-4 py-4 flex flex-col justify-center w-[200px] flex-shrink-0">
-                          <h4 className="font-semibold text-gray-900 text-sm mb-2">Buying Options</h4>
+                        <div className={`px-4 py-4 flex flex-col justify-center w-[200px] flex-shrink-0 ${
+                          item.isFulfilled ? 'bg-gray-100' : 'bg-red-50'
+                        }`}>
+                          <h4 className={`font-semibold text-sm mb-2 ${
+                            item.isFulfilled ? 'text-gray-500' : 'text-gray-900'
+                          }`}>
+                            {item.isFulfilled ? 'Item Fulfilled' : 'Buying Options'}
+                          </h4>
                           
                           <div className="space-y-1">
                             <div className="flex items-center justify-between text-xs">
@@ -470,14 +490,29 @@ export default function WishlistDetail() {
                                 <span>Amazon</span>
                               </div>
                               <span className="font-semibold">${item.price || '99.00'}</span>
-                              <a 
-                                href={item.productUrl || '#'} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="bg-coral text-white py-0.5 px-2 rounded text-xs hover:bg-coral/90 transition-colors"
+                              <button 
+                                onClick={() => {
+                                  if (!item.isFulfilled) {
+                                    setSelectedProduct({
+                                      title: item.title,
+                                      price: item.price || '99.00',
+                                      link: item.productUrl || '#',
+                                      retailer: 'amazon',
+                                      image: item.imageUrl,
+                                      itemId: item.id
+                                    });
+                                    setShowPurchaseModal(true);
+                                  }
+                                }}
+                                disabled={item.isFulfilled}
+                                className={`py-0.5 px-2 rounded text-xs transition-colors ${
+                                  item.isFulfilled 
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-coral text-white hover:bg-coral/90'
+                                }`}
                               >
-                                View on
-                              </a>
+                                {item.isFulfilled ? 'Fulfilled' : 'View on'}
+                              </button>
                             </div>
 
                             <div className="flex items-center justify-between text-xs">
@@ -486,8 +521,28 @@ export default function WishlistDetail() {
                                 <span>Target</span>
                               </div>
                               <span className="font-semibold">${item.price || '99.00'}</span>
-                              <button className="bg-coral text-white py-0.5 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
-                                View on
+                              <button 
+                                onClick={() => {
+                                  if (!item.isFulfilled) {
+                                    setSelectedProduct({
+                                      title: item.title,
+                                      price: item.price || '99.00',
+                                      link: item.productUrl || '#',
+                                      retailer: 'target',
+                                      image: item.imageUrl,
+                                      itemId: item.id
+                                    });
+                                    setShowPurchaseModal(true);
+                                  }
+                                }}
+                                disabled={item.isFulfilled}
+                                className={`py-0.5 px-2 rounded text-xs transition-colors ${
+                                  item.isFulfilled 
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-coral text-white hover:bg-coral/90'
+                                }`}
+                              >
+                                {item.isFulfilled ? 'Fulfilled' : 'View on'}
                               </button>
                             </div>
 
@@ -497,8 +552,28 @@ export default function WishlistDetail() {
                                 <span>Walmart</span>
                               </div>
                               <span className="font-semibold">${item.price || '99.00'}</span>
-                              <button className="bg-coral text-white py-0.5 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
-                                View on
+                              <button 
+                                onClick={() => {
+                                  if (!item.isFulfilled) {
+                                    setSelectedProduct({
+                                      title: item.title,
+                                      price: item.price || '99.00',
+                                      link: item.productUrl || '#',
+                                      retailer: 'walmart',
+                                      image: item.imageUrl,
+                                      itemId: item.id
+                                    });
+                                    setShowPurchaseModal(true);
+                                  }
+                                }}
+                                disabled={item.isFulfilled}
+                                className={`py-0.5 px-2 rounded text-xs transition-colors ${
+                                  item.isFulfilled 
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-coral text-white hover:bg-coral/90'
+                                }`}
+                              >
+                                {item.isFulfilled ? 'Fulfilled' : 'View on'}
                               </button>
                             </div>
                           </div>
@@ -860,6 +935,25 @@ export default function WishlistDetail() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Purchase Confirmation Modal */}
+      {selectedProduct && (
+        <PurchaseConfirmationModal
+          isOpen={showPurchaseModal}
+          onClose={() => {
+            setShowPurchaseModal(false);
+            setSelectedProduct(null);
+          }}
+          product={selectedProduct}
+          wishlistOwner={{
+            firstName: wishlist?.user?.firstName || 'User',
+            lastName: wishlist?.user?.lastName,
+            shippingAddress: wishlist?.user?.shippingAddress
+          }}
+          onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
+          itemId={selectedProduct.itemId}
+        />
       )}
     </div>
   );

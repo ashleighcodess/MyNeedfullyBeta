@@ -419,6 +419,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mark wishlist item as fulfilled
+  app.patch('/api/wishlist-items/:itemId/fulfill', isAuthenticated, async (req: any, res) => {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      const fulfilledBy = req.user.claims.sub;
+      
+      const item = await storage.fulfillWishlistItem(itemId, fulfilledBy);
+      
+      // Get wishlist info to create notification
+      const wishlist = await storage.getWishlist(item.wishlistId);
+      if (wishlist) {
+        // Create notification for wishlist owner
+        await storage.createNotification({
+          userId: wishlist.userId,
+          type: "item_fulfilled",
+          title: "Item Fulfilled!",
+          message: `Someone has purchased "${item.title}" from your needs list`,
+          data: { itemId: item.id, wishlistId: wishlist.id },
+        });
+        
+        // Send real-time notification
+        const ws = wsConnections.get(wishlist.userId);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            type: "notification",
+            data: {
+              type: "item_fulfilled",
+              title: "Item Fulfilled!",
+              message: `Someone has purchased "${item.title}" from your needs list`,
+            },
+          }));
+        }
+      }
+
+      // Record analytics event
+      await storage.recordEvent({
+        eventType: "item_fulfilled",
+        userId: fulfilledBy,
+        data: { 
+          itemId: item.id, 
+          wishlistId: item.wishlistId,
+          itemTitle: item.title,
+          action: "item_marked_as_fulfilled"
+        },
+        userAgent: req.get('User-Agent'),
+        ipAddress: req.ip,
+      });
+      
+      res.json(item);
+    } catch (error) {
+      console.error("Error fulfilling wishlist item:", error);
+      res.status(500).json({ message: "Failed to fulfill item" });
+    }
+  });
+
   // Product Search routes with RainforestAPI integration and fallback
   app.get('/api/products/popular', async (req, res) => {
     try {
