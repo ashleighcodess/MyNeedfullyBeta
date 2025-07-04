@@ -103,7 +103,7 @@ class EmailService {
 
     return this.sendEmail({
       to: supporterEmail,
-      from: 'noreply@myneedfully.com',
+      from: 'data@myneedfully.app',
       subject,
       html,
       text,
@@ -169,7 +169,7 @@ class EmailService {
 
     return this.sendEmail({
       to: supporterEmail,
-      from: 'noreply@myneedfully.com',
+      from: 'data@myneedfully.app',
       subject,
       html,
       text,
