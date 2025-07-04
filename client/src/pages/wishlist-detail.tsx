@@ -620,7 +620,7 @@ export default function WishlistDetail() {
                     <div 
                       key={activity.id} 
                       className={`flex items-start space-x-2 text-sm transition-all duration-300 ${
-                        activity.animate ? 'animate-pulse' : ''
+                        activity.animate ? 'animate-pulse-slow' : ''
                       } hover:bg-gray-50 p-2 rounded-lg cursor-pointer`}
                     >
                       <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
