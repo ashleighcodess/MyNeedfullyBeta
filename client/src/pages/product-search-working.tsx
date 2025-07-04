@@ -114,7 +114,7 @@ export default function ProductSearchWorking() {
         
         // Update metrics
         setSearchMetrics({
-          totalResults: data.search_information?.total_result_count || data.products?.length || 0,
+          totalResults: data.pagination?.total_results || data.search_results?.length || data.products?.length || 0,
           searchTime: data.request_info?.credits_used || 0
         });
         
@@ -530,7 +530,7 @@ export default function ProductSearchWorking() {
                 </div>
 
                 {/* Load More Button */}
-                {searchResults?.pagination?.next_page && (
+                {searchResults?.pagination?.has_next_page && (
                   <div className="text-center mt-8">
                     <Button onClick={loadMoreResults} size="lg" variant="outline">
                       Show More Results

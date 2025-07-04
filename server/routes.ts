@@ -772,7 +772,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Enhanced search endpoint that combines RainforestAPI (Amazon) with SerpAPI (Walmart & Target)
   app.get('/api/products/search/enhanced', async (req, res) => {
     try {
-      const { query, limit = 20 } = req.query;
+      const { query, limit = 20, page = 1 } = req.query;
       
       if (!query) {
         return res.status(400).json({ message: "Search query is required" });
@@ -861,13 +861,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Shuffle results to mix retailers
       const shuffledResults = results.sort(() => Math.random() - 0.5);
 
+      // For multi-retailer search, we'll implement a simple approach:
+      // Return all results from current search, but allow for increasing the limit
+      const currentPage = parseInt(page as string) || 1;
+      const resultsPerPage = parseInt(limit as string) || 10;
+      const totalResults = shuffledResults.length;
+      
+      // Calculate start and end indices for current page
+      const startIndex = (currentPage - 1) * resultsPerPage;
+      const endIndex = startIndex + resultsPerPage;
+      const paginatedResults = shuffledResults.slice(startIndex, endIndex);
+      
+      const totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage));
+      const hasNextPage = endIndex < totalResults;
+      const hasPreviousPage = currentPage > 1;
+
       const responseData = {
-        search_results: shuffledResults,
+        search_results: paginatedResults,
         pagination: {
-          current_page: 1,
-          total_pages: 1,
-          has_next_page: false,
-          has_previous_page: false
+          current_page: currentPage,
+          total_pages: totalPages,
+          has_next_page: hasNextPage,
+          has_previous_page: hasPreviousPage,
+          total_results: totalResults,
+          results_per_page: resultsPerPage,
+          showing_results: paginatedResults.length
         },
         request_info: {
           success: true,
