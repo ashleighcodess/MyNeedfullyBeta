@@ -124,6 +124,7 @@ export default function ProductSearch() {
         currency: "USD",
         productUrl: buildAmazonAffiliateLink(product.asin),
         retailer: "Amazon",
+        category: category || "other", // Use selected category or default to "other"
         quantity: 1,
         priority: 3, // medium priority
       };

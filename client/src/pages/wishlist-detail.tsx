@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -28,6 +29,10 @@ import {
   MessageSquare,
   Plus,
   AlertCircle,
+  List,
+  Search,
+  UserPlus,
+  Activity,
   Edit,
   ChevronLeft,
   ChevronRight,
@@ -45,65 +50,47 @@ export default function WishlistDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showAllActivity, setShowAllActivity] = useState(false);
 
-  // Mock recent activity data - in real implementation this would come from API
-  const recentActivities = [
-    {
-      id: 1,
-      type: 'purchase',
-      message: 'A supporter purchased an item off this list',
-      timestamp: '5 minutes ago',
-      animate: true
-    },
-    {
-      id: 2,
-      type: 'share',
-      message: 'A supporter shared this list',
-      timestamp: '10 minutes ago',
-      animate: false
-    },
-    {
-      id: 3,
-      type: 'view',
-      message: 'A supporter viewed this needs list',
-      timestamp: '15 minutes ago',
-      animate: false
-    },
-    {
-      id: 4,
-      type: 'purchase',
-      message: 'A supporter purchased 2 items from this list',
-      timestamp: '1 hour ago',
-      animate: false
-    },
-    {
-      id: 5,
-      type: 'share',
-      message: 'A supporter shared this list with friends',
-      timestamp: '2 hours ago',
-      animate: false
-    },
-    {
-      id: 6,
-      type: 'view',
-      message: 'A supporter viewed this needs list',
-      timestamp: '3 hours ago',
-      animate: false
-    },
-    {
-      id: 7,
-      type: 'purchase',
-      message: 'A supporter purchased a baby formula from this list',
-      timestamp: '4 hours ago',
-      animate: false
-    },
-    {
-      id: 8,
-      type: 'share',
-      message: 'A supporter shared this list on social media',
-      timestamp: '5 hours ago',
-      animate: false
+  // Helper function to format relative time
+  const formatRelativeTime = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  };
+
+  // Helper function to get activity icon
+  const getActivityIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'plus': return <Plus className="h-4 w-4" />;
+      case 'list': return <List className="h-4 w-4" />;
+      case 'eye': return <Eye className="h-4 w-4" />;
+      case 'search': return <Search className="h-4 w-4" />;
+      case 'check': return <Check className="h-4 w-4" />;
+      case 'heart': return <Heart className="h-4 w-4" />;
+      case 'user-plus': return <UserPlus className="h-4 w-4" />;
+      default: return <Activity className="h-4 w-4" />;
     }
-  ];
+  };
+
+  // Fetch real recent activity data from API
+  const { data: recentActivitiesData, isLoading: activitiesLoading } = useQuery({
+    queryKey: ['/api/activity/recent'],
+    refetchInterval: 30000, // Refresh every 30 seconds for real-time feel
+  });
+
+  // Format activities data for display with proper time formatting
+  const recentActivities = (recentActivitiesData || []).map((activity: any, index: number) => ({
+    id: activity.id,
+    type: activity.type,
+    message: activity.message,
+    timestamp: formatRelativeTime(activity.time),
+    animate: index === 0, // Only animate the first (newest) activity
+    icon: activity.icon
+  }));
 
   const { data: wishlist, isLoading } = useQuery({
     queryKey: [`/api/wishlists/${id}`],
@@ -616,20 +603,37 @@ export default function WishlistDetail() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {recentActivities.slice(0, 3).map((activity, index) => (
-                    <div 
-                      key={activity.id} 
-                      className={`flex items-start space-x-2 text-sm transition-all duration-300 ${
-                        activity.animate ? 'animate-pulse-slow' : ''
-                      } hover:bg-gray-50 p-2 rounded-lg cursor-pointer`}
-                    >
-                      <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
-                      <div className="flex-1">
-                        <p className="text-gray-600">{activity.message}</p>
-                        <p className="text-gray-400 text-xs">{activity.timestamp}</p>
+                  {activitiesLoading ? (
+                    // Loading skeleton
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="flex items-start space-x-2 p-2">
+                        <Skeleton className="h-4 w-4 rounded-full flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 space-y-1">
+                          <Skeleton className="h-4 w-3/4" />
+                          <Skeleton className="h-3 w-1/2" />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : recentActivities.length > 0 ? (
+                    recentActivities.slice(0, 3).map((activity: any, index: number) => (
+                      <div 
+                        key={activity.id} 
+                        className={`flex items-start space-x-2 text-sm transition-all duration-300 ${
+                          activity.animate ? 'animate-pulse-slow' : ''
+                        } hover:bg-gray-50 p-2 rounded-lg cursor-pointer`}
+                      >
+                        <div className="text-coral flex-shrink-0 mt-0.5">
+                          {getActivityIcon(activity.icon)}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-600">{activity.message}</p>
+                          <p className="text-gray-400 text-xs">{activity.timestamp}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm text-center py-4">No recent activity</p>
+                  )}
                 </div>
                 
                 <Dialog open={showAllActivity} onOpenChange={setShowAllActivity}>

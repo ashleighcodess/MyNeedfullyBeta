@@ -20,6 +20,51 @@ import {
 const RAINFOREST_API_KEY = process.env.RAINFOREST_API_KEY || "8789CC1433C54D12B5F2DF1A401E844E";
 const RAINFOREST_API_URL = "https://api.rainforestapi.com/request";
 
+// Helper functions for activity formatting
+function formatActivityMessage(activity: any): string {
+  const { eventType, data } = activity;
+  
+  switch (eventType) {
+    case 'item_added':
+      return `Added "${data.itemTitle}" to their needs list`;
+    case 'wishlist_created':
+      return `Created a new needs list`;
+    case 'wishlist_view':
+      return `Viewed a needs list`;
+    case 'product_search':
+      return `Searched for "${data.query}"`;
+    case 'item_fulfilled':
+      return `Fulfilled an item request`;
+    case 'donation_made':
+      return `Made a donation`;
+    case 'user_registered':
+      return `Joined the community`;
+    default:
+      return `Performed an action`;
+  }
+}
+
+function getActivityIcon(eventType: string): string {
+  switch (eventType) {
+    case 'item_added':
+      return 'plus';
+    case 'wishlist_created':
+      return 'list';
+    case 'wishlist_view':
+      return 'eye';
+    case 'product_search':
+      return 'search';
+    case 'item_fulfilled':
+      return 'check';
+    case 'donation_made':
+      return 'heart';
+    case 'user_registered':
+      return 'user-plus';
+    default:
+      return 'activity';
+  }
+}
+
 // WebSocket connections map
 const wsConnections = new Map<string, WebSocket>();
 
@@ -326,6 +371,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const itemData = insertWishlistItemSchema.parse({ ...req.body, wishlistId });
       const item = await storage.addWishlistItem(itemData);
+      
+      // Record activity event
+      await storage.recordEvent({
+        eventType: "item_added",
+        userId,
+        data: { 
+          wishlistId, 
+          itemId: item.id, 
+          itemTitle: item.title,
+          action: "item_added_to_wishlist"
+        },
+        userAgent: req.get('User-Agent'),
+        ipAddress: req.ip,
+      });
       
       res.status(201).json(item);
     } catch (error) {
@@ -716,6 +775,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error marking notification as read:", error);
       res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  // Recent Activity endpoint
+  app.get('/api/activity/recent', async (req, res) => {
+    try {
+      const { limit = 10 } = req.query;
+      const recentActivity = await storage.getRecentActivity();
+      
+      // Format the activity data for frontend consumption
+      const formattedActivity = recentActivity.slice(0, Number(limit)).map((activity: any) => ({
+        id: activity.id,
+        type: activity.eventType,
+        message: formatActivityMessage(activity),
+        time: activity.createdAt,
+        icon: getActivityIcon(activity.eventType),
+        data: activity.data
+      }));
+      
+      res.json(formattedActivity);
+    } catch (error) {
+      console.error("Error fetching recent activity:", error);
+      res.status(500).json({ message: "Failed to fetch recent activity" });
     }
   });
 
