@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
+import { useLocation } from "wouter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -104,6 +105,10 @@ export default function Landing() {
   const aboutRef = useRef<HTMLDivElement>(null);
   const [progressSteps, setProgressSteps] = useState([false, false, false]);
   const [startTickerAnimation, setStartTickerAnimation] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [productSearchQuery, setProductSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [, setLocation] = useLocation();
   
   // Animated counter values
   const needsFulfilled = useAnimatedCounter(127, 2500, startTickerAnimation);
@@ -152,6 +157,29 @@ export default function Landing() {
 
   const handleLogin = () => {
     window.location.href = "/api/login";
+  };
+
+  const handleNeedsListSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setLocation(`/browse?q=${encodeURIComponent(searchQuery)}`);
+    } else {
+      setLocation('/browse');
+    }
+  };
+
+  const handleProductSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (productSearchQuery.trim()) {
+      const params = new URLSearchParams();
+      params.append('q', productSearchQuery);
+      if (selectedCategory && selectedCategory !== 'All Categories') {
+        params.append('category', selectedCategory);
+      }
+      setLocation(`/product-search?${params.toString()}`);
+    } else {
+      setLocation('/product-search');
+    }
   };
 
   const featuredWishlists = [
@@ -269,19 +297,21 @@ export default function Landing() {
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-8">
             <Card className="p-2 shadow-xl">
-              <div className="flex flex-col md:flex-row gap-2">
+              <form onSubmit={handleNeedsListSearch} className="flex flex-col md:flex-row gap-2">
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input 
                     placeholder="Search needs lists by keywords, location, or needs..." 
                     className="pl-12 py-4 text-lg border-0 focus:ring-2 focus:ring-coral/50"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-                <Button className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg whitespace-nowrap rounded-xl">
+                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg whitespace-nowrap rounded-xl">
                   <Search className="mr-2 h-5 w-5" />
                   Search Needs
                 </Button>
-              </div>
+              </form>
             </Card>
           </div>
 
@@ -845,26 +875,32 @@ export default function Landing() {
           {/* Product Search Bar */}
           <div className="max-w-3xl mx-auto mb-12">
             <Card className="p-6 shadow-lg">
-              <div className="flex flex-col md:flex-row gap-4">
+              <form onSubmit={handleProductSearch} className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input 
                     placeholder="Search for products (e.g., baby formula, school supplies, groceries)" 
                     className="pl-12 py-4 border border-gray-200 focus:ring-2 focus:ring-coral/50 focus:border-coral"
+                    value={productSearchQuery}
+                    onChange={(e) => setProductSearchQuery(e.target.value)}
                   />
                 </div>
-                <select className="px-4 py-4 border border-gray-200 rounded-md focus:ring-2 focus:ring-coral/50 focus:border-coral">
-                  <option>All Categories</option>
-                  <option>Baby & Kids</option>
-                  <option>Household</option>
-                  <option>Electronics</option>
-                  <option>Clothing</option>
-                  <option>Health & Personal Care</option>
+                <select 
+                  className="px-4 py-4 border border-gray-200 rounded-md focus:ring-2 focus:ring-coral/50 focus:border-coral"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <option value="">All Categories</option>
+                  <option value="baby">Baby & Kids</option>
+                  <option value="household">Household</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="clothing">Clothing</option>
+                  <option value="health">Health & Personal Care</option>
                 </select>
-                <Button className="bg-coral text-white hover:bg-coral/90 px-8 py-4 whitespace-nowrap">
+                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-8 py-4 whitespace-nowrap">
                   Search Products
                 </Button>
-              </div>
+              </form>
             </Card>
           </div>
 
