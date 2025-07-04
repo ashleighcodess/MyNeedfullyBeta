@@ -34,9 +34,8 @@ export default function Footer() {
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="lg:col-span-1">
-            <div className="flex items-center mb-4">
-              <img src={logoPath} alt="MyNeedfully" className="h-8 w-8 mr-2" />
-              <span className="text-xl font-bold text-navy">myneedfully</span>
+            <div className="mb-4">
+              <img src={logoPath} alt="MyNeedfully" className="h-12 w-auto" />
             </div>
             <p className="text-gray-600 mb-4 text-sm">
               Helping people in crisis by connecting them with the community support they need.
