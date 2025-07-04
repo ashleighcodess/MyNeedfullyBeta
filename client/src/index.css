@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(25, 100%, 99%);
+  --foreground: hsl(240, 10%, 15%);
+  --muted: hsl(25, 20%, 95%);
+  --muted-foreground: hsl(240, 5%, 45%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(240, 10%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(240, 10%, 15%);
+  --border: hsl(25, 15%, 85%);
+  --input: hsl(25, 15%, 85%);
+  --primary: hsl(0, 85%, 65%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(25, 20%, 95%);
+  --secondary-foreground: hsl(240, 10%, 15%);
+  --accent: hsl(12, 100%, 94%);
+  --accent-foreground: hsl(240, 10%, 15%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(60, 9%, 98%);
+  --ring: hsl(0, 85%, 65%);
+  --radius: 0.75rem;
+  
+  /* Custom MyNeedfully brand colors */
+  --coral: hsl(0, 85%, 65%);
+  --coral-light: hsl(12, 100%, 94%);
+  --warm-bg: hsl(25, 100%, 98%);
+  --navy: hsl(210, 47%, 24%);
+  --navy-light: hsl(210, 40%, 40%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(0, 0%, 95%);
+  --muted: hsl(240, 3%, 11%);
+  --muted-foreground: hsl(240, 5%, 65%);
+  --popover: hsl(240, 10%, 4%);
+  --popover-foreground: hsl(0, 0%, 95%);
+  --card: hsl(240, 10%, 4%);
+  --card-foreground: hsl(0, 0%, 95%);
+  --border: hsl(240, 3%, 11%);
+  --input: hsl(240, 3%, 11%);
+  --primary: hsl(0, 85%, 65%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(240, 3%, 11%);
+  --secondary-foreground: hsl(0, 0%, 95%);
+  --accent: hsl(240, 3%, 11%);
+  --accent-foreground: hsl(0, 0%, 95%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(0, 0%, 95%);
+  --ring: hsl(0, 85%, 65%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-warm-bg text-foreground;
+    background-color: hsl(25, 100%, 98%);
+  }
+}
+
+@layer utilities {
+  .bg-warm-bg {
+    background-color: var(--warm-bg);
+  }
+  
+  .text-coral {
+    color: var(--coral);
+  }
+  
+  .bg-coral {
+    background-color: var(--coral);
+  }
+  
+  .text-navy {
+    color: var(--navy);
+  }
+  
+  .bg-navy {
+    background-color: var(--navy);
+  }
+  
+  .bg-coral-light {
+    background-color: var(--coral-light);
+  }
+  
+  .border-coral {
+    border-color: var(--coral);
+  }
+  
+  .hero-overlay {
+    background: linear-gradient(135deg, 
+      hsla(0, 0%, 100%, 0.8) 0%, 
+      hsla(12, 100%, 94%, 0.6) 50%, 
+      hsla(0, 85%, 65%, 0.2) 100%);
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+}
