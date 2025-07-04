@@ -78,8 +78,7 @@ export default function AboutUs() {
         <div 
           className="text-center mb-4 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
           style={{ 
-            backgroundImage: `url(${howItWorksBackground})`,
-            minHeight: '400px'
+            backgroundImage: `url(${howItWorksBackground})`
           }}
         >
           <div className="absolute inset-0 bg-white/90"></div>
