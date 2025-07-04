@@ -16,6 +16,7 @@ interface WishlistCardProps {
     fulfilledItems: number;
     viewCount?: number;
     createdAt: string;
+    storyImages?: string[];
     user?: {
       firstName?: string;
       lastName?: string;
@@ -55,6 +56,17 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+      {/* Featured Image */}
+      {wishlist.storyImages && wishlist.storyImages.length > 0 && (
+        <div className="h-48 overflow-hidden">
+          <img 
+            src={wishlist.storyImages[0]}
+            alt={wishlist.title}
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+      )}
+      
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
@@ -131,7 +143,7 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
           <div className="flex space-x-2">
             <Link href={`/wishlist/${wishlist.id}`} className="flex-1">
               <Button className="w-full bg-coral text-white hover:bg-coral/90">
-                View Wishlist
+                View Needs List
               </Button>
             </Link>
             {isOwner && (

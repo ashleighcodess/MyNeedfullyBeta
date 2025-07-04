@@ -64,7 +64,7 @@ export default function BrowseWishlists() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Browse Wishlists</h1>
+          <h1 className="text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
           <p className="text-gray-600">Find families and organizations who need your support</p>
         </div>
 
@@ -150,7 +150,7 @@ export default function BrowseWishlists() {
               <Card className="p-12 text-center">
                 <div className="text-gray-500 mb-4">
                   <Search className="mx-auto h-12 w-12 mb-4 text-gray-300" />
-                  <h3 className="text-lg font-semibold mb-2">No wishlists found</h3>
+                  <h3 className="text-lg font-semibold mb-2">No needs lists found</h3>
                   <p>Try adjusting your search criteria or filters</p>
                 </div>
                 <Button 
@@ -185,7 +185,7 @@ export default function BrowseWishlists() {
                       variant="outline"
                       className="border-coral text-coral hover:bg-coral/10 px-8 py-3"
                     >
-                      Load More Wishlists
+                      Load More Needs Lists
                     </Button>
                   </div>
                 )}

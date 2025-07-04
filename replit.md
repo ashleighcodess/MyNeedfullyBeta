@@ -120,6 +120,8 @@ Changelog:
 - July 04, 2025: Enhanced profile picture upload system with image compression, improved error handling, and increased server payload limits to 10MB - CONFIRMED WORKING
 - July 04, 2025: Successfully completed all major functionality fixes - application is fully operational with working authentication, profile management, wishlist creation/editing, product search, and supporter terminology throughout
 - July 04, 2025: Improved navigation clarity by changing "Profile" page title to "Dashboard" and "Dashboard" navigation link to "Quick Actions" for better user experience
+- July 04, 2025: Updated terminology from "Browse Wishlists" to "Browse Needs Lists" and "View Wishlist" to "View Needs List" throughout the application for consistent language
+- July 04, 2025: Implemented featured image functionality with image carousel for needs lists - added clickable story images with hover effects and full-screen modal carousel with navigation controls and thumbnail strip
 ```
 
 ## User Preferences

@@ -28,7 +28,10 @@ import {
   MessageSquare,
   Plus,
   AlertCircle,
-  Edit
+  Edit,
+  ChevronLeft,
+  ChevronRight,
+  X
 } from "lucide-react";
 
 export default function WishlistDetail() {
@@ -38,6 +41,8 @@ export default function WishlistDetail() {
   const { toast } = useToast();
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [showThankYouNote, setShowThankYouNote] = useState(false);
+  const [showImageCarousel, setShowImageCarousel] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const { data: wishlist, isLoading } = useQuery({
     queryKey: [`/api/wishlists/${id}`],
@@ -151,6 +156,28 @@ export default function WishlistDetail() {
     : 0;
 
   const isOwner = user?.id?.toString() === wishlist?.userId?.toString();
+
+  // Image carousel functions
+  const openCarousel = (index: number) => {
+    setCurrentImageIndex(index);
+    setShowImageCarousel(true);
+  };
+
+  const nextImage = () => {
+    if (wishlist && (wishlist as any).storyImages) {
+      setCurrentImageIndex((prev) => 
+        prev === (wishlist as any).storyImages.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+
+  const prevImage = () => {
+    if (wishlist && (wishlist as any).storyImages) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? (wishlist as any).storyImages.length - 1 : prev - 1
+      );
+    }
+  };
 
   if (isLoading) {
     return (
@@ -274,12 +301,19 @@ export default function WishlistDetail() {
                     <Separator className="my-4" />
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {(wishlist as any).storyImages.map((imagePath: string, index: number) => (
-                        <div key={index} className="relative group">
+                        <div 
+                          key={index} 
+                          className="relative group cursor-pointer"
+                          onClick={() => openCarousel(index)}
+                        >
                           <img
                             src={imagePath}
                             alt={`Story image ${index + 1}`}
-                            className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                            className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
                           />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
+                            <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
+                          </div>
                           <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
                             {index + 1} of {(wishlist as any).storyImages.length}
                           </div>
@@ -483,6 +517,80 @@ export default function WishlistDetail() {
           </div>
         </div>
       </div>
+
+      {/* Image Carousel Modal */}
+      {showImageCarousel && (wishlist as any).storyImages && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+          {/* Close Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute top-4 right-4 text-white hover:bg-white/20 z-10"
+            onClick={() => setShowImageCarousel(false)}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+
+          {/* Previous Button */}
+          {(wishlist as any).storyImages.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 z-10"
+              onClick={prevImage}
+            >
+              <ChevronLeft className="h-8 w-8" />
+            </Button>
+          )}
+
+          {/* Next Button */}
+          {(wishlist as any).storyImages.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 z-10"
+              onClick={nextImage}
+            >
+              <ChevronRight className="h-8 w-8" />
+            </Button>
+          )}
+
+          {/* Main Image */}
+          <div className="max-w-4xl max-h-[80vh] mx-auto px-4">
+            <img
+              src={(wishlist as any).storyImages[currentImageIndex]}
+              alt={`Story image ${currentImageIndex + 1}`}
+              className="w-full h-full object-contain rounded-lg"
+            />
+            
+            {/* Image Counter */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-white px-4 py-2 rounded-full">
+              {currentImageIndex + 1} of {(wishlist as any).storyImages.length}
+            </div>
+          </div>
+
+          {/* Thumbnail Strip */}
+          {(wishlist as any).storyImages.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-16 flex space-x-2 max-w-md overflow-x-auto">
+              {(wishlist as any).storyImages.map((imagePath: string, index: number) => (
+                <div
+                  key={index}
+                  className={`flex-shrink-0 cursor-pointer border-2 rounded ${
+                    index === currentImageIndex ? 'border-coral' : 'border-transparent'
+                  }`}
+                  onClick={() => setCurrentImageIndex(index)}
+                >
+                  <img
+                    src={imagePath}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

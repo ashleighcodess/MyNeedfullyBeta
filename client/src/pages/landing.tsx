@@ -147,7 +147,7 @@ export default function Landing() {
               className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-8 py-4 text-lg shadow-lg"
             >
               <Gift className="mr-2 h-5 w-5" />
-              Browse Wishlists
+              Browse Needs Lists
             </Button>
             <Button 
               className="bg-navy text-white hover:bg-navy/90 rounded-full px-8 py-4 text-lg shadow-lg"
@@ -223,7 +223,7 @@ export default function Landing() {
                   <Progress value={wishlist.completionPercentage} className="mb-4" />
                   
                   <Button className="w-full bg-coral text-white hover:bg-coral/90">
-                    View Wishlist
+                    View Needs List
                   </Button>
                 </CardContent>
               </Card>
@@ -232,7 +232,7 @@ export default function Landing() {
           
           <div className="text-center mt-12">
             <Button className="bg-navy text-white hover:bg-navy/90 px-8 py-4 text-lg rounded-full">
-              View All Wishlists
+              View All Needs Lists
             </Button>
           </div>
         </div>
