@@ -4,6 +4,32 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
+
+// Custom Person Carry Box SVG Component
+const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Person head */}
+    <circle cx="8" cy="4" r="2" />
+    {/* Person body */}
+    <path d="M8 6c-1.5 0-2.5 1-2.5 2.5v3c0 0.5 0.2 1 0.6 1.3l1.4 1.2v4c0 0.6 0.4 1 1 1s1-0.4 1-1v-4l1.4-1.2c0.4-0.3 0.6-0.8 0.6-1.3v-3C10.5 7 9.5 6 8 6z" />
+    {/* Arms holding box */}
+    <path d="M5.5 9c-0.3 0-0.5 0.2-0.5 0.5v2c0 0.3 0.2 0.5 0.5 0.5h1v-3h-1z" />
+    <path d="M10.5 9v3h1c0.3 0 0.5-0.2 0.5-0.5v-2c0-0.3-0.2-0.5-0.5-0.5h-1z" />
+    {/* Box being carried */}
+    <rect x="13" y="8" width="6" height="5" rx="0.5" fill="currentColor" opacity="0.8" />
+    {/* Box details */}
+    <rect x="14" y="9" width="1" height="1" opacity="0.6" />
+    <rect x="17" y="9" width="1" height="1" opacity="0.6" />
+    <rect x="14" y="11" width="4" height="0.5" opacity="0.6" />
+    {/* Motion lines */}
+    <path d="M20 6l1.5-1 M21 8l1-0.5 M20.5 10l1.2-0.8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+  </svg>
+);
 import logoPath from "@assets/Logo_1_1751586675899.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
@@ -387,7 +413,7 @@ export default function Landing() {
                 <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
-                      <Gift className="h-6 w-6" />
+                      <PersonCarryBoxIcon className="h-6 w-6" />
                     </div>
                     <div>
                       <div className="text-3xl font-bold">{needsFulfilled.toLocaleString()}+</div>
