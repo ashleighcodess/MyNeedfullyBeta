@@ -121,7 +121,7 @@ export default function Landing() {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
-            A trusted platform where families in crisis, nonprofits, and individuals can share their specific needs while generous donors provide direct support.
+            Create and Share a Needs List to Help Yourself or Loved Ones. Get the Support You Need During Tough Times.
           </p>
 
           {/* Search Bar */}
