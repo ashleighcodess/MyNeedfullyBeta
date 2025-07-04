@@ -56,8 +56,8 @@ export default function Navigation() {
           <div className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <a 
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                <div 
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
                     isActiveLink(item.href)
                       ? 'text-coral bg-coral/10' 
                       : 'text-gray-700 hover:text-coral hover:bg-coral/5'
@@ -65,7 +65,7 @@ export default function Navigation() {
                 >
                   <item.icon className="h-4 w-4" />
                   <span>{item.label}</span>
-                </a>
+                </div>
               </Link>
             ))}
           </div>

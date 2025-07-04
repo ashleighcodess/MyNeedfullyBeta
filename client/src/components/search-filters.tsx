@@ -69,7 +69,7 @@ export default function SearchFilters({ filters, onFiltersChange }: SearchFilter
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               {CATEGORIES.map((category) => (
                 <SelectItem key={category.value} value={category.value}>
                   <div className="flex items-center space-x-2">
@@ -94,7 +94,7 @@ export default function SearchFilters({ filters, onFiltersChange }: SearchFilter
               <SelectValue placeholder="All urgency levels" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Urgency Levels</SelectItem>
+              <SelectItem value="all">All Urgency Levels</SelectItem>
               {URGENCY_LEVELS.map((level) => (
                 <SelectItem key={level.value} value={level.value}>
                   <div className={`flex items-center space-x-2 px-2 py-1 rounded text-sm`}>
