@@ -672,39 +672,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   async removeUser(id: string): Promise<void> {
-    // Remove user data in order to maintain referential integrity
-    // 1. Remove analytics events
-    await db.delete(analyticsEvents).where(eq(analyticsEvents.userId, id));
-    
-    // 2. Remove notifications for this user
-    await db.delete(notifications).where(eq(notifications.userId, id));
-    
-    // 3. Remove thank you notes sent to/from this user  
-    await db.delete(thankYouNotes).where(or(
-      eq(thankYouNotes.fromUserId, id),
-      eq(thankYouNotes.toUserId, id)
-    ));
-    
-    // 4. Remove donations made by this user (using supporter_id)
-    await db.delete(donations).where(eq(donations.supporterId, id));
-    
-    // 5. Remove wishlist items from wishlists owned by this user
-    const userWishlists = await db.select({ id: wishlists.id }).from(wishlists).where(eq(wishlists.userId, id));
-    for (const wishlist of userWishlists) {
-      await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, wishlist.id));
+    try {
+      // Use raw SQL for reliable deletion to avoid Drizzle schema issues
+      await db.execute(sql`DELETE FROM analytics_events WHERE user_id = ${id}`);
+      await db.execute(sql`DELETE FROM notifications WHERE user_id = ${id}`);
+      await db.execute(sql`DELETE FROM thank_you_notes WHERE from_user_id = ${id} OR to_user_id = ${id}`);
+      await db.execute(sql`DELETE FROM donations WHERE supporter_id = ${id}`);
+      
+      // Remove wishlist items for user's wishlists first
+      await db.execute(sql`
+        DELETE FROM wishlist_items 
+        WHERE wishlist_id IN (SELECT id FROM wishlists WHERE user_id = ${id})
+      `);
+      
+      // Remove user's wishlists
+      await db.execute(sql`DELETE FROM wishlists WHERE user_id = ${id}`);
+      
+      // Remove auth tokens
+      await db.execute(sql`DELETE FROM password_reset_tokens WHERE user_id = ${id}`);
+      await db.execute(sql`DELETE FROM email_verification_tokens WHERE user_id = ${id}`);
+      
+      // Finally remove the user
+      await db.execute(sql`DELETE FROM users WHERE id = ${id}`);
+    } catch (error) {
+      console.error('Error in removeUser:', error);
+      throw error;
     }
-    
-    // 6. Remove wishlists owned by this user
-    await db.delete(wishlists).where(eq(wishlists.userId, id));
-    
-    // 7. Remove password reset tokens
-    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, id));
-    
-    // 8. Remove email verification tokens  
-    await db.delete(emailVerificationTokens).where(eq(emailVerificationTokens.userId, id));
-    
-    // 9. Finally, remove the user record
-    await db.delete(users).where(eq(users.id, id));
   }
 
   async getUsersCreatedAfter(date: Date): Promise<User[]> {
