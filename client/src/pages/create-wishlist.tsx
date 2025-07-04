@@ -16,9 +16,9 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { CATEGORIES, URGENCY_LEVELS, SAMPLE_LOCATIONS } from "@/lib/constants";
-import { Plus, Save, MapPin, AlertCircle, Heart } from "lucide-react";
+import { Plus, Save, MapPin, AlertCircle, Heart, Upload, X, Camera } from "lucide-react";
 
-const createWishlistSchema = z.object({
+const createNeedsListSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100, "Title too long"),
   description: z.string().min(20, "Description must be at least 20 characters").max(1000, "Description too long"),
   story: z.string().min(50, "Please share more details about your situation").max(2000, "Story too long"),
@@ -36,16 +36,18 @@ const createWishlistSchema = z.object({
   }),
 });
 
-type CreateWishlistForm = z.infer<typeof createWishlistSchema>;
+type CreateNeedsListForm = z.infer<typeof createNeedsListSchema>;
 
-export default function CreateWishlist() {
+export default function CreateNeedsList() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const [step, setStep] = useState(1);
+  const [storyImages, setStoryImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
 
-  const form = useForm<CreateWishlistForm>({
-    resolver: zodResolver(createWishlistSchema),
+  const form = useForm<CreateNeedsListForm>({
+    resolver: zodResolver(createNeedsListSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -65,18 +67,81 @@ export default function CreateWishlist() {
     },
   });
 
-  const createWishlistMutation = useMutation({
-    mutationFn: async (data: CreateWishlistForm) => {
-      return await apiRequest("POST", "/api/wishlists", data);
+  // Image upload handlers
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+
+    // Limit to 5 images total
+    const remainingSlots = 5 - storyImages.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+    
+    filesToAdd.forEach((file) => {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast({
+          title: "File too large",
+          description: "Please select images smaller than 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select only image files",
+          variant: "destructive",
+        });
+        return;
+      }
+    });
+
+    setStoryImages(prev => [...prev, ...filesToAdd]);
+    
+    // Create preview URLs
+    filesToAdd.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreviewUrls(prev => [...prev, e.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setStoryImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const createNeedsListMutation = useMutation({
+    mutationFn: async (data: CreateNeedsListForm) => {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('needsListData', JSON.stringify(data));
+      
+      // Add images to formData
+      storyImages.forEach((image) => {
+        formData.append('storyImage', image);
+      });
+
+      const response = await fetch("/api/wishlists", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+
+      return response.json();
     },
-    onSuccess: async (response) => {
-      const wishlist = await response.json();
+    onSuccess: (wishlist) => {
       queryClient.invalidateQueries({ queryKey: ['/api/wishlists'] });
       queryClient.invalidateQueries({ queryKey: [`/api/users/${user?.id}/wishlists`] });
       
       toast({
-        title: "Wishlist Created!",
-        description: "Your wishlist has been created successfully. You can now add items to it.",
+        title: "Needs List Created!",
+        description: "Your needs list has been created successfully. You can now add items to it.",
       });
       
       navigate(`/wishlist/${wishlist.id}`);
@@ -96,14 +161,14 @@ export default function CreateWishlist() {
       
       toast({
         title: "Error",
-        description: "Failed to create wishlist. Please try again.",
+        description: "Failed to create needs list. Please try again.",
         variant: "destructive",
       });
     },
   });
 
-  const onSubmit = (data: CreateWishlistForm) => {
-    createWishlistMutation.mutate(data);
+  const onSubmit = (data: CreateNeedsListForm) => {
+    createNeedsListMutation.mutate(data);
   };
 
   const nextStep = async () => {
@@ -134,7 +199,7 @@ export default function CreateWishlist() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Create Your Wishlist</h1>
+          <h1 className="text-3xl font-bold text-navy mb-2">Create Your Needs List</h1>
           <p className="text-gray-600">Share your needs with our caring community</p>
         </div>
 
@@ -174,7 +239,7 @@ export default function CreateWishlist() {
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Wishlist Title *</FormLabel>
+                        <FormLabel>Needs List Title *</FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="e.g., Help Our Family After House Fire"
@@ -224,6 +289,65 @@ export default function CreateWishlist() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Image Upload Section */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Camera className="inline h-4 w-4 mr-1" />
+                        Add Photos to Tell Your Story
+                      </label>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Upload images that provide insight or proof of your situation. Photos help build trust and tell your story more effectively. (Optional, up to 5 images)
+                      </p>
+                      
+                      {/* Image Upload Button */}
+                      <div className="mb-4">
+                        <input
+                          type="file"
+                          id="story-images"
+                          multiple
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor="story-images"
+                          className={`inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coral cursor-pointer ${
+                            storyImages.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''
+                          }`}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          {storyImages.length === 0 ? 'Upload Photos' : `Add More Photos (${storyImages.length}/5)`}
+                        </label>
+                      </div>
+
+                      {/* Image Previews */}
+                      {imagePreviewUrls.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                          {imagePreviewUrls.map((url, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={url}
+                                alt={`Story image ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                              <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                {index + 1}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Category */}
@@ -441,15 +565,15 @@ export default function CreateWishlist() {
                     </Button>
                     <Button 
                       type="submit" 
-                      disabled={createWishlistMutation.isPending}
+                      disabled={createNeedsListMutation.isPending}
                       className="bg-coral hover:bg-coral/90"
                     >
-                      {createWishlistMutation.isPending ? (
+                      {createNeedsListMutation.isPending ? (
                         <>Creating...</>
                       ) : (
                         <>
                           <Save className="mr-2 h-4 w-4" />
-                          Create Wishlist
+                          Create Needs List
                         </>
                       )}
                     </Button>

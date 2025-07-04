@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { storage } from "./storage";
 import { setupMultiAuth, isAuthenticated } from "./auth/multiAuth";
 import { z } from "zod";
@@ -18,6 +21,34 @@ const RAINFOREST_API_URL = "https://api.rainforestapi.com/request";
 
 // WebSocket connections map
 const wsConnections = new Map<string, WebSocket>();
+
+// Multer configuration for file uploads
+const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -152,18 +183,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/wishlists', isAuthenticated, async (req: any, res) => {
+  app.post('/api/wishlists', isAuthenticated, upload.array('storyImage', 5), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const wishlistData = insertWishlistSchema.parse({ ...req.body, userId });
       
-      const wishlist = await storage.createWishlist(wishlistData);
+      // Parse the form data
+      const needsListData = JSON.parse(req.body.needsListData);
+      const wishlistData = insertWishlistSchema.parse({ ...needsListData, userId });
+      
+      // Handle uploaded images
+      const storyImages: string[] = [];
+      if (req.files && Array.isArray(req.files)) {
+        req.files.forEach((file: any) => {
+          // Store relative path from public directory
+          storyImages.push(`/uploads/${file.filename}`);
+        });
+      }
+      
+      // Add story images to wishlist data
+      const wishlistWithImages = {
+        ...wishlistData,
+        storyImages: storyImages.length > 0 ? storyImages : undefined
+      };
+      
+      const wishlist = await storage.createWishlist(wishlistWithImages);
       
       // Record analytics event
       await storage.recordEvent({
         eventType: "wishlist_created",
         userId,
-        data: { wishlistId: wishlist.id },
+        data: { wishlistId: wishlist.id, imageCount: storyImages.length },
         userAgent: req.get('User-Agent'),
         ipAddress: req.ip,
       });

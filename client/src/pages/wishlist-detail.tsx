@@ -256,7 +256,28 @@ export default function WishlistDetail() {
                 {wishlist.story && (
                   <>
                     <Separator className="my-4" />
-                    <p className="text-gray-700 leading-relaxed">{wishlist.story}</p>
+                    <p className="text-gray-700 leading-relaxed mb-4">{wishlist.story}</p>
+                  </>
+                )}
+                
+                {/* Story Images */}
+                {(wishlist as any).storyImages && (wishlist as any).storyImages.length > 0 && (
+                  <>
+                    <Separator className="my-4" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {(wishlist as any).storyImages.map((imagePath: string, index: number) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={imagePath}
+                            alt={`Story image ${index + 1}`}
+                            className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                          />
+                          <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                            {index + 1} of {(wishlist as any).storyImages.length}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </>
                 )}
               </CardContent>

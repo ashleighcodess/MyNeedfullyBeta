@@ -72,6 +72,7 @@ export const wishlists = pgTable("wishlists", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   story: text("story"), // Detailed story/background
+  storyImages: text("story_images").array(), // Image paths for storytelling
   category: categoryEnum("category").notNull(),
   urgencyLevel: urgencyLevelEnum("urgency_level").default("medium"),
   status: wishlistStatusEnum("status").default("active"),
