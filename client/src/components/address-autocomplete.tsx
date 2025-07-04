@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
 import { Input } from "@/components/ui/input";
-import { FormControl } from "@/components/ui/form";
 import { useQuery } from "@tanstack/react-query";
 
 interface AddressComponent {
@@ -97,36 +96,32 @@ export default function AddressAutocomplete({
   // If Google Maps API key is not available, fall back to regular input
   if (!config?.apiKey) {
     return (
-      <FormControl>
-        <Input
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder={placeholder}
-          className={className}
-        />
-      </FormControl>
+      <Input
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder={placeholder}
+        className={className}
+      />
     );
   }
 
   return (
-    <FormControl>
-      <Autocomplete
-        apiKey={config.apiKey}
-        onPlaceSelected={handlePlaceSelected}
-        onChange={handleInputChange}
-        value={inputValue}
-        options={{
-          types: ["address"],
-          componentRestrictions: { country: "us" },
-          fields: ["address_components", "formatted_address", "geometry"],
-        }}
-        placeholder={placeholder}
-        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-        style={{
-          width: "100%",
-          fontSize: "14px",
-        }}
-      />
-    </FormControl>
+    <Autocomplete
+      apiKey={config.apiKey}
+      onPlaceSelected={handlePlaceSelected}
+      onChange={handleInputChange}
+      value={inputValue}
+      options={{
+        types: ["address"],
+        componentRestrictions: { country: "us" },
+        fields: ["address_components", "formatted_address", "geometry"],
+      }}
+      placeholder={placeholder}
+      className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      style={{
+        width: "100%",
+        fontSize: "14px",
+      }}
+    />
   );
 }

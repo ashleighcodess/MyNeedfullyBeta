@@ -1,0 +1,28 @@
+Cannot destructure property 'getFieldState' of 'useFormContext(...)' as it is null.
+The above error occurred in the <FormControl> component:
+
+    at https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/src/components/ui/form.tsx:130:9
+    at AddressAutocomplete (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/src/components/address-autocomplete.tsx:24:3)
+    at div
+    at div
+    at div
+    at _c9 (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/src/components/ui/card.tsx:114:12)
+    at div
+    at _c (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/src/components/ui/card.tsx:20:11)
+    at form
+    at div
+    at div
+    at EditWishlist (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/src/pages/edit-wishlist.tsx:37:18)
+    at Route (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=87f8efd3:323:16)
+    at Switch (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=87f8efd3:379:17)
+    at div
+    at div
+    at Router (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/src/App.tsx?v=kfHr1-5xUB4EKL4Rk2XO0:42:42)
+    at Provider (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-PLT6GTVM.js?v=87f8efd3:38:15)
+    at TooltipProvider (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=87f8efd3:67:5)
+    at QueryClientProvider (https://b43ecfcb-9a6e-4c63-a531-bff4f11e3298-00-3m44l0c05204y.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=87f8efd3:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Cannot destructure property 'getFieldState' of 'useFormContext(...)' as it is null.
