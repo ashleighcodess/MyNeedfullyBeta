@@ -1287,20 +1287,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/items/:itemId/pricing', async (req, res) => {
     try {
       const itemId = parseInt(req.params.itemId);
-      const item = await storage.getWishlistItems(itemId);
       
-      if (!item || item.length === 0) {
+      // Get item by querying the database directly via storage
+      const allItems = await storage.getWishlistItems(0); // Get all items first
+      const item = allItems.find(item => item.id === itemId);
+      
+      if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
-
-      const wishlistItem = item[0];
-      const searchQuery = wishlistItem.title;
+      const searchQuery = item.title;
       
       const serpService = getSerpAPIService();
       const results: any = {
-        amazon: { price: wishlistItem.price || '99.00', available: false },
-        walmart: { price: wishlistItem.price || '99.00', available: false },
-        target: { price: wishlistItem.price || '99.00', available: false }
+        amazon: { price: item.price || '99.00', available: false },
+        walmart: { price: item.price || '99.00', available: false },
+        target: { price: item.price || '99.00', available: false }
       };
 
       // Amazon pricing via RainforestAPI
@@ -1319,7 +1320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (amazonData.search_results && amazonData.search_results.length > 0) {
               const bestMatch = amazonData.search_results[0];
               results.amazon = {
-                price: bestMatch.price?.value || bestMatch.price?.raw || wishlistItem.price,
+                price: bestMatch.price?.value || bestMatch.price?.raw || item.price,
                 available: true,
                 link: `https://amazon.com/dp/${bestMatch.asin}?tag=needfully-20`
               };
@@ -1342,7 +1343,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const bestWalmartMatch = walmartResults[0];
             let walmartPrice = bestWalmartMatch.price;
             if (typeof walmartPrice === 'string') {
-              walmartPrice = parseFloat(walmartPrice.replace(/[^0-9.]/g, '')) || wishlistItem.price;
+              walmartPrice = parseFloat(walmartPrice.replace(/[^0-9.]/g, '')) || parseFloat(item.price || '0');
             }
             results.walmart = {
               price: (walmartPrice || 0).toString(),
@@ -1355,7 +1356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const bestTargetMatch = targetResults[0];
             let targetPrice = bestTargetMatch.price;
             if (typeof targetPrice === 'string') {
-              targetPrice = parseFloat(targetPrice.replace(/[^0-9.]/g, '')) || wishlistItem.price;
+              targetPrice = parseFloat(targetPrice.replace(/[^0-9.]/g, '')) || parseFloat(item.price || '0');
             }
             results.target = {
               price: (targetPrice || 0).toString(),
@@ -1370,8 +1371,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         itemId: itemId,
-        title: wishlistItem.title,
-        originalPrice: wishlistItem.price,
+        title: item.title,
+        originalPrice: item.price,
         pricing: results,
         lastUpdated: new Date().toISOString()
       });

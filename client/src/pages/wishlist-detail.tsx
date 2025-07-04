@@ -527,23 +527,23 @@ export default function WishlistDetail() {
                         </div>
 
                         {/* Buying Options - Back on the right side */}
-                        <div className={`px-6 py-6 flex flex-col justify-center w-[280px] flex-shrink-0 ${
+                        <div className={`px-4 py-3 flex flex-col justify-center w-[280px] flex-shrink-0 ${
                           item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
                         }`}>
-                          <h4 className={`font-semibold text-base mb-4 text-center ${
+                          <h4 className={`font-medium text-sm mb-2 text-center ${
                             item.isFulfilled ? 'text-gray-500' : 'text-gray-900'
                           }`}>
                             {item.isFulfilled ? 'Item Fulfilled' : 'Buying Options'}
                           </h4>
                           
-                          <div className="space-y-3">
+                          <div className="space-y-2">
                             {/* Amazon */}
-                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-3">
-                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-6 h-6 rounded-full" />
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-2">
+                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-5 h-5 rounded-full" />
                                 <div>
-                                  <div className="text-sm font-medium text-gray-900">Amazon</div>
-                                  <div className="text-lg font-bold text-gray-900">
+                                  <div className="text-xs font-medium text-gray-900">Amazon</div>
+                                  <div className="text-sm font-bold text-gray-900">
                                     ${itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00'}
                                     {itemPricing[item.id]?.pricing?.amazon?.available && (
                                       <span className="ml-2 text-xs text-green-600">Live Price</span>
@@ -577,12 +577,12 @@ export default function WishlistDetail() {
                             </div>
 
                             {/* Target */}
-                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-3">
-                                <img src="/logos/target-logo.png" alt="Target" className="w-6 h-6 rounded-full" />
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-2">
+                                <img src="/logos/target-logo.png" alt="Target" className="w-5 h-5 rounded-full" />
                                 <div>
-                                  <div className="text-sm font-medium text-gray-900">Target</div>
-                                  <div className="text-lg font-bold text-gray-900">
+                                  <div className="text-xs font-medium text-gray-900">Target</div>
+                                  <div className="text-sm font-bold text-gray-900">
                                     ${itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00'}
                                     {itemPricing[item.id]?.pricing?.target?.available && (
                                       <span className="ml-2 text-xs text-green-600">Live Price</span>
@@ -616,12 +616,12 @@ export default function WishlistDetail() {
                             </div>
 
                             {/* Walmart */}
-                            <div className="flex items-center justify-between p-3 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-3">
-                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-6 h-6 rounded-full" />
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-2">
+                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-5 h-5 rounded-full" />
                                 <div>
-                                  <div className="text-sm font-medium text-gray-900">Walmart</div>
-                                  <div className="text-lg font-bold text-gray-900">
+                                  <div className="text-xs font-medium text-gray-900">Walmart</div>
+                                  <div className="text-sm font-bold text-gray-900">
                                     ${itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00'}
                                     {itemPricing[item.id]?.pricing?.walmart?.available && (
                                       <span className="ml-2 text-xs text-green-600">Live Price</span>
