@@ -233,13 +233,15 @@ export default function ProductSearch() {
       }
     }
     return null;
-  }, [popularProducts]);
+  }, []);
 
   // Custom query with smart caching and fallbacks
-  const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page, getCacheKey]);
+  const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page]);
+  
+  const searchUrl = useMemo(() => buildSearchUrl(), [debouncedQuery, category, minPrice, maxPrice, page]);
   
   const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: [buildSearchUrl()],
+    queryKey: [searchUrl],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
     placeholderData: () => {
@@ -259,8 +261,7 @@ export default function ProductSearch() {
       }
       
       // Fetch from API with limited results for better performance
-      const url = buildSearchUrl();
-      const response = await fetch(url + (url.includes('?') ? '&' : '?') + 'limit=10');
+      const response = await fetch(searchUrl + (searchUrl.includes('?') ? '&' : '?') + 'limit=10');
       if (!response.ok) {
         throw new Error('Search failed');
       }
@@ -307,7 +308,7 @@ export default function ProductSearch() {
     
     // Show search results or cached popular products
     return searchResults?.products || [];
-  }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts]);
+  }, [debouncedQuery, searchResults, showFallbacks]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
