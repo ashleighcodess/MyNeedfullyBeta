@@ -137,6 +137,12 @@ export default function Navigation() {
                     Dashboard
                   </DropdownMenuItem>
                 </Link>
+                <Link href="/profile?tab=wishlists">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Heart className="mr-2 h-4 w-4" />
+                    My Needs Lists
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
