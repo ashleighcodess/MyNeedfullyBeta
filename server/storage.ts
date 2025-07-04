@@ -673,30 +673,32 @@ export class DatabaseStorage implements IStorage {
 
   async removeUser(id: string): Promise<void> {
     try {
-      // Delete in correct order to avoid foreign key constraint violations
+      // Use direct SQL execution for reliable deletion
+      const { pool } = await import('./db');
+      const client = await pool.connect();
       
-      // 1. Delete wishlist items first (they reference wishlists)
-      const userWishlists = await db.select({ id: wishlists.id }).from(wishlists).where(eq(wishlists.userId, id));
-      for (const wishlist of userWishlists) {
-        await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, wishlist.id));
+      try {
+        await client.query('BEGIN');
+        
+        // Delete in correct order
+        await client.query('DELETE FROM wishlist_items WHERE wishlist_id IN (SELECT id FROM wishlists WHERE user_id = $1)', [id]);
+        await client.query('DELETE FROM wishlists WHERE user_id = $1', [id]);
+        await client.query('DELETE FROM analytics_events WHERE user_id = $1', [id]);
+        await client.query('DELETE FROM notifications WHERE user_id = $1', [id]);
+        await client.query('DELETE FROM thank_you_notes WHERE from_user_id = $1 OR to_user_id = $1', [id]);
+        await client.query('DELETE FROM donations WHERE supporter_id = $1', [id]);
+        await client.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [id]);
+        await client.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [id]);
+        await client.query('DELETE FROM users WHERE id = $1', [id]);
+        
+        await client.query('COMMIT');
+        console.log(`Successfully removed user ${id}`);
+      } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+      } finally {
+        client.release();
       }
-      
-      // 2. Delete user's wishlists
-      await db.delete(wishlists).where(eq(wishlists.userId, id));
-      
-      // 3. Delete other user data (safe to ignore if tables don't exist)
-      try {
-        await db.delete(analyticsEvents).where(eq(analyticsEvents.userId, id));
-      } catch (e) { /* ignore if table doesn't exist */ }
-      
-      try {
-        await db.delete(notifications).where(eq(notifications.userId, id));
-      } catch (e) { /* ignore if table doesn't exist */ }
-      
-      // 4. Finally delete the user
-      await db.delete(users).where(eq(users.id, id));
-      
-      console.log(`Successfully removed user ${id}`);
     } catch (error) {
       console.error('Error in removeUser:', error);
       throw error;
