@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
 
-// Custom Person Carry Box SVG Component
+// Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
   <svg
     className={className}
@@ -28,6 +28,28 @@ const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) =
     <rect x="14" y="11" width="4" height="0.5" opacity="0.6" />
     {/* Motion lines */}
     <path d="M20 6l1.5-1 M21 8l1-0.5 M20.5 10l1.2-0.8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+  </svg>
+);
+
+// Custom Box Heart SVG Component for Needs List Fulfilled
+const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Box base */}
+    <rect x="3" y="8" width="18" height="12" rx="1" fill="currentColor" opacity="0.8" />
+    {/* Box top flaps */}
+    <path d="M3 8v-1c0-0.5 0.5-1 1-1h6v2H3z" opacity="0.6" />
+    <path d="M21 8v-1c0-0.5-0.5-1-1-1h-6v2h7z" opacity="0.6" />
+    {/* Box details */}
+    <rect x="5" y="10" width="2" height="1" opacity="0.4" />
+    <rect x="17" y="10" width="2" height="1" opacity="0.4" />
+    <rect x="5" y="16" width="14" height="0.5" opacity="0.4" />
+    {/* Heart on box */}
+    <path d="M12 13.5c-1.5-1.5-4-1.5-4 0.5s2.5 3.5 4 5c1.5-1.5 4-4 4-5s-2.5-2-4-0.5z" fill="currentColor" opacity="1" />
   </svg>
 );
 import logoPath from "@assets/Logo_1_1751586675899.png";
@@ -413,7 +435,7 @@ export default function Landing() {
                 <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
-                      <PersonCarryBoxIcon className="h-6 w-6" />
+                      <BoxHeartIcon className="h-6 w-6" />
                     </div>
                     <div>
                       <div className="text-3xl font-bold">{needsFulfilled.toLocaleString()}+</div>
@@ -452,7 +474,7 @@ export default function Landing() {
                 <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
-                      <Gift className="h-6 w-6" />
+                      <PersonCarryBoxIcon className="h-6 w-6" />
                     </div>
                     <div>
                       <div className="text-3xl font-bold">{productsDelivered >= 1000 ? `${Math.floor(productsDelivered / 1000)}k` : productsDelivered.toLocaleString()}</div>
