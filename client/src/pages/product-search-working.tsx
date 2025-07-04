@@ -538,12 +538,44 @@ export default function ProductSearchWorking() {
                               className="w-full h-full object-contain hover:object-cover transition-all duration-300"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
-                                target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop';
+                                // Show retailer-specific fallback for better context
+                                if (product.retailer === 'target') {
+                                  target.parentElement!.innerHTML = `
+                                    <div class="w-full h-full flex flex-col items-center justify-center bg-red-50 text-red-600">
+                                      <img src="/logos/target-logo.png" alt="Target" class="w-12 h-12 mb-2 opacity-50" />
+                                      <span class="text-sm font-medium">Image not available</span>
+                                    </div>
+                                  `;
+                                } else if (product.retailer === 'walmart') {
+                                  target.parentElement!.innerHTML = `
+                                    <div class="w-full h-full flex flex-col items-center justify-center bg-blue-50 text-blue-600">
+                                      <img src="/logos/walmart-logo.png" alt="Walmart" class="w-12 h-12 mb-2 opacity-50" />
+                                      <span class="text-sm font-medium">Image not available</span>
+                                    </div>
+                                  `;
+                                } else {
+                                  target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop';
+                                }
                               }}
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <ShoppingCart className="h-12 w-12 text-gray-400" />
+                            // Show retailer-specific placeholder when no image is provided
+                            <div className="w-full h-full flex flex-col items-center justify-center">
+                              {product.retailer === 'target' ? (
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-red-50 text-red-600">
+                                  <img src="/logos/target-logo.png" alt="Target" className="w-12 h-12 mb-2 opacity-50" />
+                                  <span className="text-sm font-medium">Image not available</span>
+                                </div>
+                              ) : product.retailer === 'walmart' ? (
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-blue-50 text-blue-600">
+                                  <img src="/logos/walmart-logo.png" alt="Walmart" className="w-12 h-12 mb-2 opacity-50" />
+                                  <span className="text-sm font-medium">Image not available</span>
+                                </div>
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                                  <ShoppingCart className="h-12 w-12 text-gray-400" />
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

@@ -186,21 +186,40 @@ export class SerpAPIService {
             }
           }
           
-          // Enhanced fallback image system for Target products
+          // Advanced Target image extraction and fallback system
           if (!imageUrl) {
-            // Provide category-based placeholder images for better UX
-            const title = result.title.toLowerCase();
-            if (title.includes('shampoo') || title.includes('hair')) {
-              imageUrl = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=center';
-            } else if (title.includes('body wash') || title.includes('soap')) {
-              imageUrl = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&crop=center';
-            } else if (title.includes('skincare') || title.includes('lotion')) {
-              imageUrl = 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop&crop=center';
-            } else if (title.includes('baby') || title.includes('infant')) {
-              imageUrl = 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop&crop=center';
-            } else {
-              // Generic product placeholder
-              imageUrl = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop&crop=center';
+            // First, try to extract actual product images from Target URLs
+            const targetUrl = result.link;
+            if (targetUrl && targetUrl.includes('target.com')) {
+              // Try to get actual Target product image by making a request to the product page
+              try {
+                const response = await fetch(targetUrl, {
+                  headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                  },
+                  timeout: 3000
+                });
+                
+                if (response.ok) {
+                  const html = await response.text();
+                  // Look for Target's product image patterns
+                  const imageMatches = html.match(/https:\/\/target\.scene7\.com\/is\/image\/Target\/[^"]+/g);
+                  if (imageMatches && imageMatches.length > 0) {
+                    imageUrl = imageMatches[0];
+                  }
+                }
+              } catch (error) {
+                // Continue to fallback if extraction fails
+                console.log('Failed to extract Target image, using fallback');
+              }
+            }
+            
+            // If still no image, leave empty to let frontend handle fallback
+            // This prevents showing unrelated stock photos for Target products
+            if (!imageUrl) {
+              // Don't set a placeholder - let the frontend show a proper "No Image Available" state
+              // or the Target logo instead of misleading product images
+              imageUrl = '';
             }
           }
           
