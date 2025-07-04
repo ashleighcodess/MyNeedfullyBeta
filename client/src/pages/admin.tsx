@@ -1,12 +1,23 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { 
   Users, 
   List, 
@@ -80,6 +91,28 @@ export default function AdminDashboard() {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  // User removal mutation
+  const removeUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      return await apiRequest('DELETE', `/api/admin/users/${userId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "User Removed",
+        description: "User has been removed and notified via email.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove user",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Don't render if not admin
   if (!user || user.userType !== 'admin') {
     return (
@@ -113,7 +146,9 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Welcome {user?.firstName || 'Admin'}
+              </h1>
               <p className="mt-1 text-sm text-gray-500">
                 Monitor and manage your MyNeedfully platform
               </p>
@@ -222,40 +257,46 @@ export default function AdminDashboard() {
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="overview" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {/* Recent Activity Feed */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Activity className="h-5 w-5 mr-2" />
+              <Card className="lg:col-span-2">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-lg">
+                    <Activity className="h-4 w-4 mr-2" />
                     Recent Activity
                   </CardTitle>
-                  <CardDescription>Latest platform events</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent>
                   {activityLoading ? (
                     <div className="space-y-2">
-                      {[...Array(5)].map((_, i) => (
+                      {[...Array(6)].map((_, i) => (
                         <div key={i} className="animate-pulse">
-                          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                          <div className="h-3 bg-gray-200 rounded w-1/2 mt-1"></div>
+                          <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                          <div className="h-2 bg-gray-200 rounded w-1/2 mt-1"></div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-1.5 max-h-64 overflow-y-auto">
                       {recentActivity?.slice(0, 10).map((activity: any, index: number) => (
-                        <div key={index} className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50">
-                          <div className="flex-shrink-0">
-                            {activity.type === 'donation' && <Heart className="h-4 w-4 text-red-500" />}
-                            {activity.type === 'wishlist' && <List className="h-4 w-4 text-blue-500" />}
-                            {activity.type === 'user' && <Users className="h-4 w-4 text-green-500" />}
-                            {activity.type === 'thank_you' && <MessageCircle className="h-4 w-4 text-purple-500" />}
+                        <div key={index} className="flex items-start space-x-2 p-2 rounded bg-gray-50 border-l-2 border-blue-200">
+                          <div className="flex-shrink-0 mt-0.5">
+                            {activity.type === 'purchase' && <Heart className="h-3 w-3 text-red-500" />}
+                            {activity.type === 'wishlist' && <List className="h-3 w-3 text-blue-500" />}
+                            {activity.type === 'user' && <Users className="h-3 w-3 text-green-500" />}
+                            {activity.type === 'thank_you' && <MessageCircle className="h-3 w-3 text-purple-500" />}
+                            {activity.type === 'search' && <Search className="h-3 w-3 text-orange-500" />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm text-gray-900">{activity.message}</p>
-                            <p className="text-xs text-gray-500">{activity.timeAgo}</p>
+                            <p className="text-xs text-gray-900 leading-tight">
+                              <span className="font-medium text-blue-600">
+                                User #{activity.userId?.slice(-4) || 'System'}
+                              </span>
+                              {' '}
+                              {activity.message}
+                            </p>
+                            <p className="text-xs text-gray-400">{activity.timeAgo}</p>
                           </div>
                         </div>
                       ))}
@@ -264,55 +305,54 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* System Health */}
+              {/* Compact System Health */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <BarChart3 className="h-5 w-5 mr-2" />
-                    Platform Health
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-lg">
+                    <Shield className="h-4 w-4 mr-2" />
+                    System Status
                   </CardTitle>
-                  <CardDescription>System performance metrics</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent>
                   {healthLoading ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {[...Array(4)].map((_, i) => (
                         <div key={i} className="animate-pulse">
-                          <div className="h-4 bg-gray-200 rounded"></div>
+                          <div className="h-3 bg-gray-200 rounded"></div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">API Response Time</span>
+                        <span className="text-xs font-medium">API</span>
                         <div className="flex items-center">
-                          <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-                          <span className="text-sm text-green-600">{systemHealth?.responseTime || "150ms"}</span>
+                          <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                          <span className="text-xs text-green-600">{systemHealth?.responseTime || "150ms"}</span>
                         </div>
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Database Status</span>
+                        <span className="text-xs font-medium">Database</span>
                         <div className="flex items-center">
-                          <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-                          <span className="text-sm text-green-600">Healthy</span>
+                          <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                          <span className="text-xs text-green-600">Online</span>
                         </div>
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Email Service</span>
+                        <span className="text-xs font-medium">Email</span>
                         <div className="flex items-center">
-                          <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-                          <span className="text-sm text-green-600">Operational</span>
+                          <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                          <span className="text-xs text-green-600">Active</span>
                         </div>
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Search API</span>
+                        <span className="text-xs font-medium">Search</span>
                         <div className="flex items-center">
-                          <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-                          <span className="text-sm text-green-600">Online</span>
+                          <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                          <span className="text-xs text-green-600">Ready</span>
                         </div>
                       </div>
                     </div>
@@ -345,7 +385,7 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="space-y-4">
                     {usersList?.slice(0, 10).map((user: any) => (
-                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                         <div className="flex items-center space-x-4">
                           <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center">
                             {user.profileImageUrl ? (
@@ -355,7 +395,10 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           <div>
-                            <p className="font-medium">{user.firstName} {user.lastName}</p>
+                            <p className="font-medium">
+                              {user.firstName} {user.lastName}
+                              <span className="text-xs text-gray-400 ml-2">#{user.id.slice(-4)}</span>
+                            </p>
                             <p className="text-sm text-gray-500">{user.email}</p>
                           </div>
                         </div>
@@ -366,6 +409,42 @@ export default function AdminDashboard() {
                           <Badge variant={user.isVerified ? 'default' : 'outline'}>
                             {user.isVerified ? 'Verified' : 'Unverified'}
                           </Badge>
+                          {user.userType !== 'admin' && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle className="flex items-center">
+                                    <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+                                    Remove User Account
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently remove <strong>{user.firstName} {user.lastName}</strong> from the platform. 
+                                    They will receive an automatic email notification about their account removal for violating terms and conditions.
+                                    This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => removeUserMutation.mutate(user.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                    disabled={removeUserMutation.isPending}
+                                  >
+                                    {removeUserMutation.isPending ? "Removing..." : "Remove User"}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -451,15 +530,21 @@ export default function AdminDashboard() {
                         {recentActivity?.map((activity: any, index: number) => (
                           <div key={index} className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50 border-l-4 border-coral">
                             <div className="flex-shrink-0 mt-1">
-                              {activity.type === 'donation_made' && <Heart className="h-4 w-4 text-red-500" />}
-                              {activity.type === 'wishlist_created' && <List className="h-4 w-4 text-blue-500" />}
-                              {activity.type === 'user_registered' && <Users className="h-4 w-4 text-green-500" />}
-                              {activity.type === 'thank_you_sent' && <MessageCircle className="h-4 w-4 text-purple-500" />}
-                              {activity.type === 'search' && <Eye className="h-4 w-4 text-orange-500" />}
+                              {activity.type === 'purchase' && <Heart className="h-4 w-4 text-red-500" />}
+                              {activity.type === 'wishlist' && <List className="h-4 w-4 text-blue-500" />}
+                              {activity.type === 'user' && <Users className="h-4 w-4 text-green-500" />}
+                              {activity.type === 'thank_you' && <MessageCircle className="h-4 w-4 text-purple-500" />}
+                              {activity.type === 'search' && <Search className="h-4 w-4 text-orange-500" />}
                               {activity.type === 'item_fulfilled' && <CheckCircle className="h-4 w-4 text-green-600" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900">{activity.message}</p>
+                              <p className="text-sm font-medium text-gray-900">
+                                <span className="font-medium text-blue-600">
+                                  User #{activity.userId?.slice(-4) || 'System'}
+                                </span>
+                                {' '}
+                                {activity.message}
+                              </p>
                               <div className="flex items-center justify-between mt-1">
                                 <p className="text-xs text-gray-500">{activity.timeAgo}</p>
                                 <Badge variant="outline" className="text-xs">
@@ -511,7 +596,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Heart className="h-4 w-4 text-red-500 mr-2" />
-                        <span className="text-sm">Donations</span>
+                        <span className="text-sm">Support Given</span>
                       </div>
                       <span className="text-sm font-medium">
                         {adminStats?.totalDonations || 0}

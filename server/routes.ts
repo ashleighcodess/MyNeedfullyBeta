@@ -2436,6 +2436,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Remove user endpoint
+  app.delete('/api/admin/users/:userId', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      
+      // Get user details before removal for email notification
+      const userToRemove = await storage.getUserById(userId);
+      if (!userToRemove) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Prevent admin from removing themselves
+      if (req.user.claims.sub === userId) {
+        return res.status(400).json({ message: 'Cannot remove your own admin account' });
+      }
+
+      // Prevent removing other admin users
+      if (userToRemove.userType === 'admin') {
+        return res.status(400).json({ message: 'Cannot remove admin users' });
+      }
+
+      // Remove user and all associated data
+      await storage.removeUser(userId);
+
+      // Send violation notification email
+      if (userToRemove.email) {
+        await emailService.sendAccountSecurityAlert(
+          userToRemove.email,
+          userToRemove.firstName || 'User',
+          'Account Removed',
+          'Your account has been removed from MyNeedfully due to violation of our terms and conditions. If you believe this was done in error, please contact our support team.'
+        );
+      }
+
+      res.json({ message: 'User removed successfully' });
+    } catch (error) {
+      console.error("Error removing user:", error);
+      res.status(500).json({ message: "Failed to remove user" });
+    }
+  });
+
   // Add download route for project backup
   app.get('/download', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'download.html'));

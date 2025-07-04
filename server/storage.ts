@@ -110,6 +110,8 @@ export interface IStorage {
   getFeaturedWishlists(): Promise<Wishlist[]>;
   getRecentActivity(): Promise<any[]>;
   getAllUsers(): Promise<User[]>;
+  getUserById(id: string): Promise<User | undefined>;
+  removeUser(id: string): Promise<void>;
   getUsersCreatedAfter(date: Date): Promise<User[]>;
   cleanupInactiveUsers(date: Date): Promise<number>;
   approveAllPendingWishlists(): Promise<number>;
@@ -662,6 +664,50 @@ export class DatabaseStorage implements IStorage {
   // Admin storage methods for administrative actions
   async getAllUsers(): Promise<User[]> {
     return db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async removeUser(id: string): Promise<void> {
+    // Remove user data in order to maintain referential integrity
+    // 1. Remove analytics events
+    await db.delete(analyticsEvents).where(eq(analyticsEvents.userId, id));
+    
+    // 2. Remove notifications sent to/from this user
+    await db.delete(notifications).where(or(
+      eq(notifications.userId, id),
+      eq(notifications.fromUserId, id)
+    ));
+    
+    // 3. Remove thank you notes sent to/from this user  
+    await db.delete(thankYouNotes).where(or(
+      eq(thankYouNotes.fromUserId, id),
+      eq(thankYouNotes.toUserId, id)
+    ));
+    
+    // 4. Remove donations made by this user
+    await db.delete(donations).where(eq(donations.donorUserId, id));
+    
+    // 5. Remove wishlist items from wishlists owned by this user
+    const userWishlists = await db.select({ id: wishlists.id }).from(wishlists).where(eq(wishlists.userId, id));
+    for (const wishlist of userWishlists) {
+      await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, wishlist.id));
+    }
+    
+    // 6. Remove wishlists owned by this user
+    await db.delete(wishlists).where(eq(wishlists.userId, id));
+    
+    // 7. Remove password reset tokens
+    await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, id));
+    
+    // 8. Remove email verification tokens  
+    await db.delete(emailVerificationTokens).where(eq(emailVerificationTokens.userId, id));
+    
+    // 9. Finally, remove the user record
+    await db.delete(users).where(eq(users.id, id));
   }
 
   async getUsersCreatedAfter(date: Date): Promise<User[]> {
