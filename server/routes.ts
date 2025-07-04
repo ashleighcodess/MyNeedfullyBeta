@@ -35,6 +35,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile routes
+  app.patch('/api/users/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const currentUserId = req.user.claims.sub;
+      
+      // Users can only update their own profile
+      if (userId !== currentUserId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      const userData = {
+        ...req.body,
+        updatedAt: new Date(),
+      };
+      
+      const user = await storage.updateUser(userId, userData);
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.patch('/api/users/:userId/privacy', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const currentUserId = req.user.claims.sub;
+      
+      // Users can only update their own privacy settings
+      if (userId !== currentUserId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      const privacyData = {
+        ...req.body,
+        updatedAt: new Date(),
+      };
+      
+      const user = await storage.updateUser(userId, privacyData);
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating privacy settings:", error);
+      res.status(500).json({ message: "Failed to update privacy settings" });
+    }
+  });
+
   // Wishlist routes
   app.get('/api/wishlists', async (req, res) => {
     try {

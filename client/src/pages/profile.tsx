@@ -107,7 +107,7 @@ export default function Profile() {
     
     if (!userWishlists || userWishlists.length === 0) {
       tasks.push({
-        title: "Create Your First Wishlist",
+        title: "Create Your First Needs List",
         description: "Share what you need with the community",
         action: "Create"
       });
@@ -178,18 +178,29 @@ export default function Profile() {
               <CardContent className="p-4">
                 <nav className="space-y-2">
                   {sidebarItems.map((item) => (
-                    <button
+                    <Link 
                       key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                        item.active 
-                          ? 'bg-coral text-white' 
-                          : 'text-gray-600 hover:bg-gray-100'
-                      }`}
+                      href={
+                        item.id === 'profile' ? '/profile' :
+                        item.id === 'lists' ? '/profile' :
+                        item.id === 'privacy' ? '/profile/privacy' :
+                        item.id === 'create' ? '/create' :
+                        item.id === 'find' ? '/find' :
+                        item.id === 'archive' ? '/profile' : '/profile'
+                      }
                     >
-                      <item.icon className="h-4 w-4" />
-                      <span className="text-sm">{item.label}</span>
-                    </button>
+                      <button
+                        onClick={() => setActiveTab(item.id)}
+                        className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                          item.active 
+                            ? 'bg-coral text-white' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span className="text-sm">{item.label}</span>
+                      </button>
+                    </Link>
                   ))}
                   
                   <div className="border-t pt-2 mt-4">
@@ -250,10 +261,12 @@ export default function Profile() {
                     <div className="text-right">
                       <div className="text-2xl font-bold text-coral mb-1">{profileCompletion}%</div>
                       <div className="text-sm text-gray-600 mb-4">Complete Profile</div>
-                      <Button className="bg-coral hover:bg-coral/90">
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit Profile
-                      </Button>
+                      <Link href="/profile/edit">
+                        <Button className="bg-coral hover:bg-coral/90">
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit Profile
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -329,7 +342,7 @@ export default function Profile() {
                       <div className="text-2xl font-bold text-navy mb-1">
                         {userWishlists?.length || 0}
                       </div>
-                      <div className="text-sm text-gray-600">Wishlists Created</div>
+                      <div className="text-sm text-gray-600">Needs Lists Created</div>
                     </CardContent>
                   </Card>
                   

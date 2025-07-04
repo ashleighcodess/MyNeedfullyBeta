@@ -33,8 +33,18 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  phone: varchar("phone"),
+  location: varchar("location"),
+  bio: text("bio"),
   userType: varchar("user_type").notNull().default("user"), // 'user', 'admin'
   isVerified: boolean("is_verified").default(false),
+  showNeedsListsLive: boolean("show_needs_lists_live").default(true),
+  hideNeedsListsFromPublic: boolean("hide_needs_lists_from_public").default(false),
+  showProfileInSearch: boolean("show_profile_in_search").default(true),
+  allowDirectMessages: boolean("allow_direct_messages").default(true),
+  showDonationHistory: boolean("show_donation_history").default(true),
+  emailNotifications: boolean("email_notifications").default(true),
+  pushNotifications: boolean("push_notifications").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
