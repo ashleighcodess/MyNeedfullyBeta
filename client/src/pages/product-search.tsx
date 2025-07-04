@@ -61,8 +61,24 @@ export default function ProductSearch() {
   };
 
   const formatPrice = (price: any) => {
-    if (!price || price.raw === undefined) return 'Price not available';
-    return `$${price.raw.toFixed(2)}`;
+    if (!price) return 'Price not available';
+    
+    // Handle RainforestAPI price format
+    if (price.value !== undefined) {
+      return `$${price.value.toFixed(2)}`;
+    }
+    
+    // Handle demo data price format
+    if (price.raw !== undefined) {
+      return `$${price.raw.toFixed(2)}`;
+    }
+    
+    // Handle string price format
+    if (typeof price === 'string') {
+      return price;
+    }
+    
+    return 'Price not available';
   };
 
   const formatRating = (rating: any) => {
@@ -77,8 +93,10 @@ export default function ProductSearch() {
 
   // Build Amazon affiliate link using ASIN
   const buildAmazonAffiliateLink = (asin: string, tag: string = 'needfully-20') => {
-    if (!asin) return '#';
-    return `https://www.amazon.com/dp/${asin}?tag=${tag}`;
+    if (!asin || asin === '#') return '#';
+    // Clean ASIN in case it has extra characters
+    const cleanAsin = asin.trim();
+    return `https://www.amazon.com/dp/${cleanAsin}?tag=${tag}`;
   };
 
   return (
