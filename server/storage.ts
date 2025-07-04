@@ -676,11 +676,8 @@ export class DatabaseStorage implements IStorage {
     // 1. Remove analytics events
     await db.delete(analyticsEvents).where(eq(analyticsEvents.userId, id));
     
-    // 2. Remove notifications sent to/from this user
-    await db.delete(notifications).where(or(
-      eq(notifications.userId, id),
-      eq(notifications.fromUserId, id)
-    ));
+    // 2. Remove notifications for this user
+    await db.delete(notifications).where(eq(notifications.userId, id));
     
     // 3. Remove thank you notes sent to/from this user  
     await db.delete(thankYouNotes).where(or(
@@ -688,8 +685,8 @@ export class DatabaseStorage implements IStorage {
       eq(thankYouNotes.toUserId, id)
     ));
     
-    // 4. Remove donations made by this user
-    await db.delete(donations).where(eq(donations.donorUserId, id));
+    // 4. Remove donations made by this user (using supporter_id)
+    await db.delete(donations).where(eq(donations.supporterId, id));
     
     // 5. Remove wishlist items from wishlists owned by this user
     const userWishlists = await db.select({ id: wishlists.id }).from(wishlists).where(eq(wishlists.userId, id));
