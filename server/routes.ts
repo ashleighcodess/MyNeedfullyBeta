@@ -234,6 +234,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put('/api/wishlists/:id', isAuthenticated, upload.array('storyImages', 5), async (req: any, res) => {
+    try {
+      const wishlistId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      
+      // Verify user owns the wishlist
+      const existingWishlist = await storage.getWishlist(wishlistId);
+      if (!existingWishlist || existingWishlist.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      // Parse form data
+      const updateData: any = {
+        title: req.body.title,
+        description: req.body.description,
+        story: req.body.story,
+        location: req.body.location,
+        urgencyLevel: req.body.urgencyLevel,
+        category: req.body.category,
+        shippingAddress: JSON.parse(req.body.shippingAddress || '{}'),
+      };
+      
+      // Handle story images
+      let storyImages = [];
+      
+      // Keep existing images that weren't removed
+      const existingImages = JSON.parse(req.body.existingImages || '[]');
+      storyImages.push(...existingImages);
+      
+      // Add new uploaded images
+      if (req.files && req.files.length > 0) {
+        const newImagePaths = req.files.map((file: any) => `/uploads/${file.filename}`);
+        storyImages.push(...newImagePaths);
+      }
+      
+      // Limit to 5 images total
+      if (storyImages.length > 5) {
+        storyImages = storyImages.slice(0, 5);
+      }
+      
+      updateData.storyImages = storyImages;
+      
+      const updatedWishlist = await storage.updateWishlist(wishlistId, updateData);
+      
+      res.json(updatedWishlist);
+    } catch (error) {
+      console.error("Error updating wishlist:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update wishlist" });
+    }
+  });
+
   app.get('/api/users/:userId/wishlists', isAuthenticated, async (req: any, res) => {
     try {
       const { userId } = req.params;

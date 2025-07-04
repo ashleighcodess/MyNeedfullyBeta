@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Eye, Heart } from "lucide-react";
+import { MapPin, Clock, Eye, Heart, Edit } from "lucide-react";
 
 interface WishlistCardProps {
   wishlist: {
@@ -23,9 +23,10 @@ interface WishlistCardProps {
     };
   };
   showActions?: boolean;
+  isOwner?: boolean;
 }
 
-export default function WishlistCard({ wishlist, showActions = true }: WishlistCardProps) {
+export default function WishlistCard({ wishlist, showActions = true, isOwner = false }: WishlistCardProps) {
   const completionPercentage = wishlist.totalItems > 0 
     ? Math.round((wishlist.fulfilledItems / wishlist.totalItems) * 100) 
     : 0;
@@ -133,13 +134,26 @@ export default function WishlistCard({ wishlist, showActions = true }: WishlistC
                 View Wishlist
               </Button>
             </Link>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-coral text-coral hover:bg-coral/10"
-            >
-              <Heart className="h-4 w-4" />
-            </Button>
+            {isOwner && (
+              <Link href={`/edit-wishlist/${wishlist.id}`}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-coral text-coral hover:bg-coral/10"
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
+            {!isOwner && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-coral text-coral hover:bg-coral/10"
+              >
+                <Heart className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         )}
       </CardContent>

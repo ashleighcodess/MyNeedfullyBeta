@@ -423,7 +423,7 @@ export default function Profile() {
                     {activeWishlists.length > 0 ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {activeWishlists.map((wishlist: any) => (
-                          <WishlistCard key={wishlist.id} wishlist={wishlist} />
+                          <WishlistCard key={wishlist.id} wishlist={wishlist} isOwner={true} />
                         ))}
                       </div>
                     ) : (
@@ -453,7 +453,7 @@ export default function Profile() {
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {completedWishlists.map((wishlist: any) => (
-                          <WishlistCard key={wishlist.id} wishlist={wishlist} />
+                          <WishlistCard key={wishlist.id} wishlist={wishlist} isOwner={true} />
                         ))}
                       </div>
                     </CardContent>

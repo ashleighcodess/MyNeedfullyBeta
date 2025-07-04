@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "wouter";
+import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Navigation from "@/components/navigation";
@@ -27,12 +27,14 @@ import {
   Check,
   MessageSquare,
   Plus,
-  AlertCircle
+  AlertCircle,
+  Edit
 } from "lucide-react";
 
 export default function WishlistDetail() {
   const { id } = useParams();
   const { user } = useAuth();
+  const [, navigate] = useLocation();
   const { toast } = useToast();
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [showThankYouNote, setShowThankYouNote] = useState(false);
@@ -218,6 +220,12 @@ export default function WishlistDetail() {
               <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
                 {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
               </Badge>
+              {isOwner && (
+                <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
+              )}
               <Button variant="outline" size="sm" onClick={shareWishlist}>
                 <Share2 className="mr-2 h-4 w-4" />
                 Share

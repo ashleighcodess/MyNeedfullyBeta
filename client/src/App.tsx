@@ -8,6 +8,7 @@ import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import BrowseWishlists from "@/pages/browse-wishlists";
 import CreateNeedsList from "@/pages/create-wishlist";
+import EditWishlist from "@/pages/edit-wishlist";
 import WishlistDetail from "@/pages/wishlist-detail";
 import ProductSearch from "@/pages/product-search";
 import Profile from "@/pages/profile";
@@ -43,6 +44,7 @@ function Router() {
               <Route path="/browse" component={BrowseWishlists} />
               <Route path="/find" component={BrowseWishlists} />
               <Route path="/create" component={CreateNeedsList} />
+              <Route path="/edit-wishlist/:id" component={EditWishlist} />
               <Route path="/needslist/:id" component={WishlistDetail} />
               <Route path="/wishlist/:id" component={WishlistDetail} />
               <Route path="/products" component={ProductSearch} />
