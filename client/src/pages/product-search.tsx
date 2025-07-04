@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/navigation";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -37,6 +38,7 @@ export default function ProductSearch() {
   const [searchCache, setSearchCache] = useState(new Map());
   const [location, navigate] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   
   // Get wishlistId from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
@@ -93,8 +95,8 @@ export default function ProductSearch() {
 
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
-    queryKey: ['/api/user/wishlists'],
-    enabled: !wishlistId, // Only fetch if no specific wishlist is provided
+    queryKey: [`/api/users/${user?.id}/wishlists`],
+    enabled: !wishlistId && !!user?.id, // Only fetch if no specific wishlist is provided and user is authenticated
   });
 
   // Custom query with caching logic
@@ -187,9 +189,13 @@ export default function ProductSearch() {
     mutationFn: async (product: any) => {
       setAddingProductId(product.asin);
       
+      console.log("Debug - userWishlists:", userWishlists);
+      console.log("Debug - user:", user);
+      console.log("Debug - wishlistId:", wishlistId);
+      
       // If no wishlistId provided, use the first available wishlist
       let targetWishlistId = wishlistId;
-      if (!targetWishlistId && userWishlists && userWishlists.length > 0) {
+      if (!targetWishlistId && userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
         targetWishlistId = userWishlists[0].id.toString();
       }
       
