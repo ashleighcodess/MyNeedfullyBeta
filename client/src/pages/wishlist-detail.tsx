@@ -43,6 +43,67 @@ export default function WishlistDetail() {
   const [showThankYouNote, setShowThankYouNote] = useState(false);
   const [showImageCarousel, setShowImageCarousel] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showAllActivity, setShowAllActivity] = useState(false);
+
+  // Mock recent activity data - in real implementation this would come from API
+  const recentActivities = [
+    {
+      id: 1,
+      type: 'purchase',
+      message: 'A supporter purchased an item off this list',
+      timestamp: '5 minutes ago',
+      animate: true
+    },
+    {
+      id: 2,
+      type: 'share',
+      message: 'A supporter shared this list',
+      timestamp: '10 minutes ago',
+      animate: false
+    },
+    {
+      id: 3,
+      type: 'view',
+      message: 'A supporter viewed this needs list',
+      timestamp: '15 minutes ago',
+      animate: false
+    },
+    {
+      id: 4,
+      type: 'purchase',
+      message: 'A supporter purchased 2 items from this list',
+      timestamp: '1 hour ago',
+      animate: false
+    },
+    {
+      id: 5,
+      type: 'share',
+      message: 'A supporter shared this list with friends',
+      timestamp: '2 hours ago',
+      animate: false
+    },
+    {
+      id: 6,
+      type: 'view',
+      message: 'A supporter viewed this needs list',
+      timestamp: '3 hours ago',
+      animate: false
+    },
+    {
+      id: 7,
+      type: 'purchase',
+      message: 'A supporter purchased a baby formula from this list',
+      timestamp: '4 hours ago',
+      animate: false
+    },
+    {
+      id: 8,
+      type: 'share',
+      message: 'A supporter shared this list on social media',
+      timestamp: '5 hours ago',
+      animate: false
+    }
+  ];
 
   const { data: wishlist, isLoading } = useQuery({
     queryKey: [`/api/wishlists/${id}`],
@@ -513,44 +574,6 @@ export default function WishlistDetail() {
               </div>
             )}
 
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-lg">
-                  <Heart className="mr-2 h-5 w-5 text-coral" />
-                  Recent Activity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-start space-x-2 text-sm">
-                    <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-gray-600">A supporter purchased an item off this list</p>
-                      <p className="text-gray-400 text-xs">5 minutes ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-2 text-sm">
-                    <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-gray-600">A supporter shared this list</p>
-                      <p className="text-gray-400 text-xs">10 minutes ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-2 text-sm">
-                    <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-gray-600">A supporter viewed this needs list</p>
-                      <p className="text-gray-400 text-xs">15 minutes ago</p>
-                    </div>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" className="w-full mt-4">
-                  See all
-                </Button>
-              </CardContent>
-            </Card>
-
             {/* Stats */}
             <Card>
               <CardHeader>
@@ -580,6 +603,72 @@ export default function WishlistDetail() {
                     <span className="font-semibold">{wishlist.shareCount || 0}</span>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                  <Heart className="mr-2 h-5 w-5 text-coral" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {recentActivities.slice(0, 3).map((activity, index) => (
+                    <div 
+                      key={activity.id} 
+                      className={`flex items-start space-x-2 text-sm transition-all duration-300 ${
+                        activity.animate ? 'animate-pulse' : ''
+                      } hover:bg-gray-50 p-2 rounded-lg cursor-pointer`}
+                    >
+                      <Heart className="h-4 w-4 text-coral flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-gray-600">{activity.message}</p>
+                        <p className="text-gray-400 text-xs">{activity.timestamp}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Dialog open={showAllActivity} onOpenChange={setShowAllActivity}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full mt-4 hover:bg-coral hover:text-white transition-colors duration-200">
+                      See all
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center">
+                        <Heart className="mr-2 h-5 w-5 text-coral" />
+                        All Recent Activity
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                      {recentActivities.map((activity, index) => (
+                        <div 
+                          key={activity.id}
+                          className={`flex items-start space-x-3 p-3 rounded-lg border transition-all duration-200 hover:shadow-md hover:border-coral/30 ${
+                            activity.animate ? 'bg-coral/5 border-coral/20' : 'bg-gray-50'
+                          }`}
+                          style={{ 
+                            animationDelay: `${index * 100}ms`,
+                            animation: 'fadeInUp 0.3s ease-out forwards'
+                          }}
+                        >
+                          <div className="flex-shrink-0 w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                            <Heart className="h-4 w-4 text-coral" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-gray-800 font-medium">{activity.message}</p>
+                            <p className="text-gray-500 text-sm mt-1">{activity.timestamp}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
           </div>
