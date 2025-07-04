@@ -37,7 +37,8 @@ import {
   Edit,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  GitMerge
 } from "lucide-react";
 
 export default function WishlistDetail() {
@@ -152,6 +153,34 @@ export default function WishlistDetail() {
       toast({
         title: "Item Removed",
         description: "Item has been removed from your needs list.",
+      });
+    },
+  });
+
+  // Merge duplicates mutation
+  const mergeDuplicatesMutation = useMutation({
+    mutationFn: () => 
+      apiRequest('POST', `/api/wishlists/${id}/merge-duplicates`),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
+      if (data.mergedCount > 0) {
+        toast({
+          title: "Duplicates Merged",
+          description: `Successfully merged ${data.mergedCount} duplicate item${data.mergedCount > 1 ? 's' : ''}.`,
+        });
+      } else {
+        toast({
+          title: "No Duplicates Found",
+          description: "No duplicate items were found to merge.",
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error("Error merging duplicates:", error);
+      toast({
+        title: "Error",
+        description: "Failed to merge duplicate items. Please try again.",
+        variant: "destructive",
       });
     },
   });
@@ -363,10 +392,21 @@ export default function WishlistDetail() {
                 {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
               </Badge>
               {isOwner && (
-                <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </Button>
+                <>
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => mergeDuplicatesMutation.mutate()}
+                    disabled={mergeDuplicatesMutation.isPending}
+                  >
+                    <GitMerge className="mr-2 h-4 w-4" />
+                    {mergeDuplicatesMutation.isPending ? "Merging..." : "Merge Duplicates"}
+                  </Button>
+                </>
               )}
               <Button variant="outline" size="sm" onClick={shareWishlist}>
                 <Share2 className="mr-2 h-4 w-4" />

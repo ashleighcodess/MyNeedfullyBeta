@@ -429,9 +429,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check for existing items with the same title to prevent duplicates
       const existingItems = await storage.getWishlistItems(wishlistId);
-      const duplicateItem = existingItems.find(item => 
-        item.title.toLowerCase().trim() === itemData.title.toLowerCase().trim()
-      );
+      
+      // Normalize titles for better comparison - remove extra spaces, punctuation, and common variations
+      const normalizeTitle = (title: string) => {
+        return title
+          .toLowerCase()
+          .trim()
+          .replace(/[.,\-\s]+/g, ' ')  // Replace punctuation and multiple spaces with single space
+          .replace(/\s+/g, ' ')        // Replace multiple spaces with single space
+          .trim();
+      };
+      
+      const normalizedNewTitle = normalizeTitle(itemData.title);
+      
+      const duplicateItem = existingItems.find(item => {
+        const normalizedExistingTitle = normalizeTitle(item.title);
+        
+        // Check for exact match after normalization
+        if (normalizedExistingTitle === normalizedNewTitle) {
+          return true;
+        }
+        
+        // Check if one title contains the other (for variations like "Product Name" vs "Product Name - Extra Info")
+        const minLength = Math.min(normalizedExistingTitle.length, normalizedNewTitle.length);
+        if (minLength > 10) { // Only check for partial matches if titles are reasonably long
+          return normalizedExistingTitle.includes(normalizedNewTitle) || 
+                 normalizedNewTitle.includes(normalizedExistingTitle);
+        }
+        
+        return false;
+      });
       
       let item;
       let isNewItem = true;
@@ -598,6 +625,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fulfilling wishlist item:", error);
       res.status(500).json({ message: "Failed to fulfill item" });
+    }
+  });
+
+  // Merge duplicate items in a wishlist
+  app.post('/api/wishlists/:id/merge-duplicates', isAuthenticated, async (req: any, res) => {
+    try {
+      const wishlistId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      
+      // Verify user owns the wishlist
+      const wishlist = await storage.getWishlist(wishlistId);
+      if (!wishlist || wishlist.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      const items = await storage.getWishlistItems(wishlistId);
+      const duplicateGroups = new Map();
+      
+      // Normalize titles for comparison
+      const normalizeTitle = (title: string) => {
+        return title
+          .toLowerCase()
+          .trim()
+          .replace(/[.,\-\s]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      };
+      
+      // Group items by normalized title
+      items.forEach(item => {
+        const normalizedTitle = normalizeTitle(item.title);
+        if (!duplicateGroups.has(normalizedTitle)) {
+          duplicateGroups.set(normalizedTitle, []);
+        }
+        duplicateGroups.get(normalizedTitle).push(item);
+      });
+      
+      let mergedCount = 0;
+      
+      // Merge duplicates
+      for (const [normalizedTitle, duplicateItems] of duplicateGroups) {
+        if (duplicateItems.length > 1) {
+          // Keep the first item and merge quantities
+          const keepItem = duplicateItems[0];
+          const totalQuantity = duplicateItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+          const totalFulfilled = duplicateItems.reduce((sum, item) => sum + (item.quantityFulfilled || 0), 0);
+          
+          // Update the kept item with merged quantities
+          await storage.updateWishlistItem(keepItem.id, {
+            quantity: totalQuantity,
+            quantityFulfilled: totalFulfilled,
+            isFulfilled: totalFulfilled >= totalQuantity
+          });
+          
+          // Delete the duplicate items
+          for (let i = 1; i < duplicateItems.length; i++) {
+            await storage.deleteWishlistItem(duplicateItems[i].id);
+          }
+          
+          mergedCount += duplicateItems.length - 1;
+        }
+      }
+      
+      res.json({ message: `Merged ${mergedCount} duplicate items`, mergedCount });
+    } catch (error) {
+      console.error("Error merging duplicates:", error);
+      res.status(500).json({ message: "Failed to merge duplicates" });
     }
   });
 
