@@ -36,9 +36,26 @@ export default function Profile() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
 
-  // Set document title
+  // Set document title and handle URL hash navigation
   useEffect(() => {
     document.title = 'Dashboard - MyNeedfully';
+    
+    // Check for hash fragment in URL and navigate to appropriate section
+    const hash = window.location.hash;
+    if (hash === '#my-lists') {
+      setActiveTab('my-lists');
+    }
+    
+    // Listen for hash changes
+    const handleHashChange = () => {
+      const newHash = window.location.hash;
+      if (newHash === '#my-lists') {
+        setActiveTab('my-lists');
+      }
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   const { data: userWishlists } = useQuery({

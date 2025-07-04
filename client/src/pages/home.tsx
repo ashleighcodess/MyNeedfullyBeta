@@ -105,7 +105,7 @@ export default function Home() {
                   </div>
                 </div>
               </Link>
-              <Link href="/profile">
+              <Link href="/profile#my-lists">
                 <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Settings className="h-5 w-5 text-coral mt-1" />
                   <div>
