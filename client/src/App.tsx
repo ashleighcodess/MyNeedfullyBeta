@@ -10,7 +10,7 @@ import BrowseWishlists from "@/pages/browse-wishlists";
 import CreateNeedsList from "@/pages/create-wishlist";
 import EditWishlist from "@/pages/edit-wishlist";
 import WishlistDetail from "@/pages/wishlist-detail";
-import ProductSearchFixed from "@/pages/product-search-fixed";
+import ProductSearchWorking from "@/pages/product-search-working";
 import Profile from "@/pages/profile";
 import EditProfile from "@/pages/edit-profile";
 import PrivacySettings from "@/pages/privacy-settings";
@@ -49,9 +49,9 @@ function Router() {
               <Route path="/edit-wishlist/:id" component={EditWishlist} />
               <Route path="/needslist/:id" component={WishlistDetail} />
               <Route path="/wishlist/:id" component={WishlistDetail} />
-              <Route path="/products" component={ProductSearchFixed} />
-              <Route path="/product-search" component={ProductSearchFixed} />
-              <Route path="/search" component={ProductSearchFixed} />
+              <Route path="/products" component={ProductSearchWorking} />
+              <Route path="/product-search" component={ProductSearchWorking} />
+              <Route path="/search" component={ProductSearchWorking} />
               <Route path="/profile" component={Profile} />
               <Route path="/profile/edit" component={EditProfile} />
               <Route path="/profile/privacy" component={PrivacySettings} />

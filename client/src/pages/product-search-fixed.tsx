@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Star, ShoppingCart, ExternalLink, Filter, SlidersHorizontal } from "lucide-react";
+import { Search, Star, ShoppingCart, ExternalLink, Filter, SlidersHorizontal, Clock, TrendingUp, AlertCircle, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Progress } from "@/components/ui/progress";
 
 export default function ProductSearchFixed() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,6 +24,10 @@ export default function ProductSearchFixed() {
   const [hasMoreResults, setHasMoreResults] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
+  const [progressMessage, setProgressMessage] = useState("");
+  const [searchMetrics, setSearchMetrics] = useState({ totalResults: 0, searchTime: 0 });
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -29,6 +35,52 @@ export default function ProductSearchFixed() {
   // Get wishlistId from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
+
+  // Popular product cache for instant results
+  const popularProducts = useMemo(() => ({
+    "household": [
+      {
+        asin: "B073V1T37H",
+        title: "Tide PODS Laundry Detergent Soap Pods, Spring Meadow, 112 Count",
+        image: "https://m.media-amazon.com/images/I/81PnTlkKSBL._SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.4,
+        ratings_total: 45236,
+        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20"
+      },
+      {
+        asin: "B071Z8XBHY",
+        title: "Cottonelle Ultra ComfortCare Toilet Paper, 24 Family Mega Rolls = 108 Regular Rolls",
+        image: "https://m.media-amazon.com/images/I/81fH4-yKUJL._SL1500_.jpg",
+        price: { value: 21.48, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 32156,
+        link: "https://www.amazon.com/dp/B071Z8XBHY?tag=needfully-20"
+      }
+    ],
+    "baby": [
+      {
+        asin: "B0949V7VRH",
+        title: "Pampers Baby Dry Night Overnight Diapers, Size 3, 172 Count",
+        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
+        price: { value: 28.94, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 15234,
+        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20"
+      }
+    ],
+    "food": [
+      {
+        asin: "B08KS3QWT4",
+        title: "Emergency Food Kit - 72 Hour Family Pack",
+        image: "https://m.media-amazon.com/images/I/81GbDXYf+8L._SL1500_.jpg",
+        price: { value: 49.99, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 2156,
+        link: "https://www.amazon.com/dp/B08KS3QWT4?tag=needfully-20"
+      }
+    ]
+  }), []);
 
   // Debounce search input
   useEffect(() => {

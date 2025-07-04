@@ -1,0 +1,572 @@
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useLocation } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Search, Star, ShoppingCart, ExternalLink, Filter, SlidersHorizontal, Clock, TrendingUp, AlertCircle, Package } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import Navigation from "@/components/navigation";
+import SearchFilters from "@/components/search-filters";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Progress } from "@/components/ui/progress";
+
+export default function ProductSearchWorking() {
+  // Stable state management
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [category, setCategory] = useState("all");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [page, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
+  const [progressMessage, setProgressMessage] = useState("");
+  const [searchMetrics, setSearchMetrics] = useState({ totalResults: 0, searchTime: 0 });
+  const [addingProductId, setAddingProductId] = useState<string | null>(null);
+  const [showFallbacks, setShowFallbacks] = useState(true);
+  
+  const [location, navigate] = useLocation();
+  const { toast } = useToast();
+  const { user } = useAuth();
+  
+  // Get wishlistId from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const wishlistId = urlParams.get('wishlistId');
+
+  // Popular products for instant display
+  const popularProducts = useMemo(() => [
+    {
+      asin: "emergency-kit-1",
+      title: "Emergency Food Kit - 72 Hour Family Pack",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400",
+      price: { value: 49.99, currency: "USD" },
+      rating: 4.6,
+      ratings_total: 2156,
+      category: "emergency"
+    },
+    {
+      asin: "winter-coat-1", 
+      title: "Warm Winter Coat - Adult Size Medium",
+      image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400",
+      price: { value: 89.99, currency: "USD" },
+      rating: 4.4,
+      ratings_total: 1324,
+      category: "clothing"
+    },
+    {
+      asin: "sleeping-bag-1",
+      title: "Coleman Brazos Cold Weather Sleeping Bag",
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400",
+      price: { value: 34.99, currency: "USD" },
+      rating: 4.3,
+      ratings_total: 8945,
+      category: "camping"
+    },
+    {
+      asin: "baby-formula-1",
+      title: "Baby Formula - Similac Pro-Advance",
+      image: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400",
+      price: { value: 28.94, currency: "USD" },
+      rating: 4.5,
+      ratings_total: 15234,
+      category: "baby"
+    },
+    {
+      asin: "household-1",
+      title: "Tide Laundry Detergent Pods - 112 Count",
+      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+      price: { value: 24.99, currency: "USD" },
+      rating: 4.4,
+      ratings_total: 45236,
+      category: "household"
+    },
+    {
+      asin: "blanket-1",
+      title: "Fleece Blanket Queen Size - Lightweight",
+      image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400",
+      price: { value: 12.99, currency: "USD" },
+      rating: 4.4,
+      ratings_total: 89567,
+      category: "home"
+    }
+  ], []);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+      setPage(1); // Reset page when query changes
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Build search URL with proper dependency management
+  const searchUrl = useMemo(() => {
+    if (!debouncedQuery || debouncedQuery.length < 3) return null;
+    
+    const params = new URLSearchParams();
+    params.append('query', debouncedQuery);
+    if (category && category !== 'all') params.append('category', category);
+    if (minPrice) params.append('min_price', minPrice);
+    if (maxPrice) params.append('max_price', maxPrice);
+    params.append('page', page.toString());
+    params.append('limit', '10');
+    
+    return `/api/products/search?${params.toString()}`;
+  }, [debouncedQuery, category, minPrice, maxPrice, page]);
+
+  // Fetch user's wishlists
+  const { data: userWishlists } = useQuery({
+    queryKey: ['/api/users', user?.id, 'wishlists'],
+    enabled: !wishlistId && !!user?.id,
+  });
+
+  // Product search query with proper error handling
+  const { data: searchResults, isLoading, error } = useQuery({
+    queryKey: ['product-search', searchUrl],
+    enabled: !!searchUrl,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+    queryFn: async () => {
+      if (!searchUrl) return null;
+      
+      setShowProgress(true);
+      setProgressValue(20);
+      setProgressMessage("Searching for products...");
+      
+      try {
+        const response = await fetch(searchUrl);
+        setProgressValue(60);
+        
+        if (!response.ok) {
+          throw new Error(`Search failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setProgressValue(100);
+        setProgressMessage("Search complete!");
+        
+        // Update metrics
+        setSearchMetrics({
+          totalResults: data.search_information?.total_result_count || data.products?.length || 0,
+          searchTime: data.request_info?.credits_used || 0
+        });
+        
+        setTimeout(() => setShowProgress(false), 1000);
+        return data;
+      } catch (error) {
+        setShowProgress(false);
+        throw error;
+      }
+    }
+  });
+
+  // Get display products with fallbacks
+  const displayProducts = useMemo(() => {
+    if (!debouncedQuery || debouncedQuery.length < 3) {
+      return showFallbacks ? popularProducts : [];
+    }
+    return searchResults?.products || [];
+  }, [debouncedQuery, searchResults, showFallbacks, popularProducts]);
+
+  // Stable event handlers
+  const handleSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length > 2) {
+      toast({
+        title: "Searching products...",
+        description: "This may take a few seconds for live data retrieval.",
+      });
+    }
+  }, [searchQuery, toast]);
+
+  const handleCategoryChange = useCallback((value: string) => {
+    setCategory(value);
+    setPage(1);
+  }, []);
+
+  const handleFiltersChange = useCallback((filters: any) => {
+    setCategory(filters.category || 'all');
+    setMinPrice(filters.minPrice || '');
+    setMaxPrice(filters.maxPrice || '');
+    setPage(1);
+  }, []);
+
+  const loadMoreResults = useCallback(() => {
+    setPage(prev => prev + 1);
+  }, []);
+
+  // Format utilities
+  const formatPrice = useCallback((price: any) => {
+    if (!price) return 'Price not available';
+    if (price.value !== undefined) return `$${price.value.toFixed(2)}`;
+    if (price.raw !== undefined) return `$${price.raw.toFixed(2)}`;
+    if (typeof price === 'string') return price;
+    return 'Price not available';
+  }, []);
+
+  const formatRating = useCallback((rating: any) => {
+    if (!rating) return null;
+    return (
+      <div className="flex items-center space-x-1">
+        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+        <span className="text-sm font-medium">{rating}</span>
+      </div>
+    );
+  }, []);
+
+  // Add to wishlist mutation
+  const addToWishlistMutation = useMutation({
+    mutationFn: async (product: any) => {
+      setAddingProductId(product.asin);
+      
+      let targetWishlistId = wishlistId;
+      if (!targetWishlistId && userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
+        targetWishlistId = userWishlists[0].id.toString();
+      }
+      
+      if (!targetWishlistId) {
+        throw new Error("No needs list available. Please create a needs list first.");
+      }
+      
+      const itemData = {
+        title: product.title,
+        description: product.title,
+        imageUrl: product.image,
+        price: (product.price?.value || product.price?.raw)?.toString(),
+        currency: "USD",
+        productUrl: product.link || "#",
+        retailer: "Online Store",
+        category: category || "other",
+        quantity: 1,
+        priority: 3,
+      };
+      
+      return await apiRequest("POST", `/api/wishlists/${targetWishlistId}/items`, itemData);
+    },
+    onSuccess: () => {
+      setAddingProductId(null);
+      toast({
+        title: "Item Added!",
+        description: "The item has been added to your needs list.",
+      });
+      const targetWishlistId = wishlistId || (userWishlists && userWishlists.length > 0 ? userWishlists[0].id.toString() : null);
+      if (targetWishlistId) {
+        queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });
+      }
+      queryClient.invalidateQueries({ queryKey: ['/api/user/wishlists'] });
+    },
+    onError: (error) => {
+      setAddingProductId(null);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to add item. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
+      <Navigation />
+      
+      <div className="max-w-6xl mx-auto p-6">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Product Search
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Search for items to add to your needs lists. Find products that match your requirements and budget.
+          </p>
+        </div>
+
+        {/* Search Form */}
+        <form onSubmit={handleSearch} className="mb-8">
+          <div className="flex flex-col lg:flex-row gap-4 max-w-4xl mx-auto">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search for products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12"
+              />
+            </div>
+            <Select value={category} onValueChange={handleCategoryChange}>
+              <SelectTrigger className="w-full lg:w-48 h-12">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="electronics">Electronics</SelectItem>
+                <SelectItem value="clothing">Clothing</SelectItem>
+                <SelectItem value="home">Home & Garden</SelectItem>
+                <SelectItem value="toys">Toys & Games</SelectItem>
+                <SelectItem value="books">Books</SelectItem>
+                <SelectItem value="sports">Sports</SelectItem>
+                <SelectItem value="health">Health & Beauty</SelectItem>
+                <SelectItem value="automotive">Automotive</SelectItem>
+                <SelectItem value="baby">Baby & Kids</SelectItem>
+                <SelectItem value="food">Food & Grocery</SelectItem>
+                <SelectItem value="household">Household</SelectItem>
+                <SelectItem value="emergency">Emergency Supplies</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              onClick={() => setShowFilters(!showFilters)}
+              className="h-12"
+            >
+              <SlidersHorizontal className="h-4 w-4 mr-2" />
+              Filters
+            </Button>
+            <Button type="submit" size="lg" disabled={isLoading} className="h-12">
+              {isLoading ? "Searching..." : "Search"}
+            </Button>
+          </div>
+        </form>
+
+        {/* Advanced Filters */}
+        <Collapsible open={showFilters} onOpenChange={setShowFilters}>
+          <CollapsibleContent className="mb-8">
+            <div className="p-4 bg-white rounded-lg border">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Min Price
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="$0"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Max Price
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="$1000"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Progress Bar */}
+        {showProgress && (
+          <div className="mb-6 p-4 bg-white rounded-lg border">
+            <div className="flex items-center space-x-3 mb-2">
+              <Clock className="h-4 w-4 text-coral-500" />
+              <span className="text-sm font-medium">{progressMessage}</span>
+            </div>
+            <Progress value={progressValue} className="w-full" />
+          </div>
+        )}
+
+        {/* Popular Products (when no search) */}
+        {(!debouncedQuery || debouncedQuery.length < 3) && showFallbacks && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold flex items-center">
+                <TrendingUp className="h-6 w-6 mr-2 text-coral-500" />
+                Popular Items
+              </h2>
+              <Badge variant="secondary">Commonly requested</Badge>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {popularProducts.map((product, index) => (
+                <Card key={product.asin} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                  </CardHeader>
+                  <CardContent>
+                    <CardTitle className="text-lg mb-2 line-clamp-2">
+                      {product.title}
+                    </CardTitle>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="text-2xl font-bold text-coral-600">
+                        {formatPrice(product.price)}
+                      </div>
+                      
+                      {formatRating(product.rating)}
+                      
+                      {product.ratings_total && (
+                        <p className="text-sm text-gray-500">
+                          ({product.ratings_total.toLocaleString()} reviews)
+                        </p>
+                      )}
+                    </div>
+
+                    <Button
+                      onClick={() => addToWishlistMutation.mutate(product)}
+                      disabled={addingProductId === product.asin}
+                      className="w-full"
+                      size="sm"
+                    >
+                      {addingProductId === product.asin ? (
+                        <>Adding...</>
+                      ) : (
+                        <>
+                          <ShoppingCart className="h-4 w-4 mr-1" />
+                          Add to Needs List
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Search Results */}
+        {debouncedQuery && debouncedQuery.length > 2 && (
+          <>
+            {isLoading && (
+              <div className="text-center py-12">
+                <div className="animate-spin h-8 w-8 border-4 border-coral-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-600">Searching for products...</p>
+                <p className="text-sm text-gray-500 mt-2">This may take a few seconds for live data</p>
+              </div>
+            )}
+
+            {displayProducts.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-semibold">
+                    Search Results for "{debouncedQuery}"
+                  </h2>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary">
+                      {searchMetrics.totalResults} results
+                    </Badge>
+                    <Badge variant="outline">
+                      Showing {displayProducts.length} items
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {displayProducts.map((product: any, index: number) => (
+                    <Card key={product.asin || index} className="hover:shadow-lg transition-shadow">
+                      <CardHeader className="pb-3">
+                        {product.image && (
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="w-full h-48 object-contain rounded-lg bg-gray-50"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <CardTitle className="text-lg mb-2 line-clamp-2">
+                          {product.title}
+                        </CardTitle>
+                        
+                        <div className="space-y-2 mb-4">
+                          <div className="text-2xl font-bold text-coral-600">
+                            {formatPrice(product.price)}
+                          </div>
+                          
+                          {formatRating(product.rating)}
+                          
+                          {product.ratings_total && (
+                            <p className="text-sm text-gray-500">
+                              ({product.ratings_total.toLocaleString()} reviews)
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => addToWishlistMutation.mutate(product)}
+                            disabled={addingProductId === product.asin}
+                            className="flex-1"
+                            size="sm"
+                          >
+                            {addingProductId === product.asin ? (
+                              <>Adding...</>
+                            ) : (
+                              <>
+                                <ShoppingCart className="h-4 w-4 mr-1" />
+                                Add to List
+                              </>
+                            )}
+                          </Button>
+                          {product.link && (
+                            <Button size="sm" variant="outline" asChild>
+                              <a 
+                                href={product.link} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Load More Button */}
+                {searchResults?.pagination?.next_page && (
+                  <div className="text-center mt-8">
+                    <Button onClick={loadMoreResults} size="lg" variant="outline">
+                      Show More Results
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* No Results */}
+            {debouncedQuery.length > 2 && !isLoading && displayProducts.length === 0 && (
+              <div className="text-center py-12">
+                <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600 mb-4">No products found for "{debouncedQuery}"</p>
+                <p className="text-sm text-gray-500">Try searching with different keywords or adjust your filters.</p>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="text-center py-12">
+                <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+                <p className="text-red-600 mb-4">Search failed. Please try again.</p>
+                <Button onClick={() => window.location.reload()} variant="outline">
+                  Retry
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
