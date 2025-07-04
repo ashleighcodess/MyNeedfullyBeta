@@ -15,7 +15,7 @@ import ProductSearchWorking from "@/pages/product-search-working";
 import Profile from "@/pages/profile";
 import EditProfile from "@/pages/edit-profile";
 import PrivacySettings from "@/pages/privacy-settings";
-import AdminDashboard from "@/pages/admin-dashboard";
+import AdminDashboard from "@/pages/admin";
 import AboutUs from "@/pages/about-us";
 import Resources from "@/pages/resources";
 import Signup from "@/pages/signup";
