@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import Navigation from "@/components/navigation";
@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { CATEGORIES } from "@/lib/constants";
 import { 
   Search, 
@@ -25,11 +26,13 @@ import {
 
 export default function ProductSearch() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [category, setCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
+  const [searchCache, setSearchCache] = useState(new Map());
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   
@@ -37,10 +40,47 @@ export default function ProductSearch() {
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
 
+  // Debounce search input to reduce API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Generate cache key for search results
+  const getCacheKey = useCallback((query: string, cat: string, page: number) => {
+    return `${query}-${cat}-${page}`;
+  }, []);
+
+  // Check cache before making API call
+  const getCachedResult = useCallback((key: string) => {
+    const cached = searchCache.get(key);
+    if (cached && Date.now() - cached.timestamp < 300000) { // 5 minutes cache
+      return cached.data;
+    }
+    return null;
+  }, [searchCache]);
+
+  // Cache search result
+  const setCacheResult = useCallback((key: string, data: any) => {
+    setSearchCache(prev => {
+      const newCache = new Map(prev);
+      newCache.set(key, { data, timestamp: Date.now() });
+      // Limit cache size to 50 entries
+      if (newCache.size > 50) {
+        const firstKey = newCache.keys().next().value;
+        newCache.delete(firstKey);
+      }
+      return newCache;
+    });
+  }, []);
+
   // Build query URL with parameters
   const buildSearchUrl = () => {
     const params = new URLSearchParams();
-    if (activeSearch) params.append('query', activeSearch);
+    if (debouncedQuery) params.append('query', debouncedQuery);
     if (category && category !== 'all') params.append('category', category);
     if (minPrice) params.append('min_price', minPrice);
     if (maxPrice) params.append('max_price', maxPrice);
@@ -49,17 +89,42 @@ export default function ProductSearch() {
     return `/api/products/search?${params.toString()}`;
   };
 
+  // Custom query with caching logic
+  const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page, getCacheKey]);
+  
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [buildSearchUrl()],
-    enabled: !!activeSearch,
+    enabled: !!debouncedQuery && debouncedQuery.length > 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      // Check cache first
+      const cached = getCachedResult(cacheKey);
+      if (cached) {
+        return cached;
+      }
+      
+      // Fetch from API if not cached
+      const response = await fetch(buildSearchUrl());
+      if (!response.ok) {
+        throw new Error('Search failed');
+      }
+      const data = await response.json();
+      
+      // Cache the result
+      setCacheResult(cacheKey, data);
+      return data;
+    },
   });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      setActiveSearch(searchQuery.trim());
+    if (searchQuery.trim() && searchQuery.trim().length > 2) {
       setPage(1);
+      // The search will trigger automatically via debounced query
+      toast({
+        title: "Searching products...",
+        description: "This may take 5-10 seconds due to real-time product data retrieval.",
+      });
     }
   };
 
@@ -301,20 +366,41 @@ export default function ProductSearch() {
               )}
             </div>
 
-            {/* Loading State */}
+            {/* Loading State with Progress */}
             {isLoading && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <Card key={i} className="overflow-hidden">
-                    <Skeleton className="h-48 w-full" />
-                    <CardContent className="p-4">
-                      <Skeleton className="h-4 w-full mb-2" />
-                      <Skeleton className="h-4 w-3/4 mb-2" />
-                      <Skeleton className="h-6 w-20" />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <>
+                <Card className="mb-6 p-6">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center mb-4">
+                      <Search className="h-6 w-6 text-coral mr-2 animate-pulse" />
+                      <span className="text-lg font-medium text-gray-800">Searching products...</span>
+                    </div>
+                    <p className="text-gray-600 mb-4">
+                      Retrieving real-time product data from Amazon. This may take 5-10 seconds.
+                    </p>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-coral h-2 rounded-full animate-pulse" style={{ width: '75%' }}></div>
+                    </div>
+                    {searchCache.size > 0 && (
+                      <p className="text-sm text-gray-500 mt-2">
+                        💾 {searchCache.size} searches cached for faster access
+                      </p>
+                    )}
+                  </div>
+                </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <Card key={i} className="overflow-hidden">
+                      <Skeleton className="h-48 w-full" />
+                      <CardContent className="p-4">
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-3/4 mb-2" />
+                        <Skeleton className="h-6 w-20" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </>
             )}
 
             {/* Error State */}
