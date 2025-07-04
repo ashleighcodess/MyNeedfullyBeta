@@ -207,7 +207,7 @@ export default function ProductSearchWorking() {
         currency: "USD",
         productUrl: product.link || product.url || "#",
         retailer: "Online Store",
-        category: category || "other",
+        category: category === "all" ? "other" : (category || "other"),
         quantity: 1,
         priority: 3,
       };
@@ -355,13 +355,19 @@ export default function ProductSearchWorking() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {popularProducts.map((product, index) => (
-                <Card key={product.asin} className="hover:shadow-lg transition-shadow">
+                <Card key={`popular-${product.asin || product.title}-${index}`} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
+                    <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                      <img
+                        src={product.image}
+                        alt={product.title}
+                        className="w-full h-full object-contain hover:object-cover transition-all duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop';
+                        }}
+                      />
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <CardTitle className="text-lg mb-2 line-clamp-2">
@@ -433,18 +439,19 @@ export default function ProductSearchWorking() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {displayProducts.map((product: any, index: number) => (
-                    <Card key={product.asin || product.id || index} className="hover:shadow-lg transition-shadow">
+                    <Card key={`search-${product.asin || product.id || product.title}-${index}`} className="hover:shadow-lg transition-shadow">
                       <CardHeader className="pb-3">
-                        {(product.image || product.image_url || product.main_image?.link) && (
+                        <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                           <img
                             src={product.image || product.image_url || product.main_image?.link}
                             alt={product.title}
-                            className="w-full h-48 object-contain rounded-lg bg-gray-50"
+                            className="w-full h-full object-contain hover:object-cover transition-all duration-300"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
+                              const target = e.target as HTMLImageElement;
+                              target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop';
                             }}
                           />
-                        )}
+                        </div>
                       </CardHeader>
                       <CardContent>
                         <CardTitle className="text-lg mb-2 line-clamp-2">
