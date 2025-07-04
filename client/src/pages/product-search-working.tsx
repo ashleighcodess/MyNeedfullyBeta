@@ -35,9 +35,22 @@ export default function ProductSearchWorking() {
   const { toast } = useToast();
   const { user } = useAuth();
   
-  // Get wishlistId from URL parameters
+  // Get parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
+  const initialQuery = urlParams.get('q') || "";
+  const initialCategory = urlParams.get('category') || "all";
+
+  // Initialize search from URL parameters
+  useEffect(() => {
+    if (initialQuery) {
+      setSearchQuery(initialQuery);
+      setDebouncedQuery(initialQuery);
+    }
+    if (initialCategory && initialCategory !== "all") {
+      setCategory(initialCategory);
+    }
+  }, [initialQuery, initialCategory]);
 
   // Fetch popular products from API
   const { data: popularProductsData } = useQuery({
