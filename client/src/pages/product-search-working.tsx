@@ -268,12 +268,22 @@ export default function ProductSearchWorking() {
       
       return await apiRequest("POST", `/api/wishlists/${targetWishlistId}/items`, itemData);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setAddingProductId(null);
-      toast({
-        title: "Item Added!",
-        description: "The item has been added to your needs list.",
-      });
+      
+      // Check if the response indicates a quantity increase
+      if (data.message && data.message.includes("quantity increased")) {
+        toast({
+          title: "Quantity Updated!",
+          description: "This item already exists in your list. Quantity increased by 1.",
+        });
+      } else {
+        toast({
+          title: "Item Added!",
+          description: "The item has been added to your needs list.",
+        });
+      }
+      
       const targetWishlistId = wishlistId || (userWishlists && userWishlists.length > 0 ? userWishlists[0].id.toString() : null);
       if (targetWishlistId) {
         queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });

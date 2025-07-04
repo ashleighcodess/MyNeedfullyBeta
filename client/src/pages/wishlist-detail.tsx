@@ -130,6 +130,32 @@ export default function WishlistDetail() {
 
 
 
+  // Quantity update mutation
+  const updateQuantityMutation = useMutation({
+    mutationFn: ({ id: itemId, quantity }: { id: number; quantity: number }) => 
+      apiRequest('PATCH', `/api/wishlist-items/${itemId}`, { quantity }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
+      toast({
+        title: "Quantity Updated",
+        description: "Item quantity has been updated successfully.",
+      });
+    },
+  });
+
+  // Delete item mutation
+  const deleteItemMutation = useMutation({
+    mutationFn: (itemId: number) => 
+      apiRequest('DELETE', `/api/wishlist-items/${itemId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
+      toast({
+        title: "Item Removed",
+        description: "Item has been removed from your needs list.",
+      });
+    },
+  });
+
   // Fulfillment mutation
   const fulfillItemMutation = useMutation({
     mutationFn: (itemId: number) => 
@@ -486,16 +512,46 @@ export default function WishlistDetail() {
                           <div className="flex-1">
                             <div className="flex justify-between items-start mb-3">
                               <div className="flex-1">
-                                <h3 className={`font-semibold text-lg leading-snug mb-3 ${
-                                  item.isFulfilled ? 'text-gray-500 line-through' : 'text-gray-900'
+                                <h3 className={`font-semibold text-lg leading-snug mb-2 ${
+                                  (item.quantityFulfilled >= item.quantity) ? 'text-gray-500 line-through' : 'text-gray-900'
                                 }`}>
                                   {item.title.split(',')[0]}
                                 </h3>
+                                
+                                {/* Quantity Display */}
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className={`text-sm font-medium ${
+                                    (item.quantityFulfilled >= item.quantity) ? 'text-gray-400' : 'text-gray-700'
+                                  }`}>
+                                    Qty: {item.quantityFulfilled || 0} / {item.quantity || 1}
+                                  </div>
+                                  
+                                  {isOwner && (item.quantityFulfilled < item.quantity) && (
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: Math.max(1, (item.quantity || 1) - 1) })}
+                                        disabled={updateQuantityMutation.isPending || (item.quantity || 1) <= (item.quantityFulfilled || 0)}
+                                        className="w-6 h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        −
+                                      </button>
+                                      <span className="text-sm font-medium w-8 text-center">{item.quantity || 1}</span>
+                                      <button
+                                        onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: (item.quantity || 1) + 1 })}
+                                        disabled={updateQuantityMutation.isPending}
+                                        className="w-6 h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                                      >
+                                        +
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                                
                                 <p className={`text-sm mb-3 ${
-                                  item.isFulfilled ? 'text-gray-400' : 'text-gray-600'
+                                  (item.quantityFulfilled >= item.quantity) ? 'text-gray-400' : 'text-gray-600'
                                 }`}>{item.description || 'Essential item needed for daily living'}</p>
                                 <div className={`text-2xl font-bold ${
-                                  item.isFulfilled ? 'text-gray-400 line-through' : 'text-gray-900'
+                                  (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
                                   ${item.price || '99.00'}
                                 </div>
@@ -503,7 +559,11 @@ export default function WishlistDetail() {
                               
                               {/* Trash icon for owner */}
                               {isOwner && (
-                                <button className="text-gray-400 hover:text-gray-600 p-1 ml-4">
+                                <button 
+                                  onClick={() => deleteItemMutation.mutate(item.id)}
+                                  disabled={deleteItemMutation.isPending}
+                                  className="text-gray-400 hover:text-red-600 p-1 ml-4 disabled:opacity-50"
+                                >
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
@@ -513,7 +573,7 @@ export default function WishlistDetail() {
                           </div>
 
                           {/* Mark as Fulfilled button (for non-owners) */}
-                          {!isOwner && !item.isFulfilled && (
+                          {!isOwner && (item.quantityFulfilled < item.quantity) && (
                             <div className="mt-4">
                               <button
                                 onClick={() => fulfillItemMutation.mutate(item.id)}

@@ -357,23 +357,48 @@ export class DatabaseStorage implements IStorage {
   }
 
   async fulfillWishlistItem(id: number, fulfilledBy: string): Promise<WishlistItem> {
+    // First get the current item to check quantity
+    const [currentItem] = await db
+      .select()
+      .from(wishlistItems)
+      .where(eq(wishlistItems.id, id));
+    
+    if (!currentItem) {
+      throw new Error('Item not found');
+    }
+    
+    // Check if item can be fulfilled (not already fully fulfilled)
+    const currentFulfilled = currentItem.quantityFulfilled || 0;
+    const totalQuantity = currentItem.quantity || 1;
+    
+    if (currentFulfilled >= totalQuantity) {
+      throw new Error('Item is already fully fulfilled');
+    }
+    
+    // Increment quantityFulfilled by 1
+    const newQuantityFulfilled = currentFulfilled + 1;
+    const isNowFullyFulfilled = newQuantityFulfilled >= totalQuantity;
+    
     const [item] = await db
       .update(wishlistItems)
       .set({
-        isFulfilled: true,
-        fulfilledBy,
-        fulfilledAt: new Date(),
+        quantityFulfilled: newQuantityFulfilled,
+        isFulfilled: isNowFullyFulfilled,
+        fulfilledBy: isNowFullyFulfilled ? fulfilledBy : currentItem.fulfilledBy,
+        fulfilledAt: isNowFullyFulfilled ? new Date() : currentItem.fulfilledAt,
         updatedAt: new Date(),
       })
       .where(eq(wishlistItems.id, id))
       .returning();
 
-    // Update wishlist fulfilled items count
-    const wishlistId = item.wishlistId;
-    await db
-      .update(wishlists)
-      .set({ fulfilledItems: sql`${wishlists.fulfilledItems} + 1` })
-      .where(eq(wishlists.id, wishlistId));
+    // Only update wishlist fulfilled items count if item is now fully fulfilled
+    if (isNowFullyFulfilled && !currentItem.isFulfilled) {
+      const wishlistId = item.wishlistId;
+      await db
+        .update(wishlists)
+        .set({ fulfilledItems: sql`${wishlists.fulfilledItems} + 1` })
+        .where(eq(wishlists.id, wishlistId));
+    }
 
     return item;
   }

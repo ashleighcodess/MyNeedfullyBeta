@@ -426,23 +426,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const itemData = insertWishlistItemSchema.parse({ ...req.body, wishlistId });
-      const item = await storage.addWishlistItem(itemData);
       
-      // Record activity event
-      await storage.recordEvent({
-        eventType: "item_added",
-        userId,
-        data: { 
-          wishlistId, 
-          itemId: item.id, 
-          itemTitle: item.title,
-          action: "item_added_to_wishlist"
-        },
-        userAgent: req.get('User-Agent'),
-        ipAddress: req.ip,
-      });
+      // Check for existing items with the same title to prevent duplicates
+      const existingItems = await storage.getWishlistItems(wishlistId);
+      const duplicateItem = existingItems.find(item => 
+        item.title.toLowerCase().trim() === itemData.title.toLowerCase().trim()
+      );
       
-      res.status(201).json(item);
+      let item;
+      let isNewItem = true;
+      
+      if (duplicateItem) {
+        // Item already exists, increment quantity instead of creating duplicate
+        const newQuantity = (duplicateItem.quantity || 1) + 1;
+        item = await storage.updateWishlistItem(duplicateItem.id, { quantity: newQuantity });
+        isNewItem = false;
+        
+        // Record quantity update event
+        await storage.recordEvent({
+          eventType: "item_quantity_increased",
+          userId,
+          data: { 
+            wishlistId, 
+            itemId: duplicateItem.id, 
+            itemTitle: duplicateItem.title,
+            newQuantity,
+            action: "duplicate_item_quantity_increased"
+          },
+          userAgent: req.get('User-Agent'),
+          ipAddress: req.ip,
+        });
+        
+        res.json({ 
+          ...item, 
+          message: "Item already exists in your list. Quantity increased by 1." 
+        });
+      } else {
+        // Create new item
+        item = await storage.addWishlistItem(itemData);
+        
+        // Record new item event
+        await storage.recordEvent({
+          eventType: "item_added",
+          userId,
+          data: { 
+            wishlistId, 
+            itemId: item.id, 
+            itemTitle: item.title,
+            action: "item_added_to_wishlist"
+          },
+          userAgent: req.get('User-Agent'),
+          ipAddress: req.ip,
+        });
+        
+        res.status(201).json(item);
+      }
     } catch (error) {
       console.error("Error adding wishlist item:", error);
       if (error instanceof z.ZodError) {
@@ -560,6 +598,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fulfilling wishlist item:", error);
       res.status(500).json({ message: "Failed to fulfill item" });
+    }
+  });
+
+  // Update wishlist item quantity
+  app.patch('/api/wishlist-items/:itemId', isAuthenticated, async (req: any, res) => {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      const { quantity } = req.body;
+      
+      if (!quantity || quantity < 1) {
+        return res.status(400).json({ message: "Quantity must be at least 1" });
+      }
+      
+      // Check if user owns the wishlist item
+      const item = await storage.getWishlistItem(itemId);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      const wishlist = await storage.getWishlist(item.wishlistId);
+      if (!wishlist || wishlist.userId !== req.user.claims.sub) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Ensure quantity is not less than already fulfilled
+      if (quantity < (item.quantityFulfilled || 0)) {
+        return res.status(400).json({ 
+          message: `Cannot set quantity lower than fulfilled amount (${item.quantityFulfilled})` 
+        });
+      }
+      
+      const updatedItem = await storage.updateWishlistItem(itemId, { quantity });
+      res.json(updatedItem);
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
+      res.status(500).json({ message: "Failed to update quantity" });
+    }
+  });
+
+  // Delete wishlist item
+  app.delete('/api/wishlist-items/:itemId', isAuthenticated, async (req: any, res) => {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      
+      // Check if user owns the wishlist item
+      const item = await storage.getWishlistItem(itemId);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      const wishlist = await storage.getWishlist(item.wishlistId);
+      if (!wishlist || wishlist.userId !== req.user.claims.sub) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      // Don't allow deletion if item has been fulfilled
+      if (item.quantityFulfilled && item.quantityFulfilled > 0) {
+        return res.status(400).json({ 
+          message: "Cannot delete items that have been partially or fully fulfilled" 
+        });
+      }
+      
+      await storage.deleteWishlistItem(itemId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting wishlist item:", error);
+      res.status(500).json({ message: "Failed to delete item" });
     }
   });
 
