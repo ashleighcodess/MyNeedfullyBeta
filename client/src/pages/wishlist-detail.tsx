@@ -423,15 +423,96 @@ export default function WishlistDetail() {
               </CardHeader>
               <CardContent>
                 {wishlist.items && wishlist.items.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     {wishlist.items.map((item: any) => (
-                      <ProductCard 
-                        key={item.id}
-                        item={item}
-                        onFulfill={() => fulfillItemMutation.mutate(item.id)}
-                        canFulfill={!isOwner && !item.isFulfilled}
-                        isLoading={fulfillItemMutation.isPending}
-                      />
+                      <div key={item.id} className="flex bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        {/* Product Image and Info */}
+                        <div className="flex-1 flex">
+                          <div className="w-24 h-24 flex-shrink-0">
+                            <img
+                              src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 p-4">
+                            <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
+                            <p className="text-sm text-gray-600 mb-2">{item.description || 'Essential item needed'}</p>
+                            <div className="text-lg font-bold text-coral">
+                              ${item.price || '99.00'}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Buying Options */}
+                        <div className="bg-red-50 p-4 flex flex-col justify-center min-w-[200px]">
+                          <h4 className="font-semibold text-gray-900 mb-3">Buying Options</h4>
+                          
+                          {item.productUrl && (
+                            <div className="space-y-2 mb-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                  <div className="w-4 h-4 bg-orange-500 rounded mr-2"></div>
+                                  <span className="text-sm">Amazon</span>
+                                </div>
+                                <span className="text-sm font-semibold">${item.price || '99.00'}</span>
+                              </div>
+                              <a 
+                                href={item.productUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="block w-full text-center bg-coral text-white py-1 px-3 rounded text-sm hover:bg-coral/90 transition-colors"
+                              >
+                                View on
+                              </a>
+                            </div>
+                          )}
+
+                          <div className="space-y-2 mb-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-red-600 rounded-full mr-2"></div>
+                                <span className="text-sm">Target</span>
+                              </div>
+                              <span className="text-sm font-semibold">${item.price || '99.00'}</span>
+                            </div>
+                            <button className="w-full bg-coral text-white py-1 px-3 rounded text-sm hover:bg-coral/90 transition-colors">
+                              View on
+                            </button>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-blue-600 rounded-full mr-2"></div>
+                                <span className="text-sm">Walmart</span>
+                              </div>
+                              <span className="text-sm font-semibold">${item.price || '99.00'}</span>
+                            </div>
+                            <button className="w-full bg-coral text-white py-1 px-3 rounded text-sm hover:bg-coral/90 transition-colors">
+                              View on
+                            </button>
+                          </div>
+
+                          {!isOwner && !item.isFulfilled && (
+                            <button
+                              onClick={() => fulfillItemMutation.mutate(item.id)}
+                              disabled={fulfillItemMutation.isPending}
+                              className="w-full mt-3 bg-green-600 text-white py-2 px-3 rounded text-sm hover:bg-green-700 transition-colors disabled:opacity-50"
+                            >
+                              {fulfillItemMutation.isPending ? 'Fulfilling...' : 'Mark as Fulfilled'}
+                            </button>
+                          )}
+
+                          {item.isFulfilled && (
+                            <div className="mt-3 text-center">
+                              <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                                ✓ Fulfilled
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 ) : (
