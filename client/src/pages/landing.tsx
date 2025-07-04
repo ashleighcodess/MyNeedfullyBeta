@@ -505,6 +505,176 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Out of the Box Needs - Emergency Products */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-navy mb-4">Out of the Box Needs</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Jumpstart Your Needs List</p>
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="flex flex-col md:flex-row gap-4 mb-12 max-w-4xl mx-auto">
+            <div className="flex-1 relative">
+              <select className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral">
+                <option value="">Select Store</option>
+                <option value="amazon">Amazon</option>
+                <option value="walmart">Walmart</option>
+                <option value="target">Target</option>
+              </select>
+            </div>
+            
+            <div className="flex-1 relative">
+              <select className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral">
+                <option value="">Select Categories</option>
+                <option value="emergency">Emergency Supplies</option>
+                <option value="food">Food & Groceries</option>
+                <option value="baby">Baby & Kids</option>
+                <option value="health">Health & Personal Care</option>
+                <option value="clothing">Clothing</option>
+                <option value="household">Household Items</option>
+              </select>
+            </div>
+            
+            <div className="flex-1 relative">
+              <select className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral">
+                <option value="">Price Range</option>
+                <option value="0-25">$0 - $25</option>
+                <option value="25-50">$25 - $50</option>
+                <option value="50-100">$50 - $100</option>
+                <option value="100+">$100+</option>
+              </select>
+            </div>
+            
+            <Button className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg">
+              Search
+            </Button>
+          </div>
+
+          {/* Emergency Product Categories */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Food & Groceries */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+              <div className="h-64 bg-gradient-to-br from-orange-400 to-red-500 relative">
+                <div className="absolute top-4 left-4">
+                  <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Food
+                  </span>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                    <h3 className="text-white font-semibold text-lg mb-2">Emergency Food Kit</h3>
+                    <p className="text-white/90 text-sm px-4">Non-perishable essentials, canned goods, water, baby formula</p>
+                  </div>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-center justify-between text-white">
+                    <span className="text-sm opacity-90">Starting at</span>
+                    <span className="font-bold text-lg">$25.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Emergency Supplies */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+              <div className="h-64 bg-gradient-to-br from-yellow-400 to-orange-500 relative">
+                <div className="absolute top-4 left-4">
+                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Emergency
+                  </span>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                    </div>
+                    <h3 className="text-white font-semibold text-lg mb-2">Emergency Kit</h3>
+                    <p className="text-white/90 text-sm px-4">Flashlights, batteries, first aid kit, emergency radio</p>
+                  </div>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-center justify-between text-white">
+                    <span className="text-sm opacity-90">Starting at</span>
+                    <span className="font-bold text-lg">$35.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Baby & Kids */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+              <div className="h-64 bg-gradient-to-br from-pink-400 to-purple-500 relative">
+                <div className="absolute top-4 left-4">
+                  <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Baby & Kids
+                  </span>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                      </svg>
+                    </div>
+                    <h3 className="text-white font-semibold text-lg mb-2">Baby Essentials</h3>
+                    <p className="text-white/90 text-sm px-4">Diapers, formula, baby food, wipes, clothing</p>
+                  </div>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-center justify-between text-white">
+                    <span className="text-sm opacity-90">Starting at</span>
+                    <span className="font-bold text-lg">$20.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Personal Care */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+              <div className="h-64 bg-gradient-to-br from-blue-400 to-teal-500 relative">
+                <div className="absolute top-4 left-4">
+                  <span className="bg-teal-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Personal Care
+                  </span>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                    <h3 className="text-white font-semibold text-lg mb-2">Hygiene Kit</h3>
+                    <p className="text-white/90 text-sm px-4">Toiletries, soap, shampoo, toothbrush, feminine products</p>
+                  </div>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="flex items-center justify-between text-white">
+                    <span className="text-sm opacity-90">Starting at</span>
+                    <span className="font-bold text-lg">$15.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center mt-12">
+            <Button className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white px-8 py-4 text-lg rounded-full transition-all duration-300">
+              Explore Other Products
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Wishlists */}
       <section id="browse" className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
