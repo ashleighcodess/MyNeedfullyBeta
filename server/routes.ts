@@ -369,6 +369,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/user/donations', isAuthenticated, async (req: any, res) => {
+    try {
+      const currentUserId = req.user.claims.sub;
+      const donations = await storage.getUserDonations(currentUserId);
+      res.json(donations);
+    } catch (error) {
+      console.error("Error fetching user donations:", error);
+      res.status(500).json({ message: "Failed to fetch donations" });
+    }
+  });
+
   // Wishlist Items routes
   app.post('/api/wishlists/:id/items', isAuthenticated, async (req: any, res) => {
     try {

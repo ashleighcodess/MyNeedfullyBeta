@@ -42,13 +42,13 @@ export default function Profile() {
   }, []);
 
   const { data: userWishlists } = useQuery({
-    queryKey: [`/api/users/${user?.id}/wishlists`],
-    enabled: !!user?.id,
+    queryKey: ['/api/user/wishlists'],
+    enabled: !!user,
   });
 
   const { data: userDonations } = useQuery({
-    queryKey: [`/api/users/${user?.id}/donations`],
-    enabled: !!user?.id,
+    queryKey: ['/api/user/donations'],
+    enabled: !!user,
   });
 
   const { data: thankYouNotes } = useQuery({
