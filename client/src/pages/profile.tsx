@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import Navigation from "@/components/navigation";
@@ -35,6 +35,11 @@ import {
 export default function Profile() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+
+  // Set document title
+  useEffect(() => {
+    document.title = 'Dashboard - MyNeedfully';
+  }, []);
 
   const { data: userWishlists } = useQuery({
     queryKey: [`/api/users/${user?.id}/wishlists`],
@@ -168,6 +173,11 @@ export default function Profile() {
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-navy">Dashboard</h1>
+          <p className="text-gray-600 mt-2">Manage your profile, needs lists, and community connections</p>
+        </div>
         <div className="flex gap-8">
           {/* Sidebar */}
           <div className="w-64 flex-shrink-0">

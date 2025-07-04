@@ -119,6 +119,7 @@ Changelog:
 - July 04, 2025: Fixed critical profile picture upload bug by correcting apiRequest parameter order in edit-profile.tsx and privacy-settings.tsx
 - July 04, 2025: Enhanced profile picture upload system with image compression, improved error handling, and increased server payload limits to 10MB - CONFIRMED WORKING
 - July 04, 2025: Successfully completed all major functionality fixes - application is fully operational with working authentication, profile management, wishlist creation/editing, product search, and supporter terminology throughout
+- July 04, 2025: Improved navigation clarity by changing "Profile" page title to "Dashboard" and "Dashboard" navigation link to "Quick Actions" for better user experience
 ```
 
 ## User Preferences

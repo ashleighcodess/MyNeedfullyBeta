@@ -118,13 +118,13 @@ export default function Navigation() {
                 <Link href="/">
                   <DropdownMenuItem className="cursor-pointer">
                     <Users className="mr-2 h-4 w-4" />
-                    Dashboard
+                    Quick Actions
                   </DropdownMenuItem>
                 </Link>
                 <Link href="/profile">
                   <DropdownMenuItem className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    Profile
+                    Dashboard
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem className="cursor-pointer">
