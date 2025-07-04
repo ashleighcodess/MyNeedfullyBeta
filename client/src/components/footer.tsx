@@ -102,9 +102,11 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Footer */}
-        <div className="border-t border-gray-200 py-6 bg-coral">
+      {/* Bottom Footer - Full Width */}
+      <div className="border-t border-gray-200 py-6 bg-coral">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm">
             <div className="text-white mb-4 md:mb-0">
               © {currentYear} MyFullyNeedfully.Com All Rights Reserved.
