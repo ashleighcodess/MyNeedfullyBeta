@@ -6,8 +6,39 @@ import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
+import { useEffect, useRef, useState } from "react";
 
 export default function Landing() {
+  const journeyRef = useRef<HTMLDivElement>(null);
+  const [progressSteps, setProgressSteps] = useState([false, false, false]);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!journeyRef.current) return;
+      
+      const rect = journeyRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const elementHeight = rect.height;
+      
+      // Calculate scroll progress through the section
+      const scrollProgress = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight + elementHeight), 0), 1);
+      
+      // Trigger line animations at different scroll thresholds
+      const newProgressSteps = [
+        scrollProgress > 0.3,  // First line
+        scrollProgress > 0.5,  // Second line
+        scrollProgress > 0.7   // Third line
+      ];
+      
+      setProgressSteps(newProgressSteps);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial state
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleLogin = () => {
     window.location.href = "/api/login";
   };
@@ -171,7 +202,7 @@ export default function Landing() {
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps to make a meaningful difference in someone's life</p>
           </div>
           
-          <div className="relative">
+          <div className="relative" ref={journeyRef}>
             {/* Journey Steps */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
               {/* Step 1 */}
@@ -184,8 +215,12 @@ export default function Landing() {
                       </svg>
                     </div>
                   </div>
-                  {/* Animated connecting line - hidden on mobile */}
-                  <div className="hidden md:block absolute top-12 left-24 w-full h-0.5 bg-gradient-to-r from-coral to-coral-light animate-pulse" style={{width: 'calc(100vw / 4 - 96px)'}}></div>
+                  {/* Scroll-triggered connecting line - hidden on mobile */}
+                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
+                       style={{
+                         width: progressSteps[0] ? 'calc(100vw / 4 - 96px)' : '0px',
+                         opacity: progressSteps[0] ? 1 : 0
+                       }}></div>
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Log In, Sign Up, Or Continue As A Guest To Fulfill A Need</h3>
                 <p className="text-gray-600 text-sm">Quick and easy registration to get started on your helping journey</p>
@@ -201,7 +236,12 @@ export default function Landing() {
                       </svg>
                     </div>
                   </div>
-                  <div className="hidden md:block absolute top-12 left-24 w-full h-0.5 bg-gradient-to-r from-coral to-coral-light animate-pulse animation-delay-200" style={{width: 'calc(100vw / 4 - 96px)'}}></div>
+                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
+                       style={{
+                         width: progressSteps[1] ? 'calc(100vw / 4 - 96px)' : '0px',
+                         opacity: progressSteps[1] ? 1 : 0,
+                         transitionDelay: '0.3s'
+                       }}></div>
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Provide Your Personal Information</h3>
                 <p className="text-gray-600 text-sm">Share basic details to ensure secure and personalized support</p>
@@ -217,7 +257,12 @@ export default function Landing() {
                       </svg>
                     </div>
                   </div>
-                  <div className="hidden md:block absolute top-12 left-24 w-full h-0.5 bg-gradient-to-r from-coral to-coral-light animate-pulse animation-delay-400" style={{width: 'calc(100vw / 4 - 96px)'}}></div>
+                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
+                       style={{
+                         width: progressSteps[2] ? 'calc(100vw / 4 - 96px)' : '0px',
+                         opacity: progressSteps[2] ? 1 : 0,
+                         transitionDelay: '0.6s'
+                       }}></div>
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Fulfill A Need And Create A Personalized Needs List</h3>
                 <p className="text-gray-600 text-sm">Choose items to support and optionally create your own needs list</p>
@@ -241,9 +286,23 @@ export default function Landing() {
             
             {/* Mobile connecting lines */}
             <div className="md:hidden flex flex-col items-center space-y-4 mt-8">
-              <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light animate-pulse"></div>
-              <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light animate-pulse animation-delay-200"></div>
-              <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light animate-pulse animation-delay-400"></div>
+              <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                   style={{
+                     height: progressSteps[0] ? '32px' : '0px',
+                     opacity: progressSteps[0] ? 1 : 0
+                   }}></div>
+              <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                   style={{
+                     height: progressSteps[1] ? '32px' : '0px',
+                     opacity: progressSteps[1] ? 1 : 0,
+                     transitionDelay: '0.3s'
+                   }}></div>
+              <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                   style={{
+                     height: progressSteps[2] ? '32px' : '0px',
+                     opacity: progressSteps[2] ? 1 : 0,
+                     transitionDelay: '0.6s'
+                   }}></div>
             </div>
           </div>
         </div>
