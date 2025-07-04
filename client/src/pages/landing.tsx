@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
@@ -435,7 +437,7 @@ export default function Landing() {
                 <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
-                      <BoxHeartIcon className="h-6 w-6" />
+                      <FontAwesomeIcon icon={faHeart} className="h-6 w-6" />
                     </div>
                     <div>
                       <div className="text-3xl font-bold">{needsFulfilled.toLocaleString()}+</div>
