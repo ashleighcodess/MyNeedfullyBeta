@@ -8,7 +8,8 @@ import {
   Plus, 
   Heart, 
   Search, 
-  Gift
+  Gift,
+  Settings
 } from "lucide-react";
 
 export default function Home() {
@@ -95,12 +96,21 @@ export default function Home() {
                   </div>
                 </div>
               </Link>
-              <Link href="/search">
+              <Link href="/products">
                 <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Gift className="h-5 w-5 text-coral mt-1" />
                   <div>
                     <h3 className="font-semibold">Search for Specific Items</h3>
                     <p className="text-gray-600">Use our product search to find exactly what's needed</p>
+                  </div>
+                </div>
+              </Link>
+              <Link href="/profile">
+                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Settings className="h-5 w-5 text-coral mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Manage my Needs Lists</h3>
+                    <p className="text-gray-600">Edit, update, and track your existing needs lists</p>
                   </div>
                 </div>
               </Link>
