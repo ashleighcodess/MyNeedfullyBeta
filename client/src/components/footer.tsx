@@ -23,6 +23,7 @@ export default function Footer() {
   const getHelp = [
     { href: "/create", label: "Create A Needslist" },
     { href: "/resources", label: "Find Resources" },
+    { href: "/community", label: "Community Impact" },
     { href: "/support", label: "Support" },
     { href: "/faq", label: "FAQ" },
   ];

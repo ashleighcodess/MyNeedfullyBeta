@@ -25,7 +25,7 @@ import {
   type InsertAnalyticsEvent,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, and, or, like, sql, count, sum } from "drizzle-orm";
+import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
