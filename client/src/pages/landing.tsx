@@ -597,7 +597,7 @@ export default function Landing() {
               className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg"
               onClick={() => {
                 const category = (document.getElementById('category-select') as HTMLSelectElement)?.value || 'emergency';
-                window.location.href = `/browse?category=${category}`;
+                window.location.href = `/product-search?q=${category}+essentials`;
               }}
             >
               Search
