@@ -163,25 +163,87 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Trust Indicators */}
-      <section className="bg-white py-16">
+      {/* User Journey Map */}
+      <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-coral">50K+</div>
-              <div className="text-gray-600">Wishes Fulfilled</div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-navy mb-4">Your Journey To Fulfill Someone's Need</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps to make a meaningful difference in someone's life</p>
+          </div>
+          
+          <div className="relative">
+            {/* Journey Steps */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
+              {/* Step 1 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Animated connecting line - hidden on mobile */}
+                  <div className="hidden md:block absolute top-12 left-24 w-full h-0.5 bg-gradient-to-r from-coral to-coral-light animate-pulse" style={{width: 'calc(100vw / 4 - 96px)'}}></div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Log In, Sign Up, Or Continue As A Guest To Fulfill A Need</h3>
+                <p className="text-gray-600 text-sm">Quick and easy registration to get started on your helping journey</p>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-200">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="hidden md:block absolute top-12 left-24 w-full h-0.5 bg-gradient-to-r from-coral to-coral-light animate-pulse animation-delay-200" style={{width: 'calc(100vw / 4 - 96px)'}}></div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Provide Your Personal Information</h3>
+                <p className="text-gray-600 text-sm">Share basic details to ensure secure and personalized support</p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-400">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="hidden md:block absolute top-12 left-24 w-full h-0.5 bg-gradient-to-r from-coral to-coral-light animate-pulse animation-delay-400" style={{width: 'calc(100vw / 4 - 96px)'}}></div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill A Need And Create A Personalized Needs List</h3>
+                <p className="text-gray-600 text-sm">Choose items to support and optionally create your own needs list</p>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-600">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 0v1m-2 0V6a2 2 0 00-2 0v1m2 0V5.5a2 2 0 10-2 0v1.5m2 0h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill Someone's Need By Giving Their Needs List</h3>
+                <p className="text-gray-600 text-sm">Complete the circle of giving by supporting others in need</p>
+              </div>
             </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-coral">$2.5M+</div>
-              <div className="text-gray-600">In Support</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-coral">98%</div>
-              <div className="text-gray-600">Satisfaction Rate</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-coral">15K+</div>
-              <div className="text-gray-600">Active Supporters</div>
+            
+            {/* Mobile connecting lines */}
+            <div className="md:hidden flex flex-col items-center space-y-4 mt-8">
+              <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light animate-pulse"></div>
+              <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light animate-pulse animation-delay-200"></div>
+              <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light animate-pulse animation-delay-400"></div>
             </div>
           </div>
         </div>
