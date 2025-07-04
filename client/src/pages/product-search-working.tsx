@@ -489,11 +489,8 @@ export default function ProductSearchWorking() {
                 <div className="flex items-center justify-center space-x-4 mb-4">
                   <BrandLoader size="lg" />
                   <div className="text-center">
-                    <p className="text-lg font-medium text-gray-800 mb-1">
+                    <p className="text-lg font-medium text-gray-800">
                       {loadingMessages[loadingMessageIndex]}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      This may take 5-10 seconds for real-time data
                     </p>
                   </div>
                 </div>

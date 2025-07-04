@@ -87,34 +87,25 @@ export class SerpAPIService {
 
       const targetResults = response.organic_results
         .filter((result: any) => {
-          // Filter for actual Target product pages only
+          // Basic filter for Target results
           if (!result.link || !result.link.includes('target.com')) return false;
+          if (!result.title || result.title.length < 5) return false;
           
-          // Exclude category pages, sale pages, and search result pages
-          const excludePatterns = [
-            '/c/',     // category pages
-            '/s/',     // search pages  
-            '/sale/',  // sale landing pages
-            'N-',      // category navigation
-            '/brands', // brand pages
-            '/account',// account pages
-            '/cart',   // cart pages
+          // Only exclude obvious non-product pages
+          const strongExcludes = [
+            '/account',    // account pages
+            '/cart',       // cart pages
             '/store-locator', // store pages
-            'oral-care-personal', // specific category paths
-            'toothbrushes-oral-care'
+            'target.com/c/organic', // specific category exclusions
+            'target.com/gp/help'    // help pages
           ];
           
-          for (const pattern of excludePatterns) {
-            if (result.link.includes(pattern)) return false;
+          for (const exclude of strongExcludes) {
+            if (result.link.includes(exclude)) return false;
           }
           
-          // Include only actual product pages - be more permissive
-          return result.title && 
-                 result.title.length > 10 && // Less restrictive title length
-                 !result.title.toLowerCase().includes('sale :') &&
-                 !result.title.toLowerCase().includes('shop ') &&
-                 !result.title.toLowerCase().includes('category') &&
-                 !result.title.toLowerCase().includes('browse ');
+          // Allow more product pages through - be very permissive
+          return true;
         })
         .slice(0, limit)
         .map((result: any) => {
