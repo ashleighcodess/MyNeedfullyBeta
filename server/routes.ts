@@ -54,6 +54,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupMultiAuth(app);
 
+  // Config routes
+  app.get('/api/config/google-maps-key', (req, res) => {
+    res.json({ 
+      apiKey: process.env.GOOGLE_MAPS_API_KEY || null 
+    });
+  });
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {

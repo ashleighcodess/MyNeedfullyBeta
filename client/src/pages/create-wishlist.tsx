@@ -17,6 +17,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { CATEGORIES, URGENCY_LEVELS, SAMPLE_LOCATIONS } from "@/lib/constants";
 import { Plus, Save, MapPin, AlertCircle, Heart, Upload, X, Camera } from "lucide-react";
+import AddressAutocomplete from "@/components/address-autocomplete";
 
 const createNeedsListSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100, "Title too long"),
@@ -478,16 +479,30 @@ export default function CreateNeedsList() {
                     )}
                   />
 
-                  {/* Address Line 1 */}
+                  {/* Address Line 1 with Autocomplete */}
                   <FormField
                     control={form.control}
                     name="shippingAddress.addressLine1"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Address Line 1 *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="123 Main Street" {...field} />
-                        </FormControl>
+                        <FormLabel>Address Line 1 * (Start typing for suggestions)</FormLabel>
+                        <AddressAutocomplete
+                          value={field.value}
+                          onChange={field.onChange}
+                          onAddressSelect={(addressData) => {
+                            // Auto-populate fields when an address is selected
+                            const streetAddress = addressData.streetNumber && addressData.route 
+                              ? `${addressData.streetNumber} ${addressData.route}`
+                              : addressData.route || field.value;
+                            
+                            form.setValue("shippingAddress.addressLine1", streetAddress);
+                            form.setValue("shippingAddress.city", addressData.city);
+                            form.setValue("shippingAddress.state", addressData.state);
+                            form.setValue("shippingAddress.zipCode", addressData.zipCode);
+                            form.setValue("shippingAddress.country", addressData.country || "US");
+                          }}
+                          placeholder="123 Main Street"
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
