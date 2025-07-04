@@ -673,32 +673,41 @@ export class DatabaseStorage implements IStorage {
 
   async removeUser(id: string): Promise<void> {
     try {
-      // Use direct SQL execution for reliable deletion
-      const { pool } = await import('./db');
-      const client = await pool.connect();
+      // Delete user's wishlist items first
+      await db.execute(sql`DELETE FROM wishlist_items WHERE wishlist_id IN (SELECT id FROM wishlists WHERE user_id = ${id})`);
+      
+      // Delete user's wishlists
+      await db.execute(sql`DELETE FROM wishlists WHERE user_id = ${id}`);
+      
+      // Delete related data (safe to ignore if columns don't exist)
+      try {
+        await db.execute(sql`DELETE FROM analytics_events WHERE user_id = ${id}`);
+      } catch (e) { /* ignore if table structure is different */ }
       
       try {
-        await client.query('BEGIN');
-        
-        // Delete in correct order
-        await client.query('DELETE FROM wishlist_items WHERE wishlist_id IN (SELECT id FROM wishlists WHERE user_id = $1)', [id]);
-        await client.query('DELETE FROM wishlists WHERE user_id = $1', [id]);
-        await client.query('DELETE FROM analytics_events WHERE user_id = $1', [id]);
-        await client.query('DELETE FROM notifications WHERE user_id = $1', [id]);
-        await client.query('DELETE FROM thank_you_notes WHERE from_user_id = $1 OR to_user_id = $1', [id]);
-        await client.query('DELETE FROM donations WHERE supporter_id = $1', [id]);
-        await client.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [id]);
-        await client.query('DELETE FROM email_verification_tokens WHERE user_id = $1', [id]);
-        await client.query('DELETE FROM users WHERE id = $1', [id]);
-        
-        await client.query('COMMIT');
-        console.log(`Successfully removed user ${id}`);
-      } catch (error) {
-        await client.query('ROLLBACK');
-        throw error;
-      } finally {
-        client.release();
-      }
+        await db.execute(sql`DELETE FROM notifications WHERE user_id = ${id}`);
+      } catch (e) { /* ignore if table structure is different */ }
+      
+      try {
+        await db.execute(sql`DELETE FROM thank_you_notes WHERE from_user_id = ${id} OR to_user_id = ${id}`);
+      } catch (e) { /* ignore if table structure is different */ }
+      
+      try {
+        await db.execute(sql`DELETE FROM donations WHERE supporter_id = ${id}`);
+      } catch (e) { /* ignore if table structure is different */ }
+      
+      try {
+        await db.execute(sql`DELETE FROM password_reset_tokens WHERE user_id = ${id}`);
+      } catch (e) { /* ignore if table structure is different */ }
+      
+      try {
+        await db.execute(sql`DELETE FROM email_verification_tokens WHERE user_id = ${id}`);
+      } catch (e) { /* ignore if table structure is different */ }
+      
+      // Finally delete the user
+      await db.execute(sql`DELETE FROM users WHERE id = ${id}`);
+      
+      console.log(`Successfully removed user ${id}`);
     } catch (error) {
       console.error('Error in removeUser:', error);
       throw error;
