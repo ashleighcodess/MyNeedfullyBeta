@@ -50,6 +50,7 @@ export interface IStorage {
   updateWishlist(id: number, updates: Partial<Wishlist>): Promise<Wishlist>;
   deleteWishlist(id: number): Promise<void>;
   incrementWishlistViews(id: number): Promise<void>;
+  incrementWishlistShares(id: number): Promise<void>;
 
   // Wishlist Item operations
   addWishlistItem(item: InsertWishlistItem): Promise<WishlistItem>;
@@ -237,6 +238,13 @@ export class DatabaseStorage implements IStorage {
     await db
       .update(wishlists)
       .set({ viewCount: sql`${wishlists.viewCount} + 1` })
+      .where(eq(wishlists.id, id));
+  }
+
+  async incrementWishlistShares(id: number): Promise<void> {
+    await db
+      .update(wishlists)
+      .set({ shareCount: sql`${wishlists.shareCount} + 1` })
       .where(eq(wishlists.id, id));
   }
 

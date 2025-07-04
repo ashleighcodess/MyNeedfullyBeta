@@ -247,6 +247,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Increment wishlist share count
+  app.post('/api/wishlists/:id/share', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.incrementWishlistShares(id);
+      
+      // Record analytics event
+      await storage.recordEvent({
+        eventType: "wishlist_share",
+        userId: (req as any).user?.claims?.sub,
+        data: { wishlistId: id },
+        userAgent: req.get('User-Agent'),
+        ipAddress: req.ip,
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error incrementing share count:", error);
+      res.status(500).json({ message: "Failed to increment share count" });
+    }
+  });
+
   app.post('/api/wishlists', isAuthenticated, upload.array('storyImage', 5), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

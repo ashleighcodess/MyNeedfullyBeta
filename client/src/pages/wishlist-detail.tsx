@@ -192,6 +192,15 @@ export default function WishlistDetail() {
   const shareWishlist = async () => {
     const url = window.location.href;
     
+    // Increment share count in the database
+    try {
+      await apiRequest('POST', `/api/wishlists/${wishlist?.id}/share`);
+      // Invalidate wishlist cache to refresh the share count
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${wishlist?.id}`] });
+    } catch (error) {
+      console.error('Failed to increment share count:', error);
+    }
+    
     if (navigator.share) {
       try {
         await navigator.share({
