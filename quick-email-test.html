@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Email Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; }
+        button { background: #FF6B6B; color: white; padding: 15px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #FF5252; }
+        .result { margin: 15px 0; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h2>🧪 Quick Email Test</h2>
+    <p>Test the SendGrid email system by sending a real email:</p>
+    
+    <button onclick="testEmail()">Send Test Email Now</button>
+    <div id="result"></div>
+
+    <script>
+        async function testEmail() {
+            document.getElementById('result').innerHTML = '<div class="result loading">Sending test email...</div>';
+            
+            try {
+                // Test the email endpoint
+                const response = await fetch('/api/test-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    document.getElementById('result').innerHTML = 
+                        `<div class="result success">✅ Email sent successfully to ${data.emailSent}!<br>Check your inbox for the test email.</div>`;
+                } else {
+                    document.getElementById('result').innerHTML = 
+                        `<div class="result error">❌ Email failed: ${data.message}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
