@@ -206,7 +206,7 @@ export default function Resources() {
                 <TabsTrigger 
                   key={key} 
                   value={key} 
-                  className="flex items-center gap-2 bg-orange-100 text-orange-700 hover:bg-orange-200 data-[state=active]:bg-coral data-[state=active]:text-white transition-all"
+                  className="flex items-center gap-2 data-[state=active]:bg-coral data-[state=active]:text-white transition-all"
                 >
                   <IconComponent className="h-4 w-4" />
                   <span className="hidden sm:inline">{category.title}</span>
