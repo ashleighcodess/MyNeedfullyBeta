@@ -140,6 +140,7 @@ Changelog:
 - July 04, 2025: Implemented product title truncation on Needs List page to display only text before first comma for cleaner, more readable item titles - enhanced user interface with compact buying options panel featuring reduced spacing and smaller fonts for improved layout efficiency
 - July 04, 2025: RESOLVED CRITICAL PRICING API ISSUES - fixed 404 errors by implementing proper getWishlistItem database method, updated pricing endpoint to use direct item retrieval instead of inefficient scanning, confirmed real-time pricing system now fully operational with successful data from Amazon/Walmart/Target APIs - PRICING SYSTEM FULLY FUNCTIONAL
 - July 04, 2025: Implemented comprehensive authentication email system with automated welcome emails, password reset functionality, and email verification flows - added passwordResetTokens and emailVerificationTokens database tables, enhanced storage layer with token management methods, integrated welcome email automation for new user signups, and created API endpoints for /api/auth/forgot-password, /api/auth/reset-password, /api/auth/verify-email, and /api/auth/confirm-email - AUTHENTICATION EMAIL SYSTEM FULLY OPERATIONAL
+- July 04, 2025: Updated landing page hero section with new messaging "A Registry For Recovery, Relief and Hardships" replacing previous "Connect Hearts, Fulfill Needs" and added smooth gradient overlay transition from hero section to white space below for improved visual flow
 ```
 
 ## User Preferences

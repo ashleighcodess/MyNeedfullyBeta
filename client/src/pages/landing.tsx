@@ -110,11 +110,14 @@ export default function Landing() {
         {/* Overlay for text readability */}
         <div className="absolute inset-0 hero-overlay" />
         
+        {/* Smooth transition overlay to white space below */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
+        
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 leading-tight">
-            Connect Hearts,
-            <span className="text-coral"> Fulfill Needs</span>
+            A Registry For Recovery,
+            <span className="text-coral"> Relief and Hardships</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
