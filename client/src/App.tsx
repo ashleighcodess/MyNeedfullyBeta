@@ -39,6 +39,7 @@ function Router() {
           ) : (
             <>
               <Route path="/" component={Home} />
+              <Route path="/home" component={Landing} />
               <Route path="/browse" component={BrowseWishlists} />
               <Route path="/find" component={BrowseWishlists} />
               <Route path="/create" component={CreateWishlist} />

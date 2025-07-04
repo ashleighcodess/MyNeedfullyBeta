@@ -32,6 +32,7 @@ export default function Navigation() {
   };
 
   const navigationItems = [
+    { href: "/home", label: "Home", icon: User },
     { href: "/browse", label: "Browse Needs Lists", icon: Search },
     { href: "/create", label: "Create Needs List", icon: Plus },
     { href: "/products", label: "Find Products", icon: Heart },
