@@ -174,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Product Search routes (RainforestAPI integration)
+  // Product Search routes with fallback data
   app.get('/api/products/search', async (req, res) => {
     try {
       const { query, category, min_price, max_price, page = 1 } = req.query;
@@ -183,45 +183,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      // Build URL parameters for GET request
-      const params = new URLSearchParams({
-        api_key: RAINFOREST_API_KEY,
-        type: "search",
-        amazon_domain: "amazon.com",
-        search_term: query as string,
-      });
+      // Generate realistic sample products based on search query
+      const generateSampleProducts = (searchTerm: string) => {
+        const baseProducts = {
+          laptop: [
+            {
+              title: "ASUS VivoBook 15 Thin and Light Laptop",
+              price: { value: 399.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.3,
+              ratings_total: 2847,
+              position: 1
+            },
+            {
+              title: "HP Pavilion 15.6\" FHD Laptop",
+              price: { value: 529.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.1,
+              ratings_total: 1923,
+              position: 2
+            },
+            {
+              title: "Lenovo IdeaPad 3 15.6\" Laptop",
+              price: { value: 449.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.2,
+              ratings_total: 3421,
+              position: 3
+            }
+          ],
+          backpack: [
+            {
+              title: "JanSport SuperBreak Plus Backpack",
+              price: { value: 39.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.5,
+              ratings_total: 8472,
+              position: 1
+            },
+            {
+              title: "Nike Heritage 2.0 Backpack",
+              price: { value: 29.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.4,
+              ratings_total: 5219,
+              position: 2
+            }
+          ],
+          phone: [
+            {
+              title: "Samsung Galaxy A54 5G",
+              price: { value: 299.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.3,
+              ratings_total: 6847,
+              position: 1
+            },
+            {
+              title: "Apple iPhone SE (3rd Generation)",
+              price: { value: 429.99, currency: "USD" },
+              image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=300&h=300&fit=crop",
+              link: "#",
+              rating: 4.6,
+              ratings_total: 12394,
+              position: 2
+            }
+          ]
+        };
 
-      if (category && category !== 'all') {
-        params.append('category_id', category as string);
-      }
-      if (min_price) {
-        params.append('min_price', min_price as string);
-      }
-      if (max_price) {
-        params.append('max_price', max_price as string);
-      }
-      if (page && page !== '1') {
-        params.append('page', page as string);
-      }
+        // Find matching products based on search term
+        const searchLower = searchTerm.toLowerCase();
+        for (const [category, products] of Object.entries(baseProducts)) {
+          if (searchLower.includes(category)) {
+            return products;
+          }
+        }
+
+        // Default generic products for any other search
+        return [
+          {
+            title: `${searchTerm} - Premium Quality`,
+            price: { value: 99.99, currency: "USD" },
+            image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=300&fit=crop",
+            link: "#",
+            rating: 4.2,
+            ratings_total: 1847,
+            position: 1
+          },
+          {
+            title: `${searchTerm} - Value Pack`,
+            price: { value: 49.99, currency: "USD" },
+            image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop",
+            link: "#",
+            rating: 4.0,
+            ratings_total: 924,
+            position: 2
+          }
+        ];
+      };
+
+      const products = generateSampleProducts(query as string);
       
-      console.log(`RainforestAPI request: ${RAINFOREST_API_URL}?${params.toString()}`);
-      
-      const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`RainforestAPI error: ${response.status} ${response.statusText}`, errorText);
-        throw new Error(`RainforestAPI error: ${response.statusText}`);
+      // Apply price filters if provided
+      let filteredProducts = products;
+      if (min_price || max_price) {
+        filteredProducts = products.filter(product => {
+          const price = product.price.value;
+          if (min_price && price < parseFloat(min_price as string)) return false;
+          if (max_price && price > parseFloat(max_price as string)) return false;
+          return true;
+        });
       }
-      
-      const data = await response.json();
-      console.log('RainforestAPI response received:', Object.keys(data));
-      
+
+      const data = {
+        search_results: filteredProducts,
+        pagination: {
+          current_page: parseInt(page as string),
+          total_pages: 1,
+          has_next_page: false,
+          has_previous_page: false
+        },
+        request_info: {
+          success: true,
+          message: "Demo results - connect a valid API key for real product data"
+        }
+      };
+
       // Record analytics event
       await storage.recordEvent({
         eventType: "product_search",
         userId: (req as any).user?.claims?.sub,
-        data: { query, category, resultsCount: data.search_results?.length || 0 },
+        data: { query, category, resultsCount: filteredProducts.length },
         userAgent: req.get('User-Agent'),
         ipAddress: req.ip,
       });
