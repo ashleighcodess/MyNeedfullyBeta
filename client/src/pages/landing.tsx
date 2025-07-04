@@ -750,7 +750,7 @@ export default function Landing() {
                   </div>
                   <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
-                <Link href="/product-search?q=hygiene+toothbrush+soap+feminine">
+                <Link href="/product-search?q=toothbrush+soap+toilet+paper+tampons+hygiene+essentials">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
                     View Products
                   </Button>
