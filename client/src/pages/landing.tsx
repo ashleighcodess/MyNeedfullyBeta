@@ -115,12 +115,12 @@ export default function Landing() {
         
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 leading-tight hero-text-shadow">
             A Registry For Recovery,
             <span className="text-coral"> Relief and Hardships</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-800 mb-8 max-w-2xl mx-auto leading-relaxed hero-text-shadow font-medium">
             Create and Share a Needs List to Help Yourself or Loved Ones. Get the Support You Need During Tough Times.
           </p>
 
