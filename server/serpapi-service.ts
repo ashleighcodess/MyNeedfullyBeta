@@ -87,27 +87,74 @@ export class SerpAPIService {
 
       const targetResults = response.organic_results
         .filter((result: any) => {
-          // Filter for actual Target product pages - be more flexible with URL patterns
-          return result.link && 
-                 result.link.includes('target.com') && 
-                 (result.link.includes('/p/') || 
-                  result.link.includes('/product/') ||
-                  result.link.includes('/A-') ||  // Target TCIN format
-                  (result.link.includes('target.com') && result.title && result.title.length > 10));
+          // Filter for actual Target product pages only
+          if (!result.link || !result.link.includes('target.com')) return false;
+          
+          // Exclude category pages, sale pages, and search result pages
+          const excludePatterns = [
+            '/c/',     // category pages
+            '/s/',     // search pages  
+            '/sale/',  // sale landing pages
+            'N-',      // category navigation
+            '/brands', // brand pages
+            '/account',// account pages
+            '/cart',   // cart pages
+            '/store-locator', // store pages
+            'oral-care-personal', // specific category paths
+            'toothbrushes-oral-care'
+          ];
+          
+          for (const pattern of excludePatterns) {
+            if (result.link.includes(pattern)) return false;
+          }
+          
+          // Include only actual product pages
+          return (result.link.includes('/p/') || result.link.includes('/A-')) &&
+                 result.title && 
+                 result.title.length > 20 && // Ensure it's a real product title
+                 !result.title.toLowerCase().includes('sale :') &&
+                 !result.title.toLowerCase().includes('shop ');
         })
         .slice(0, limit)
-        .map((result: any) => ({
-          title: result.title || '',
-          price: '0', // Regular search doesn't have price info, we'll get this from product detail API
-          rating: '',
-          reviews: '',
-          image_url: result.thumbnail || '',
-          product_url: result.link || '',
-          product_id: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
-          retailer: 'target' as const,
-          brand: '',
-          description: result.snippet || ''
-        }));
+        .map((result: any) => {
+          // Extract price from title or snippet if available
+          const priceMatch = (result.title + ' ' + (result.snippet || '')).match(/\$[\d,]+\.?\d*/);
+          const extractedPrice = priceMatch ? priceMatch[0] : '$0.00';
+          
+          // Try to get better image URL - check for featured_snippet images or rich_snippets
+          let imageUrl = result.thumbnail || '';
+          if (!imageUrl && result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.extensions) {
+            const extensions = result.rich_snippet.top.extensions;
+            for (const ext of extensions) {
+              if (ext.includes('http') && (ext.includes('.jpg') || ext.includes('.png') || ext.includes('.webp'))) {
+                imageUrl = ext;
+                break;
+              }
+            }
+          }
+          
+          // If still no image, try to use a basic Target placeholder
+          if (!imageUrl) {
+            // For now, we'll leave image empty rather than using broken placeholder URLs
+            // In a production environment, you'd want to implement Target's product API
+            imageUrl = '';
+          }
+          
+          console.log(`Target product: ${result.title.substring(0, 50)}... | Price: ${extractedPrice} | Image: ${imageUrl ? 'YES' : 'NO'}`);
+          
+          return {
+            title: result.title || '',
+            price: extractedPrice,
+            rating: '',
+            reviews: '',
+            image_url: imageUrl,
+            product_url: result.link || '',
+            product_id: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
+            retailer: 'target' as const,
+            brand: '',
+            description: result.snippet || ''
+          };
+        });
       
       console.log(`Target search found ${targetResults.length} products after filtering`);
       return targetResults;
@@ -118,9 +165,25 @@ export class SerpAPIService {
   }
 
   private extractTargetProductId(url: string): string {
-    // Extract TCIN or product ID from Target URL
-    const matches = url.match(/\/p\/[^\/]+\/A-(\d+)/);
-    return matches ? matches[1] : '';
+    if (!url) return Math.random().toString(36).substr(2, 9);
+    
+    // Try to extract TCIN from various Target URL formats
+    const patterns = [
+      /\/A-(\d+)/,           // /A-12345678
+      /\/p\/.*?\/A-(\d+)/,   // /p/product-name/A-12345678
+      /tcin[=:](\d+)/i,      // tcin=12345678 or tcin:12345678
+      /target\.com.*?(\d{8,})/  // Any 8+ digit number in target.com URL
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // Generate consistent ID based on URL
+    return url.replace(/[^a-zA-Z0-9]/g, '').substr(-8) || Math.random().toString(36).substr(2, 9);
   }
 
   async searchBothStores(query: string, location: string = '60602', limit: number = 10): Promise<SerpProduct[]> {

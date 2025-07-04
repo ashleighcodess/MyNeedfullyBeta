@@ -512,15 +512,21 @@ export default function ProductSearchWorking() {
                     <Card key={`search-${product.asin || product.id || product.title}-${index}`} className="hover:shadow-lg transition-shadow">
                       <CardHeader className="pb-3">
                         <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                          <img
-                            src={product.image || product.image_url || product.main_image?.link}
-                            alt={product.title}
-                            className="w-full h-full object-contain hover:object-cover transition-all duration-300"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop';
-                            }}
-                          />
+                          {((product.image && product.image.trim()) || (product.image_url && product.image_url.trim()) || product.main_image?.link) ? (
+                            <img
+                              src={(product.image && product.image.trim()) || (product.image_url && product.image_url.trim()) || product.main_image?.link}
+                              alt={product.title}
+                              className="w-full h-full object-contain hover:object-cover transition-all duration-300"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <ShoppingCart className="h-12 w-12 text-gray-400" />
+                            </div>
+                          )}
                         </div>
                       </CardHeader>
                       <CardContent>
