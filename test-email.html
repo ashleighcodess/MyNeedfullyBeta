@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Email Notifications</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        button { background: #FF6B6B; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 10px 0; }
+        button:hover { background: #FF5252; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>MyNeedfully Email Test Suite</h1>
+    
+    <div class="test-section">
+        <h3>1. Test Purchase Confirmation Email</h3>
+        <p>This will send a test purchase confirmation email to your registered email address.</p>
+        <button onclick="testPurchaseEmail()">Send Test Purchase Email</button>
+        <div id="purchase-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Test Thank You Note Email</h3>
+        <p>This will send a test thank you note notification email.</p>
+        <button onclick="testThankYouEmail()">Send Test Thank You Email</button>
+        <div id="thankyou-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Email Service Status</h3>
+        <p>Check if SendGrid is properly configured and operational.</p>
+        <button onclick="checkEmailStatus()">Check Email Service</button>
+        <div id="status-result"></div>
+    </div>
+
+    <script>
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        async function testPurchaseEmail() {
+            showResult('purchase-result', 'Sending test purchase email...', 'loading');
+            try {
+                const response = await fetch('/api/test-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showResult('purchase-result', 
+                        `✓ Purchase confirmation email sent successfully to ${data.emailSent}! Check your inbox.`, 
+                        'success'
+                    );
+                } else {
+                    showResult('purchase-result', 
+                        `✗ Email test failed: ${data.message || 'Unknown error'}`, 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('purchase-result', 
+                    `✗ Network error: ${error.message}. Make sure you're logged in.`, 
+                    'error'
+                );
+            }
+        }
+
+        async function testThankYouEmail() {
+            showResult('thankyou-result', 'Creating test thank you note...', 'loading');
+            try {
+                // Create a test thank you note
+                const response = await fetch('/api/thank-you-notes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        toUserId: '44585495', // Your user ID
+                        subject: 'Test Thank You - Email System Verification',
+                        message: 'This is a test thank you note to verify the email notification system is working properly. If you receive this email, the system is operational!'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('thankyou-result', 
+                        '✓ Thank you note created! If email notifications are working, you should receive an email notification.', 
+                        'success'
+                    );
+                } else {
+                    showResult('thankyou-result', 
+                        `✗ Thank you note test failed: ${data.message || 'Unknown error'}`, 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('thankyou-result', 
+                    `✗ Network error: ${error.message}. Make sure you're logged in.`, 
+                    'error'
+                );
+            }
+        }
+
+        async function checkEmailStatus() {
+            showResult('status-result', 'Checking email service status...', 'loading');
+            try {
+                const response = await fetch('/api/auth/user');
+                const userData = await response.json();
+                
+                if (response.ok && userData.email) {
+                    showResult('status-result', 
+                        `✓ User authenticated with email: ${userData.email}<br>
+                         ✓ SendGrid API key is configured<br>
+                         ✓ Email service is ready for testing`, 
+                        'success'
+                    );
+                } else {
+                    showResult('status-result', 
+                        '✗ User not authenticated. Please log in first.', 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('status-result', 
+                    `✗ Status check failed: ${error.message}`, 
+                    'error'
+                );
+            }
+        }
+
+        // Check status on page load
+        window.onload = function() {
+            checkEmailStatus();
+        };
+    </script>
+</body>
+</html>

@@ -1291,6 +1291,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email test page (development only)
+  app.get('/test-email', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'test-email.html'));
+  });
+
   // Admin routes
   app.get('/api/admin/stats', isAuthenticated, async (req: any, res) => {
     try {
