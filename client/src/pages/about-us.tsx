@@ -75,20 +75,20 @@ export default function AboutUs() {
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <div className="mb-8">
-            <div className="w-full h-64 bg-gradient-to-r from-coral/20 to-coral/30 rounded-xl flex items-center justify-center mb-8">
-              <div className="text-center">
-                <Users className="h-16 w-16 text-coral mx-auto mb-4" />
-                <p className="text-lg text-gray-700">Community Support in Action</p>
-              </div>
-            </div>
+        <div 
+          className="text-center mb-16 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
+          style={{ 
+            backgroundImage: `url(${howItWorksBackground})`,
+            minHeight: '400px'
+          }}
+        >
+          <div className="absolute inset-0 bg-white/90"></div>
+          <div className="relative z-10 py-16 px-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">About MyNeedfully</h1>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+              Our mission is to connect people in crisis with the community support they need.
+            </p>
           </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">About MyNeedfully</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Our mission is to connect people in crisis with the community support they need.
-          </p>
         </div>
 
         {/* Main Story */}
