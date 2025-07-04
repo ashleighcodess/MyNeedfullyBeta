@@ -105,7 +105,7 @@ export default function WishlistDetail() {
   // Fulfillment mutation
   const fulfillItemMutation = useMutation({
     mutationFn: (itemId: number) => 
-      apiRequest(`/api/wishlist-items/${itemId}/fulfill`, 'PATCH'),
+      apiRequest('PATCH', `/api/wishlist-items/${itemId}/fulfill`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
       toast({
@@ -949,7 +949,7 @@ export default function WishlistDetail() {
           wishlistOwner={{
             firstName: wishlist?.user?.firstName || 'User',
             lastName: wishlist?.user?.lastName,
-            shippingAddress: wishlist?.user?.shippingAddress
+            shippingAddress: wishlist?.shippingAddress
           }}
           onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
           itemId={selectedProduct.itemId}
