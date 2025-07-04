@@ -42,18 +42,7 @@ export default function ProductSearchWorking() {
     "Your support helps families recover from hardships"
   ];
   
-  // Rotate loading messages every 2 seconds
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isLoading) {
-      interval = setInterval(() => {
-        setLoadingMessageIndex((prev) => (prev + 1) % loadingMessages.length);
-      }, 2000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isLoading, loadingMessages.length]);
+
   const { toast } = useToast();
   const { user } = useAuth();
   
@@ -160,6 +149,19 @@ export default function ProductSearchWorking() {
       }
     }
   });
+
+  // Rotate loading messages every 2 seconds
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+      }, 2000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading, loadingMessages.length]);
 
   // Get display products with fallbacks
   const displayProducts = useMemo(() => {
@@ -402,7 +404,7 @@ export default function ProductSearchWorking() {
         {isLoading && (
           <div className="mb-6 p-6 bg-white rounded-lg border">
             <div className="flex items-center justify-center space-x-4">
-              <BrandLoader size={32} />
+              <BrandLoader size="lg" />
               <div className="text-center">
                 <p className="text-lg font-medium text-gray-800 mb-1">
                   {loadingMessages[loadingMessageIndex]}
