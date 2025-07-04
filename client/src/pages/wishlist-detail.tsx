@@ -438,7 +438,9 @@ export default function WishlistDetail() {
                         {/* Product Info */}
                         <div className="flex-1 flex items-center justify-between px-4">
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-semibold text-gray-900 text-sm truncate">{item.title}</h3>
+                            <h3 className="font-semibold text-gray-900 text-sm truncate">
+                              {item.title?.split(',')[0] || item.title}
+                            </h3>
                             <p className="text-xs text-gray-600 mt-1">{item.description || 'Pots, Pans, And Cooking Utensils Set'}</p>
                             <div className="text-lg font-bold text-gray-900 mt-1">
                               ${item.price || '99.00'}
@@ -458,46 +460,44 @@ export default function WishlistDetail() {
                         </div>
 
                         {/* Buying Options */}
-                        <div className="bg-red-50 px-4 py-2 flex flex-col justify-center min-w-[200px]">
+                        <div className="bg-red-50 p-3 flex flex-col justify-center w-[220px] flex-shrink-0">
                           <h4 className="font-semibold text-gray-900 text-sm mb-2">Buying Options</h4>
                           
-                          <div className="space-y-1">
-                            {item.productUrl && (
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                  <div className="w-3 h-3 bg-orange-500 rounded mr-2"></div>
-                                  <span className="text-xs">Amazon</span>
-                                  <span className="text-xs font-semibold ml-auto mr-2">${item.price || '99.00'}</span>
-                                </div>
-                                <a 
-                                  href={item.productUrl} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="bg-coral text-white py-1 px-2 rounded text-xs hover:bg-coral/90 transition-colors"
-                                >
-                                  View on
-                                </a>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center flex-1">
+                                <div className="w-3 h-3 bg-orange-500 rounded mr-2"></div>
+                                <span className="text-xs">Amazon</span>
+                                <span className="text-xs font-semibold ml-auto">${item.price || '99.00'}</span>
                               </div>
-                            )}
+                              <a 
+                                href={item.productUrl || '#'} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="bg-coral text-white py-1 px-3 rounded text-xs hover:bg-coral/90 transition-colors ml-2"
+                              >
+                                View on
+                              </a>
+                            </div>
 
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center">
+                              <div className="flex items-center flex-1">
                                 <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
                                 <span className="text-xs">Target</span>
-                                <span className="text-xs font-semibold ml-auto mr-2">${item.price || '99.00'}</span>
+                                <span className="text-xs font-semibold ml-auto">${item.price || '99.00'}</span>
                               </div>
-                              <button className="bg-coral text-white py-1 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
+                              <button className="bg-coral text-white py-1 px-3 rounded text-xs hover:bg-coral/90 transition-colors ml-2">
                                 View on
                               </button>
                             </div>
 
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center">
+                              <div className="flex items-center flex-1">
                                 <div className="w-3 h-3 bg-blue-600 rounded-full mr-2"></div>
                                 <span className="text-xs">Walmart</span>
-                                <span className="text-xs font-semibold ml-auto mr-2">${item.price || '99.00'}</span>
+                                <span className="text-xs font-semibold ml-auto">${item.price || '99.00'}</span>
                               </div>
-                              <button className="bg-coral text-white py-1 px-2 rounded text-xs hover:bg-coral/90 transition-colors">
+                              <button className="bg-coral text-white py-1 px-3 rounded text-xs hover:bg-coral/90 transition-colors ml-2">
                                 View on
                               </button>
                             </div>
@@ -507,14 +507,14 @@ export default function WishlistDetail() {
                             <button
                               onClick={() => fulfillItemMutation.mutate(item.id)}
                               disabled={fulfillItemMutation.isPending}
-                              className="w-full mt-2 bg-green-600 text-white py-1 px-2 rounded text-xs hover:bg-green-700 transition-colors disabled:opacity-50"
+                              className="w-full mt-3 bg-green-600 text-white py-1 px-2 rounded text-xs hover:bg-green-700 transition-colors disabled:opacity-50"
                             >
                               {fulfillItemMutation.isPending ? 'Fulfilling...' : 'Mark as Fulfilled'}
                             </button>
                           )}
 
                           {item.isFulfilled && (
-                            <div className="mt-2 text-center">
+                            <div className="mt-3 text-center">
                               <span className="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
                                 ✓ Fulfilled
                               </span>
