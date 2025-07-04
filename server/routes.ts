@@ -8,6 +8,7 @@ import fs from "fs";
 import { storage } from "./storage";
 import { setupMultiAuth, isAuthenticated } from "./auth/multiAuth";
 import { z } from "zod";
+import { getSerpAPIService, SerpProduct } from "./serpapi-service";
 import {
   insertWishlistSchema,
   insertWishlistItemSchema,
@@ -765,6 +766,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error searching products:", error);
       res.status(500).json({ message: "Failed to search products" });
+    }
+  });
+
+  // Enhanced search endpoint that combines RainforestAPI (Amazon) with SerpAPI (Walmart & Target)
+  app.get('/api/products/search/enhanced', async (req, res) => {
+    try {
+      const { query, limit = 20 } = req.query;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      const serpService = getSerpAPIService();
+      const results: any[] = [];
+
+      // Get Amazon results from RainforestAPI (existing implementation)
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        try {
+          const params = new URLSearchParams({
+            api_key: RAINFOREST_API_KEY,
+            type: "search",
+            amazon_domain: "amazon.com",
+            search_term: query as string,
+          });
+
+          const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.search_results) {
+              // Transform Amazon results to include retailer info
+              const amazonResults = data.search_results.slice(0, Math.floor(Number(limit) / 3)).map((product: any) => ({
+                ...product,
+                retailer: 'amazon',
+                retailer_logo: '/logos/amazon-logo.svg'
+              }));
+              results.push(...amazonResults);
+            }
+          }
+        } catch (error) {
+          console.error('Amazon search error:', error);
+        }
+      }
+
+      // Get Walmart and Target results from SerpAPI
+      if (serpService) {
+        try {
+          const serpResults = await serpService.searchBothStores(query as string, '60602', Math.floor(Number(limit) / 3));
+          
+          // Transform SerpAPI results to match RainforestAPI format
+          const transformedResults = serpResults.map((product: SerpProduct) => ({
+            title: product.title,
+            price: {
+              value: parseFloat(product.price.replace(/[^0-9.]/g, '') || '0'),
+              currency: 'USD',
+              raw: product.price
+            },
+            image: product.image_url,
+            link: product.product_url,
+            rating: parseFloat(product.rating || '0'),
+            retailer: product.retailer,
+            retailer_logo: `/logos/${product.retailer}-logo.svg`,
+            product_id: product.product_id,
+            brand: product.brand,
+            description: product.description
+          }));
+
+          results.push(...transformedResults);
+        } catch (error) {
+          console.error('SerpAPI search error:', error);
+        }
+      }
+
+      // Shuffle results to mix retailers
+      const shuffledResults = results.sort(() => Math.random() - 0.5);
+
+      const responseData = {
+        search_results: shuffledResults,
+        pagination: {
+          current_page: 1,
+          total_pages: 1,
+          has_next_page: false,
+          has_previous_page: false
+        },
+        request_info: {
+          success: true,
+          message: `Enhanced search with ${results.length} results from multiple retailers`,
+          retailers_included: ['amazon', 'walmart', 'target'],
+          serpapi_enabled: !!serpService
+        }
+      };
+
+      // Record analytics event
+      await storage.recordEvent({
+        eventType: "enhanced_product_search",
+        userId: (req as any).user?.claims?.sub,
+        data: { 
+          query, 
+          resultsCount: results.length,
+          amazonResults: results.filter(r => r.retailer === 'amazon').length,
+          walmartResults: results.filter(r => r.retailer === 'walmart').length,
+          targetResults: results.filter(r => r.retailer === 'target').length,
+          serpApiEnabled: !!serpService
+        },
+        userAgent: req.get('User-Agent'),
+        ipAddress: req.ip,
+      });
+
+      res.json(responseData);
+    } catch (error) {
+      console.error("Error in enhanced search:", error);
+      res.status(500).json({ message: "Failed to perform enhanced search" });
     }
   });
 

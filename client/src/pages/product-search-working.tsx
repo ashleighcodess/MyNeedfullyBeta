@@ -78,7 +78,7 @@ export default function ProductSearchWorking() {
     params.append('page', page.toString());
     params.append('limit', '10');
     
-    return `/api/products/search?${params.toString()}`;
+    return `/api/products/search/enhanced?${params.toString()}`;
   }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists
@@ -454,9 +454,24 @@ export default function ProductSearchWorking() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <CardTitle className="text-lg mb-2 line-clamp-2">
-                          {product.title}
-                        </CardTitle>
+                        <div className="flex items-start justify-between mb-2">
+                          <CardTitle className="text-lg line-clamp-2 flex-1 mr-2">
+                            {product.title}
+                          </CardTitle>
+                          {product.retailer && (
+                            <div className="flex items-center">
+                              <img 
+                                src={`/logos/${product.retailer}-logo.svg`} 
+                                alt={product.retailer} 
+                                className="w-5 h-5"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
                         
                         <div className="space-y-2 mb-4">
                           <div className="text-2xl font-bold text-coral-600">
