@@ -567,123 +567,159 @@ export default function Landing() {
             </Button>
           </div>
 
-          {/* Emergency Product Categories */}
+          {/* Emergency Product Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Food & Groceries */}
-            <Link href="/product-search?q=emergency+food+kit&category=food">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white border-2 border-gray-100">
-                <div className="h-64 bg-gradient-to-br from-coral/20 to-coral/40 relative">
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-coral text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Food
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-coral/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-coral" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M3 4V2a1 1 0 0 1 2 0v2h2v2H5v16a1 1 0 0 1-2 0V6H1V4h2zm16-2a1 1 0 0 1 1 1v1h2v2h-2v14a1 1 0 0 1-2 0V6h-2V4h2V2a1 1 0 0 1 1-1zm-8 4a4 4 0 0 1 4 4v8a4 4 0 0 1-8 0v-8a4 4 0 0 1 4-4z"/>
-                        </svg>
-                      </div>
-                      <h3 className="text-navy font-semibold text-lg mb-2">Emergency Food Kit</h3>
-                      <p className="text-gray-600 text-sm px-4">Non-perishable essentials, canned goods, water, baby formula</p>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Starting at</span>
-                      <span className="font-bold text-lg text-coral">$25.00</span>
-                    </div>
-                  </div>
+            {/* Food Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=400&h=200&fit=crop"
+                  alt="Emergency Food Kit"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-coral text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Food
+                  </span>
+                </div>
+                <div className="absolute top-3 right-3">
+                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
                 </div>
               </div>
-            </Link>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Emergency Food Kit</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Ready-to-eat meals, canned goods, and emergency water supply for disaster preparedness</p>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                  <span className="text-lg font-bold text-coral">$79.00</span>
+                </div>
+                <Link href="/product-search?q=emergency+food+kit">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
 
-            {/* Emergency Supplies */}
-            <Link href="/product-search?q=emergency+kit+flashlight+first+aid&category=emergency">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white border-2 border-gray-100">
-                <div className="h-64 bg-gradient-to-br from-navy/20 to-navy/40 relative">
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-navy text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Emergency
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-navy/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-navy" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2l1.09 3.26L16 2l-.26 3.09L19 4l-1.74 2.74L20 10l-3.09-.26L18 13l-2.74-1.74L12 14l-1.09-3.26L8 14l.26-3.09L5 12l1.74-2.74L4 6l3.09.26L6 3l2.74 1.74L12 2z"/>
-                        </svg>
-                      </div>
-                      <h3 className="text-navy font-semibold text-lg mb-2">Emergency Kit</h3>
-                      <p className="text-gray-600 text-sm px-4">Flashlights, batteries, first aid kit, emergency radio</p>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Starting at</span>
-                      <span className="font-bold text-lg text-coral">$35.00</span>
-                    </div>
-                  </div>
+            {/* Clothes Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400&h=200&fit=crop"
+                  alt="Emergency Clothing"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Clothes
+                  </span>
+                </div>
+                <div className="absolute top-3 right-3">
+                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
                 </div>
               </div>
-            </Link>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Essential Clothing</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Basic clothing items including shirts, pants, and undergarments for emergency situations</p>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                  <span className="text-lg font-bold text-coral">$79.00</span>
+                </div>
+                <Link href="/product-search?q=emergency+clothing+basic">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
 
-            {/* Baby & Kids */}
-            <Link href="/product-search?q=baby+diapers+formula+wipes&category=baby">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white border-2 border-gray-100">
-                <div className="h-64 bg-gradient-to-br from-coral/30 to-coral/50 relative">
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-coral text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Baby & Kids
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FontAwesomeIcon icon={faHeart} className="w-8 h-8 text-coral" />
-                      </div>
-                      <h3 className="text-navy font-semibold text-lg mb-2">Baby Essentials</h3>
-                      <p className="text-gray-600 text-sm px-4">Diapers, formula, baby food, wipes, clothing</p>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Starting at</span>
-                      <span className="font-bold text-lg text-coral">$20.00</span>
-                    </div>
-                  </div>
+            {/* Groceries Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=200&fit=crop"
+                  alt="Emergency Groceries"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Groceries
+                  </span>
+                </div>
+                <div className="absolute top-3 right-3">
+                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
                 </div>
               </div>
-            </Link>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Baby & Family Essentials</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Diapers, formula, baby food, and family necessities for emergency preparedness</p>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                  <span className="text-lg font-bold text-coral">$79.00</span>
+                </div>
+                <Link href="/product-search?q=baby+diapers+formula">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
 
-            {/* Personal Care */}
-            <Link href="/product-search?q=personal+care+hygiene+toiletries&category=health">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white border-2 border-gray-100">
-                <div className="h-64 bg-gradient-to-br from-navy/15 to-navy/30 relative">
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-navy text-white px-3 py-1 rounded-full text-sm font-medium">
-                      Personal Care
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-navy/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FontAwesomeIcon icon={faSmile} className="w-8 h-8 text-navy" />
-                      </div>
-                      <h3 className="text-navy font-semibold text-lg mb-2">Hygiene Kit</h3>
-                      <p className="text-gray-600 text-sm px-4">Toiletries, soap, shampoo, toothbrush, feminine products</p>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Starting at</span>
-                      <span className="font-bold text-lg text-coral">$15.00</span>
-                    </div>
-                  </div>
+            {/* Skincare Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&h=200&fit=crop"
+                  alt="Personal Care Items"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Skincare
+                  </span>
+                </div>
+                <div className="absolute top-3 right-3">
+                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
                 </div>
               </div>
-            </Link>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Personal Care Kit</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Essential hygiene and personal care items including toiletries and health supplies</p>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src="/attached_assets/amazon_1751644244382.png" alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/target_1751644244383.png" alt="Target" className="w-4 h-4 rounded" />
+                    <img src="/attached_assets/walmart_1751644244383.png" alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                  <span className="text-lg font-bold text-coral">$79.00</span>
+                </div>
+                <Link href="/product-search?q=personal+care+hygiene">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Call to Action */}
