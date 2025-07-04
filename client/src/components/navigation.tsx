@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3 } from "lucide-react";
+import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 import NotificationCenter from "./notification-center";
 
@@ -35,8 +35,9 @@ export default function Navigation() {
 
   const navigationItems = [
     { href: "/home", label: "Home", icon: User, dataTip: null },
-    { href: "/browse", label: "Browse Needs Lists", icon: Search, dataTip: "browse-needs" },
-    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list" },
+    { href: "/my-needs-lists", label: "My Needs Lists", icon: List, dataTip: "my-needs-lists", requiresAuth: true },
+    { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
+    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search" },
     { href: "/about-us", label: "About Us", icon: User, dataTip: null },
   ];
@@ -58,7 +59,7 @@ export default function Navigation() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigationItems.map((item) => (
+            {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}

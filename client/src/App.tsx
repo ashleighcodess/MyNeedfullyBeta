@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import BrowseWishlists from "@/pages/browse-wishlists";
+import MyNeedsLists from "@/pages/my-needs-lists";
 import CreateNeedsList from "@/pages/create-wishlist";
 import EditWishlist from "@/pages/edit-wishlist";
 import WishlistDetail from "@/pages/wishlist-detail";
@@ -48,6 +49,8 @@ function Router() {
               <Route path="/home" component={Landing} />
               <Route path="/browse" component={BrowseWishlists} />
               <Route path="/find" component={BrowseWishlists} />
+              <Route path="/my-needs-lists" component={MyNeedsLists} />
+              <Route path="/my-lists" component={MyNeedsLists} />
               <Route path="/create" component={CreateNeedsList} />
               <Route path="/edit-wishlist/:id" component={EditWishlist} />
               <Route path="/needslist/:id" component={WishlistDetail} />

@@ -9,12 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Filter, Plus, BarChart3 } from "lucide-react";
-import { Link } from "wouter";
+import { Search, Filter } from "lucide-react";
 
 export default function BrowseWishlists() {
   const { user } = useAuth();
-  const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     category: "",
@@ -24,75 +22,29 @@ export default function BrowseWishlists() {
   });
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [isMyListsView, setIsMyListsView] = useState(false);
-  
-  // Check URL parameters when location changes
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const myListsParam = urlParams.get('my-lists');
-    const shouldShowMyLists = myListsParam === 'true';
-    setIsMyListsView(shouldShowMyLists);
-  }, [location]);
 
   const { data: wishlistsData, isLoading } = useQuery({
-    queryKey: [isMyListsView ? '/api/user/wishlists' : '/api/wishlists', { ...filters, query: searchQuery, page }],
+    queryKey: ['/api/wishlists', { ...filters, query: searchQuery, page }],
     queryFn: async () => {
-      if (isMyListsView) {
-        // For "My Lists" view, use the user wishlists endpoint
-        const response = await fetch('/api/user/wishlists');
-        if (!response.ok) throw new Error('Failed to fetch your wishlists');
-        const userWishlists = await response.json();
-        
-        // Apply filtering to user's wishlists
-        let filteredWishlists = userWishlists;
-        
-        if (searchQuery) {
-          filteredWishlists = filteredWishlists.filter((w: any) => 
-            w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            w.description.toLowerCase().includes(searchQuery.toLowerCase())
-          );
+      const params = new URLSearchParams({
+        ...filters,
+        query: searchQuery,
+        page: page.toString(),
+        limit: "20",
+      });
+      
+      // Remove empty params
+      Object.keys(filters).forEach(key => {
+        if (!params.get(key)) {
+          params.delete(key);
         }
-        
-        if (filters.category) {
-          filteredWishlists = filteredWishlists.filter((w: any) => w.category === filters.category);
-        }
-        
-        if (filters.urgencyLevel) {
-          filteredWishlists = filteredWishlists.filter((w: any) => w.urgencyLevel === filters.urgencyLevel);
-        }
-        
-        if (filters.location) {
-          filteredWishlists = filteredWishlists.filter((w: any) => 
-            w.location.toLowerCase().includes(filters.location.toLowerCase())
-          );
-        }
-        
-        return {
-          wishlists: filteredWishlists,
-          total: filteredWishlists.length
-        };
-      } else {
-        // For public browse, use the public wishlists endpoint
-        const params = new URLSearchParams({
-          ...filters,
-          query: searchQuery,
-          page: page.toString(),
-          limit: "20",
-        });
-        
-        // Remove empty params
-        Object.keys(filters).forEach(key => {
-          if (!params.get(key)) {
-            params.delete(key);
-          }
-        });
-        
-        const response = await fetch(`/api/wishlists?${params}`);
-        if (!response.ok) throw new Error('Failed to fetch wishlists');
-        return response.json();
-      }
+      });
+      
+      const response = await fetch(`/api/wishlists?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch wishlists');
+      return response.json();
     },
-    enabled: !isMyListsView || !!user,
+    enabled: true,
   });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -116,81 +68,50 @@ export default function BrowseWishlists() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">
-            {isMyListsView ? 'My Needs Lists' : 'Browse Needs Lists'}
-          </h1>
+          <h1 className="text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
           <p className="text-gray-600">
-            {isMyListsView 
-              ? 'Manage and track your needs lists'
-              : 'Find families and organizations who need your support'
-            }
+            Find families and organizations who need your support
           </p>
         </div>
 
-        {/* Search Bar - Only show for public browse */}
-        {!isMyListsView && (
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    placeholder="Search by keywords, location, or needs..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 py-3"
-                  />
-                </div>
-                <Button type="submit" className="bg-coral hover:bg-coral/90 px-8">
-                  <Search className="mr-2 h-4 w-4" />
-                  Search
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="border-coral text-coral hover:bg-coral/10"
-                >
-                  <Filter className="mr-2 h-4 w-4" />
-                  Filters
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Quick Actions - Only show for My Needs Lists */}
-        {isMyListsView && (
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/create-wishlist">
-                  <Button className="bg-coral hover:bg-coral/90 w-full sm:w-auto">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create New Needs List
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button variant="outline" className="border-coral text-coral hover:bg-coral/10 w-full sm:w-auto">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    View Dashboard
-                  </Button>
-                </Link>
+        {/* Search Bar */}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Input
+                  placeholder="Search by keywords, location, or needs..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 py-3"
+                />
               </div>
-            </CardContent>
-          </Card>
-        )}
+              <Button type="submit" className="bg-coral hover:bg-coral/90 px-8">
+                <Search className="mr-2 h-4 w-4" />
+                Search
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowFilters(!showFilters)}
+                className="border-coral text-coral hover:bg-coral/10"
+              >
+                <Filter className="mr-2 h-4 w-4" />
+                Filters
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar - Only show for public browse */}
-          {!isMyListsView && (
-            <div className={`lg:w-80 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-              <SearchFilters 
-                filters={filters} 
-                onFiltersChange={handleFilterChange} 
-              />
-            </div>
-          )}
+          {/* Filters Sidebar */}
+          <div className={`lg:w-80 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+            <SearchFilters 
+              filters={filters} 
+              onFiltersChange={handleFilterChange} 
+            />
+          </div>
 
           {/* Results */}
           <div className="flex-1">
