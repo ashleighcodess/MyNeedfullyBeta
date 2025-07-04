@@ -673,8 +673,27 @@ export class DatabaseStorage implements IStorage {
 
   async removeUser(id: string): Promise<void> {
     try {
-      // For now, let's just remove the user record to test the functionality
-      // A complete cleanup can be done with a database maintenance script
+      // Delete in correct order to avoid foreign key constraint violations
+      
+      // 1. Delete wishlist items first (they reference wishlists)
+      const userWishlists = await db.select({ id: wishlists.id }).from(wishlists).where(eq(wishlists.userId, id));
+      for (const wishlist of userWishlists) {
+        await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, wishlist.id));
+      }
+      
+      // 2. Delete user's wishlists
+      await db.delete(wishlists).where(eq(wishlists.userId, id));
+      
+      // 3. Delete other user data (safe to ignore if tables don't exist)
+      try {
+        await db.delete(analyticsEvents).where(eq(analyticsEvents.userId, id));
+      } catch (e) { /* ignore if table doesn't exist */ }
+      
+      try {
+        await db.delete(notifications).where(eq(notifications.userId, id));
+      } catch (e) { /* ignore if table doesn't exist */ }
+      
+      // 4. Finally delete the user
       await db.delete(users).where(eq(users.id, id));
       
       console.log(`Successfully removed user ${id}`);
