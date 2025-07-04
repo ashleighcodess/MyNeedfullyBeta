@@ -480,7 +480,7 @@ export default function WishlistDetail() {
                                 <h3 className={`font-semibold text-lg leading-snug mb-3 ${
                                   item.isFulfilled ? 'text-gray-500 line-through' : 'text-gray-900'
                                 }`}>
-                                  {item.title}
+                                  {item.title.split(',')[0]}
                                 </h3>
                                 <p className={`text-sm mb-3 ${
                                   item.isFulfilled ? 'text-gray-400' : 'text-gray-600'
