@@ -14,6 +14,7 @@ import Profile from "@/pages/profile";
 import EditProfile from "@/pages/edit-profile";
 import PrivacySettings from "@/pages/privacy-settings";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AboutUs from "@/pages/about-us";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,6 +22,10 @@ function Router() {
 
   return (
     <Switch>
+      {/* Public routes available to everyone */}
+      <Route path="/about-us" component={AboutUs} />
+      <Route path="/about" component={AboutUs} />
+      
       {isLoading || !isAuthenticated ? (
         <Route path="/" component={Landing} />
       ) : (
@@ -32,6 +37,7 @@ function Router() {
           <Route path="/needslist/:id" component={WishlistDetail} />
           <Route path="/wishlist/:id" component={WishlistDetail} />
           <Route path="/products" component={ProductSearch} />
+          <Route path="/search" component={ProductSearch} />
           <Route path="/profile" component={Profile} />
           <Route path="/profile/edit" component={EditProfile} />
           <Route path="/profile/privacy" component={PrivacySettings} />

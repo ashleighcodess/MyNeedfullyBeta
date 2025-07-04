@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, Menu, User, Settings, LogOut, Heart, Plus, Search } from "lucide-react";
+import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 
 export default function Navigation() {
@@ -32,9 +32,10 @@ export default function Navigation() {
   };
 
   const navigationItems = [
-    { href: "/browse", label: "Browse Wishlists", icon: Search },
-    { href: "/create", label: "Create Wishlist", icon: Plus },
+    { href: "/browse", label: "Browse Needs Lists", icon: Search },
+    { href: "/create", label: "Create Needs List", icon: Plus },
     { href: "/products", label: "Find Products", icon: Heart },
+    { href: "/about-us", label: "About Us", icon: User },
   ];
 
   const isActiveLink = (href: string) => {
