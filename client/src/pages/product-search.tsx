@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -34,12 +35,14 @@ export default function ProductSearch() {
   const [page, setPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
   const [searchCache, setSearchCache] = useState(new Map());
+  const [selectedWishlistId, setSelectedWishlistId] = useState<string>("");
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   
   // Get wishlistId from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
-  const wishlistId = urlParams.get('wishlistId');
+  const urlWishlistId = urlParams.get('wishlistId');
+  const wishlistId = urlWishlistId || selectedWishlistId;
 
   // Debounce search input to reduce API calls
   useEffect(() => {
@@ -89,6 +92,12 @@ export default function ProductSearch() {
     
     return `/api/products/search?${params.toString()}`;
   };
+
+  // Fetch user's wishlists when no wishlistId is provided
+  const { data: userWishlists } = useQuery({
+    queryKey: ['/api/user/wishlists'],
+    enabled: !urlWishlistId, // Only fetch if no specific wishlist is provided
+  });
 
   // Custom query with caching logic
   const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page, getCacheKey]);
@@ -244,6 +253,48 @@ export default function ProductSearch() {
             }
           </p>
         </div>
+
+        {/* Needs List Selector (when no wishlistId provided) */}
+        {!urlWishlistId && (
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="space-y-3">
+                <Label htmlFor="wishlist-select" className="text-sm font-medium text-gray-700">
+                  Select which needs list to add items to:
+                </Label>
+                <Select value={selectedWishlistId} onValueChange={setSelectedWishlistId}>
+                  <SelectTrigger id="wishlist-select" className="w-full">
+                    <SelectValue placeholder="Choose a needs list..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {userWishlists && userWishlists.length > 0 ? (
+                      userWishlists.map((wishlist: any) => (
+                        <SelectItem key={wishlist.id} value={wishlist.id.toString()}>
+                          {wishlist.title}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        No needs lists found
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+                {userWishlists && userWishlists.length === 0 && (
+                  <p className="text-sm text-gray-500">
+                    You need to create a needs list first.{" "}
+                    <button 
+                      onClick={() => navigate('/create-wishlist')}
+                      className="text-coral hover:underline"
+                    >
+                      Create one now
+                    </button>
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Search Controls */}
         <Card className="mb-8">
