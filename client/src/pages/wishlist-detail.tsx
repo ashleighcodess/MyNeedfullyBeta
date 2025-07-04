@@ -574,16 +574,18 @@ export default function WishlistDetail() {
                                         onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: Math.max(1, (item.quantity || 1) - 1) })}
                                         disabled={updateQuantityMutation.isPending || (item.quantity || 1) <= (item.quantityFulfilled || 0)}
                                         className="w-6 h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title="Decrease quantity by 1"
                                       >
-                                        −
+                                        <Minus className="w-4 h-4" />
                                       </button>
                                       <span className="text-sm font-medium w-8 text-center">{item.quantity || 1}</span>
                                       <button
                                         onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: (item.quantity || 1) + 1 })}
                                         disabled={updateQuantityMutation.isPending}
                                         className="w-6 h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                                        title="Increase quantity by 1"
                                       >
-                                        +
+                                        <Plus className="w-4 h-4" />
                                       </button>
                                     </div>
                                   )}
@@ -605,10 +607,9 @@ export default function WishlistDetail() {
                                   onClick={() => deleteItemMutation.mutate(item.id)}
                                   disabled={deleteItemMutation.isPending}
                                   className="text-gray-400 hover:text-red-600 p-1 ml-4 disabled:opacity-50"
+                                  title="Remove item completely"
                                 >
-                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
+                                  <Trash2 className="w-5 h-5" />
                                 </button>
                               )}
                             </div>
