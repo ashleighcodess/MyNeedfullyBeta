@@ -72,11 +72,11 @@ export default function EditProfile() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
+    // Check file size (2MB limit for better performance)
+    if (file.size > 2 * 1024 * 1024) {
       toast({
         title: "File Too Large",
-        description: "Please select an image smaller than 5MB.",
+        description: "Please select an image smaller than 2MB.",
         variant: "destructive",
       });
       return;
@@ -95,11 +95,41 @@ export default function EditProfile() {
     setUploadingImage(true);
     
     try {
-      // Convert file to base64
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64String = e.target?.result as string;
-        form.setValue("profileImageUrl", base64String);
+      // Create a canvas to compress the image
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Set max dimensions for profile picture
+        const MAX_WIDTH = 400;
+        const MAX_HEIGHT = 400;
+        
+        let { width, height } = img;
+        
+        // Calculate new dimensions while maintaining aspect ratio
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = (height * MAX_WIDTH) / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = (width * MAX_HEIGHT) / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw and compress the image
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Convert to base64 with compression
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+        
+        form.setValue("profileImageUrl", compressedBase64);
         
         toast({
           title: "Image Uploaded",
@@ -109,17 +139,24 @@ export default function EditProfile() {
         setUploadingImage(false);
       };
       
-      reader.onerror = () => {
+      img.onerror = () => {
         toast({
           title: "Upload Failed",
-          description: "Failed to read the image file. Please try again.",
+          description: "Failed to process the image file. Please try again.",
           variant: "destructive",
         });
         setUploadingImage(false);
       };
       
+      // Load the image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
       reader.readAsDataURL(file);
+      
     } catch (error) {
+      console.error('Image upload error:', error);
       toast({
         title: "Upload Failed",
         description: "Failed to upload image. Please try again.",
