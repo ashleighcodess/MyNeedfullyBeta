@@ -27,8 +27,20 @@ export default function ProductSearch() {
   const [page, setPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
 
+  // Build query URL with parameters
+  const buildSearchUrl = () => {
+    const params = new URLSearchParams();
+    if (activeSearch) params.append('query', activeSearch);
+    if (category && category !== 'all') params.append('category', category);
+    if (minPrice) params.append('min_price', minPrice);
+    if (maxPrice) params.append('max_price', maxPrice);
+    if (page && page !== 1) params.append('page', page.toString());
+    
+    return `/api/products/search?${params.toString()}`;
+  };
+
   const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: ['/api/products/search', { query: activeSearch, category, min_price: minPrice, max_price: maxPrice, page }],
+    queryKey: [buildSearchUrl()],
     enabled: !!activeSearch,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
