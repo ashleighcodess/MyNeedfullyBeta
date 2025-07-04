@@ -37,27 +37,35 @@ function Router() {
           <Route path="/resources" component={Resources} />
           <Route path="/signup" component={Signup} />
           <Route path="/sign-up" component={Signup} />
+          <Route path="/browse" component={BrowseWishlists} />
+          <Route path="/find" component={BrowseWishlists} />
           <Route path="/products" component={ProductSearchWorking} />
           <Route path="/product-search" component={ProductSearchWorking} />
           <Route path="/search" component={ProductSearchWorking} />
           
-          {isLoading || !isAuthenticated ? (
+          {isLoading ? (
+            <Route path="/">
+              {() => (
+                <div className="min-h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading...</p>
+                  </div>
+                </div>
+              )}
+            </Route>
+          ) : !isAuthenticated ? (
             <Route path="/" component={Landing} />
           ) : (
             <>
               <Route path="/" component={Home} />
               <Route path="/home" component={Landing} />
-              <Route path="/browse" component={BrowseWishlists} />
-              <Route path="/find" component={BrowseWishlists} />
               <Route path="/my-needs-lists" component={MyNeedsLists} />
               <Route path="/my-lists" component={MyNeedsLists} />
               <Route path="/create" component={CreateNeedsList} />
               <Route path="/edit-wishlist/:id" component={EditWishlist} />
               <Route path="/needslist/:id" component={WishlistDetail} />
               <Route path="/wishlist/:id" component={WishlistDetail} />
-              <Route path="/products" component={ProductSearchWorking} />
-              <Route path="/product-search" component={ProductSearchWorking} />
-              <Route path="/search" component={ProductSearchWorking} />
               <Route path="/profile" component={Profile} />
               <Route path="/profile/edit" component={EditProfile} />
               <Route path="/profile/privacy" component={PrivacySettings} />
