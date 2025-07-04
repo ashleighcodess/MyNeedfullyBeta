@@ -26,14 +26,14 @@ export default function Signup() {
     {
       id: "fulfill",
       title: "I Want To Fulfill Someone's Needs List",
-      description: "A Simple Process To Connect People In Need With Those Who Want To Help.",
+      description: "Browse and support others by purchasing items they need. Make a direct impact in your community.",
       iconSrc: handsIcon,
       bgColor: "bg-coral/10"
     },
     {
       id: "join",
       title: "Other, I Just Want To Join The Platform",
-      description: "A Simple Process To Connect People In Need With Those Who Want To Help.",
+      description: "",
       iconSrc: shieldIcon,
       bgColor: "bg-coral/10"
     }
@@ -177,9 +177,11 @@ export default function Signup() {
                       <h3 className="text-2xl font-semibold text-gray-900 mb-3">
                         {option.title}
                       </h3>
-                      <p className="text-gray-600 text-lg leading-relaxed">
-                        {option.description}
-                      </p>
+                      {option.description && (
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                          {option.description}
+                        </p>
+                      )}
                     </div>
                     {selectedOption === option.id && (
                       <div className="flex-shrink-0">
