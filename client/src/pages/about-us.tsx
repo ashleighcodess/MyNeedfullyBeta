@@ -76,7 +76,7 @@ export default function AboutUs() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <div 
-          className="text-center mb-16 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
+          className="text-center mb-8 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
           style={{ 
             backgroundImage: `url(${howItWorksBackground})`,
             minHeight: '400px'
@@ -92,7 +92,7 @@ export default function AboutUs() {
         </div>
 
         {/* Main Story */}
-        <Card className="mb-16">
+        <Card className="mb-8">
           <CardContent className="p-8">
             <h2 className="text-3xl font-bold text-navy mb-6 text-center">
               Our Dream Is To Transform The Way To Fulfill Needs Of People In Need.
@@ -124,8 +124,8 @@ export default function AboutUs() {
         </Card>
 
         {/* Image and Statistics Section */}
-        <div className="mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
+        <div className="mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-8">
             <div>
               <img 
                 src={aboutUsImage} 
@@ -149,7 +149,7 @@ export default function AboutUs() {
 
         {/* How It Works */}
         <div 
-          className="mb-16 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
+          className="mb-8 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
           style={{ 
             backgroundImage: `url(${howItWorksBackground})`,
             minHeight: '500px'
@@ -179,7 +179,7 @@ export default function AboutUs() {
         </div>
 
         {/* Call to Action */}
-        <Card className="mb-16 bg-gradient-to-r from-coral/10 to-coral/20">
+        <Card className="mb-8 bg-gradient-to-r from-coral/10 to-coral/20">
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold text-navy mb-4">
               Ready To Create A Needs List For Yourself Or Someone In Need?
@@ -193,7 +193,7 @@ export default function AboutUs() {
         </Card>
 
         {/* Mission Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
           <div>
             <img 
               src={missionImage} 
