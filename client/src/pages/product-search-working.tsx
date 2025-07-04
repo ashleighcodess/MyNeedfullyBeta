@@ -44,7 +44,7 @@ export default function ProductSearchWorking() {
     {
       asin: "emergency-kit-1",
       title: "Emergency Food Kit - 72 Hour Family Pack",
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400",
+      image: "https://images.unsplash.com/photo-1566906068842-eeaa1b1f5b98?w=400&h=400&fit=crop",
       price: { value: 49.99, currency: "USD" },
       rating: 4.6,
       ratings_total: 2156,
@@ -53,7 +53,7 @@ export default function ProductSearchWorking() {
     {
       asin: "winter-coat-1", 
       title: "Warm Winter Coat - Adult Size Medium",
-      image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400",
+      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",
       price: { value: 89.99, currency: "USD" },
       rating: 4.4,
       ratings_total: 1324,
@@ -62,7 +62,7 @@ export default function ProductSearchWorking() {
     {
       asin: "sleeping-bag-1",
       title: "Coleman Brazos Cold Weather Sleeping Bag",
-      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400",
+      image: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?w=400&h=400&fit=crop",
       price: { value: 34.99, currency: "USD" },
       rating: 4.3,
       ratings_total: 8945,
@@ -71,7 +71,7 @@ export default function ProductSearchWorking() {
     {
       asin: "baby-formula-1",
       title: "Baby Formula - Similac Pro-Advance",
-      image: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400",
+      image: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=400&fit=crop",
       price: { value: 28.94, currency: "USD" },
       rating: 4.5,
       ratings_total: 15234,
@@ -80,7 +80,7 @@ export default function ProductSearchWorking() {
     {
       asin: "household-1",
       title: "Tide Laundry Detergent Pods - 112 Count",
-      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+      image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&h=400&fit=crop",
       price: { value: 24.99, currency: "USD" },
       rating: 4.4,
       ratings_total: 45236,
@@ -89,7 +89,7 @@ export default function ProductSearchWorking() {
     {
       asin: "blanket-1",
       title: "Fleece Blanket Queen Size - Lightweight",
-      image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop",
       price: { value: 12.99, currency: "USD" },
       rating: 4.4,
       ratings_total: 89567,
@@ -123,7 +123,7 @@ export default function ProductSearchWorking() {
 
   // Fetch user's wishlists
   const { data: userWishlists } = useQuery({
-    queryKey: ['/api/users', user?.id, 'wishlists'],
+    queryKey: ['/api/user/wishlists'],
     enabled: !!user?.id,
   });
 
@@ -221,13 +221,22 @@ export default function ProductSearchWorking() {
     mutationFn: async (product: any) => {
       setAddingProductId(product.asin || product.id || Math.random().toString());
       
+      // Debug userWishlists
+      console.log("userWishlists:", userWishlists);
+      console.log("wishlistId from URL:", wishlistId);
+      
       let targetWishlistId = wishlistId;
-      if (!targetWishlistId && userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
-        targetWishlistId = userWishlists[0].id.toString();
+      if (!targetWishlistId) {
+        // Check if userWishlists is available and has items
+        if (userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
+          targetWishlistId = userWishlists[0].id.toString();
+        } else if (userWishlists && userWishlists.wishlists && Array.isArray(userWishlists.wishlists) && userWishlists.wishlists.length > 0) {
+          targetWishlistId = userWishlists.wishlists[0].id.toString();
+        }
       }
       
       if (!targetWishlistId) {
-        throw new Error("No needs list available. Please create a needs list first.");
+        throw new Error("No needs list available. Please create a needs list first by going to your Dashboard.");
       }
       
       const itemData = {
