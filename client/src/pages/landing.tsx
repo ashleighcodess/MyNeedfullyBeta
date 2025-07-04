@@ -9,36 +9,88 @@ import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_17515863
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
 
+// Custom hook for animated counters
+function useAnimatedCounter(targetValue: number, duration: number = 2000, startAnimation: boolean = false) {
+  const [value, setValue] = useState(0);
+  
+  useEffect(() => {
+    if (!startAnimation) return;
+    
+    const startTime = Date.now();
+    const startValue = 0;
+    
+    const animate = () => {
+      const currentTime = Date.now();
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuart);
+      
+      setValue(currentValue);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [targetValue, duration, startAnimation]);
+  
+  return value;
+}
+
 export default function Landing() {
   const journeyRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
   const [progressSteps, setProgressSteps] = useState([false, false, false]);
+  const [startTickerAnimation, setStartTickerAnimation] = useState(false);
+  
+  // Animated counter values
+  const needsFulfilled = useAnimatedCounter(127, 2500, startTickerAnimation);
+  const needsCreated = useAnimatedCounter(453, 2000, startTickerAnimation);
+  const smilesSpread = useAnimatedCounter(2847, 3000, startTickerAnimation);
+  const productsDelivered = useAnimatedCounter(1293, 2800, startTickerAnimation);
   
   useEffect(() => {
     const handleScroll = () => {
-      if (!journeyRef.current) return;
+      // Handle journey map animations
+      if (journeyRef.current) {
+        const rect = journeyRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const elementHeight = rect.height;
+        
+        // Calculate scroll progress through the section
+        const scrollProgress = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight + elementHeight), 0), 1);
+        
+        // Trigger line animations at different scroll thresholds
+        const newProgressSteps = [
+          scrollProgress > 0.1,   // First line
+          scrollProgress > 0.2,   // Second line
+          scrollProgress > 0.3    // Third line
+        ];
+        
+        setProgressSteps(newProgressSteps);
+      }
       
-      const rect = journeyRef.current.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const elementHeight = rect.height;
-      
-      // Calculate scroll progress through the section
-      const scrollProgress = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight + elementHeight), 0), 1);
-      
-      // Trigger line animations at different scroll thresholds
-      const newProgressSteps = [
-        scrollProgress > 0.1,   // First line
-        scrollProgress > 0.2,   // Second line
-        scrollProgress > 0.3    // Third line
-      ];
-      
-      setProgressSteps(newProgressSteps);
+      // Handle ticker animations
+      if (aboutRef.current && !startTickerAnimation) {
+        const rect = aboutRef.current.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // Trigger when section is 60% visible
+        if (rect.top < viewportHeight * 0.8) {
+          setStartTickerAnimation(true);
+        }
+      }
     };
     
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Check initial state
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [startTickerAnimation]);
 
   const handleLogin = () => {
     window.location.href = "/api/login";
@@ -310,7 +362,7 @@ export default function Landing() {
       </section>
 
       {/* About Us Section */}
-      <section className="py-20 bg-warm-bg">
+      <section ref={aboutRef} className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content and Stats */}
@@ -332,52 +384,52 @@ export default function Landing() {
               {/* Animated Ticker Stats */}
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {/* Needs List Fulfilled */}
-                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg">
+                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
                       <Gift className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold">000+</div>
+                      <div className="text-3xl font-bold">{needsFulfilled.toLocaleString()}+</div>
                       <div className="text-sm opacity-90">Needs List Fulfilled</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Needs List Created */}
-                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg">
+                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-coral/10 p-2 rounded-lg mr-3">
                       <Users className="h-6 w-6 text-coral" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold text-navy">450+</div>
+                      <div className="text-3xl font-bold text-navy">{needsCreated.toLocaleString()}+</div>
                       <div className="text-sm text-gray-600">Needs List Created</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Smiles Spread */}
-                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg">
+                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-coral/10 p-2 rounded-lg mr-3">
                       <Heart className="h-6 w-6 text-coral" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold text-navy">000k</div>
+                      <div className="text-3xl font-bold text-navy">{smilesSpread >= 1000 ? `${Math.floor(smilesSpread / 1000)}k` : smilesSpread.toLocaleString()}</div>
                       <div className="text-sm text-gray-600">Smiles Spread</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Products Delivered */}
-                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg">
+                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
                       <Gift className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold">000k</div>
+                      <div className="text-3xl font-bold">{productsDelivered >= 1000 ? `${Math.floor(productsDelivered / 1000)}k` : productsDelivered.toLocaleString()}</div>
                       <div className="text-sm opacity-90">Products Delivered</div>
                     </div>
                   </div>
