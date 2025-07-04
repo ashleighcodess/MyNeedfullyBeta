@@ -781,39 +781,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const serpService = getSerpAPIService();
       const results: any[] = [];
 
-      // Get Amazon results from RainforestAPI (existing implementation)
-      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-        try {
-          const params = new URLSearchParams({
-            api_key: RAINFOREST_API_KEY,
-            type: "search",
-            amazon_domain: "amazon.com",
-            search_term: query as string,
-          });
+      // Execute both API calls in parallel for better performance
+      const apiCalls = [];
 
-          const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.search_results) {
-              // Transform Amazon results to include retailer info
-              const amazonResults = data.search_results.slice(0, Math.floor(Number(limit) / 3)).map((product: any) => ({
+      // Amazon API call
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        const amazonCall = fetch(`${RAINFOREST_API_URL}?${new URLSearchParams({
+          api_key: RAINFOREST_API_KEY,
+          type: "search",
+          amazon_domain: "amazon.com",
+          search_term: query as string,
+        }).toString()}`)
+          .then(response => response.ok ? response.json() : null)
+          .then(data => {
+            if (data?.search_results) {
+              return data.search_results.slice(0, Math.min(Number(limit), 15)).map((product: any) => ({
                 ...product,
                 retailer: 'amazon',
                 retailer_logo: '/logos/amazon-logo.png'
               }));
-              results.push(...amazonResults);
             }
-          }
-        } catch (error) {
-          console.error('Amazon search error:', error);
-        }
+            return [];
+          })
+          .catch(error => {
+            console.error('Amazon search error:', error);
+            return [];
+          });
+        apiCalls.push(amazonCall);
       }
 
-      // Get Walmart and Target results from SerpAPI
+      // SerpAPI call (Walmart & Target)
       if (serpService) {
+        const serpCall = serpService.searchBothStores(query as string, '60602', Math.min(Number(limit), 15))
+          .catch(error => {
+            console.error('SerpAPI search error:', error);
+            return [];
+          });
+        apiCalls.push(serpCall);
+      }
+
+      // Wait for all API calls to complete
+      const apiResults = await Promise.all(apiCalls);
+      
+      // Process Amazon results
+      if (apiResults[0]) {
+        results.push(...apiResults[0]);
+      }
+
+      // Process SerpAPI results  
+      if (apiResults[1]) {
         try {
-          const serpResults = await serpService.searchBothStores(query as string, '60602', Math.floor(Number(limit) / 3));
+          const serpResults = apiResults[1];
           
           // Transform SerpAPI results to match RainforestAPI format
           const transformedResults = serpResults.map((product: SerpProduct) => {
@@ -864,7 +882,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For multi-retailer search, we'll implement a simple approach:
       // Return all results from current search, but allow for increasing the limit
       const currentPage = parseInt(page as string) || 1;
-      const resultsPerPage = parseInt(limit as string) || 10;
+      const resultsPerPage = parseInt(limit as string) || 20;
       const totalResults = shuffledResults.length;
       
       // Calculate start and end indices for current page

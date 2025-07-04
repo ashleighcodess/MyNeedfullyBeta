@@ -76,7 +76,7 @@ export default function ProductSearchWorking() {
     if (minPrice) params.append('min_price', minPrice);
     if (maxPrice) params.append('max_price', maxPrice);
     params.append('page', page.toString());
-    params.append('limit', '10');
+    params.append('limit', '20');
     
     return `/api/products/search/enhanced?${params.toString()}`;
   }, [debouncedQuery, category, minPrice, maxPrice, page]);
