@@ -9,6 +9,10 @@ import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
 import amazonLogo from "@assets/amazon_1751644244382.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
+import emergencyFoodImage from "@assets/emergencyfood_1751658641250.jpg";
+import essentialClothingImage from "@assets/essentialclothin_1751658676599.jpg";
+import babyEssentialsImage from "@assets/babyandfamily_1751658729999.jpg";
+import crisisHygieneImage from "@assets/crisishygiene_1751658766232.jpg";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
@@ -576,7 +580,7 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1544424503-b0e43c9ab8c6?w=400&h=200&fit=crop"
+                  src={emergencyFoodImage}
                   alt="Emergency Food Kit"
                   className="w-full h-full object-cover"
                 />
@@ -614,8 +618,8 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=200&fit=crop"
-                  alt="Emergency Clothing"
+                  src={essentialClothingImage}
+                  alt="Essential Clothing"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-3 left-3">
@@ -652,8 +656,8 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=200&fit=crop"
-                  alt="Baby Essentials"
+                  src={babyEssentialsImage}
+                  alt="Baby & Family Essentials"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute top-3 left-3">
@@ -690,7 +694,7 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
-                  src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=200&fit=crop"
+                  src={crisisHygieneImage}
                   alt="Crisis Hygiene Kit"
                   className="w-full h-full object-cover"
                 />
