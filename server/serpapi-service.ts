@@ -22,6 +22,8 @@ export class SerpAPIService {
 
   async searchWalmart(query: string, location: string = '60602', limit: number = 20): Promise<SerpProduct[]> {
     try {
+      console.log(`Searching Walmart for: "${query}"`);
+      
       const params = {
         api_key: this.apiKey,
         engine: 'walmart',
@@ -31,12 +33,14 @@ export class SerpAPIService {
       };
 
       const response = await getJson(params);
+      console.log(`Walmart search response status: ${response ? 'success' : 'no response'}`);
       
       if (!response.organic_results) {
+        console.log('No Walmart organic_results found');
         return [];
       }
 
-      return response.organic_results.slice(0, limit).map((product: any) => ({
+      const walmartResults = response.organic_results.slice(0, limit).map((product: any) => ({
         title: product.title || '',
         price: product.primary_offer?.offer_price || product.price || '0',
         rating: product.rating?.toString() || '',
@@ -48,6 +52,9 @@ export class SerpAPIService {
         brand: product.brand || '',
         description: product.description || product.short_description || ''
       }));
+      
+      console.log(`Walmart search found ${walmartResults.length} products`);
+      return walmartResults;
     } catch (error) {
       console.error('Error searching Walmart:', error);
       return [];
@@ -56,35 +63,54 @@ export class SerpAPIService {
 
   async searchTarget(query: string, location: string = '10001', limit: number = 20): Promise<SerpProduct[]> {
     try {
-      // For Target, we'll use Google Shopping with site:target.com filter
+      console.log(`Searching Target for: "${query}"`);
+      
+      // Use regular Google search with specific Target search terms
       const params = {
         api_key: this.apiKey,
-        engine: 'google_shopping',
-        q: `${query} site:target.com`,
+        engine: 'google',
+        q: `"${query}" site:target.com`,
         location: location,
-        device: 'desktop'
+        device: 'desktop',
+        num: limit * 2 // Request more to have options after filtering
       };
 
       const response = await getJson(params);
+      console.log(`Target search response status: ${response ? 'success' : 'no response'}`);
       
-      if (!response.shopping_results) {
+      if (!response || !response.organic_results) {
+        console.log('No Target organic_results found');
         return [];
       }
 
-      return response.shopping_results.slice(0, limit)
-        .filter((product: any) => product.link && product.link.includes('target.com'))
-        .map((product: any) => ({
-          title: product.title || '',
-          price: product.price || product.extracted_price || '0',
-          rating: product.rating?.toString() || '',
-          reviews: product.reviews?.toString() || '',
-          image_url: product.thumbnail || product.image || '',
-          product_url: product.link || '',
-          product_id: this.extractTargetProductId(product.link) || Math.random().toString(36).substr(2, 9),
+      console.log(`Target organic_results found: ${response.organic_results.length}`);
+
+      const targetResults = response.organic_results
+        .filter((result: any) => {
+          // Filter for actual Target product pages - be more flexible with URL patterns
+          return result.link && 
+                 result.link.includes('target.com') && 
+                 (result.link.includes('/p/') || 
+                  result.link.includes('/product/') ||
+                  result.link.includes('/A-') ||  // Target TCIN format
+                  (result.link.includes('target.com') && result.title && result.title.length > 10));
+        })
+        .slice(0, limit)
+        .map((result: any) => ({
+          title: result.title || '',
+          price: '0', // Regular search doesn't have price info, we'll get this from product detail API
+          rating: '',
+          reviews: '',
+          image_url: result.thumbnail || '',
+          product_url: result.link || '',
+          product_id: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
           retailer: 'target' as const,
-          brand: product.brand || '',
-          description: product.description || product.snippet || ''
+          brand: '',
+          description: result.snippet || ''
         }));
+      
+      console.log(`Target search found ${targetResults.length} products after filtering`);
+      return targetResults;
     } catch (error) {
       console.error('Error searching Target:', error);
       return [];

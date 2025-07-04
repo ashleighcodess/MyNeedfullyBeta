@@ -924,6 +924,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test endpoint for debugging SerpAPI
+  app.get('/api/debug/serpapi/:query', async (req, res) => {
+    try {
+      const query = req.params.query;
+      const serpService = getSerpAPIService();
+      
+      if (!serpService) {
+        return res.json({ error: 'SerpAPI service not available' });
+      }
+      
+      console.log(`🔍 DEBUG: Testing SerpAPI with query: "${query}"`);
+      
+      const [walmartResults, targetResults] = await Promise.all([
+        serpService.searchWalmart(query, '60602', 3),
+        serpService.searchTarget(query, '10001', 3)
+      ]);
+      
+      console.log(`📦 DEBUG Results - Walmart: ${walmartResults.length}, Target: ${targetResults.length}`);
+      
+      res.json({
+        query,
+        walmart: {
+          count: walmartResults.length,
+          results: walmartResults
+        },
+        target: {
+          count: targetResults.length,
+          results: targetResults
+        }
+      });
+    } catch (error) {
+      console.error('DEBUG endpoint error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Enhanced search endpoint that combines RainforestAPI (Amazon) with SerpAPI (Walmart & Target)
   app.get('/api/products/search/enhanced', async (req, res) => {
     try {
@@ -967,12 +1003,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // SerpAPI call (Walmart & Target)
       if (serpService) {
+        console.log(`Starting SerpAPI search for query: "${query}"`);
         const serpCall = serpService.searchBothStores(query as string, '60602', Math.min(Number(limit), 15))
+          .then(results => {
+            console.log(`SerpAPI search completed with ${results.length} total results`);
+            const walmartCount = results.filter(r => r.retailer === 'walmart').length;
+            const targetCount = results.filter(r => r.retailer === 'target').length;
+            console.log(`SerpAPI breakdown: ${walmartCount} Walmart, ${targetCount} Target products`);
+            return results;
+          })
           .catch(error => {
             console.error('SerpAPI search error:', error);
             return [];
           });
         apiCalls.push(serpCall);
+      } else {
+        console.log('SerpAPI service not available');
       }
 
       // Wait for all API calls to complete
