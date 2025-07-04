@@ -118,9 +118,70 @@ export class SerpAPIService {
         })
         .slice(0, limit)
         .map((result: any) => {
-          // Extract price from title or snippet if available
-          const priceMatch = (result.title + ' ' + (result.snippet || '')).match(/\$[\d,]+\.?\d*/);
-          const extractedPrice = priceMatch ? priceMatch[0] : '$0.00';
+          // Enhanced price extraction for Target
+          let extractedPrice = '$0.00';
+          
+          // Try multiple sources for price information
+          const searchTexts = [
+            result.title || '',
+            result.snippet || '',
+            result.rich_snippet?.top?.detected_extensions?.join(' ') || '',
+            result.rich_snippet?.top?.extensions?.join(' ') || '',
+            result.sitelinks?.map((link: any) => link.title || '').join(' ') || ''
+          ].filter(Boolean);
+          
+          // Multiple price patterns to catch different formats
+          const pricePatterns = [
+            /\$[\d,]+\.?\d*/g,           // Standard $X.XX format
+            /[\d,]+\.?\d*\s*dollars?/gi, // X dollars format
+            /[\d,]+\.?\d*\s*usd/gi,      // X USD format
+            /price:?\s*\$?[\d,]+\.?\d*/gi, // Price: $X.XX format
+            /starting\s+at\s+\$[\d,]+\.?\d*/gi, // Starting at $X.XX
+            /from\s+\$[\d,]+\.?\d*/gi,   // From $X.XX
+            /\$[\d,]+(?:\.\d{2})?/g      // Strict $X.XX format
+          ];
+          
+          for (const text of searchTexts) {
+            for (const pattern of pricePatterns) {
+              const matches = text.match(pattern);
+              if (matches && matches.length > 0) {
+                // Take the first valid price found
+                const priceMatch = matches[0];
+                // Extract just the dollar amount
+                const dollarMatch = priceMatch.match(/\$[\d,]+(?:\.\d{2})?/);
+                if (dollarMatch) {
+                  extractedPrice = dollarMatch[0];
+                  break;
+                }
+                // If no dollar sign, add one to pure numbers
+                const numberMatch = priceMatch.match(/([\d,]+(?:\.\d{2})?)/);
+                if (numberMatch && parseFloat(numberMatch[1].replace(',', '')) > 0) {
+                  extractedPrice = '$' + numberMatch[1];
+                  break;
+                }
+              }
+            }
+            if (extractedPrice !== '$0.00') break;
+          }
+          
+          // If still no price found, try to extract from structured data
+          if (extractedPrice === '$0.00' && result.rich_snippet) {
+            const richSnippet = result.rich_snippet;
+            if (richSnippet.top?.detected_extensions) {
+              for (const ext of richSnippet.top.detected_extensions) {
+                const priceMatch = ext.match(/\$[\d,]+(?:\.\d{2})?/);
+                if (priceMatch) {
+                  extractedPrice = priceMatch[0];
+                  break;
+                }
+              }
+            }
+          }
+          
+          // If price is still $0.00, set a reasonable placeholder that indicates pricing needed
+          if (extractedPrice === '$0.00') {
+            extractedPrice = 'Price varies'; // More honest than $0.00
+          }
           
           // Try to get better image URL - check for featured_snippet images or rich_snippets
           let imageUrl = result.thumbnail || '';
