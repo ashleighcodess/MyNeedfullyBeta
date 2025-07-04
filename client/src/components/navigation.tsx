@@ -37,6 +37,7 @@ export default function Navigation() {
     { href: "/create", label: "Create Needs List", icon: Plus },
     { href: "/products", label: "Find Products", icon: Heart },
     { href: "/about-us", label: "About Us", icon: User },
+    { href: "/signup", label: "Sign Up (Test)", icon: User },
   ];
 
   const isActiveLink = (href: string) => {
