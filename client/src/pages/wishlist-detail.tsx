@@ -157,6 +157,13 @@ export default function WishlistDetail() {
         description: "Item has been removed from your needs list.",
       });
     },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove item. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Merge duplicates mutation
@@ -604,9 +611,16 @@ export default function WishlistDetail() {
                               {/* Trash icon for owner */}
                               {isOwner && (
                                 <button 
-                                  onClick={() => deleteItemMutation.mutate(item.id)}
+                                  onClick={() => {
+                                    // Show immediate feedback
+                                    deleteItemMutation.mutate(item.id);
+                                  }}
                                   disabled={deleteItemMutation.isPending}
-                                  className="text-gray-400 hover:text-red-600 p-1 ml-4 disabled:opacity-50"
+                                  className={`p-1 ml-4 transition-colors ${
+                                    deleteItemMutation.isPending 
+                                      ? 'text-red-400 opacity-50 cursor-not-allowed' 
+                                      : 'text-gray-400 hover:text-red-600'
+                                  }`}
                                   title="Remove item completely"
                                 >
                                   <Trash2 className="w-5 h-5" />
