@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
@@ -463,7 +463,7 @@ export default function Landing() {
                 <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-coral/10 p-2 rounded-lg mr-3">
-                      <Heart className="h-6 w-6 text-coral" />
+                      <FontAwesomeIcon icon={faSmile} className="h-6 w-6 text-coral" />
                     </div>
                     <div>
                       <div className="text-3xl font-bold text-navy">{smilesSpread >= 1000 ? `${Math.floor(smilesSpread / 1000)}k` : smilesSpread.toLocaleString()}</div>
