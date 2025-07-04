@@ -124,7 +124,7 @@ export default function ProductSearchWorking() {
   // Fetch user's wishlists
   const { data: userWishlists } = useQuery({
     queryKey: ['/api/users', user?.id, 'wishlists'],
-    enabled: !wishlistId && !!user?.id,
+    enabled: !!user?.id,
   });
 
   // Product search query with proper error handling
@@ -172,19 +172,14 @@ export default function ProductSearchWorking() {
     if (!debouncedQuery || debouncedQuery.length < 3) {
       return showFallbacks ? popularProducts : [];
     }
-    return searchResults?.products || [];
+    return searchResults?.search_results || searchResults?.products || [];
   }, [debouncedQuery, searchResults, showFallbacks, popularProducts]);
 
   // Stable event handlers
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim().length > 2) {
-      toast({
-        title: "Searching products...",
-        description: "This may take a few seconds for live data retrieval.",
-      });
-    }
-  }, [searchQuery, toast]);
+    // Note: No toast here to avoid duplicate loading indicators
+  }, []);
 
   const handleCategoryChange = useCallback((value: string) => {
     setCategory(value);
@@ -224,7 +219,7 @@ export default function ProductSearchWorking() {
   // Add to wishlist mutation
   const addToWishlistMutation = useMutation({
     mutationFn: async (product: any) => {
-      setAddingProductId(product.asin);
+      setAddingProductId(product.asin || product.id || Math.random().toString());
       
       let targetWishlistId = wishlistId;
       if (!targetWishlistId && userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
@@ -238,10 +233,10 @@ export default function ProductSearchWorking() {
       const itemData = {
         title: product.title,
         description: product.title,
-        imageUrl: product.image,
-        price: (product.price?.value || product.price?.raw)?.toString(),
+        imageUrl: product.image || product.image_url || product.main_image?.link,
+        price: (product.price?.value || product.price?.raw || product.price)?.toString(),
         currency: "USD",
-        productUrl: product.link || "#",
+        productUrl: product.link || product.url || "#",
         retailer: "Online Store",
         category: category || "other",
         quantity: 1,
@@ -469,11 +464,11 @@ export default function ProductSearchWorking() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {displayProducts.map((product: any, index: number) => (
-                    <Card key={product.asin || index} className="hover:shadow-lg transition-shadow">
+                    <Card key={product.asin || product.id || index} className="hover:shadow-lg transition-shadow">
                       <CardHeader className="pb-3">
-                        {product.image && (
+                        {(product.image || product.image_url || product.main_image?.link) && (
                           <img
-                            src={product.image}
+                            src={product.image || product.image_url || product.main_image?.link}
                             alt={product.title}
                             className="w-full h-48 object-contain rounded-lg bg-gray-50"
                             onError={(e) => {
@@ -504,11 +499,11 @@ export default function ProductSearchWorking() {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => addToWishlistMutation.mutate(product)}
-                            disabled={addingProductId === product.asin}
+                            disabled={addingProductId === (product.asin || product.id || index.toString())}
                             className="flex-1"
                             size="sm"
                           >
-                            {addingProductId === product.asin ? (
+                            {addingProductId === (product.asin || product.id || index.toString()) ? (
                               <>Adding...</>
                             ) : (
                               <>
@@ -517,10 +512,10 @@ export default function ProductSearchWorking() {
                               </>
                             )}
                           </Button>
-                          {product.link && (
+                          {(product.link || product.url) && (
                             <Button size="sm" variant="outline" asChild>
                               <a 
-                                href={product.link} 
+                                href={product.link || product.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                               >
