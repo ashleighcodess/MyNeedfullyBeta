@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search } from "lucide-react";
+import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 
 export default function Navigation() {
@@ -117,7 +117,7 @@ export default function Navigation() {
                 <DropdownMenuSeparator />
                 <Link href="/">
                   <DropdownMenuItem className="cursor-pointer">
-                    <Users className="mr-2 h-4 w-4" />
+                    <Zap className="mr-2 h-4 w-4" />
                     Quick Actions
                   </DropdownMenuItem>
                 </Link>
