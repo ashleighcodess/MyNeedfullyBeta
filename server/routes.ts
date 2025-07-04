@@ -592,8 +592,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Donation routes
   app.post('/api/donations', isAuthenticated, async (req: any, res) => {
     try {
-      const donorId = req.user.claims.sub;
-      const donationData = insertDonationSchema.parse({ ...req.body, donorId });
+      const supporterId = req.user.claims.sub;
+      const donationData = insertDonationSchema.parse({ ...req.body, supporterId });
       
       const donation = await storage.createDonation(donationData);
       
@@ -625,7 +625,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record analytics event
       await storage.recordEvent({
         eventType: "donation_made",
-        userId: donorId,
+        userId: supporterId,
         data: { donationId: donation.id, amount: donation.amount },
         userAgent: req.get('User-Agent'),
         ipAddress: req.ip,

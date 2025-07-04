@@ -376,7 +376,7 @@ export default function Profile() {
                       <div className="text-2xl font-bold text-navy mb-1">
                         {userDonations?.length || 0}
                       </div>
-                      <div className="text-sm text-gray-600">Items Donated</div>
+                      <div className="text-sm text-gray-600">Items Supported</div>
                     </CardContent>
                   </Card>
                   

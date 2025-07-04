@@ -151,7 +151,7 @@ export default function ProductCard({
             <div className="text-xs text-gray-500 space-y-1">
               <div className="flex items-center">
                 <User className="mr-1 h-3 w-3" />
-                Fulfilled by: {item.fulfilledBy ? 'Anonymous Donor' : 'Anonymous'}
+                Fulfilled by: {item.fulfilledBy ? 'Anonymous Supporter' : 'Anonymous'}
               </div>
               <div className="flex items-center">
                 <Calendar className="mr-1 h-3 w-3" />

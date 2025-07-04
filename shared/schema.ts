@@ -117,7 +117,7 @@ export const wishlistItems = pgTable("wishlist_items", {
 // Donations/Fulfillments
 export const donations = pgTable("donations", {
   id: serial("id").primaryKey(),
-  donorId: varchar("donor_id").references(() => users.id).notNull(),
+  supporterId: varchar("supporter_id").references(() => users.id).notNull(),
   wishlistId: integer("wishlist_id").references(() => wishlists.id).notNull(),
   itemId: integer("item_id").references(() => wishlistItems.id),
   amount: decimal("amount", { precision: 10, scale: 2 }),
@@ -206,7 +206,7 @@ export const wishlistItemsRelations = relations(wishlistItems, ({ one, many }) =
 }));
 
 export const donationsRelations = relations(donations, ({ one }) => ({
-  donor: one(users, { fields: [donations.donorId], references: [users.id] }),
+  supporter: one(users, { fields: [donations.supporterId], references: [users.id] }),
   wishlist: one(wishlists, { fields: [donations.wishlistId], references: [wishlists.id] }),
   item: one(wishlistItems, { fields: [donations.itemId], references: [wishlistItems.id] }),
   thankYouNote: one(thankYouNotes),

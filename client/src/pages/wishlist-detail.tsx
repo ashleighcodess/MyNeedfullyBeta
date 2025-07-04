@@ -426,7 +426,7 @@ export default function WishlistDetail() {
                   onClick={() => window.open('/products', '_blank')}
                 >
                   <Gift className="mr-2 h-5 w-5" />
-                  Find Items to Donate
+                  Find Items to Support
                 </Button>
                 
                 <Dialog open={showThankYouNote} onOpenChange={setShowThankYouNote}>

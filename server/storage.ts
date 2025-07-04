@@ -316,7 +316,7 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(donations)
-      .where(eq(donations.donorId, userId))
+      .where(eq(donations.supporterId, userId))
       .orderBy(desc(donations.createdAt));
   }
 
@@ -477,7 +477,7 @@ export class DatabaseStorage implements IStorage {
       limit: 10,
       orderBy: desc(donations.createdAt),
       with: {
-        donor: {
+        supporter: {
           columns: { firstName: true, lastName: true }
         },
         wishlist: {

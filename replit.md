@@ -60,9 +60,9 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 2. **Wishlist Creation**: Users create categorized wishlists with detailed stories and shipping information
 3. **Product Search**: Integration with external APIs for finding specific items
 4. **Browse and Discovery**: Public wishlist browsing with advanced filtering
-5. **Donation Process**: Donors fulfill items with confirmation tracking
+5. **Donation Process**: Supporters fulfill items with confirmation tracking
 6. **Notification System**: Real-time updates via WebSocket connections
-7. **Thank You Flow**: Gratitude messaging between recipients and donors
+7. **Thank You Flow**: Gratitude messaging between recipients and supporters
 
 ## External Dependencies
 
@@ -115,6 +115,7 @@ Changelog:
 - July 04, 2025: Added comprehensive edit functionality for needs lists including image management, address autocomplete, and owner-only access controls
 - July 04, 2025: Fixed critical edit functionality authorization bug - corrected API endpoint from `/api/wishlists` to `/api/wishlists/${id}` for proper data fetching
 - July 04, 2025: Resolved FormData upload issue in edit mutation with proper fetch implementation for file uploads
+- July 04, 2025: Successfully completed comprehensive terminology update throughout entire application - replaced all instances of "Donor" with "Supporter" for more inclusive and positive language, including database schema updates, API endpoints, frontend text, and notification messages
 ```
 
 ## User Preferences

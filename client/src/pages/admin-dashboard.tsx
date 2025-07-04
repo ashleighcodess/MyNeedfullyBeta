@@ -177,7 +177,7 @@ export default function AdminDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Donations</p>
+                  <p className="text-sm font-medium text-gray-600">Total Support Items</p>
                   <p className="text-3xl font-bold text-navy">{adminStats?.totalDonations || 0}</p>
                   <p className="text-sm text-green-600">+15% from last month</p>
                 </div>

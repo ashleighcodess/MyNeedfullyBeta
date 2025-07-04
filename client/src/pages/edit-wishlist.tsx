@@ -435,7 +435,7 @@ export default function EditWishlist() {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  This information will be shared with donors when they fulfill items so they know where to send them.
+                  This information will be shared with supporters when they fulfill items so they know where to send them.
                 </AlertDescription>
               </Alert>
 

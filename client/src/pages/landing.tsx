@@ -46,9 +46,9 @@ export default function Landing() {
   ];
 
   const recentActivity = [
-    { donor: "Sarah M.", action: "donated", item: "Baby formula and diapers to help newborn twins", timeAgo: "2 hours ago" },
-    { donor: "Michael D.", action: "fulfilled", item: "School backpacks for three children", timeAgo: "4 hours ago" },
-    { donor: "Local Church", action: "completed", item: "Emergency food package for hurricane victims", timeAgo: "6 hours ago" }
+    { supporter: "Sarah M.", action: "supported", item: "Baby formula and diapers to help newborn twins", timeAgo: "2 hours ago" },
+    { supporter: "Michael D.", action: "fulfilled", item: "School backpacks for three children", timeAgo: "4 hours ago" },
+    { supporter: "Local Church", action: "completed", item: "Emergency food package for hurricane victims", timeAgo: "6 hours ago" }
   ];
 
   const getUrgencyColor = (level: string) => {
@@ -170,7 +170,7 @@ export default function Landing() {
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-coral">$2.5M+</div>
-              <div className="text-gray-600">In Donations</div>
+              <div className="text-gray-600">In Support</div>
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-coral">98%</div>
@@ -178,7 +178,7 @@ export default function Landing() {
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-coral">15K+</div>
-              <div className="text-gray-600">Active Donors</div>
+              <div className="text-gray-600">Active Supporters</div>
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@ export default function Landing() {
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
                 <Search className="text-white h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-semibold text-navy mb-4">Donors Discover Needs</h3>
+              <h3 className="text-2xl font-semibold text-navy mb-4">Supporters Discover Needs</h3>
               <p className="text-gray-600 leading-relaxed">Generous donors browse verified wishlists, search by location or need type, and choose meaningful ways to help real families.</p>
             </div>
 
@@ -341,7 +341,7 @@ export default function Landing() {
               <div key={index} className="flex-shrink-0 bg-white/10 rounded-xl p-6 min-w-80">
                 <div className="flex items-center space-x-3 mb-3">
                   <Gift className="text-coral-light h-5 w-5" />
-                  <span className="font-semibold">{activity.donor}</span>
+                  <span className="font-semibold">{activity.supporter}</span>
                   <span>{activity.action}</span>
                 </div>
                 <div className="text-sm opacity-90">{activity.item}</div>
@@ -394,9 +394,9 @@ export default function Landing() {
               </div>
             </div>
             
-            {/* For Donors */}
+            {/* For Supporters */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">For Donors</h4>
+              <h4 className="text-lg font-semibold mb-4">For Supporters</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Browse Wishlists</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">How to Donate</a></li>

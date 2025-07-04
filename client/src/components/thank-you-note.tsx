@@ -104,7 +104,7 @@ export default function ThankYouNote({ toUserId, donationId, onSent }: ThankYouN
         </div>
         <h3 className="text-xl font-semibold text-navy mb-2">Send a Thank You Note</h3>
         <p className="text-gray-600 text-sm">
-          Express your gratitude to this generous donor
+          Express your gratitude to this generous supporter
         </p>
       </div>
 
