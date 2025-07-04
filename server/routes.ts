@@ -800,7 +800,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const amazonResults = data.search_results.slice(0, Math.floor(Number(limit) / 3)).map((product: any) => ({
                 ...product,
                 retailer: 'amazon',
-                retailer_logo: '/logos/amazon-logo.svg'
+                retailer_logo: '/logos/amazon-logo.png'
               }));
               results.push(...amazonResults);
             }
@@ -845,7 +845,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               link: product.product_url,
               rating: parseFloat(product.rating || '0'),
               retailer: product.retailer,
-              retailer_logo: `/logos/${product.retailer}-logo.svg`,
+              retailer_logo: `/logos/${product.retailer}-logo.png`,
               product_id: product.product_id,
               brand: product.brand,
               description: product.description
