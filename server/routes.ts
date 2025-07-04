@@ -1062,15 +1062,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 rawPrice = priceObj.raw || `$${priceValue.toFixed(2)}`;
               }
               
-              // More debug logging for Target
-              if (product.retailer === 'target') {
-                console.log(`[DEBUG] Target price result:`, {
-                  title: product.title.substring(0, 30),
-                  priceValue,
-                  rawPrice,
-                  imageUrl: product.image_url || 'NO_IMAGE'
-                });
-              }
+
             } catch (err) {
               console.error('Price parsing error:', err, 'for product:', product.title);
               priceValue = 0;
