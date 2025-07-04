@@ -116,6 +116,7 @@ Changelog:
 - July 04, 2025: Fixed critical edit functionality authorization bug - corrected API endpoint from `/api/wishlists` to `/api/wishlists/${id}` for proper data fetching
 - July 04, 2025: Resolved FormData upload issue in edit mutation with proper fetch implementation for file uploads
 - July 04, 2025: Successfully completed comprehensive terminology update throughout entire application - replaced all instances of "Donor" with "Supporter" for more inclusive and positive language, including database schema updates, API endpoints, frontend text, and notification messages
+- July 04, 2025: Fixed critical profile picture upload bug by correcting apiRequest parameter order in edit-profile.tsx and privacy-settings.tsx
 ```
 
 ## User Preferences

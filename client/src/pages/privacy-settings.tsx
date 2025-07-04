@@ -28,7 +28,7 @@ export default function PrivacySettings() {
 
   const updatePrivacyMutation = useMutation({
     mutationFn: async (data: typeof settings) => {
-      return await apiRequest(`/api/users/${user?.id}/privacy`, "PATCH", data);
+      return await apiRequest("PATCH", `/api/users/${user?.id}/privacy`, data);
     },
     onSuccess: () => {
       toast({

@@ -49,7 +49,7 @@ export default function EditProfile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data: EditProfileForm) => {
-      return await apiRequest(`/api/users/${user?.id}`, "PATCH", data);
+      return await apiRequest("PATCH", `/api/users/${user?.id}`, data);
     },
     onSuccess: () => {
       toast({
