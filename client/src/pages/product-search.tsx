@@ -35,14 +35,12 @@ export default function ProductSearch() {
   const [page, setPage] = useState(1);
   const [activeSearch, setActiveSearch] = useState("");
   const [searchCache, setSearchCache] = useState(new Map());
-  const [selectedWishlistId, setSelectedWishlistId] = useState<string>("");
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   
   // Get wishlistId from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
-  const urlWishlistId = urlParams.get('wishlistId');
-  const wishlistId = urlWishlistId || selectedWishlistId;
+  const wishlistId = urlParams.get('wishlistId');
 
   // Debounce search input to reduce API calls
   useEffect(() => {
@@ -96,7 +94,7 @@ export default function ProductSearch() {
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
     queryKey: ['/api/user/wishlists'],
-    enabled: !urlWishlistId, // Only fetch if no specific wishlist is provided
+    enabled: !wishlistId, // Only fetch if no specific wishlist is provided
   });
 
   // Custom query with caching logic
@@ -187,11 +185,17 @@ export default function ProductSearch() {
   // Mutation for adding products to wishlist
   const addToWishlistMutation = useMutation({
     mutationFn: async (product: any) => {
-      if (!wishlistId) {
-        throw new Error("No wishlist selected");
+      setAddingProductId(product.asin);
+      
+      // If no wishlistId provided, use the first available wishlist
+      let targetWishlistId = wishlistId;
+      if (!targetWishlistId && userWishlists && userWishlists.length > 0) {
+        targetWishlistId = userWishlists[0].id.toString();
       }
       
-      setAddingProductId(product.asin);
+      if (!targetWishlistId) {
+        throw new Error("No needs list available. Please create a needs list first.");
+      }
       
       const itemData = {
         title: product.title,
@@ -206,7 +210,7 @@ export default function ProductSearch() {
         priority: 3, // medium priority
       };
       
-      return await apiRequest("POST", `/api/wishlists/${wishlistId}/items`, itemData);
+      return await apiRequest("POST", `/api/wishlists/${targetWishlistId}/items`, itemData);
     },
     onSuccess: () => {
       setAddingProductId(null);
@@ -214,13 +218,18 @@ export default function ProductSearch() {
         title: "Item Added!",
         description: "The item has been added to your needs list.",
       });
-      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${wishlistId}`] });
+      // Invalidate cache for the target wishlist
+      const targetWishlistId = wishlistId || (userWishlists && userWishlists.length > 0 ? userWishlists[0].id.toString() : null);
+      if (targetWishlistId) {
+        queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });
+      }
+      queryClient.invalidateQueries({ queryKey: ['/api/user/wishlists'] });
     },
     onError: (error) => {
       setAddingProductId(null);
       toast({
         title: "Error",
-        description: "Failed to add item to your needs list.",
+        description: error instanceof Error ? error.message : "Failed to add item to your needs list.",
         variant: "destructive",
       });
     },
@@ -254,47 +263,7 @@ export default function ProductSearch() {
           </p>
         </div>
 
-        {/* Needs List Selector (when no wishlistId provided) */}
-        {!urlWishlistId && (
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="space-y-3">
-                <Label htmlFor="wishlist-select" className="text-sm font-medium text-gray-700">
-                  Select which needs list to add items to:
-                </Label>
-                <Select value={selectedWishlistId} onValueChange={setSelectedWishlistId}>
-                  <SelectTrigger id="wishlist-select" className="w-full">
-                    <SelectValue placeholder="Choose a needs list..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {userWishlists && userWishlists.length > 0 ? (
-                      userWishlists.map((wishlist: any) => (
-                        <SelectItem key={wishlist.id} value={wishlist.id.toString()}>
-                          {wishlist.title}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="none" disabled>
-                        No needs lists found
-                      </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-                {userWishlists && userWishlists.length === 0 && (
-                  <p className="text-sm text-gray-500">
-                    You need to create a needs list first.{" "}
-                    <button 
-                      onClick={() => navigate('/create-wishlist')}
-                      className="text-coral hover:underline"
-                    >
-                      Create one now
-                    </button>
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+
 
         {/* Search Controls */}
         <Card className="mb-8">
@@ -529,7 +498,7 @@ export default function ProductSearch() {
                             variant="outline" 
                             className="w-full border-coral text-coral hover:bg-coral/10"
                             onClick={() => addToWishlistMutation.mutate(product)}
-                            disabled={addingProductId === product.asin || !wishlistId}
+                            disabled={addingProductId === product.asin}
                           >
                             <Heart className="mr-2 h-4 w-4" />
                             {addingProductId === product.asin ? "Adding..." : "Add to Needs List"}
