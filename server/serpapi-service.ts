@@ -118,7 +118,7 @@ export class SerpAPIService {
             result.snippet || '',
             result.rich_snippet?.top?.detected_extensions?.join(' ') || '',
             result.rich_snippet?.top?.extensions?.join(' ') || '',
-            result.sitelinks?.map((link: any) => link.title || '').join(' ') || ''
+            (result.sitelinks && Array.isArray(result.sitelinks)) ? result.sitelinks.map((link: any) => link.title || '').join(' ') : ''
           ].filter(Boolean);
           
           // Multiple price patterns to catch different formats

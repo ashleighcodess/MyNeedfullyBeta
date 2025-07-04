@@ -486,7 +486,7 @@ export default function ProductSearchWorking() {
           <>
             {isLoading && (
               <div className="text-center py-12">
-                <div className="flex items-center justify-center space-x-4 mb-4">
+                <div className="flex flex-col items-center justify-center space-y-4 mb-4">
                   <BrandLoader size="lg" />
                   <div className="text-center">
                     <p className="text-lg font-medium text-gray-800">
