@@ -189,9 +189,7 @@ export default function ProductSearch() {
     mutationFn: async (product: any) => {
       setAddingProductId(product.asin);
       
-      console.log("Debug - userWishlists:", userWishlists);
-      console.log("Debug - user:", user);
-      console.log("Debug - wishlistId:", wishlistId);
+
       
       // If no wishlistId provided, use the first available wishlist
       let targetWishlistId = wishlistId;

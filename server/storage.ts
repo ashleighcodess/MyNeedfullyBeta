@@ -92,6 +92,9 @@ export interface IStorage {
   getAdminStats(): Promise<any>;
   getFeaturedWishlists(): Promise<Wishlist[]>;
   getRecentActivity(): Promise<any[]>;
+
+  // Community Impact operations
+  getCommunityStats(startDate: Date, endDate: Date): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -488,6 +491,61 @@ export class DatabaseStorage implements IStorage {
         }
       }
     });
+  }
+
+  async getCommunityStats(startDate: Date, endDate: Date): Promise<any> {
+    // Count total support actions (donations + fulfillments)
+    const [donationCount] = await db
+      .select({ count: count() })
+      .from(donations)
+      .where(
+        and(
+          gte(donations.createdAt, startDate),
+          lte(donations.createdAt, endDate)
+        )
+      );
+
+    const [fulfillmentCount] = await db
+      .select({ count: count() })
+      .from(wishlistItems)
+      .where(
+        and(
+          eq(wishlistItems.isFulfilled, true),
+          gte(wishlistItems.fulfilledAt!, startDate),
+          lte(wishlistItems.fulfilledAt!, endDate)
+        )
+      );
+
+    // Count unique families helped (wishlists with fulfilled items)
+    const [familyCount] = await db
+      .selectDistinct({ userId: wishlists.userId })
+      .from(wishlists)
+      .innerJoin(wishlistItems, eq(wishlists.id, wishlistItems.wishlistId))
+      .where(
+        and(
+          eq(wishlistItems.isFulfilled, true),
+          gte(wishlistItems.fulfilledAt!, startDate),
+          lte(wishlistItems.fulfilledAt!, endDate)
+        )
+      );
+
+    // Calculate total donation value
+    const [donationValue] = await db
+      .select({ total: sum(donations.amount) })
+      .from(donations)
+      .where(
+        and(
+          gte(donations.createdAt, startDate),
+          lte(donations.createdAt, endDate)
+        )
+      );
+
+    return {
+      totalSupport: donationCount.count + fulfillmentCount.count,
+      itemsFulfilled: fulfillmentCount.count,
+      familiesHelped: Array.isArray(familyCount) ? familyCount.length : 0,
+      donationValue: donationValue.total || 0
+    };
   }
 }
 

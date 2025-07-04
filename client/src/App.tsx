@@ -19,6 +19,7 @@ import AboutUs from "@/pages/about-us";
 import Resources from "@/pages/resources";
 import Signup from "@/pages/signup";
 import NotFound from "@/pages/not-found";
+import CommunityImpact from "@/pages/community-impact";
 import Footer from "@/components/footer";
 import QuickTips from "@/components/quick-tips";
 
@@ -53,6 +54,9 @@ function Router() {
               <Route path="/profile" component={Profile} />
               <Route path="/profile/edit" component={EditProfile} />
               <Route path="/profile/privacy" component={PrivacySettings} />
+              <Route path="/community" component={CommunityImpact} />
+              <Route path="/community-impact" component={CommunityImpact} />
+              <Route path="/impact" component={CommunityImpact} />
               <Route path="/admin" component={AdminDashboard} />
             </>
           )}

@@ -848,6 +848,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Community Impact API endpoints
+  app.get('/api/community/stats', async (req, res) => {
+    try {
+      const { timeRange = '30d' } = req.query;
+      
+      // Calculate date range
+      const now = new Date();
+      let startDate = new Date();
+      
+      switch (timeRange) {
+        case '7d':
+          startDate.setDate(now.getDate() - 7);
+          break;
+        case '30d':
+          startDate.setDate(now.getDate() - 30);
+          break;
+        case '90d':
+          startDate.setDate(now.getDate() - 90);
+          break;
+        case '1y':
+          startDate.setFullYear(now.getFullYear() - 1);
+          break;
+        default:
+          startDate.setDate(now.getDate() - 30);
+      }
+
+      // Get community statistics
+      const stats = await storage.getCommunityStats(startDate, now);
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching community stats:", error);
+      res.status(500).json({ message: "Failed to fetch community statistics" });
+    }
+  });
+
+  app.get('/api/community/activity', async (req, res) => {
+    try {
+      const recentActivity = await storage.getRecentActivity();
+      res.json(recentActivity);
+    } catch (error) {
+      console.error("Error fetching community activity:", error);
+      res.status(500).json({ message: "Failed to fetch community activity" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // WebSocket server for real-time notifications

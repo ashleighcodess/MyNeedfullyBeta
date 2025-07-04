@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap } from "lucide-react";
+import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3 } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 
 export default function Navigation() {
@@ -36,6 +36,7 @@ export default function Navigation() {
     { href: "/browse", label: "Browse Needs Lists", icon: Search, dataTip: "browse-needs" },
     { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list" },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search" },
+    { href: "/community", label: "Community Impact", icon: BarChart3, dataTip: "community-impact" },
     { href: "/about-us", label: "About Us", icon: User, dataTip: null },
   ];
 
