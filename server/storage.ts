@@ -7,6 +7,8 @@ import {
   notifications,
   priceTracking,
   analyticsEvents,
+  passwordResetTokens,
+  emailVerificationTokens,
   type User,
   type UpsertUser,
   type Wishlist,
@@ -23,6 +25,10 @@ import {
   type InsertPriceTracking,
   type AnalyticsEvent,
   type InsertAnalyticsEvent,
+  type PasswordResetToken,
+  type InsertPasswordResetToken,
+  type EmailVerificationToken,
+  type InsertEmailVerificationToken,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte } from "drizzle-orm";
@@ -30,8 +36,17 @@ import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte } from "drizzle
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
+
+  // Authentication token operations
+  createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken>;
+  getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
+  markPasswordResetTokenAsUsed(id: number): Promise<void>;
+  createEmailVerificationToken(token: InsertEmailVerificationToken): Promise<EmailVerificationToken>;
+  getEmailVerificationToken(token: string): Promise<EmailVerificationToken | undefined>;
+  markEmailVerificationTokenAsUsed(id: number): Promise<void>;
 
   // Wishlist operations
   createWishlist(wishlist: InsertWishlist): Promise<Wishlist>;
@@ -107,6 +122,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    // Check if user already exists
+    const existingUser = await this.getUser(userData.id);
+    const isNewUser = !existingUser;
+    
     const [user] = await db
       .insert(users)
       .values(userData)
@@ -118,6 +137,16 @@ export class DatabaseStorage implements IStorage {
         },
       })
       .returning();
+    
+    // Send welcome email for new users
+    if (isNewUser && user.email && user.firstName) {
+      const { emailService } = await import('./email-service');
+      // Fire and forget - don't block user creation if email fails
+      emailService.sendWelcomeEmail(user.email, user.firstName).catch(error => {
+        console.error('Failed to send welcome email:', error);
+      });
+    }
+    
     return user;
   }
 
@@ -131,6 +160,46 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  // Authentication token operations
+  async createPasswordResetToken(tokenData: InsertPasswordResetToken): Promise<PasswordResetToken> {
+    const [token] = await db.insert(passwordResetTokens).values(tokenData).returning();
+    return token;
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    const [tokenRecord] = await db.select().from(passwordResetTokens).where(eq(passwordResetTokens.token, token));
+    return tokenRecord;
+  }
+
+  async markPasswordResetTokenAsUsed(id: number): Promise<void> {
+    await db
+      .update(passwordResetTokens)
+      .set({ isUsed: true })
+      .where(eq(passwordResetTokens.id, id));
+  }
+
+  async createEmailVerificationToken(tokenData: InsertEmailVerificationToken): Promise<EmailVerificationToken> {
+    const [token] = await db.insert(emailVerificationTokens).values(tokenData).returning();
+    return token;
+  }
+
+  async getEmailVerificationToken(token: string): Promise<EmailVerificationToken | undefined> {
+    const [tokenRecord] = await db.select().from(emailVerificationTokens).where(eq(emailVerificationTokens.token, token));
+    return tokenRecord;
+  }
+
+  async markEmailVerificationTokenAsUsed(id: number): Promise<void> {
+    await db
+      .update(emailVerificationTokens)
+      .set({ isUsed: true })
+      .where(eq(emailVerificationTokens.id, id));
   }
 
   // Wishlist operations
