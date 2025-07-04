@@ -200,6 +200,11 @@ export default function ProductSearchWorking() {
   // Add to wishlist mutation
   const addToWishlistMutation = useMutation({
     mutationFn: async (product: any) => {
+      // Check authentication first
+      if (!user?.id) {
+        throw new Error("AUTH_REQUIRED");
+      }
+
       setAddingProductId(product.asin || product.id || Math.random().toString());
       
       // Debug userWishlists
@@ -249,11 +254,38 @@ export default function ProductSearchWorking() {
     },
     onError: (error) => {
       setAddingProductId(null);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add item. Please try again.",
-        variant: "destructive"
-      });
+      
+      if (error instanceof Error && error.message === "AUTH_REQUIRED") {
+        toast({
+          title: "Sign Up Required",
+          description: (
+            <div className="flex flex-col space-y-2">
+              <p>Please sign up or log in to add items to your needs list.</p>
+              <div className="flex space-x-2">
+                <button 
+                  onClick={() => window.location.href = "/signup"}
+                  className="bg-coral text-white px-3 py-1 rounded text-sm hover:bg-coral/90"
+                >
+                  Sign Up
+                </button>
+                <button 
+                  onClick={() => window.location.href = "/api/login"}
+                  className="bg-navy text-white px-3 py-1 rounded text-sm hover:bg-navy/90"
+                >
+                  Log In
+                </button>
+              </div>
+            </div>
+          ),
+          duration: 8000,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to add item. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   });
 
