@@ -1037,20 +1037,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Transform SerpAPI results to match RainforestAPI format
           const transformedResults = serpResults.map((product: SerpProduct) => {
             let priceValue = 0;
+            let rawPrice = product.price;
+            
             try {
               // Handle different price formats
               if (typeof product.price === 'number') {
                 priceValue = product.price;
+                rawPrice = `$${product.price.toFixed(2)}`;
               } else if (typeof product.price === 'string') {
-                priceValue = parseFloat(product.price.replace(/[^0-9.]/g, '') || '0');
+                // For strings like "$7.99", extract the number
+                const numericMatch = product.price.match(/\$?(\d+(?:\.\d{2})?)/);
+                if (numericMatch && product.price !== 'Price varies') {
+                  priceValue = parseFloat(numericMatch[1]);
+                  rawPrice = product.price.startsWith('$') ? product.price : `$${product.price}`;
+                } else {
+                  // For "Price varies" and similar, keep as string
+                  priceValue = 0;
+                  rawPrice = product.price;
+                }
               } else if (product.price && typeof product.price === 'object') {
                 // Handle price objects like { value: 10.99, currency: 'USD' }
                 const priceObj = product.price as any;
                 priceValue = parseFloat(String(priceObj.value || priceObj.amount || '0').replace(/[^0-9.]/g, '') || '0');
+                rawPrice = priceObj.raw || `$${priceValue.toFixed(2)}`;
               }
             } catch (err) {
               console.error('Price parsing error:', err, 'for product:', product.title);
               priceValue = 0;
+              rawPrice = 'Price not available';
             }
 
             return {
@@ -1058,7 +1072,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               price: {
                 value: priceValue,
                 currency: 'USD',
-                raw: product.price
+                raw: rawPrice
               },
               image: product.image_url,
               link: product.product_url,
