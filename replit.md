@@ -141,6 +141,7 @@ Changelog:
 - July 04, 2025: RESOLVED CRITICAL PRICING API ISSUES - fixed 404 errors by implementing proper getWishlistItem database method, updated pricing endpoint to use direct item retrieval instead of inefficient scanning, confirmed real-time pricing system now fully operational with successful data from Amazon/Walmart/Target APIs - PRICING SYSTEM FULLY FUNCTIONAL
 - July 04, 2025: Implemented comprehensive authentication email system with automated welcome emails, password reset functionality, and email verification flows - added passwordResetTokens and emailVerificationTokens database tables, enhanced storage layer with token management methods, integrated welcome email automation for new user signups, and created API endpoints for /api/auth/forgot-password, /api/auth/reset-password, /api/auth/verify-email, and /api/auth/confirm-email - AUTHENTICATION EMAIL SYSTEM FULLY OPERATIONAL
 - July 04, 2025: Updated landing page hero section with new messaging "A Registry For Recovery, Relief and Hardships" replacing previous "Connect Hearts, Fulfill Needs" and added smooth gradient overlay transition from hero section to white space below for improved visual flow
+- July 04, 2025: Implemented interactive scroll-triggered journey map animations with progressive line expansion from step 1 to step 4, featuring smooth transitions, staggered timing delays, and responsive design for both desktop horizontal and mobile vertical layouts - lines animate at optimized scroll thresholds (15%, 35%, 55%) for enhanced user engagement
 ```
 
 ## User Preferences
