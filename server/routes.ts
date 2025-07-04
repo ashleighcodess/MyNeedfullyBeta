@@ -179,30 +179,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { query, category, min_price, max_price, page = 1 } = req.query;
       
-      const params = {
+      if (!query) {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      // Build URL parameters for GET request
+      const params = new URLSearchParams({
         api_key: RAINFOREST_API_KEY,
         type: "search",
         amazon_domain: "amazon.com",
-        search_term: query,
-        ...(category && { category_id: category }),
-        ...(min_price && { min_price }),
-        ...(max_price && { max_price }),
-        page: Number(page),
-      };
-      
-      const response = await fetch(RAINFOREST_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
+        search_term: query as string,
       });
+
+      if (category && category !== 'all') {
+        params.append('category_id', category as string);
+      }
+      if (min_price) {
+        params.append('min_price', min_price as string);
+      }
+      if (max_price) {
+        params.append('max_price', max_price as string);
+      }
+      if (page && page !== '1') {
+        params.append('page', page as string);
+      }
+      
+      console.log(`RainforestAPI request: ${RAINFOREST_API_URL}?${params.toString()}`);
+      
+      const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
       
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`RainforestAPI error: ${response.status} ${response.statusText}`, errorText);
         throw new Error(`RainforestAPI error: ${response.statusText}`);
       }
       
       const data = await response.json();
+      console.log('RainforestAPI response received:', Object.keys(data));
       
       // Record analytics event
       await storage.recordEvent({
