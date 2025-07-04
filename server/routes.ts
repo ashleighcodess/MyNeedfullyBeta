@@ -1181,7 +1181,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           supporter.email,
           supporter.firstName || 'Supporter',
           sender.firstName || 'A grateful recipient',
-          noteData.subject,
+          noteData.subject || 'Thank You',
           noteData.message
         );
       }
@@ -1261,6 +1261,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching recent activity:", error);
       res.status(500).json({ message: "Failed to fetch recent activity" });
+    }
+  });
+
+  // Test email endpoint (for development only)
+  app.post('/api/test-email', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.user.claims.sub);
+      if (!user?.email) {
+        return res.status(400).json({ message: "User email not found" });
+      }
+
+      const success = await emailService.sendPurchaseConfirmation(
+        user.email,
+        user.firstName || 'Test User',
+        'Test Product',
+        'Test Needs List',
+        'Test Recipient'
+      );
+
+      res.json({ 
+        success, 
+        message: success ? 'Test email sent successfully!' : 'Email service not configured',
+        emailSent: user.email
+      });
+    } catch (error) {
+      console.error("Error sending test email:", error);
+      res.status(500).json({ message: "Failed to send test email", error: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
