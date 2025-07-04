@@ -49,6 +49,7 @@ export default function ThankYouNote({ toUserId, donationId, onSent }: ThankYouN
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/thank-you-notes'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/activity/recent'] });
       toast({
         title: "Thank You Note Sent!",
         description: "Your message of gratitude has been delivered.",

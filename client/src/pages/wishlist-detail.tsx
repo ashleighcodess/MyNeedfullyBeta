@@ -108,6 +108,7 @@ export default function WishlistDetail() {
       apiRequest('PATCH', `/api/wishlist-items/${itemId}/fulfill`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/activity/recent'] });
       toast({
         title: "Thank you!",
         description: "Item marked as purchased. The creator will be notified.",

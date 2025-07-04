@@ -476,20 +476,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRecentActivity(): Promise<any[]> {
-    return await db.query.donations.findMany({
+    return await db.query.analyticsEvents.findMany({
       limit: 10,
-      orderBy: desc(donations.createdAt),
-      with: {
-        supporter: {
-          columns: { firstName: true, lastName: true }
-        },
-        wishlist: {
-          columns: { title: true }
-        },
-        item: {
-          columns: { title: true }
-        }
-      }
+      orderBy: desc(analyticsEvents.createdAt),
+      where: or(
+        eq(analyticsEvents.eventType, 'item_fulfilled'),
+        eq(analyticsEvents.eventType, 'thank_you_sent')
+      )
     });
   }
 
