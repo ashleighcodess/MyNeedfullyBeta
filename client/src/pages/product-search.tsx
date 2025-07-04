@@ -28,6 +28,7 @@ export default function ProductSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [category, setCategory] = useState("");
+  const [addingProductId, setAddingProductId] = useState<string | null>(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
@@ -181,6 +182,8 @@ export default function ProductSearch() {
         throw new Error("No wishlist selected");
       }
       
+      setAddingProductId(product.asin);
+      
       const itemData = {
         title: product.title,
         description: product.title,
@@ -197,6 +200,7 @@ export default function ProductSearch() {
       return await apiRequest("POST", `/api/wishlists/${wishlistId}/items`, itemData);
     },
     onSuccess: () => {
+      setAddingProductId(null);
       toast({
         title: "Item Added!",
         description: "The item has been added to your needs list.",
@@ -204,6 +208,7 @@ export default function ProductSearch() {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${wishlistId}`] });
     },
     onError: (error) => {
+      setAddingProductId(null);
       toast({
         title: "Error",
         description: "Failed to add item to your needs list.",
@@ -372,17 +377,12 @@ export default function ProductSearch() {
                 <Card className="mb-6 p-6">
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-4">
-                      <Search className="h-6 w-6 text-coral mr-2 animate-pulse" />
-                      <span className="text-lg font-medium text-gray-800">Searching products...</span>
-                    </div>
-                    <p className="text-gray-600 mb-4">
-                      Retrieving real-time product data from Amazon. This may take 5-10 seconds.
-                    </p>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-coral h-2 rounded-full animate-pulse" style={{ width: '75%' }}></div>
+                      <Search className="h-6 w-6 text-coral mr-2 animate-spin" />
+                      <span className="text-lg font-medium text-gray-800">Searching</span>
+                      <span className="ml-1 animate-pulse">...</span>
                     </div>
                     {searchCache.size > 0 && (
-                      <p className="text-sm text-gray-500 mt-2">
+                      <p className="text-sm text-gray-500">
                         💾 {searchCache.size} searches cached for faster access
                       </p>
                     )}
@@ -478,10 +478,10 @@ export default function ProductSearch() {
                             variant="outline" 
                             className="w-full border-coral text-coral hover:bg-coral/10"
                             onClick={() => addToWishlistMutation.mutate(product)}
-                            disabled={addToWishlistMutation.isPending || !wishlistId}
+                            disabled={addingProductId === product.asin || !wishlistId}
                           >
                             <Heart className="mr-2 h-4 w-4" />
-                            {addToWishlistMutation.isPending ? "Adding..." : "Add to Wishlist"}
+                            {addingProductId === product.asin ? "Adding..." : "Add to Needs List"}
                           </Button>
                         </div>
 
