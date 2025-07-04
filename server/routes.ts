@@ -357,6 +357,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/user/wishlists', isAuthenticated, async (req: any, res) => {
+    try {
+      const currentUserId = req.user.claims.sub;
+      const wishlists = await storage.getUserWishlists(currentUserId);
+      res.json(wishlists);
+    } catch (error) {
+      console.error("Error fetching user wishlists:", error);
+      res.status(500).json({ message: "Failed to fetch wishlists" });
+    }
+  });
+
   // Wishlist Items routes
   app.post('/api/wishlists/:id/items', isAuthenticated, async (req: any, res) => {
     try {
@@ -397,6 +408,142 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Product Search routes with RainforestAPI integration and fallback
+  app.get('/api/products/popular', async (req, res) => {
+    try {
+      const { category } = req.query;
+      
+      // Try RainforestAPI first if available
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        try {
+          // Get popular products based on category
+          const popularSearchTerms = {
+            'electronics': 'laptop bluetooth headphones smartphone',
+            'clothing': 'winter jacket shoes clothing',
+            'home': 'home essentials bedding kitchen',
+            'books': 'books bestsellers education',
+            'toys': 'toys games children',
+            'sports': 'sports equipment fitness',
+            'automotive': 'car accessories automotive',
+            'beauty': 'skincare cosmetics beauty',
+            'health': 'health supplements vitamins',
+            'default': 'essentials popular items'
+          };
+          
+          const searchTerm = popularSearchTerms[category as keyof typeof popularSearchTerms] || popularSearchTerms.default;
+          
+          const params = new URLSearchParams({
+            api_key: RAINFOREST_API_KEY,
+            type: "search",
+            amazon_domain: "amazon.com",
+            search_term: searchTerm,
+            sort_by: "featured", // Get featured/popular items
+          });
+          
+          console.log(`Fetching popular products from RainforestAPI: ${searchTerm}`);
+          
+          const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('RainforestAPI popular products success:', data.search_results?.length || 0, 'items');
+            
+            // Record analytics event
+            await storage.recordEvent({
+              eventType: "popular_products_view",
+              userId: (req as any).user?.claims?.sub,
+              data: { category, resultsCount: data.search_results?.length || 0, source: 'rainforest' },
+              userAgent: req.get('User-Agent'),
+              ipAddress: req.ip,
+            });
+            
+            return res.json(data);
+          } else {
+            console.log(`RainforestAPI failed (${response.status}), falling back to demo data`);
+          }
+        } catch (apiError) {
+          console.log('RainforestAPI error, falling back to demo data:', (apiError as Error).message);
+        }
+      }
+      
+      // Fallback to demo data if API not available
+      const demoProducts = {
+        search_results: [
+          {
+            title: "Apple MacBook Air 13-inch Laptop",
+            price: { value: 999.99, currency: "USD", raw: "$999.99" },
+            image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=400&fit=crop",
+            asin: "B08N5WRWNW",
+            rating: 4.5,
+            ratings_total: 15420,
+            link: "https://amazon.com/dp/B08N5WRWNW",
+            is_prime: true,
+            delivery: "FREE delivery Thu, Jul 11"
+          },
+          {
+            title: "Sony WH-1000XM4 Wireless Headphones",
+            price: { value: 299.99, currency: "USD", raw: "$299.99" },
+            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+            asin: "B0863TXGM3",
+            rating: 4.6,
+            ratings_total: 89234,
+            link: "https://amazon.com/dp/B0863TXGM3",
+            is_prime: true,
+            delivery: "FREE delivery Thu, Jul 11"
+          },
+          {
+            title: "Instant Pot Duo 7-in-1 Electric Pressure Cooker",
+            price: { value: 79.99, currency: "USD", raw: "$79.99" },
+            image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop",
+            asin: "B00FLYWNYQ",
+            rating: 4.7,
+            ratings_total: 234567,
+            link: "https://amazon.com/dp/B00FLYWNYQ",
+            is_prime: true,
+            delivery: "FREE delivery Thu, Jul 11"
+          },
+          {
+            title: "Amazon Echo Dot (4th Gen) Smart Speaker",
+            price: { value: 49.99, currency: "USD", raw: "$49.99" },
+            image: "https://images.unsplash.com/photo-1543512214-318c7553f230?w=400&h=400&fit=crop",
+            asin: "B07XJ8C8F7",
+            rating: 4.4,
+            ratings_total: 45678,
+            link: "https://amazon.com/dp/B07XJ8C8F7",
+            is_prime: true,
+            delivery: "FREE delivery Thu, Jul 11"
+          },
+          {
+            title: "Kindle Paperwhite E-reader",
+            price: { value: 139.99, currency: "USD", raw: "$139.99" },
+            image: "https://images.unsplash.com/photo-1481887328591-3e277f9473dc?w=400&h=400&fit=crop",
+            asin: "B08KTZ8249",
+            rating: 4.3,
+            ratings_total: 12345,
+            link: "https://amazon.com/dp/B08KTZ8249",
+            is_prime: true,
+            delivery: "FREE delivery Thu, Jul 11"
+          },
+          {
+            title: "Ninja Foodi Personal Blender",
+            price: { value: 59.99, currency: "USD", raw: "$59.99" },
+            image: "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=400&h=400&fit=crop",
+            asin: "B07GPDQTYY",
+            rating: 4.5,
+            ratings_total: 8765,
+            link: "https://amazon.com/dp/B07GPDQTYY",
+            is_prime: true,
+            delivery: "FREE delivery Fri, Jul 12"
+          }
+        ]
+      };
+      
+      res.json(demoProducts);
+    } catch (error) {
+      console.error("Error fetching popular products:", error);
+      res.status(500).json({ message: "Failed to fetch popular products" });
+    }
+  });
+
   app.get('/api/products/search', async (req, res) => {
     try {
       const { query, category, min_price, max_price, page = 1 } = req.query;
@@ -451,7 +598,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log(`RainforestAPI failed (${response.status}), falling back to demo data`);
           }
         } catch (apiError) {
-          console.log('RainforestAPI error, falling back to demo data:', apiError.message);
+          console.log('RainforestAPI error, falling back to demo data:', (apiError as Error).message);
         }
       }
 

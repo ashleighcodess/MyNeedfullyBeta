@@ -39,63 +39,23 @@ export default function ProductSearchWorking() {
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
 
-  // Popular products for instant display
-  const popularProducts = useMemo(() => [
-    {
-      asin: "emergency-kit-1",
-      title: "Emergency Food Kit - 72 Hour Family Pack",
-      image: "https://images.unsplash.com/photo-1566906068842-eeaa1b1f5b98?w=400&h=400&fit=crop",
-      price: { value: 49.99, currency: "USD" },
-      rating: 4.6,
-      ratings_total: 2156,
-      category: "emergency"
-    },
-    {
-      asin: "winter-coat-1", 
-      title: "Warm Winter Coat - Adult Size Medium",
-      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",
-      price: { value: 89.99, currency: "USD" },
-      rating: 4.4,
-      ratings_total: 1324,
-      category: "clothing"
-    },
-    {
-      asin: "sleeping-bag-1",
-      title: "Coleman Brazos Cold Weather Sleeping Bag",
-      image: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?w=400&h=400&fit=crop",
-      price: { value: 34.99, currency: "USD" },
-      rating: 4.3,
-      ratings_total: 8945,
-      category: "camping"
-    },
-    {
-      asin: "baby-formula-1",
-      title: "Baby Formula - Similac Pro-Advance",
-      image: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=400&fit=crop",
-      price: { value: 28.94, currency: "USD" },
-      rating: 4.5,
-      ratings_total: 15234,
-      category: "baby"
-    },
-    {
-      asin: "household-1",
-      title: "Tide Laundry Detergent Pods - 112 Count",
-      image: "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&h=400&fit=crop",
-      price: { value: 24.99, currency: "USD" },
-      rating: 4.4,
-      ratings_total: 45236,
-      category: "household"
-    },
-    {
-      asin: "blanket-1",
-      title: "Fleece Blanket Queen Size - Lightweight",
-      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop",
-      price: { value: 12.99, currency: "USD" },
-      rating: 4.4,
-      ratings_total: 89567,
-      category: "home"
+  // Fetch popular products from API
+  const { data: popularProductsData } = useQuery({
+    queryKey: ['/api/products/popular'],
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
+    queryFn: async () => {
+      const response = await fetch('/api/products/popular');
+      if (!response.ok) {
+        throw new Error('Failed to fetch popular products');
+      }
+      return response.json();
     }
-  ], []);
+  });
+
+  // Popular products for instant display
+  const popularProducts = useMemo(() => {
+    return popularProductsData?.search_results || [];
+  }, [popularProductsData]);
 
   // Debounce search input
   useEffect(() => {
