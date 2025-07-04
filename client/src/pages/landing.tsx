@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
+import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
 
 export default function Landing() {
@@ -392,7 +393,7 @@ export default function Landing() {
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
                 <img 
-                  src="/attached_assets/NeedfullyHeartTree_1751655258585.png"
+                  src={heartTreeImage}
                   alt="Heart Tree representing community giving"
                   className="w-full max-w-md h-auto rounded-3xl shadow-2xl"
                 />
