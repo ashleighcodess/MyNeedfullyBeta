@@ -14,6 +14,7 @@ import {
   Smile
 } from "lucide-react";
 import aboutUsImage from "@assets/AboutUsIMage2_1751592833990.png";
+import missionImage from "@assets/AboutUsImage3_1751592935275.png";
 
 export default function AboutUs() {
   const stats = [
@@ -184,12 +185,11 @@ export default function AboutUs() {
         {/* Mission Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <div>
-            <div className="w-full h-80 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mb-6">
-              <div className="text-center">
-                <Heart className="h-20 w-20 text-coral mx-auto mb-4" />
-                <p className="text-lg text-gray-700">Mission & Values</p>
-              </div>
-            </div>
+            <img 
+              src={missionImage} 
+              alt="Two people embracing, showing compassion and support" 
+              className="w-full h-auto rounded-xl shadow-lg"
+            />
           </div>
           
           <div>
