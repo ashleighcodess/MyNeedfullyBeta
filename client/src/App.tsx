@@ -20,6 +20,7 @@ import Resources from "@/pages/resources";
 import Signup from "@/pages/signup";
 import NotFound from "@/pages/not-found";
 import Footer from "@/components/footer";
+import QuickTips from "@/components/quick-tips";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -69,6 +70,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <QuickTips />
       </TooltipProvider>
     </QueryClientProvider>
   );

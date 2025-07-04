@@ -32,11 +32,11 @@ export default function Navigation() {
   };
 
   const navigationItems = [
-    { href: "/home", label: "Home", icon: User },
-    { href: "/browse", label: "Browse Needs Lists", icon: Search },
-    { href: "/create", label: "Create Needs List", icon: Plus },
-    { href: "/products", label: "Find Products", icon: Heart },
-    { href: "/about-us", label: "About Us", icon: User },
+    { href: "/home", label: "Home", icon: User, dataTip: null },
+    { href: "/browse", label: "Browse Needs Lists", icon: Search, dataTip: "browse-needs" },
+    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list" },
+    { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search" },
+    { href: "/about-us", label: "About Us", icon: User, dataTip: null },
   ];
 
   const isActiveLink = (href: string) => {
@@ -59,6 +59,7 @@ export default function Navigation() {
             {navigationItems.map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
+                  {...(item.dataTip && { 'data-tip': item.dataTip })}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
                     isActiveLink(item.href)
                       ? 'text-coral bg-coral/10' 
@@ -75,7 +76,7 @@ export default function Navigation() {
           {/* Right Side */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <div className="relative">
+            <div className="relative" data-tip="notifications">
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
@@ -92,7 +93,7 @@ export default function Navigation() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2">
+                <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
                   {user?.profileImageUrl ? (
                     <img 
                       src={user.profileImageUrl} 
