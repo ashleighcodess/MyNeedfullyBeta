@@ -134,6 +134,8 @@ Changelog:
 - July 04, 2025: Fixed critical database connection failure by migrating from Neon WebSocket connection to HTTP connection - resolved serverless compatibility issues causing app startup crashes, updated database configuration in server/db.ts to use drizzle-orm/neon-http adapter instead of neon-serverless Pool - APPLICATION NOW FULLY OPERATIONAL
 - July 04, 2025: Resolved missing needs lists in user dashboard profile - fixed API endpoint references from user ID-based URLs to authenticated endpoints, updated profile.tsx to use /api/user/wishlists and /api/user/donations, added missing user donations endpoint in routes.ts - USER DASHBOARD LISTS NOW DISPLAY CORRECTLY
 - July 04, 2025: Fixed critical purchase confirmation system bugs - corrected shipping address display by passing wishlist.shippingAddress instead of user.shippingAddress, fixed API fulfillment error by correcting apiRequest parameter order from (url, method) to (method, url), enhanced address formatting to handle both object and string formats with proper error handling - PURCHASE WORKFLOW NOW FULLY FUNCTIONAL AND TESTED
+- July 04, 2025: Fixed SendGrid email configuration to use verified domain data@myneedfully.app instead of incorrect domain - both purchase confirmation and thank you note emails now working with proper sender authentication
+- July 04, 2025: Enhanced Recent Activity tracking system to properly capture purchase events ("Purchased [item] for someone in need") and thank you note events ("Sent a thank you note to [supporter]") with analytics recording for complete activity timeline visibility
 ```
 
 ## User Preferences

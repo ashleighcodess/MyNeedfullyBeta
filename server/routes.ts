@@ -36,9 +36,11 @@ function formatActivityMessage(activity: any): string {
     case 'product_search':
       return `Searched for "${data.query}"`;
     case 'item_fulfilled':
-      return `Fulfilled an item request`;
+      return `Purchased "${data.itemTitle}" for someone in need`;
     case 'donation_made':
-      return `Made a donation`;
+      return `Made a donation of $${data.amount}`;
+    case 'thank_you_sent':
+      return `Sent a thank you note to ${data.recipientName}`;
     case 'user_registered':
       return `Joined the community`;
     default:
@@ -60,6 +62,8 @@ function getActivityIcon(eventType: string): string {
       return 'check';
     case 'donation_made':
       return 'heart';
+    case 'thank_you_sent':
+      return 'mail';
     case 'user_registered':
       return 'user-plus';
     default:
@@ -1185,6 +1189,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           noteData.message
         );
       }
+
+      // Record analytics event for thank you note
+      await storage.recordEvent({
+        eventType: "thank_you_sent",
+        userId: fromUserId,
+        data: { 
+          noteId: note.id,
+          toUserId: noteData.toUserId,
+          subject: noteData.subject,
+          senderName: sender?.firstName || 'Anonymous',
+          recipientName: supporter?.firstName || 'Anonymous'
+        },
+        userAgent: req.get('User-Agent'),
+        ipAddress: req.ip,
+      });
       
       res.status(201).json(note);
     } catch (error) {
