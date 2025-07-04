@@ -16,7 +16,7 @@ interface PurchaseConfirmationModalProps {
   wishlistOwner: {
     firstName: string;
     lastName?: string;
-    shippingAddress?: string;
+    shippingAddress?: string | object;
   };
   onPurchaseConfirm: () => void;
   itemId: number;
@@ -55,13 +55,47 @@ export default function PurchaseConfirmationModal({
     }, 2000);
   };
 
-  const formatShippingAddress = (address: string) => {
+  const formatShippingAddress = (address: string | object) => {
+    // Handle undefined/null case
+    if (!address) {
+      return 'No shipping address provided';
+    }
+
+    // Handle both object and string formats
+    if (typeof address === 'object' && address !== null) {
+      const addr = address as any;
+      const lines = [];
+      if (addr.fullName) lines.push(addr.fullName);
+      if (addr.addressLine1) lines.push(addr.addressLine1);
+      if (addr.addressLine2) lines.push(addr.addressLine2);
+      
+      const cityStateZip = [addr.city, addr.state, addr.zipCode].filter(Boolean).join(', ');
+      if (cityStateZip) lines.push(cityStateZip);
+      
+      if (addr.country) lines.push(addr.country);
+      
+      return lines.length > 0 ? lines.join('\n') : 'Address information incomplete';
+    }
+    
     // Parse the shipping address if it's in JSON format
     try {
-      const parsed = JSON.parse(address);
-      return `${parsed.streetNumber || ''} ${parsed.route || ''}\n${parsed.city || ''}, ${parsed.state || ''} ${parsed.zipCode || ''}\n${parsed.country || ''}`.trim();
+      const parsed = JSON.parse(address as string);
+      const lines = [];
+      if (parsed.fullName) lines.push(parsed.fullName);
+      if (parsed.streetNumber || parsed.route) {
+        lines.push(`${parsed.streetNumber || ''} ${parsed.route || ''}`.trim());
+      }
+      if (parsed.addressLine1) lines.push(parsed.addressLine1);
+      if (parsed.addressLine2) lines.push(parsed.addressLine2);
+      
+      const cityStateZip = [parsed.city, parsed.state, parsed.zipCode].filter(Boolean).join(', ');
+      if (cityStateZip) lines.push(cityStateZip);
+      
+      if (parsed.country) lines.push(parsed.country);
+      
+      return lines.length > 0 ? lines.join('\n') : 'Address information incomplete';
     } catch {
-      return address;
+      return address as string || 'Address format error';
     }
   };
 
