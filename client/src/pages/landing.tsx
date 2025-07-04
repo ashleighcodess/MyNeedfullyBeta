@@ -25,9 +25,9 @@ export default function Landing() {
       
       // Trigger line animations at different scroll thresholds
       const newProgressSteps = [
-        scrollProgress > 0.15,  // First line
-        scrollProgress > 0.35,  // Second line
-        scrollProgress > 0.55   // Third line
+        scrollProgress > 0.1,   // First line
+        scrollProgress > 0.2,   // Second line
+        scrollProgress > 0.3    // Third line
       ];
       
       setProgressSteps(newProgressSteps);
