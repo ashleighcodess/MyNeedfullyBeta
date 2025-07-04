@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
 import WishlistCard from "@/components/wishlist-card";
@@ -12,6 +13,7 @@ import { Search, Filter } from "lucide-react";
 
 export default function BrowseWishlists() {
   const { user } = useAuth();
+  const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     category: "",
@@ -21,10 +23,15 @@ export default function BrowseWishlists() {
   });
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [isMyListsView, setIsMyListsView] = useState(false);
   
-  // Check if this is "My Needs Lists" view
-  const urlParams = new URLSearchParams(window.location.search);
-  const isMyListsView = urlParams.get('my-lists') === 'true';
+  // Check URL parameters when location changes
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myListsParam = urlParams.get('my-lists');
+    const shouldShowMyLists = myListsParam === 'true';
+    setIsMyListsView(shouldShowMyLists);
+  }, [location]);
 
   const { data: wishlistsData, isLoading } = useQuery({
     queryKey: [isMyListsView ? '/api/user/wishlists' : '/api/wishlists', { ...filters, query: searchQuery, page }],
