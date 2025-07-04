@@ -400,22 +400,7 @@ export default function ProductSearchWorking() {
           </CollapsibleContent>
         </Collapsible>
 
-        {/* Loading State with Rotating Messages */}
-        {isLoading && (
-          <div className="mb-6 p-6 bg-white rounded-lg border">
-            <div className="flex items-center justify-center space-x-4">
-              <BrandLoader size="lg" />
-              <div className="text-center">
-                <p className="text-lg font-medium text-gray-800 mb-1">
-                  {loadingMessages[loadingMessageIndex]}
-                </p>
-                <p className="text-sm text-gray-500">
-                  This may take 5-10 seconds for real-time data
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+
 
         {/* Popular Products (when no search) */}
         {(!debouncedQuery || debouncedQuery.length < 3) && showFallbacks && (
@@ -501,13 +486,17 @@ export default function ProductSearchWorking() {
           <>
             {isLoading && (
               <div className="text-center py-12">
-                <BrandLoaderWithText 
-                  text="Searching for products..." 
-                  size="lg" 
-                  variant="coral"
-                  className="mb-4"
-                />
-                <p className="text-sm text-gray-500">This may take a few seconds for live data</p>
+                <div className="flex items-center justify-center space-x-4 mb-4">
+                  <BrandLoader size="lg" />
+                  <div className="text-center">
+                    <p className="text-lg font-medium text-gray-800 mb-1">
+                      {loadingMessages[loadingMessageIndex]}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      This may take 5-10 seconds for real-time data
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 
