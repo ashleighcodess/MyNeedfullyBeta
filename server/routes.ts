@@ -1343,6 +1343,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Fast Amazon-only search endpoint
+  app.get('/api/products/search-amazon', async (req, res) => {
+    try {
+      const { query, category, min_price, max_price, page = 1 } = req.query;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      // Amazon search only with RainforestAPI (fast)
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        try {
+          const optimizedQuery = generateSearchQuery(query as string);
+          const params = new URLSearchParams({
+            api_key: RAINFOREST_API_KEY,
+            type: "search",
+            amazon_domain: "amazon.com",
+            search_term: optimizedQuery,
+          });
+
+          if (category && category !== 'all') {
+            params.append('category_id', category as string);
+          }
+          if (min_price) params.append('min_price', min_price as string);
+          if (max_price) params.append('max_price', max_price as string);
+          if (page) params.append('page', page as string);
+
+          const url = `https://api.rainforestapi.com/request?${params.toString()}`;
+          console.log('Trying RainforestAPI:', url);
+
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`RainforestAPI responded with status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log('RainforestAPI success:', Object.keys(data));
+
+          // Add retailer information to each product
+          if (data.search_results) {
+            data.search_results = data.search_results.map((product: any) => ({
+              ...product,
+              retailer: 'amazon',
+              retailer_name: 'Amazon'
+            }));
+          }
+
+          return res.json(data);
+        } catch (error) {
+          console.error('RainforestAPI error:', error);
+          return res.status(500).json({ 
+            message: "Amazon search failed", 
+            error: error instanceof Error ? error.message : 'Unknown error' 
+          });
+        }
+      } else {
+        return res.status(503).json({ 
+          message: "Amazon search not available - API key not configured" 
+        });
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      res.status(500).json({ 
+        message: "Search failed", 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
   app.get('/api/products/search', async (req, res) => {
     try {
       const { query, category, min_price, max_price, page = 1 } = req.query;

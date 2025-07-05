@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CATEGORIES } from "@/lib/constants";
-import myneedfullyLogo from "@assets/Logo_1_1751586104302.png";
+import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
@@ -244,7 +244,7 @@ export default function ProductSearch() {
     if (maxPrice) params.append('max_price', maxPrice);
     if (page && page !== 1) params.append('page', page.toString());
     
-    return `/api/products/search?${params.toString()}`;
+    return `/api/products/search-amazon?${params.toString()}`;
   }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists when no wishlistId is provided
