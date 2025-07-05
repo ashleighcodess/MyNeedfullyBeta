@@ -309,7 +309,7 @@ export default function Landing() {
           
           <div className="relative" ref={journeyRef}>
             {/* Journey Steps */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
+            <div className="flex flex-col md:grid md:grid-cols-4 gap-8 md:gap-4">
               {/* Step 1 */}
               <div className="flex flex-col items-center text-center group">
                 <div className="relative mb-6">
@@ -320,7 +320,7 @@ export default function Landing() {
                       </svg>
                     </div>
                   </div>
-                  {/* Scroll-triggered connecting line - hidden on mobile */}
+                  {/* Desktop connecting line */}
                   <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
                        style={{
                          width: progressSteps[0] ? 'calc(100vw / 4 - 96px)' : '0px',
@@ -329,6 +329,15 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Log In, Sign Up, Or Continue As A Guest To Fulfill A Need</h3>
                 <p className="text-gray-600 text-sm">Quick and easy registration to get started on your helping journey</p>
+              </div>
+
+              {/* Mobile connecting line 1 */}
+              <div className="md:hidden flex justify-center">
+                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                     style={{
+                       height: progressSteps[0] ? '32px' : '0px',
+                       opacity: progressSteps[0] ? 1 : 0
+                     }}></div>
               </div>
 
               {/* Step 2 */}
@@ -341,6 +350,7 @@ export default function Landing() {
                       </svg>
                     </div>
                   </div>
+                  {/* Desktop connecting line */}
                   <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
                        style={{
                          width: progressSteps[1] ? 'calc(100vw / 4 - 96px)' : '0px',
@@ -350,6 +360,16 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Provide Your Personal Information</h3>
                 <p className="text-gray-600 text-sm">Share basic details to ensure secure and personalized support</p>
+              </div>
+
+              {/* Mobile connecting line 2 */}
+              <div className="md:hidden flex justify-center">
+                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                     style={{
+                       height: progressSteps[1] ? '32px' : '0px',
+                       opacity: progressSteps[1] ? 1 : 0,
+                       transitionDelay: '0.3s'
+                     }}></div>
               </div>
 
               {/* Step 3 */}
@@ -362,6 +382,7 @@ export default function Landing() {
                       </svg>
                     </div>
                   </div>
+                  {/* Desktop connecting line */}
                   <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
                        style={{
                          width: progressSteps[2] ? 'calc(100vw / 4 - 96px)' : '0px',
@@ -371,6 +392,16 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Fulfill A Need And Create A Personalized Needs List</h3>
                 <p className="text-gray-600 text-sm">Choose items to support and optionally create your own needs list</p>
+              </div>
+
+              {/* Mobile connecting line 3 */}
+              <div className="md:hidden flex justify-center">
+                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                     style={{
+                       height: progressSteps[2] ? '32px' : '0px',
+                       opacity: progressSteps[2] ? 1 : 0,
+                       transitionDelay: '0.6s'
+                     }}></div>
               </div>
 
               {/* Step 4 */}
@@ -387,27 +418,6 @@ export default function Landing() {
                 <h3 className="text-lg font-semibold text-navy mb-2">Fulfill Someone's Need By Giving Their Needs List</h3>
                 <p className="text-gray-600 text-sm">Complete the circle of giving by supporting others in need</p>
               </div>
-            </div>
-            
-            {/* Mobile connecting lines */}
-            <div className="md:hidden flex flex-col items-center space-y-4 mt-8">
-              <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
-                   style={{
-                     height: progressSteps[0] ? '32px' : '0px',
-                     opacity: progressSteps[0] ? 1 : 0
-                   }}></div>
-              <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
-                   style={{
-                     height: progressSteps[1] ? '32px' : '0px',
-                     opacity: progressSteps[1] ? 1 : 0,
-                     transitionDelay: '0.3s'
-                   }}></div>
-              <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
-                   style={{
-                     height: progressSteps[2] ? '32px' : '0px',
-                     opacity: progressSteps[2] ? 1 : 0,
-                     transitionDelay: '0.6s'
-                   }}></div>
             </div>
           </div>
         </div>
