@@ -14,6 +14,7 @@ import emergencyFoodImage from "@assets/emergencyfood_1751658641250.jpg";
 import essentialClothingImage from "@assets/essentialclothin_1751658676599.jpg";
 import babyEssentialsImage from "@assets/babyandfamily_1751658729999.jpg";
 import crisisHygieneImage from "@assets/crisishygiene_1751658766232.jpg";
+import familyTreeImage from "@assets/Familywithtree_1751744939187.png";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
@@ -734,6 +735,38 @@ export default function Landing() {
             >
               Explore Other Products
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Need More Than Just Items Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Left content */}
+            <div className="flex-1 lg:pr-8">
+              <h2 className="text-4xl font-bold text-navy mb-6">
+                Need More Than Just Items? We're Here to Help.
+              </h2>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                Life Can Get Tough, And Sometimes We All Need A Little More Support. Whether It's Housing, Food Assistance, Mental Health Resources, Or Emergency Aid — Explore Trusted Organizations Ready To Help You Beyond Material Needs.
+              </p>
+              <Button 
+                className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full"
+                onClick={() => window.location.href = '/resources'}
+              >
+                Browse Support Resources
+              </Button>
+            </div>
+            
+            {/* Right image */}
+            <div className="flex-1">
+              <img 
+                src={familyTreeImage}
+                alt="Family with support tree illustration"
+                className="w-full h-auto rounded-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>
