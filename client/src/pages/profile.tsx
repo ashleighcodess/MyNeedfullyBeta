@@ -194,32 +194,32 @@ export default function Profile() {
     <div className="min-h-screen bg-warm-bg">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy">Dashboard</h1>
-          <p className="text-gray-600 mt-2">Manage your profile, needs lists, and community connections</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy">Dashboard</h1>
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">Manage your profile, needs lists, and community connections</p>
         </div>
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          {/* Sidebar - Mobile: Stack on top, Desktop: Side */}
+          <div className="lg:w-64 lg:flex-shrink-0">
             {/* Profile Summary Card */}
-            <Card className="mb-6">
-              <CardContent className="p-6 text-center">
-                <Avatar className="h-20 w-20 mx-auto mb-4">
+            <Card className="mb-4 lg:mb-6">
+              <CardContent className="p-4 sm:p-6 text-center">
+                <Avatar className="h-16 sm:h-20 w-16 sm:w-20 mx-auto mb-3 sm:mb-4">
                   <AvatarImage src={user.profileImageUrl} alt={user.firstName || 'User'} />
-                  <AvatarFallback className="text-xl bg-coral text-white">
+                  <AvatarFallback className="text-lg sm:text-xl bg-coral text-white">
                     {user.firstName?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
-                <h3 className="font-semibold text-navy mb-1">
+                <h3 className="font-semibold text-navy mb-1 text-lg">
                   Hi, {user.firstName}!
                 </h3>
-                <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4 justify-center">
                   {userBadges.map((badge, index) => {
                     const IconComponent = badge.icon;
                     return (
-                      <Badge key={index} variant="outline" className={badge.color}>
+                      <Badge key={index} variant="outline" className={`${badge.color} text-xs`}>
                         <IconComponent className="mr-1 h-3 w-3" />
                         {badge.label}
                       </Badge>
@@ -237,8 +237,8 @@ export default function Profile() {
               </CardContent>
             </Card>
 
-            {/* Navigation Menu */}
-            <Card>
+            {/* Navigation Menu - Hidden on mobile, use mobile tabs instead */}
+            <Card className="hidden lg:block">
               <CardContent className="p-4">
                 <nav className="space-y-2">
                   {sidebarItems.map((item) => {
@@ -291,6 +291,26 @@ export default function Profile() {
                 </nav>
               </CardContent>
             </Card>
+            
+            {/* Mobile Tab Navigation */}
+            <div className="lg:hidden mb-4">
+              <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto">
+                {sidebarItems.filter(item => !['privacy', 'create', 'find'].includes(item.id)).map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
+                      item.active 
+                        ? 'bg-coral text-white' 
+                        : 'text-gray-700 hover:bg-white'
+                    }`}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Main Content */}
@@ -298,40 +318,40 @@ export default function Profile() {
             {activeTab === 'profile' && (
               <>
                 {/* Profile Header */}
-                <div className="mb-8">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h1 className="text-3xl font-bold text-navy">
+                <div className="mb-6 sm:mb-8">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-navy">
                           {user.firstName} {user.lastName || ''}
                         </h1>
-                        <Badge className="bg-coral text-white">
+                        <Badge className="bg-coral text-white w-fit mt-2 sm:mt-0">
                           <Shield className="mr-1 h-3 w-3" />
                           Supporter
                         </Badge>
                       </div>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-gray-600 mb-4 text-sm sm:text-base">
                         I'm {user.firstName} who loves to help people. My name is {user.firstName}.
                       </p>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                         <div className="flex items-center space-x-2 text-gray-600">
-                          <Mail className="h-4 w-4" />
-                          <span>{user.email}</span>
+                          <Mail className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{user.email}</span>
                         </div>
 
                         <div className="flex items-center space-x-2 text-gray-600">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-4 w-4 flex-shrink-0" />
                           <span>Member since {memberSince}</span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-coral mb-1">{profileCompletion}%</div>
-                      <div className="text-sm text-gray-600 mb-4">Complete Profile</div>
+                    <div className="text-center sm:text-right">
+                      <div className="text-xl sm:text-2xl font-bold text-coral mb-1">{profileCompletion}%</div>
+                      <div className="text-sm text-gray-600 mb-3 sm:mb-4">Complete Profile</div>
                       <Link href="/profile/edit">
-                        <Button className="bg-coral hover:bg-coral/90">
+                        <Button className="bg-coral hover:bg-coral/90 w-full sm:w-auto">
                           <Edit className="mr-2 h-4 w-4" />
                           Edit Profile
                         </Button>
@@ -341,9 +361,9 @@ export default function Profile() {
                 </div>
 
                 {/* Profile Stats */}
-                <Card className="mb-8">
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
+                <Card className="mb-6 sm:mb-8">
+                  <CardHeader className="pb-3 sm:pb-6">
+                    <CardTitle className="flex items-center space-x-2 text-lg">
                       <Award className="h-5 w-5 text-coral" />
                       <span>Profile Stats</span>
                     </CardTitle>
