@@ -660,6 +660,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User Settings routes
+  app.get('/api/user/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return user's privacy and notification settings
+      res.json({
+        showNeedsListsLive: user.showNeedsListsLive,
+        hideNeedsListsFromPublic: user.hideNeedsListsFromPublic,
+        showProfileInSearch: user.showProfileInSearch,
+        allowDirectMessages: user.allowDirectMessages,
+        showDonationHistory: user.showDonationHistory,
+        emailNotifications: user.emailNotifications,
+        pushNotifications: user.pushNotifications,
+      });
+    } catch (error) {
+      console.error("Error fetching user settings:", error);
+      res.status(500).json({ message: "Failed to fetch user settings" });
+    }
+  });
+
+  app.patch('/api/user/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const updates = req.body;
+
+      // Validate that only allowed fields are being updated
+      const allowedFields = [
+        'firstName', 'lastName', 'email', 'phone', 'location', 'bio',
+        'userPreference', 'showNeedsListsLive', 'hideNeedsListsFromPublic',
+        'showProfileInSearch', 'allowDirectMessages', 'showDonationHistory',
+        'emailNotifications', 'pushNotifications'
+      ];
+
+      const filteredUpdates: any = {};
+      for (const [key, value] of Object.entries(updates)) {
+        if (allowedFields.includes(key)) {
+          filteredUpdates[key] = value;
+        }
+      }
+
+      const updatedUser = await storage.updateUser(userId, filteredUpdates);
+      res.json({ success: true, user: updatedUser });
+    } catch (error) {
+      console.error("Error updating user settings:", error);
+      res.status(500).json({ message: "Failed to update user settings" });
+    }
+  });
+
+  app.get('/api/user/export-data', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Get user data
+      const user = await storage.getUser(userId);
+      const wishlists = await storage.getUserWishlists(userId);
+      const donations = await storage.getUserDonations(userId);
+      const thankYouNotes = await storage.getUserThankYouNotes(userId);
+      const notifications = await storage.getUserNotifications(userId);
+
+      // Get all wishlist items for user's wishlists
+      const allWishlistItems = [];
+      for (const wishlist of wishlists) {
+        const items = await storage.getWishlistItems(wishlist.id);
+        allWishlistItems.push(...items.map(item => ({ ...item, wishlistTitle: wishlist.title })));
+      }
+
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        user: {
+          id: user?.id,
+          email: user?.email,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          location: user?.location,
+          bio: user?.bio,
+          userPreference: user?.userPreference,
+          isVerified: user?.isVerified,
+          createdAt: user?.createdAt,
+        },
+        wishlists: wishlists.map(wl => ({
+          id: wl.id,
+          title: wl.title,
+          description: wl.description,
+          story: wl.story,
+          category: wl.category,
+          urgencyLevel: wl.urgencyLevel,
+          location: wl.location,
+          status: wl.status,
+          createdAt: wl.createdAt,
+        })),
+        wishlistItems: allWishlistItems.map(item => ({
+          title: item.title,
+          quantity: item.quantity,
+          description: item.description,
+          fulfilled: item.fulfilled,
+          wishlistTitle: item.wishlistTitle,
+          createdAt: item.createdAt,
+        })),
+        donations: donations.map(donation => ({
+          amount: donation.amount,
+          status: donation.status,
+          createdAt: donation.createdAt,
+        })),
+        thankYouNotes: thankYouNotes.map(note => ({
+          message: note.message,
+          isRead: note.isRead,
+          createdAt: note.createdAt,
+        })),
+        totalNotifications: notifications.length,
+      };
+
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="myneedfully-data-${new Date().toISOString().split('T')[0]}.json"`);
+      res.json(exportData);
+    } catch (error) {
+      console.error("Error exporting user data:", error);
+      res.status(500).json({ message: "Failed to export user data" });
+    }
+  });
+
+  app.delete('/api/user/account', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Get user info before deletion for email notification
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Delete user data (this should cascade delete related records)
+      await storage.deleteUser(userId);
+
+      // Send account deletion confirmation email
+      if (user.email) {
+        await emailService.sendAccountDeletionConfirmation(user.email, user.firstName || 'User');
+      }
+
+      // Log out the user session
+      req.logout(() => {
+        res.json({ success: true, message: "Account deleted successfully" });
+      });
+    } catch (error) {
+      console.error("Error deleting user account:", error);
+      res.status(500).json({ message: "Failed to delete account" });
+    }
+  });
+
   // Wishlist Items routes
   app.post('/api/wishlists/:id/items', isAuthenticated, async (req: any, res) => {
     try {

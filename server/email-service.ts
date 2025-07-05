@@ -612,6 +612,68 @@ class EmailService {
       text,
     });
   }
+
+  async sendAccountDeletionConfirmation(
+    userEmail: string,
+    userName: string
+  ): Promise<boolean> {
+    const subject = `Account Deletion Confirmation - MyNeedfully`;
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
+          <h1 style="margin: 0;">Account Deleted</h1>
+        </div>
+        
+        <div style="padding: 30px; background-color: #f9f9f9;">
+          <h2 style="color: #333;">Goodbye ${userName},</h2>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            Your MyNeedfully account has been permanently deleted at your request. All your personal data, needs lists, and account information have been removed from our systems.
+          </p>
+          
+          <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="margin: 0; color: #721c24; font-size: 14px;">
+              <strong>⚠️ Important:</strong> This action is permanent and cannot be undone. If you wish to use MyNeedfully again in the future, you'll need to create a new account.
+            </p>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            Thank you for being part of the MyNeedfully community. We hope the connections and support you found here made a positive difference in your life.
+          </p>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            If you have any questions about the data deletion process or if you believe this was done in error, please contact our support team immediately.
+          </p>
+          
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="mailto:support@myneedfully.app" 
+               style="background-color: #6c757d; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
+              Contact Support
+            </a>
+          </div>
+          
+          <p style="font-size: 14px; color: #888; text-align: center;">
+            We wish you all the best in your future endeavors.
+          </p>
+        </div>
+        
+        <div style="background-color: #333; color: white; padding: 20px; text-align: center; font-size: 14px;">
+          <p style="margin: 0;">© 2025 MyNeedfully. Thank you for being part of our community.</p>
+        </div>
+      </div>
+    `;
+
+    const text = `Hello ${userName}, your MyNeedfully account has been permanently deleted at your request. All your data has been removed from our systems. If you have questions, contact support@myneedfully.app.`;
+
+    return this.sendEmail({
+      to: userEmail,
+      from: 'data@myneedfully.app',
+      subject,
+      html,
+      text,
+    });
+  }
 }
 
 export const emailService = new EmailService();

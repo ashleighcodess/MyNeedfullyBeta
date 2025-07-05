@@ -15,6 +15,7 @@ import ProductSearchWorking from "@/pages/product-search-working";
 import Profile from "@/pages/profile";
 import EditProfile from "@/pages/edit-profile";
 import PrivacySettings from "@/pages/privacy-settings";
+import Settings from "@/pages/settings";
 import AdminDashboard from "@/pages/admin";
 import AboutUs from "@/pages/about-us";
 import Resources from "@/pages/resources";
@@ -70,6 +71,7 @@ function Router() {
               <Route path="/profile" component={Profile} />
               <Route path="/profile/edit" component={EditProfile} />
               <Route path="/profile/privacy" component={PrivacySettings} />
+              <Route path="/settings" component={Settings} />
               <Route path="/community" component={CommunityImpact} />
               <Route path="/community-impact" component={CommunityImpact} />
               <Route path="/impact" component={CommunityImpact} />

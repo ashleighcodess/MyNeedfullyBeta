@@ -39,6 +39,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
+  deleteUser(id: string): Promise<void>;
 
   // Authentication token operations
   createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken>;
@@ -168,6 +169,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    // Delete user - related records should cascade delete based on foreign key constraints
+    await db.delete(users).where(eq(users.id, id));
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
