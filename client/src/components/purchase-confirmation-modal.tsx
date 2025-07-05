@@ -43,6 +43,15 @@ export default function PurchaseConfirmationModal({
   };
 
   const handleContinueToRetailer = () => {
+    console.log('Opening retailer URL:', product.link);
+    console.log('Product data:', product);
+    
+    // Ensure we have a valid URL
+    if (!product.link || product.link === '#') {
+      console.error('Invalid product link:', product.link);
+      return;
+    }
+    
     window.open(product.link, '_blank');
   };
 
