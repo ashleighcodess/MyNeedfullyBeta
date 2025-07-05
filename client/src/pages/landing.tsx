@@ -15,7 +15,7 @@ import essentialClothingImage from "@assets/essentialclothin_1751658676599.jpg";
 import babyEssentialsImage from "@assets/babyandfamily_1751658729999.jpg";
 import crisisHygieneImage from "@assets/crisishygiene_1751658766232.jpg";
 import familyTreeImage from "@assets/Familywithtree_1751744939187.png";
-import warmBackgroundImage from "@assets/AboutUsIMage2_1751592833990.png";
+import warmBackgroundImage from "@assets/HowIcons_1751746474339.png";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
