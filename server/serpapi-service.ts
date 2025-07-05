@@ -95,12 +95,12 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      // Use Google Shopping engine with Target filter for product searches
-      // Add "buy" to trigger product results instead of category pages
-      const productQuery = `${query} buy target.com`;
+      // Strategy: Use Google search with specific Target product URL patterns
+      // This should return actual product pages instead of category pages
+      const productQuery = `"${query}" site:target.com/p/ OR site:target.com/s/ -inurl:c/ -inurl:categories`;
       const params = {
         api_key: this.apiKey,
-        engine: 'google_shopping',
+        engine: 'google',
         q: productQuery,
         location: location,
         google_domain: 'google.com',
@@ -166,23 +166,9 @@ export class SerpAPIService {
         })
         .slice(0, limit)
         .map((result: any, index: number) => {
-          // Debug logging for Target data structure
+          // Enhanced logging for first Target result
           if (index === 0) {
-            console.log('=== TARGET RESULT DEBUG ===');
-            console.log('Result type:', resultType);
-            console.log('Result keys:', Object.keys(result));
-            console.log('Title:', result.title);
-            console.log('Link:', result.link);
-            if (resultType === 'shopping_results') {
-              console.log('Shopping - price:', result.price);
-              console.log('Shopping - extracted_price:', result.extracted_price);
-              console.log('Shopping - thumbnail:', result.thumbnail);
-            } else {
-              console.log('Organic - snippet contains $:', !!(result.snippet && result.snippet.includes('$')));
-              console.log('Organic - thumbnail:', !!result.thumbnail);
-              console.log('Organic - favicon:', !!result.favicon);
-            }
-            console.log('=== END DEBUG ===');
+            console.log(`Target first result: "${result.title}" | URL: ${result.link} | Price in snippet: ${!!(result.snippet && result.snippet.includes('$'))}`);
           }
           const resultTitle = result.title || '';
           const resultLink = result.link || '';
