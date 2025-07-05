@@ -300,7 +300,7 @@ export default function ProductSearch() {
     e.preventDefault();
     if (searchQuery.trim() && searchQuery.trim().length > 2) {
       setPage(1);
-      // The search will trigger automatically via debounced query
+      setActiveSearch(searchQuery.trim()); // Set activeSearch to trigger results display
       toast({
         title: "Searching products...",
         description: "This may take 5-10 seconds due to real-time product data retrieval.",
@@ -576,15 +576,15 @@ export default function ProductSearch() {
         )}
 
         {/* Search Results */}
-        {activeSearch && (
+        {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
           <div>
             {/* Results Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="text-gray-600">
                 {error ? (
                   'Search failed'
-                ) : searchResults?.search_results ? (
-                  `Found ${searchResults.search_results.length} results for "${activeSearch}"`
+                ) : searchResults?.data ? (
+                  `Found ${searchResults.data.length} results for "${activeSearch || debouncedQuery}"`
                 ) : (
                   'No results found'
                 )}
@@ -854,7 +854,7 @@ export default function ProductSearch() {
             )}
 
             {/* No Results */}
-            {searchResults?.search_results && searchResults.search_results.length === 0 && (
+            {searchResults && !isLoading && (!searchResults.data || searchResults.data.length === 0) && (
               <Card className="p-12 text-center">
                 <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No Products Found</h3>
