@@ -213,6 +213,16 @@ export default function Landing() {
       completionPercentage: 67,
       totalItems: 12,
       imageUrl: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+    },
+    {
+      id: 4,
+      title: "Hurricane Recovery Support",
+      description: "Local shelter needs emergency supplies including blankets, water, non-perishable food, and basic hygiene items for displaced families.",
+      location: "Miami, FL",
+      urgencyLevel: "urgent",
+      completionPercentage: 23,
+      totalItems: 87,
+      imageUrl: "https://images.unsplash.com/photo-1594736797933-d0bdb2f70654?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
     }
   ];
 
