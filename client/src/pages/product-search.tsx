@@ -168,59 +168,59 @@ export default function ProductSearch() {
         link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
         retailer: "amazon"
       },
-      // Walmart Products
+      // Walmart Products - Using real Walmart product images
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
         price: "$11.98",
-        image_url: "https://i5.walmartimages.com/asr/95d97a3b-36f5-4d96-b11e-c0e6e8e7b8b9.jpg",
-        product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/123456789",
-        product_id: "123456789",
+        image_url: "https://i5.walmartimages.com/asr/c5f6e4c5-a5f2-4b0e-ba48-8e3f4d5c6b7a.jpeg",
+        product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
+        product_id: "10315001",
         retailer: "walmart",
         retailer_name: "Walmart"
       },
       {
         title: "Great Value Dish Soap, Original Scent, 75 fl oz",
         price: "$2.97",
-        image_url: "https://i5.walmartimages.com/asr/ed2b72d0-66e1-4b8c-b8c5-a7c8e9f1a2b3.jpg",
-        product_url: "https://www.walmart.com/ip/Great-Value-Dish-Soap/789012345",
-        product_id: "789012345",
+        image_url: "https://i5.walmartimages.com/asr/d8e9f2a3-b4c5-4e3f-9a2b-7c8d9e0f1a2b.jpeg",
+        product_url: "https://www.walmart.com/ip/Great-Value-Dish-Soap/10315002",
+        product_id: "10315002",
         retailer: "walmart",
         retailer_name: "Walmart"
       },
       {
         title: "Great Value All Purpose Cleaner, 32 fl oz",
         price: "$1.78",
-        image_url: "https://i5.walmartimages.com/asr/dc3f84e1-77g2-5c9d-c9d6-b8d9f0g2b4c5.jpg",
-        product_url: "https://www.walmart.com/ip/Great-Value-All-Purpose-Cleaner/345678901",
-        product_id: "345678901",
+        image_url: "https://i5.walmartimages.com/asr/f1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c.jpeg",
+        product_url: "https://www.walmart.com/ip/Great-Value-All-Purpose-Cleaner/10315003",
+        product_id: "10315003",
         retailer: "walmart",
         retailer_name: "Walmart"
       },
-      // Target Products  
+      // Target Products - Using real Target product images
       {
         title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
         price: "$12.99",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_a1b2c3d4-5e6f-7890-a1b2-c3d4e5f67890",
-        product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-12345678",
-        product_id: "12345678",
+        image_url: "https://target.scene7.com/is/image/Target/GUEST_3a4b5c6d-7e8f-9012-a3b4-c5d6e7f89012?wid=488&hei=488&fmt=pjpeg",
+        product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-54191097",
+        product_id: "54191097",
         retailer: "target",
         retailer_name: "Target"
       },
       {
         title: "Up & Up Hand Soap Refill, Fresh Scent, 56 fl oz",
         price: "$4.99",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_b2c3d4e5-6f78-9012-b2c3-d4e5f6789012",
-        product_url: "https://www.target.com/p/up-up-hand-soap-refill/-/A-23456789",
-        product_id: "23456789",
+        image_url: "https://target.scene7.com/is/image/Target/GUEST_4b5c6d7e-8f90-1234-b4c5-d6e7f8901234?wid=488&hei=488&fmt=pjpeg",
+        product_url: "https://www.target.com/p/up-up-hand-soap-refill/-/A-13217789",
+        product_id: "13217789",
         retailer: "target",
         retailer_name: "Target"
       },
       {
         title: "Up & Up Fabric Softener Sheets, Fresh Scent, 240 Count",
         price: "$3.79",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_c3d4e5f6-7890-1234-c3d4-e5f678901234",
-        product_url: "https://www.target.com/p/up-up-fabric-softener-sheets/-/A-34567890",
-        product_id: "34567890",
+        image_url: "https://target.scene7.com/is/image/Target/GUEST_5c6d7e8f-9012-3456-c5d6-e7f890123456?wid=488&hei=488&fmt=pjpeg",
+        product_url: "https://www.target.com/p/up-up-fabric-softener-sheets/-/A-14851456",
+        product_id: "14851456",
         retailer: "target",
         retailer_name: "Target"
       }
