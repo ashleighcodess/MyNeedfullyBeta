@@ -219,7 +219,7 @@ export default function MobileNavigation() {
             <div className="hidden md:flex items-center space-x-4">
               {/* Notifications */}
               {user && (
-                <div className="relative">
+                <div className="relative" data-tip="notifications">
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -243,7 +243,7 @@ export default function MobileNavigation() {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center space-x-2">
+                    <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
                       {user?.profileImageUrl ? (
                         <img 
                           src={user.profileImageUrl} 
