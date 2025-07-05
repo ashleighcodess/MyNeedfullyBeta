@@ -154,15 +154,7 @@ export default function AboutUs() {
     "We Believe In The Collective Power Of Small Acts Of Kindness."
   ];
 
-  const partners = [
-    { name: "Amazon", logo: "🛒" },
-    { name: "Walmart", logo: "🏪" },
-    { name: "Target", logo: "🎯" },
-    { name: "DoorDash", logo: "🚗" },
-    { name: "Uber Eats", logo: "🍔" },
-    { name: "Lowe's", logo: "🔨" },
-    { name: "IKEA", logo: "🏠" }
-  ];
+
 
   return (
     <div className="min-h-screen bg-warm-bg">
@@ -363,7 +355,7 @@ export default function AboutUs() {
             <div className="space-y-4">
               {missionPoints.map((point, index) => (
                 <div key={index} className="flex items-start">
-                  <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
+                  <CheckCircle className="h-6 w-6 text-coral mr-3 mt-1 flex-shrink-0" />
                   <p className="text-gray-700">{point}</p>
                 </div>
               ))}
@@ -371,22 +363,7 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Partners Section */}
-        <Card>
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold text-navy text-center mb-8">Our Partners In Cause</h2>
-            <div className="grid grid-cols-3 md:grid-cols-7 gap-6">
-              {partners.map((partner, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <span className="text-2xl">{partner.logo}</span>
-                  </div>
-                  <p className="text-sm text-gray-600">{partner.name}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+
       </div>
     </div>
   );
