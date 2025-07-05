@@ -227,7 +227,7 @@ export default function AboutUs() {
               </div>
             </div>
             
-            <div className="flex justify-center lg:justify-end animate-slide-in-right mt-16 lg:mt-24">
+            <div className="flex justify-center lg:justify-end animate-slide-in-right mt-24">
               <div className="relative group w-full">
                 <img 
                   src={aboutUsImage} 
