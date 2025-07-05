@@ -240,13 +240,13 @@ export default function AboutUs() {
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up" data-stats-section>
+          <div className="grid grid-cols-2 gap-4 animate-fade-in-up" data-stats-section>
             <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">
-                      {needsListFulfilled}+
+                      127+
                     </div>
                     <div className="text-sm text-white/90">Needs List Fulfilled</div>
                   </div>
@@ -255,30 +255,30 @@ export default function AboutUs() {
               </CardContent>
             </Card>
             
-            <Card className="text-left bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-navy mb-1">
-                      {needsListCreated}+
+                    <div className="text-2xl font-bold text-white mb-1">
+                      $000,000
                     </div>
-                    <div className="text-sm text-gray-600">Needs List Created</div>
+                    <div className="text-sm text-white/90">Donation Raised</div>
                   </div>
-                  <Users className="h-6 w-6 text-coral mt-1" />
+                  <Users className="h-6 w-6 text-white mt-1" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="text-left bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+            <Card className="text-left bg-orange-200 border-orange-300 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-orange-300">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-navy mb-1">
-                      {smilesSpread}k
+                      000k
                     </div>
                     <div className="text-sm text-gray-600">Smiles Spread</div>
                   </div>
-                  <Smile className="h-6 w-6 text-yellow-500 mt-1" />
+                  <Smile className="h-6 w-6 text-orange-500 mt-1" />
                 </div>
               </CardContent>
             </Card>
@@ -288,7 +288,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">
-                      {productsDelivered}k
+                      000k
                     </div>
                     <div className="text-sm text-white/90">Products Delivered</div>
                   </div>
