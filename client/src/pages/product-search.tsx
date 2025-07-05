@@ -88,10 +88,9 @@ export default function ProductSearch() {
       // activeSearch already set in useState initializer
     } else {
       // Auto-load with pre-cached "Basic Essentials" results when no query parameter is provided
-      const defaultQuery = "Basic Essentials";
-      setSearchQuery(defaultQuery);
+      // Keep search input empty for default state - don't set searchQuery
       // Don't set debouncedQuery - this prevents the automatic search trigger
-      // activeSearch already set in useState initializer
+      // activeSearch already set in useState initializer to "Basic Essentials"
     }
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
@@ -722,23 +721,44 @@ export default function ProductSearch() {
             {displayProducts && displayProducts.length > 0 && (
               <>
                 <div className="space-y-4">
-                  {/* Search Info */}
+                  {/* Dynamic Header - Different for cached vs search results */}
                   <div className="flex justify-between items-center">
                     <div>
-                      <h3 className="text-lg font-semibold text-navy">
-                        Search Results for "{debouncedQuery}"
-                      </h3>
-                      {totalResults > 0 && (
-                        <div className="space-y-1">
+                      {/* Show different headers for cached products vs search results */}
+                      {!debouncedQuery || debouncedQuery === activeSearch && popularProducts[activeSearch as keyof typeof popularProducts] ? (
+                        <div>
+                          <h3 className="text-lg font-semibold text-navy">
+                            Featured {activeSearch || "Basic Essentials"} Products
+                          </h3>
                           <p className="text-sm text-gray-600">
-                            Showing {displayProducts.length} of {totalResults} results
+                            Curated selection of essential items from trusted retailers
                           </p>
                           {displayProducts && displayProducts.length > 0 && (
                             <p className="text-xs text-gray-500">
-                              Retailers: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
+                              Available from: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
                               Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
                               Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
                             </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div>
+                          <h3 className="text-lg font-semibold text-navy">
+                            Search Results for "{debouncedQuery}"
+                          </h3>
+                          {totalResults > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-sm text-gray-600">
+                                Showing {displayProducts.length} of {totalResults} results
+                              </p>
+                              {displayProducts && displayProducts.length > 0 && (
+                                <p className="text-xs text-gray-500">
+                                  Retailers: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
+                                  Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
+                                  Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
+                                </p>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}
