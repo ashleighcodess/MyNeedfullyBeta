@@ -683,7 +683,7 @@ export default function WishlistDetail() {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00',
-                                      link: itemPricing[item.id]?.pricing?.amazon?.url || item.productUrl || '#',
+                                      link: itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl || '#',
                                       retailer: 'amazon',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -722,7 +722,7 @@ export default function WishlistDetail() {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00',
-                                      link: itemPricing[item.id]?.pricing?.target?.url || '#',
+                                      link: itemPricing[item.id]?.pricing?.target?.link || '#',
                                       retailer: 'target',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -761,7 +761,7 @@ export default function WishlistDetail() {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00',
-                                      link: itemPricing[item.id]?.pricing?.walmart?.url || '#',
+                                      link: itemPricing[item.id]?.pricing?.walmart?.link || '#',
                                       retailer: 'walmart',
                                       image: item.imageUrl,
                                       itemId: item.id
