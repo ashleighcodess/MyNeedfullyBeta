@@ -128,6 +128,10 @@
     background-color: var(--warm-bg);
   }
   
+  .font-just-sans {
+    font-family: 'JUST Sans', sans-serif;
+  }
+  
   .text-coral {
     color: var(--coral);
   }
