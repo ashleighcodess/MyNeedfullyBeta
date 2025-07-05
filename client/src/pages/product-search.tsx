@@ -546,25 +546,27 @@ export default function ProductSearch() {
         {/* Search Results */}
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
           <div>
-            {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-gray-600">
-                {error ? (
-                  'Search failed'
-                ) : searchResults?.data ? (
-                  `Found ${searchResults.data.length} results for "${activeSearch || debouncedQuery}"`
-                ) : (
-                  'No results found'
+            {/* Results Header - Only show when we have actual results */}
+            {searchResults?.data && searchResults.data.length > 0 && (
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-gray-600">
+                  Found {searchResults.data.length} results for "{activeSearch || debouncedQuery}"
+                </div>
+                {searchResults?.pagination && (
+                  <div className="text-sm text-gray-500">
+                    Page {page} of {Math.ceil((searchResults.pagination.total_results || 0) / 16)}
+                  </div>
                 )}
               </div>
-              {searchResults?.pagination && (
-                <div className="text-sm text-gray-500">
-                  Page {page} of {Math.ceil((searchResults.pagination.total_results || 0) / 16)}
-                </div>
-              )}
-            </div>
+            )}
 
-
+            {/* Loading State */}
+            {isLoading && (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coral mx-auto mb-4"></div>
+                <p className="text-gray-600">Searching for products...</p>
+              </div>
+            )}
 
             {/* Error State */}
             {error && (
