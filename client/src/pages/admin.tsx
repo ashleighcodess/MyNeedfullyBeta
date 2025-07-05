@@ -181,6 +181,17 @@ export default function AdminDashboard() {
                 <Calendar className="h-4 w-4 mr-2" />
                 Export Report
               </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  window.location.href = '/';
+                }}
+                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Exit Admin
+              </Button>
             </div>
           </div>
         </div>
