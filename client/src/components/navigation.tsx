@@ -99,76 +99,85 @@ export default function Navigation() {
               </div>
             )}
 
-            {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
-                  {user?.profileImageUrl ? (
-                    <img 
-                      src={user.profileImageUrl} 
-                      alt="Profile" 
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-coral" />
-                    </div>
-                  )}
-                  <span className="hidden sm:block text-sm font-medium">
-                    {user?.firstName || 'Menu'}
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
-                </div>
-                <DropdownMenuSeparator />
-                <Link href="/dashboard">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <Zap className="mr-2 h-4 w-4" />
-                    Quick Actions
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/profile">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/my-needs-lists">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <Heart className="mr-2 h-4 w-4" />
-                    My Needs Lists
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/settings">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                </Link>
-                {user?.userType === 'admin' && (
-                  <Link href="/admin">
+            {/* User Menu or Login Button */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
+                    {user?.profileImageUrl ? (
+                      <img 
+                        src={user.profileImageUrl} 
+                        alt="Profile" 
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                        <User className="h-4 w-4 text-coral" />
+                      </div>
+                    )}
+                    <span className="hidden sm:block text-sm font-medium">
+                      {user?.firstName || 'Menu'}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <Link href="/dashboard">
                     <DropdownMenuItem className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Admin Dashboard
+                      <Zap className="mr-2 h-4 w-4" />
+                      Quick Actions
                     </DropdownMenuItem>
                   </Link>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  className="cursor-pointer text-red-600 hover:text-red-600 hover:bg-red-50"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <Link href="/profile">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/my-needs-lists">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Heart className="mr-2 h-4 w-4" />
+                      My Needs Lists
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/settings">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </DropdownMenuItem>
+                  </Link>
+                  {user?.userType === 'admin' && (
+                    <Link href="/admin">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-600 hover:text-red-600 hover:bg-red-50"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                onClick={() => window.location.href = "/api/login"}
+                className="hidden sm:block"
+              >
+                Sign In
+              </Button>
+            )}
 
-            {/* Mobile menu trigger */}
+            {/* Mobile menu trigger - always visible */}
             <div className="md:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
@@ -178,7 +187,7 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80">
                   <div className="flex flex-col space-y-4 mt-8">
-                    {navigationItems.map((item) => (
+                    {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
                       <Link key={item.href} href={item.href}>
                         <Button 
                           variant="ghost" 
@@ -192,26 +201,72 @@ export default function Navigation() {
                         </Button>
                       </Link>
                     ))}
-                    <div className="border-t pt-4">
-                      <Link href="/profile">
+                    
+                    {user ? (
+                      <div className="border-t pt-4">
+                        <Link href="/dashboard">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <Zap className="mr-2 h-4 w-4" />
+                            Quick Actions
+                          </Button>
+                        </Link>
+                        <Link href="/profile">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <User className="mr-2 h-4 w-4" />
+                            Dashboard
+                          </Button>
+                        </Link>
+                        <Link href="/my-needs-lists">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <Heart className="mr-2 h-4 w-4" />
+                            My Needs Lists
+                          </Button>
+                        </Link>
+                        <Link href="/settings">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <Settings className="mr-2 h-4 w-4" />
+                            Settings
+                          </Button>
+                        </Link>
                         <Button 
                           variant="ghost" 
-                          className="w-full justify-start"
-                          onClick={() => setMobileMenuOpen(false)}
+                          className="w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-50"
+                          onClick={handleLogout}
                         >
-                          <User className="mr-2 h-4 w-4" />
-                          Profile
+                          <LogOut className="mr-2 h-4 w-4" />
+                          Sign Out
                         </Button>
-                      </Link>
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-50"
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Sign Out
-                      </Button>
-                    </div>
+                      </div>
+                    ) : (
+                      <div className="border-t pt-4">
+                        <Button 
+                          variant="default" 
+                          className="w-full"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            window.location.href = "/api/login";
+                          }}
+                        >
+                          Sign In
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </SheetContent>
               </Sheet>
