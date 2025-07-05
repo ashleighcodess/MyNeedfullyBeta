@@ -114,10 +114,10 @@ export default function ProductSearch() {
     addToWishlistMutation.mutate(product);
   };
 
-  // Cached products WITHOUT images - will use retailer logos as intended
+  // Cached products - real product search will provide actual images from APIs
   const popularProducts = useMemo(() => ({
     "Basic Essentials": [
-      // Amazon Products
+      // Amazon Products - images will come from live API responses
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
@@ -163,7 +163,7 @@ export default function ProductSearch() {
         link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
         retailer: "amazon"
       },
-      // Walmart Products
+      // Walmart Products - images will come from live API responses
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
         price: "$11.98",
@@ -188,7 +188,7 @@ export default function ProductSearch() {
         retailer: "walmart",
         retailer_name: "Walmart"
       },
-      // Target Products
+      // Target Products - images will come from live API responses
       {
         title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
         price: "$12.99",
@@ -407,42 +407,36 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products - prioritize cached products to prevent skeleton flash
+  // Initialize search for "Basic Essentials" on page load to get real product images
+  useEffect(() => {
+    if (!debouncedQuery && !activeSearch) {
+      setSearchQuery("Basic Essentials");
+      setDebouncedQuery("Basic Essentials");
+      setActiveSearch("Basic Essentials");
+    }
+  }, [debouncedQuery, activeSearch]);
+
+  // Get display products - prioritize live API results with real images
   const displayProducts = useMemo(() => {
-    // Priority 1: Always default to "Basic Essentials" when no specific search is active
-    // This ensures immediate content display on page load
-    if (!activeSearch && !debouncedQuery) {
-      return popularProducts["Basic Essentials"] || [];
-    }
-    
-    // Priority 2: If we have an active search, check for cached products first
-    if (activeSearch && popularProducts[activeSearch as keyof typeof popularProducts]) {
-      return popularProducts[activeSearch as keyof typeof popularProducts];
-    }
-    
-    // Priority 3: If we have search results and a valid debounced query, show search results
+    // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       const results = searchResults?.search_results || searchResults?.data || [];
-      // Debug: Check Target products specifically
       if (results.length > 0) {
         const targetProducts = results.filter((p: any) => p.retailer === 'target');
         const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
         const amazonProducts = results.filter((p: any) => p.retailer === 'amazon');
-        console.log(`Frontend breakdown: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
-        if (targetProducts.length > 0) {
-          console.log('Sample Target product:', targetProducts[0]);
-        }
+        console.log(`Live API results: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
+        return results;
       }
-      return results;
     }
     
-    // Priority 4: Fallback to cached products if available, otherwise empty array
-    if (activeSearch && popularProducts[activeSearch as keyof typeof popularProducts]) {
-      return popularProducts[activeSearch as keyof typeof popularProducts];
+    // Priority 2: Show cached products only as fallback when no live results
+    if (!debouncedQuery && !activeSearch) {
+      return [];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, activeSearch, popularProducts]);
+  }, [debouncedQuery, searchResults, activeSearch]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
