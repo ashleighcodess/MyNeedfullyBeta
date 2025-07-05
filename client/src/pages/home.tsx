@@ -79,11 +79,11 @@ export default function Home() {
           <CardContent>
             <div className="space-y-0">
               <Link href="/create">
-                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Plus className="h-5 w-5 text-coral mt-1 icon-wiggle" />
+                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Plus className="h-8 w-8 text-coral mt-0.5 icon-wiggle" strokeWidth={1.5} />
                   <div>
-                    <h3 className="font-semibold">Create Your First Needs List</h3>
-                    <p className="text-gray-600">Share what you need with our caring community</p>
+                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Create Your First Needs List</h3>
+                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Share what you need with our caring community</p>
                   </div>
                 </div>
               </Link>
@@ -94,11 +94,11 @@ export default function Home() {
               </div>
               
               <Link href="/browse">
-                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Heart className="h-5 w-5 text-coral mt-1 icon-wiggle-delayed-1" />
+                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Heart className="h-8 w-8 text-coral mt-0.5 icon-wiggle-delayed-1" strokeWidth={1.5} />
                   <div>
-                    <h3 className="font-semibold">Browse and Help Others</h3>
-                    <p className="text-gray-600">Find needs lists where you can make a difference</p>
+                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Browse and Help Others</h3>
+                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Find needs lists where you can make a difference</p>
                   </div>
                 </div>
               </Link>
@@ -109,11 +109,11 @@ export default function Home() {
               </div>
               
               <Link href="/products">
-                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Gift className="h-5 w-5 text-coral mt-1 icon-wiggle-delayed-2" />
+                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Gift className="h-8 w-8 text-coral mt-0.5 icon-wiggle-delayed-2" strokeWidth={1.5} />
                   <div>
-                    <h3 className="font-semibold">Search for Specific Items</h3>
-                    <p className="text-gray-600">Use our product search to find exactly what's needed</p>
+                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Search for Specific Items</h3>
+                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Use our product search to find exactly what's needed</p>
                   </div>
                 </div>
               </Link>
@@ -124,11 +124,11 @@ export default function Home() {
               </div>
               
               <Link href="/profile#my-lists">
-                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Settings className="h-5 w-5 text-coral mt-1 icon-wiggle-delayed-3" />
+                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Settings className="h-8 w-8 text-coral mt-0.5 icon-wiggle-delayed-3" strokeWidth={1.5} />
                   <div>
-                    <h3 className="font-semibold">Manage my Needs Lists</h3>
-                    <p className="text-gray-600">Edit, update, and track your existing needs lists</p>
+                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Manage my Needs Lists</h3>
+                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Edit, update, and track your existing needs lists</p>
                   </div>
                 </div>
               </Link>
