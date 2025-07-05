@@ -1060,8 +1060,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* What Do People Use MyNeedfully For? */}
-      <section className="py-20 bg-gray-50">
+      {/* What Do People Use MyNeedfully For? - Hidden in production until ready to launch */}
+      {import.meta.env.VITE_SHOW_CATEGORY_SECTION !== 'false' && (
+        <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -1209,6 +1210,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      )}
 
 
 
