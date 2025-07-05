@@ -1419,7 +1419,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Transform SerpAPI results to match RainforestAPI format
             const transformedResults = serpResults.map((product: SerpProduct) => {
-              const price = parseFloat(product.price.replace(/[$,]/g, '')) || 0;
+              const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
+              const price = parseFloat(priceStr.replace(/[$,]/g, '')) || 0;
               return {
                 title: product.title,
                 price: { value: price, currency: "USD", raw: product.price },

@@ -59,11 +59,22 @@ export default function ProductSearch() {
   const [showFallbacks, setShowFallbacks] = useState(true);
   const [location, navigate] = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
   // Get wishlistId from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
+
+  // Handle adding to needs list with authentication check
+  const handleAddToNeedsList = (product: any) => {
+    if (!isAuthenticated) {
+      // Redirect to signup page if not authenticated
+      navigate('/signup');
+      return;
+    }
+    // If authenticated, proceed with adding to wishlist
+    addToWishlistMutation.mutate(product);
+  };
 
   // Popular cached products for instant loading
   const popularProducts = useMemo(() => ({
@@ -573,37 +584,19 @@ export default function ProductSearch() {
               <>
                 <Card className="mb-6 p-8">
                   <div className="text-center">
-                    <div className="flex items-center justify-center mb-6">
-                      {/* Branded Logo Spinner */}
-                      <div className="relative flex items-center">
-                        <img 
-                          src={myneedfullyLogo} 
-                          alt="MyNeedfully" 
-                          className="h-8 w-8 animate-spin mr-3"
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-lg font-medium text-gray-800">Finding Ways to Help</span>
-                          <div className="text-sm text-coral font-medium h-5 overflow-hidden">
-                            <div className="animate-pulse">
-                              <div className="transition-all duration-2000 ease-in-out">
-                                <span className="inline-block animate-pulse">Connecting Hearts</span>
-                                <span className="mx-1">•</span>
-                                <span className="inline-block animate-pulse delay-300">Fulfilling Needs</span>
-                                <span className="mx-1">•</span>
-                                <span className="inline-block animate-pulse delay-700">Spreading Hope</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="flex flex-col items-center justify-center mb-6">
+                      {/* Centered Logo Spinner */}
+                      <img 
+                        src={myneedfullyLogo} 
+                        alt="MyNeedfully" 
+                        className="h-12 w-12 animate-spin mb-4"
+                      />
+                      <span className="text-lg font-medium text-gray-800">Finding Ways to Help</span>
                     </div>
                     {/* Search Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className="bg-coral h-2 rounded-full animate-pulse" style={{width: '75%'}}></div>
                     </div>
-                    <p className="text-sm text-gray-500">
-                      Real-time product data from multiple retailers
-                    </p>
                   </div>
                 </Card>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -799,23 +792,10 @@ export default function ProductSearch() {
                           </p>
                         )}
 
-                        <div className="space-y-2">
-                          <a 
-                            href={buildAmazonAffiliateLink(product.asin)}
-                            target="_blank"
-                            rel="nofollow sponsored"
-                            className="block"
-                          >
-                            <Button className="w-full bg-coral hover:bg-coral/90">
-                              <ShoppingCart className="mr-2 h-4 w-4" />
-                              Buy on Amazon
-                            </Button>
-                          </a>
-                          
+                        <div>
                           <Button 
-                            variant="outline" 
-                            className="w-full border-coral text-coral hover:bg-coral/10"
-                            onClick={() => addToWishlistMutation.mutate(product)}
+                            className="w-full bg-coral hover:bg-coral/90"
+                            onClick={() => handleAddToNeedsList(product)}
                             disabled={addingProductId === product.asin}
                           >
                             <Heart className="mr-2 h-4 w-4" />

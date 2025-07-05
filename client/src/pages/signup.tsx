@@ -213,9 +213,9 @@ export default function Signup() {
           <div className="text-center mt-8">
             <p className="text-gray-500">
               Already have an account?{" "}
-              <Link href="/" className="text-coral hover:underline font-medium">
-                Sign In
-              </Link>
+              <a href="/api/login" className="text-coral hover:underline font-medium">
+                Login
+              </a>
             </p>
           </div>
         </div>
