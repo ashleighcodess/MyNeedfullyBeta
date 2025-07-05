@@ -45,6 +45,22 @@ function Router() {
           <Route path="/search" component={ProductSearchWorking} />
           <Route path="/admin" component={AdminDashboard} />
           
+          {/* Authenticated routes */}
+          <Route path="/my-needs-lists" component={MyNeedsLists} />
+          <Route path="/my-lists" component={MyNeedsLists} />
+          <Route path="/create" component={CreateNeedsList} />
+          <Route path="/edit-wishlist/:id" component={EditWishlist} />
+          <Route path="/needslist/:id" component={WishlistDetail} />
+          <Route path="/wishlist/:id" component={WishlistDetail} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/profile/edit" component={EditProfile} />
+          <Route path="/profile/privacy" component={PrivacySettings} />
+          <Route path="/settings" component={Settings} />
+          <Route path="/community" component={CommunityImpact} />
+          <Route path="/community-impact" component={CommunityImpact} />
+          <Route path="/impact" component={CommunityImpact} />
+          
+          {/* Home route */}
           {isLoading ? (
             <Route path="/">
               {() => (
@@ -59,24 +75,9 @@ function Router() {
           ) : !isAuthenticated ? (
             <Route path="/" component={Landing} />
           ) : (
-            <>
-              <Route path="/" component={Home} />
-              <Route path="/home" component={Landing} />
-              <Route path="/my-needs-lists" component={MyNeedsLists} />
-              <Route path="/my-lists" component={MyNeedsLists} />
-              <Route path="/create" component={CreateNeedsList} />
-              <Route path="/edit-wishlist/:id" component={EditWishlist} />
-              <Route path="/needslist/:id" component={WishlistDetail} />
-              <Route path="/wishlist/:id" component={WishlistDetail} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/profile/edit" component={EditProfile} />
-              <Route path="/profile/privacy" component={PrivacySettings} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/community" component={CommunityImpact} />
-              <Route path="/community-impact" component={CommunityImpact} />
-              <Route path="/impact" component={CommunityImpact} />
-            </>
+            <Route path="/" component={Home} />
           )}
+          
           <Route component={NotFound} />
         </Switch>
       </div>
