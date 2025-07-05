@@ -13,7 +13,8 @@ import {
   User, 
   Heart, 
   Gift, 
-  MessageSquare, 
+  MessageSquare,
+  MessageCircle, 
   Settings, 
   Plus,
   Calendar,
@@ -135,6 +136,7 @@ export default function Profile() {
   const sidebarItems = [
     { id: 'profile', label: 'My Profile', icon: User, active: activeTab === 'profile' },
     { id: 'lists', label: 'My Lists', icon: List, active: activeTab === 'lists' },
+    { id: 'thankyou', label: 'Thank You Notes', icon: MessageCircle, active: activeTab === 'thankyou' },
     { id: 'privacy', label: 'Privacy Settings', icon: Settings, active: activeTab === 'privacy' },
     { id: 'create', label: 'Create List', icon: Gift, active: activeTab === 'create' },
     { id: 'find', label: 'Find Lists', icon: Search, active: activeTab === 'find' },
@@ -485,7 +487,87 @@ export default function Profile() {
             )}
 
             {/* Other tabs can be implemented similarly */}
-            {activeTab !== 'profile' && activeTab !== 'lists' && (
+            {activeTab === 'thankyou' && (
+              <div className="space-y-6">
+                {/* Sent Thank You Notes */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <MessageCircle className="mr-2 h-5 w-5 text-coral" />
+                      Sent Thank You Notes ({thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length > 0 ? (
+                        thankYouNotes.filter((note: any) => note.fromUserId === user?.id).map((note: any) => (
+                          <div key={note.id} className="p-4 border rounded-lg">
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="font-medium">To: {note.toUserName || 'Anonymous'}</div>
+                              <div className="text-sm text-gray-500">
+                                {new Date(note.createdAt).toLocaleDateString()}
+                              </div>
+                            </div>
+                            <p className="text-gray-700 mb-2">{note.message}</p>
+                            {note.wishlistTitle && (
+                              <div className="text-sm text-gray-500">
+                                For: {note.wishlistTitle}
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <MessageCircle className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                          <p>No thank you notes sent yet</p>
+                          <p className="text-sm">Send a thank you note after making a purchase</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Received Thank You Notes */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Heart className="mr-2 h-5 w-5 text-coral" />
+                      Received Thank You Notes ({thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length > 0 ? (
+                        thankYouNotes.filter((note: any) => note.toUserId === user?.id).map((note: any) => (
+                          <div key={note.id} className="p-4 border rounded-lg bg-coral/5">
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="font-medium">From: {note.fromUserName || 'Anonymous'}</div>
+                              <div className="text-sm text-gray-500">
+                                {new Date(note.createdAt).toLocaleDateString()}
+                              </div>
+                            </div>
+                            <p className="text-gray-700 mb-2">{note.message}</p>
+                            {note.wishlistTitle && (
+                              <div className="text-sm text-gray-500">
+                                For: {note.wishlistTitle}
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <Heart className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                          <p>No thank you notes received yet</p>
+                          <p className="text-sm">Create a needs list to start receiving support</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeTab !== 'profile' && activeTab !== 'lists' && activeTab !== 'thankyou' && (
               <Card>
                 <CardContent className="p-12 text-center">
                   <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
