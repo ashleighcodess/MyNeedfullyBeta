@@ -1842,6 +1842,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get pricing for a specific wishlist item
+  app.get('/api/items/:id/pricing', async (req, res) => {
+    try {
+      console.log('Pricing endpoint hit for item:', req.params.id);
+      const itemId = parseInt(req.params.id);
+      const item = await storage.getWishlistItem(itemId);
+      console.log('Item found:', item ? 'Yes' : 'No');
+      
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+
+      const pricing = {
+        amazon: { available: false, price: item.price, link: item.productUrl },
+        walmart: { available: false, price: item.price, link: null },
+        target: { available: false, price: item.price, link: null }
+      };
+
+      // Try to get live pricing from RainforestAPI if available and item has valid Amazon URL
+      const rainforestService = getRainforestAPIService();
+      if (rainforestService && item.productUrl && item.productUrl.includes('amazon.com')) {
+        try {
+          // Extract ASIN from Amazon URL if possible
+          const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
+          const asin = asinMatch ? (asinMatch[1] || asinMatch[2]) : null;
+          
+          if (asin) {
+            const products = await rainforestService.searchProducts(asin);
+            if (products && products.length > 0) {
+              const product = products[0];
+              pricing.amazon = {
+                available: true,
+                price: product.price?.value || item.price,
+                link: product.link || item.productUrl
+              };
+            }
+          }
+        } catch (error) {
+          console.log('RainforestAPI pricing error:', error);
+        }
+      }
+
+      // Try to get Walmart/Target pricing from SerpAPI if available
+      const serpService = getSerpAPIService();
+      if (serpService && item.title) {
+        try {
+          const walmartResults = await serpService.searchWalmart(item.title, '60602', 1);
+          if (walmartResults && walmartResults.length > 0) {
+            const walmartProduct = walmartResults[0];
+            pricing.walmart = {
+              available: true,
+              price: walmartProduct.price || item.price,
+              link: walmartProduct.product_url
+            };
+          }
+
+          const targetResults = await serpService.searchTarget(item.title, '10001', 1);
+          if (targetResults && targetResults.length > 0) {
+            const targetProduct = targetResults[0];
+            pricing.target = {
+              available: true,
+              price: targetProduct.price || item.price,
+              link: targetProduct.product_url
+            };
+          }
+        } catch (error) {
+          console.log('SerpAPI pricing error:', error);
+        }
+      }
+
+      res.json({ pricing });
+    } catch (error) {
+      console.error("Error fetching item pricing:", error);
+      res.status(500).json({ message: "Failed to fetch pricing" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time features
