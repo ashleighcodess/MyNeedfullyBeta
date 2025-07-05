@@ -28,7 +28,9 @@ import {
   DollarSign,
   Package,
   ChevronLeft,
-  X
+  X,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 // Helper function to get retailer logo
@@ -58,6 +60,7 @@ export default function ProductSearch() {
   const [hasMoreResults, setHasMoreResults] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
 
   const [location, navigate] = useLocation();
   const { toast } = useToast();
@@ -412,23 +415,24 @@ export default function ProductSearch() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        {/* Mobile Compact Header */}
+        <div className="mb-4 md:mb-8">
           {wishlistId && (
             <Button 
               variant="ghost" 
-              className="mb-4 text-coral hover:bg-coral/10"
+              className="mb-2 md:mb-4 text-coral hover:bg-coral/10 text-sm md:text-base"
               onClick={() => navigate(`/wishlist/${wishlistId}`)}
             >
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Back to Needs List
+              <ChevronLeft className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Back to Needs List</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           )}
-          <h1 className="text-3xl font-bold text-navy mb-2">
-            {wishlistId ? "Add Items to Your Needs List" : "Product Search"}
+          <h1 className="text-xl md:text-3xl font-bold text-navy mb-1 md:mb-2">
+            {wishlistId ? "Add Items" : "Product Search"}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm md:text-base text-gray-600 hidden md:block">
             {wishlistId 
               ? "Search for products to add to your needs list" 
               : "Find products from trusted retailers to add to your wishlist"
@@ -438,43 +442,37 @@ export default function ProductSearch() {
 
 
 
-        {/* Search Controls */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Search className="mr-2 h-5 w-5 text-coral" />
-              Search Products
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSearch} className="space-y-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    placeholder="Search for products (e.g., baby formula, school supplies, groceries)"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 py-3"
-                  />
-                </div>
+        {/* Mobile-Optimized Sticky Search Bar */}
+        <div className="sticky top-0 z-40 bg-warm-bg/95 backdrop-blur-sm border-b border-gray-200 mb-4 md:mb-6 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+          <form onSubmit={handleSearch} className="space-y-3 md:space-y-0">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 md:pl-10 py-2 md:py-3 text-sm md:text-base"
+                />
+              </div>
                 
-                {/* Filter Dropdown */}
-                <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                  <PopoverTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      className="flex items-center gap-2 px-4 border-gray-300 hover:bg-gray-50"
-                    >
-                      <Filter className="h-4 w-4" />
-                      <span className="hidden sm:inline">Filters</span>
-                      {(category || minPrice || maxPrice) && (
-                        <Badge variant="secondary" className="ml-1 bg-coral text-white">
-                          {[category, minPrice, maxPrice].filter(Boolean).length}
-                        </Badge>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
+              {/* Compact Filter Button */}
+              <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="flex items-center gap-1 md:gap-2 px-2 md:px-4 border-gray-300 hover:bg-gray-50 text-sm"
+                  >
+                    <Filter className="h-4 w-4" />
+                    <span className="hidden sm:inline">Filter</span>
+                    {(category || minPrice || maxPrice) && (
+                      <Badge variant="secondary" className="ml-1 bg-coral text-white text-xs">
+                        {[category, minPrice, maxPrice].filter(Boolean).length}
+                      </Badge>
+                    )}
+                  </Button>
+                </PopoverTrigger>
                   <PopoverContent className="w-80 p-4" align="end">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -559,49 +557,53 @@ export default function ProductSearch() {
                       </div>
                     </div>
                   </PopoverContent>
-                </Popover>
+              </Popover>
 
-                <Button type="submit" className="bg-coral hover:bg-coral/90 px-8 whitespace-nowrap">
-                  <Search className="mr-2 h-4 w-4" />
-                  Search
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Popular Categories */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Popular Categories</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {CATEGORIES.slice(0, 6).map((category) => (
-                <div
-                  key={category.value}
-                  className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer text-center bg-white hover:bg-gray-50"
-                  onClick={() => {
-                    console.log('Category clicked:', category.label);
-                    setSearchQuery(category.label);
-                    setDebouncedQuery(category.label); // Set debounced query immediately for categories
-                    setActiveSearch(category.label);
-                    setCategory(category.value);
-                    setPage(1); // Reset to first page
-                    // Show toast to indicate search is happening
-                    toast({
-                      title: "Searching products...",
-                      description: `Looking for ${category.label} products`,
-                    });
-                  }}
-                >
-                  <i className={`${category.icon} text-coral text-2xl mb-2`}></i>
-                  <div className="text-sm font-medium">{category.label}</div>
-                </div>
-              ))}
+              {/* Categories Toggle Button - Mobile Only */}
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="md:hidden flex items-center gap-1 px-2 text-sm"
+                onClick={() => setShowCategories(!showCategories)}
+              >
+                <span>Categories</span>
+                {showCategories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+          </form>
+        </div>
+
+        {/* Mobile Collapsible Categories + Desktop Always Visible */}
+        <div className={`mb-4 md:mb-6 transition-all duration-300 ${showCategories || 'hidden md:block'}`}>
+          <div className="mb-3 md:mb-4">
+            <h3 className="text-sm md:text-lg font-semibold text-navy hidden md:block">Popular Categories</h3>
+            <h3 className="text-sm font-medium text-navy md:hidden">Quick Search Categories</h3>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4">
+            {CATEGORIES.slice(0, 6).map((category) => (
+              <div
+                key={category.value}
+                className="p-2 md:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer text-center bg-white hover:bg-gray-50 active:scale-95"
+                onClick={() => {
+                  console.log('Category clicked:', category.label);
+                  setSearchQuery(category.label);
+                  setDebouncedQuery(category.label);
+                  setActiveSearch(category.label);
+                  setCategory(category.value);
+                  setPage(1);
+                  setShowCategories(false); // Hide categories on mobile after selection
+                  toast({
+                    title: "Searching products...",
+                    description: `Looking for ${category.label} products`,
+                  });
+                }}
+              >
+                <i className={`${category.icon} text-coral text-lg md:text-2xl mb-1 md:mb-2`}></i>
+                <div className="text-xs md:text-sm font-medium">{category.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Search Results */}
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
