@@ -90,7 +90,7 @@ export default function Home() {
               
               {/* Animated Separator */}
               <div className="my-3 mx-8">
-                <div className="h-0.5 bg-coral separator-draw" style={{animationDelay: '0.2s'}}></div>
+                <div className="h-0.5 bg-navy/30 separator-draw" style={{animationDelay: '0.2s'}}></div>
               </div>
               
               <Link href="/browse">
@@ -105,7 +105,7 @@ export default function Home() {
               
               {/* Animated Separator */}
               <div className="my-3 mx-8">
-                <div className="h-0.5 bg-coral separator-draw" style={{animationDelay: '0.4s'}}></div>
+                <div className="h-0.5 bg-navy/30 separator-draw" style={{animationDelay: '0.4s'}}></div>
               </div>
               
               <Link href="/products">
@@ -120,7 +120,7 @@ export default function Home() {
               
               {/* Animated Separator */}
               <div className="my-3 mx-8">
-                <div className="h-0.5 bg-coral separator-draw" style={{animationDelay: '0.6s'}}></div>
+                <div className="h-0.5 bg-navy/30 separator-draw" style={{animationDelay: '0.6s'}}></div>
               </div>
               
               <Link href="/profile#my-lists">
