@@ -200,6 +200,12 @@ export default function ProductSearch() {
     });
   }, []);
 
+  // Get cached products helper
+  const getCachedProducts = useCallback((query: string) => {
+    const key = getCacheKey(query, category, 1);
+    return getCachedResult(key);
+  }, [category, getCacheKey, getCachedResult]);
+
   // Build query URL with parameters
   const buildSearchUrl = useCallback(() => {
     const params = new URLSearchParams();
@@ -218,18 +224,7 @@ export default function ProductSearch() {
     enabled: !wishlistId && !!user?.id, // Only fetch if no specific wishlist is provided and user is authenticated
   });
 
-  // Check for cached popular products first
-  const getCachedProducts = useCallback((query: string) => {
-    const normalizedQuery = query.toLowerCase().trim();
-    
-    // Check popular products cache for instant results
-    for (const [term, products] of Object.entries(popularProducts)) {
-      if (normalizedQuery.includes(term) || term.includes(normalizedQuery)) {
-        return { products: products.slice(0, 10), total: products.length, hasMore: products.length > 10 };
-      }
-    }
-    return null;
-  }, []);
+
 
   // Custom query with smart caching and fallbacks
   const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page]);
@@ -555,21 +550,42 @@ export default function ProductSearch() {
               )}
             </div>
 
-            {/* Loading State with Progress */}
+            {/* Loading State with Branded Spinner */}
             {isLoading && (
               <>
-                <Card className="mb-6 p-6">
+                <Card className="mb-6 p-8">
                   <div className="text-center">
-                    <div className="flex items-center justify-center mb-4">
-                      <Search className="h-6 w-6 text-coral mr-2 animate-spin" />
-                      <span className="text-lg font-medium text-gray-800">Searching</span>
-                      <span className="ml-1 animate-pulse">...</span>
+                    <div className="flex items-center justify-center mb-6">
+                      {/* Branded Logo Spinner */}
+                      <div className="relative flex items-center">
+                        <img 
+                          src="/attached_assets/Logo_5_1751594497665.png" 
+                          alt="MyNeedfully" 
+                          className="h-8 w-8 animate-spin mr-3"
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-lg font-medium text-gray-800">Searching Products</span>
+                          <div className="text-sm text-coral font-medium h-5 overflow-hidden">
+                            <div className="animate-pulse">
+                              <div className="transition-all duration-1000 ease-in-out">
+                                <span className="inline-block animate-pulse">Amazon</span>
+                                <span className="mx-1">•</span>
+                                <span className="inline-block animate-pulse delay-200">Walmart</span>
+                                <span className="mx-1">•</span>
+                                <span className="inline-block animate-pulse delay-500">Target</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    {searchCache.size > 0 && (
-                      <p className="text-sm text-gray-500">
-                        💾 {searchCache.size} searches cached for faster access
-                      </p>
-                    )}
+                    {/* Search Progress Bar */}
+                    <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                      <div className="bg-coral h-2 rounded-full animate-pulse" style={{width: '75%'}}></div>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      Real-time product data from multiple retailers
+                    </p>
                   </div>
                 </Card>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -625,6 +641,14 @@ export default function ProductSearch() {
                           <Badge className="absolute top-2 left-2 bg-coral text-white">
                             Popular
                           </Badge>
+                          {/* Amazon Logo */}
+                          <div className="absolute top-2 right-2 bg-white rounded p-1">
+                            <img 
+                              src="/attached_assets/amazon_1751644244382.png" 
+                              alt="Amazon" 
+                              className="h-4 w-4"
+                            />
+                          </div>
                         </div>
                       )}
                       
@@ -726,6 +750,14 @@ export default function ProductSearch() {
                               Prime
                             </Badge>
                           )}
+                          {/* Amazon Logo */}
+                          <div className="absolute top-2 right-2 bg-white rounded p-1">
+                            <img 
+                              src="/attached_assets/amazon_1751644244382.png" 
+                              alt="Amazon" 
+                              className="h-4 w-4"
+                            />
+                          </div>
                         </div>
                       )}
                       
