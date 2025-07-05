@@ -24,12 +24,14 @@ import NotFound from "@/pages/not-found";
 import CommunityImpact from "@/pages/community-impact";
 import Footer from "@/components/footer";
 import QuickTips from "@/components/quick-tips";
+import Navigation from "@/components/navigation";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navigation />
       <div className="flex-1">
         <Switch>
           {/* Public routes available to everyone */}
