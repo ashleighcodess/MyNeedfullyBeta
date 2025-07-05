@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Gift, Heart, Users, Plus, MapPin, Clock } from "lucide-react";
+import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap } from "lucide-react";
 import { useLocation } from "wouter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
@@ -803,7 +803,7 @@ export default function Landing() {
       </section>
 
       {/* Featured Wishlists */}
-      <section id="browse" className="py-20 bg-warm-bg">
+      <section id="browse" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-navy mb-4">Featured Needs</h2>
@@ -912,41 +912,61 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how" className="py-20 bg-white">
+      {/* How It Works - Stylized Version */}
+      <section id="how" className="py-20 bg-warm-bg relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-navy mb-4">How MyNeedfully Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Simple, transparent, and effective way to connect those who need help with those who want to give</p>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Step 1 */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <i className="fas fa-list-ul text-white text-2xl"></i>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Step 1 - Create A Needs List */}
+            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
+                <Gift className="text-white h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-semibold text-navy mb-4">Create Your Needs List</h3>
-              <p className="text-gray-600 leading-relaxed">Recipients create detailed needs lists with specific items they need. Add photos, descriptions, and verify your story to build trust.</p>
+              <h3 className="text-xl font-semibold text-navy mb-4">Create A Needs List</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
             </div>
 
-            {/* Step 2 */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Search className="text-white h-8 w-8" />
+            {/* Step 2 - Share With Community */}
+            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
+                <Users className="text-white h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-semibold text-navy mb-4">Supporters Discover Needs</h3>
-              <p className="text-gray-600 leading-relaxed">Generous donors browse verified wishlists, search by location or need type, and choose meaningful ways to help real families.</p>
+              <h3 className="text-xl font-semibold text-navy mb-4">Share With Community</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
             </div>
 
-            {/* Step 3 */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
+            {/* Step 3 - Receive Support */}
+            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="text-white h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-semibold text-navy mb-4">Direct Impact</h3>
-              <p className="text-gray-600 leading-relaxed">Items are purchased and shipped directly to recipients. Track fulfillment, receive thank you notes, and see your real impact.</p>
+              <h3 className="text-xl font-semibold text-navy mb-4">Receive Support</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
             </div>
+
+            {/* Step 4 - Track Fulfillment */}
+            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
+                <Zap className="text-white h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-semibold text-navy mb-4">Track Fulfillment</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center mt-16">
+            <p className="text-lg text-gray-700 mb-6">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-full text-lg font-semibold"
+              onClick={handleLogin}
+            >
+              Get Started Now
+            </Button>
           </div>
         </div>
       </section>
