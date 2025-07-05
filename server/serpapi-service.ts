@@ -153,16 +153,31 @@ export class SerpAPIService {
         return [];
       }
 
+      // Target product processing optimized for authentic results
+
       const targetResults = resultsArray
         .filter((result: any) => {
           const resultLink = result.link || '';
           const resultTitle = result.title || '';
+          const resultSource = result.source || result.merchant || '';
           
-          // Must have title and be from Target
+          // Must have title
           if (!resultTitle || resultTitle.length < 3) return false;
-          if (!resultLink.includes('target.com')) return false;
           
-          return true;
+          // For shopping results, check source/merchant field, for organic check link
+          if (resultType === 'shopping_results') {
+            // Shopping results may have Target in source/merchant field instead of link
+            if (resultSource.toLowerCase().includes('target') || resultLink.includes('target.com')) {
+              return true;
+            }
+          } else {
+            // Organic results should have target.com in link
+            if (resultLink.includes('target.com')) {
+              return true;
+            }
+          }
+          
+          return false;
         })
         .slice(0, limit)
         .map((result: any, index: number) => {
