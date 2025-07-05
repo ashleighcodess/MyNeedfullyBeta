@@ -316,8 +316,9 @@ export default function ProductSearch() {
       return [];
     }
     
-    // Handle different response formats
-    const results = searchResults?.data || [];
+    // Handle different response formats - check search_results first (correct format)
+    const results = searchResults?.search_results || searchResults?.data || [];
+    
     return results;
   }, [debouncedQuery, searchResults, isLoading]);
 
