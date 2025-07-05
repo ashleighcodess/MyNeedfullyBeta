@@ -68,6 +68,7 @@ import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_17515863
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 // Custom hook for animated counters
 function useAnimatedCounter(targetValue: number, duration: number = 2000, startAnimation: boolean = false) {
@@ -110,6 +111,11 @@ export default function Landing() {
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [, setLocation] = useLocation();
+  
+  // Fetch featured wishlists from database
+  const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery({
+    queryKey: ['/api/featured-wishlists'],
+  });
   
   // Animated counter values
   const needsFulfilled = useAnimatedCounter(127, 2500, startTickerAnimation);
@@ -183,48 +189,51 @@ export default function Landing() {
     }
   };
 
-  const featuredWishlists = [
-    {
-      id: 1,
-      title: "Help the Johnson Family Rebuild",
-      description: "After losing everything in a house fire, this family of four needs basic essentials including clothing, school supplies, and household items.",
-      location: "Austin, TX",
-      urgencyLevel: "urgent",
-      completionPercentage: 85,
-      totalItems: 23,
-      imageUrl: "https://images.unsplash.com/photo-1609220136736-443140cffec6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-    },
-    {
-      id: 2,
-      title: "Back-to-School Support",
-      description: "Local nonprofit helping 50 underprivileged children get ready for school with supplies, uniforms, and backpacks.",
-      location: "Denver, CO",
-      urgencyLevel: "high",
-      completionPercentage: 42,
-      totalItems: 150,
-      imageUrl: "https://images.unsplash.com/photo-1497486751825-1233686d5d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-    },
-    {
-      id: 3,
-      title: "Senior Care Essentials",
-      description: "Margaret, 78, needs assistance with medical supplies and daily living aids after her recent recovery from surgery.",
-      location: "Seattle, WA",
-      urgencyLevel: "medium",
-      completionPercentage: 67,
-      totalItems: 12,
-      imageUrl: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-    },
-    {
-      id: 4,
-      title: "Hurricane Recovery Support",
-      description: "Local shelter needs emergency supplies including blankets, water, non-perishable food, and basic hygiene items for displaced families.",
-      location: "Miami, FL",
-      urgencyLevel: "urgent",
-      completionPercentage: 23,
-      totalItems: 87,
-      imageUrl: "https://images.unsplash.com/photo-1594736797933-d0bdb2f70654?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-    }
-  ];
+  // Use database featured wishlists or fallback to sample data if none are featured
+  const featuredWishlists = featuredWishlistsData && featuredWishlistsData.length > 0 
+    ? featuredWishlistsData 
+    : [
+        {
+          id: 1,
+          title: "Help the Johnson Family Rebuild",
+          description: "After losing everything in a house fire, this family of four needs basic essentials including clothing, school supplies, and household items.",
+          location: "Austin, TX",
+          urgencyLevel: "urgent",
+          completionPercentage: 85,
+          totalItems: 23,
+          imageUrl: "https://images.unsplash.com/photo-1609220136736-443140cffec6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+        },
+        {
+          id: 2,
+          title: "Back-to-School Support",
+          description: "Local nonprofit helping 50 underprivileged children get ready for school with supplies, uniforms, and backpacks.",
+          location: "Denver, CO",
+          urgencyLevel: "high",
+          completionPercentage: 42,
+          totalItems: 150,
+          imageUrl: "https://images.unsplash.com/photo-1497486751825-1233686d5d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+        },
+        {
+          id: 3,
+          title: "Senior Care Essentials",
+          description: "Margaret, 78, needs assistance with medical supplies and daily living aids after her recent recovery from surgery.",
+          location: "Seattle, WA",
+          urgencyLevel: "medium",
+          completionPercentage: 67,
+          totalItems: 12,
+          imageUrl: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+        },
+        {
+          id: 4,
+          title: "Hurricane Recovery Support",
+          description: "Local shelter needs emergency supplies including blankets, water, non-perishable food, and basic hygiene items for displaced families.",
+          location: "Miami, FL",
+          urgencyLevel: "urgent",
+          completionPercentage: 23,
+          totalItems: 87,
+          imageUrl: "https://images.unsplash.com/photo-1594736797933-d0bdb2f70654?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+        }
+      ];
 
   const recentActivity = [
     { supporter: "Sarah M.", action: "supported", item: "Baby formula and diapers to help newborn twins", timeAgo: "2 hours ago" },
@@ -839,9 +848,11 @@ export default function Landing() {
                     
                     <Progress value={featuredWishlists[0].completionPercentage} className="mb-6" />
                     
-                    <Button className="bg-coral text-white hover:bg-coral/90 px-6 py-3">
-                      Support Needs List →
-                    </Button>
+                    <Link href={`/wishlists/${featuredWishlists[0].id}`}>
+                      <Button className="bg-coral text-white hover:bg-coral/90 px-6 py-3">
+                        Support Needs List →
+                      </Button>
+                    </Link>
                   </CardContent>
                 </div>
               </Card>
@@ -879,9 +890,11 @@ export default function Landing() {
                       
                       <Progress value={wishlist.completionPercentage} className="mb-4" />
                       
-                      <Button className="w-full bg-coral text-white hover:bg-coral/90">
-                        Support Needs List →
-                      </Button>
+                      <Link href={`/wishlists/${wishlist.id}`}>
+                        <Button className="w-full bg-coral text-white hover:bg-coral/90">
+                          Support Needs List →
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 ))}
@@ -890,9 +903,11 @@ export default function Landing() {
           </div>
           
           <div className="text-center mt-12">
-            <Button className="bg-navy text-white hover:bg-navy/90 px-8 py-4 text-lg rounded-full">
-              View All Needs Lists
-            </Button>
+            <Link href="/browse-wishlists">
+              <Button className="bg-navy text-white hover:bg-navy/90 px-8 py-4 text-lg rounded-full">
+                View All Needs Lists
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

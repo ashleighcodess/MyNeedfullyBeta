@@ -26,7 +26,7 @@ import {
   notifications,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc, sql, and, gt } from "drizzle-orm";
 
 // Helper function to generate secure tokens
 function generateSecureToken(): string {
@@ -598,7 +598,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         category: wishlists.category,
         createdAt: wishlists.createdAt,
         userId: wishlists.userId,
-        location: wishlists.location
+        location: wishlists.location,
+        featuredUntil: wishlists.featuredUntil
       })
       .from(wishlists)
       .orderBy(desc(wishlists.createdAt))
@@ -647,6 +648,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: 'Database connection failed',
         timestamp: new Date().toISOString()
       });
+    }
+  });
+
+  // Feature wishlist endpoint (Admin only)
+  app.patch('/api/admin/wishlists/:id/feature', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { featured, featuredDays = 30 } = req.body;
+      
+      const featuredUntil = featured ? 
+        new Date(Date.now() + (featuredDays * 24 * 60 * 60 * 1000)) : 
+        null;
+
+      const [updatedWishlist] = await db
+        .update(wishlists)
+        .set({ 
+          featuredUntil,
+          updatedAt: new Date()
+        })
+        .where(eq(wishlists.id, parseInt(id)))
+        .returning();
+
+      if (!updatedWishlist) {
+        return res.status(404).json({ message: 'Wishlist not found' });
+      }
+
+      res.json({ 
+        message: featured ? 'Wishlist marked as featured' : 'Wishlist unfeatured',
+        wishlist: updatedWishlist 
+      });
+    } catch (error) {
+      console.error("Error updating featured status:", error);
+      res.status(500).json({ message: "Failed to update featured status" });
+    }
+  });
+
+  // Get featured wishlists endpoint (Public)
+  app.get('/api/featured-wishlists', async (req, res) => {
+    try {
+      const featuredWishlists = await db.select({
+        id: wishlists.id,
+        title: wishlists.title,
+        description: wishlists.description,
+        story: wishlists.story,
+        storyImages: wishlists.storyImages,
+        location: wishlists.location,
+        urgencyLevel: wishlists.urgencyLevel,
+        totalItems: wishlists.totalItems,
+        fulfilledItems: wishlists.fulfilledItems,
+        createdAt: wishlists.createdAt,
+        featuredUntil: wishlists.featuredUntil
+      })
+      .from(wishlists)
+      .where(and(
+        gt(wishlists.featuredUntil, new Date()),
+        eq(wishlists.isPublic, true),
+        eq(wishlists.status, 'active')
+      ))
+      .orderBy(desc(wishlists.featuredUntil))
+      .limit(10);
+
+      // Calculate completion percentage for each wishlist
+      const wishlistsWithPercentage = featuredWishlists.map(wishlist => {
+        const completionPercentage = wishlist.totalItems > 0 ? 
+          Math.round((wishlist.fulfilledItems / wishlist.totalItems) * 100) : 0;
+        
+        return {
+          ...wishlist,
+          completionPercentage,
+          imageUrl: wishlist.storyImages && wishlist.storyImages.length > 0 ? 
+            wishlist.storyImages[0] : 
+            "https://images.unsplash.com/photo-1609220136736-443140cffec6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
+        };
+      });
+
+      res.json(wishlistsWithPercentage);
+    } catch (error) {
+      console.error("Error fetching featured wishlists:", error);
+      res.status(500).json({ message: "Failed to fetch featured wishlists" });
     }
   });
 

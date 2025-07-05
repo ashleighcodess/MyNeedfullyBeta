@@ -117,6 +117,36 @@ export default function AdminDashboard() {
     },
   });
 
+  // Feature wishlist mutation
+  const featureWishlistMutation = useMutation({
+    mutationFn: async ({ wishlistId, featured }: { wishlistId: number; featured: boolean }) => {
+      return await apiRequest('PATCH', `/api/admin/wishlists/${wishlistId}/feature`, {
+        featured,
+        featuredDays: 30
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
+        description: "Featured status updated successfully",
+        duration: 3000,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/wishlists'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update featured status",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Handler for featuring/unfeaturing wishlists
+  const handleFeatureWishlist = (wishlistId: number, featured: boolean) => {
+    featureWishlistMutation.mutate({ wishlistId, featured });
+  };
+
   // Don't render if not admin
   if (!user || user.userType !== 'admin') {
     return (
@@ -509,13 +539,28 @@ export default function AdminDashboard() {
                             <Badge variant="secondary">{wishlist.category}</Badge>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end space-y-1">
-                          <Badge variant={wishlist.status === 'active' ? 'default' : 'secondary'}>
-                            {wishlist.status}
-                          </Badge>
+                        <div className="flex flex-col items-end space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={wishlist.status === 'active' ? 'default' : 'secondary'}>
+                              {wishlist.status}
+                            </Badge>
+                            {wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date() && (
+                              <Badge variant="outline" className="text-coral border-coral">
+                                Featured
+                              </Badge>
+                            )}
+                          </div>
                           <span className="text-sm text-gray-500">
                             {wishlist.totalItems} items
                           </span>
+                          <Button
+                            size="sm"
+                            variant={wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date() ? "destructive" : "outline"}
+                            onClick={() => handleFeatureWishlist(wishlist.id, !(wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date()))}
+                            className="text-xs"
+                          >
+                            {wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date() ? 'Unfeature' : 'Feature'}
+                          </Button>
                         </div>
                       </div>
                     ))}
