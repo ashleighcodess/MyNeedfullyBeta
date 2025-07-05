@@ -842,10 +842,17 @@ export default function ProductSearch() {
                           alt={product.title}
                           className="w-full h-48 object-contain bg-gray-50"
                           onError={(e) => {
-                            // Fallback to a generic product image if the original fails
+                            // Show retailer-specific fallback when image fails to load
                             const target = e.target as HTMLImageElement;
-                            if (target.src !== 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&h=400&fit=crop&crop=center') {
-                              target.src = 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&h=400&fit=crop&crop=center';
+                            const parent = target.parentElement;
+                            if (parent && !target.dataset.fallbackApplied) {
+                              target.dataset.fallbackApplied = 'true';
+                              parent.innerHTML = `
+                                <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
+                                  <img src="${getRetailerLogo(product.retailer)}" alt="${product.retailer}" class="w-12 h-12 mb-2 opacity-50" />
+                                  <span class="text-sm font-medium">Image not available</span>
+                                </div>
+                              `;
                             }
                           }}
                         />
