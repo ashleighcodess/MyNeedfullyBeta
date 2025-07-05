@@ -109,8 +109,6 @@ export default function Landing() {
   const [progressSteps, setProgressSteps] = useState([false, false, false]);
   const [startTickerAnimation, setStartTickerAnimation] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [productSearchQuery, setProductSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [, setLocation] = useLocation();
   
   // Fetch featured wishlists from database
@@ -176,19 +174,7 @@ export default function Landing() {
     }
   };
 
-  const handleProductSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (productSearchQuery.trim()) {
-      const params = new URLSearchParams();
-      params.append('q', productSearchQuery);
-      if (selectedCategory && selectedCategory !== 'All Categories') {
-        params.append('category', selectedCategory);
-      }
-      setLocation(`/product-search?${params.toString()}`);
-    } else {
-      setLocation('/product-search');
-    }
-  };
+
 
   // Use database featured wishlists or fallback to sample data if none are featured
   const featuredWishlists = featuredWishlistsData && featuredWishlistsData.length > 0 
@@ -982,64 +968,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Product Search Integration */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">Find the Perfect Items</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Search millions of products from trusted retailers to add to your wishlist</p>
-          </div>
 
-          {/* Product Search Bar */}
-          <div className="max-w-3xl mx-auto mb-12">
-            <Card className="p-6 shadow-lg">
-              <form onSubmit={handleProductSearch} className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input 
-                    placeholder="Search for products (e.g., baby formula, school supplies, groceries)" 
-                    className="pl-12 py-4 border border-gray-200 focus:ring-2 focus:ring-coral/50 focus:border-coral"
-                    value={productSearchQuery}
-                    onChange={(e) => setProductSearchQuery(e.target.value)}
-                  />
-                </div>
-                <select 
-                  className="px-4 py-4 border border-gray-200 rounded-md focus:ring-2 focus:ring-coral/50 focus:border-coral"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  <option value="">All Categories</option>
-                  <option value="baby">Baby & Kids</option>
-                  <option value="household">Household</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="clothing">Clothing</option>
-                  <option value="health">Health & Personal Care</option>
-                </select>
-                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-8 py-4 whitespace-nowrap">
-                  Search Products
-                </Button>
-              </form>
-            </Card>
-          </div>
-
-          {/* Popular Categories */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {[
-              { icon: "fas fa-baby", label: "Baby Care" },
-              { icon: "fas fa-graduation-cap", label: "School" },
-              { icon: "fas fa-home", label: "Home" },
-              { icon: "fas fa-utensils", label: "Food" },
-              { icon: "fas fa-tshirt", label: "Clothing" },
-              { icon: "fas fa-heartbeat", label: "Health" }
-            ].map((category, index) => (
-              <Card key={index} className="p-6 text-center hover:shadow-lg transition-all cursor-pointer">
-                <i className={`${category.icon} text-coral text-3xl mb-3`}></i>
-                <div className="font-semibold text-gray-700">{category.label}</div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Recent Activity Ticker */}
       <section className="py-12 bg-coral text-white overflow-hidden">
