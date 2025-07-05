@@ -11,7 +11,7 @@ import MyNeedsLists from "@/pages/my-needs-lists";
 import CreateNeedsList from "@/pages/create-wishlist";
 import EditWishlist from "@/pages/edit-wishlist";
 import WishlistDetail from "@/pages/wishlist-detail";
-import ProductSearchWorking from "@/pages/product-search-working";
+import ProductSearch from "@/pages/product-search";
 import Profile from "@/pages/profile";
 import EditProfile from "@/pages/edit-profile";
 import PrivacySettings from "@/pages/privacy-settings";
@@ -40,9 +40,9 @@ function Router() {
           <Route path="/sign-up" component={Signup} />
           <Route path="/browse" component={BrowseWishlists} />
           <Route path="/find" component={BrowseWishlists} />
-          <Route path="/products" component={ProductSearchWorking} />
-          <Route path="/product-search" component={ProductSearchWorking} />
-          <Route path="/search" component={ProductSearchWorking} />
+          <Route path="/products" component={ProductSearch} />
+          <Route path="/product-search" component={ProductSearch} />
+          <Route path="/search" component={ProductSearch} />
           <Route path="/admin" component={AdminDashboard} />
           
           {/* Authenticated routes */}

@@ -652,146 +652,128 @@ export default function WishlistDetail() {
                           </h4>
                           
                           <div className="space-y-2">
-                            {/* Only show loading state if no pricing data yet */}
-                            {!itemPricing[item.id]?.pricing ? (
-                              <div className="flex items-center justify-center p-4 bg-white rounded-lg border">
-                                <div className="text-sm text-gray-500">Loading prices...</div>
+                            {/* Amazon */}
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-2">
+                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-5 h-5 rounded-full" />
+                                <div>
+                                  <div className="text-xs font-medium text-gray-900">Amazon</div>
+                                  <div className="text-sm font-bold text-gray-900">
+                                    ${itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00'}
+                                    {itemPricing[item.id]?.pricing?.amazon?.available && (
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                            ) : (
-                              <>
-                                {/* Amazon - Always show if available OR if it's the original product URL */}
-                                {(itemPricing[item.id]?.pricing?.amazon?.available || item.productUrl) && (
-                                  <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                                    <div className="flex items-center space-x-2">
-                                      <img src="/logos/amazon-logo.png" alt="Amazon" className="w-5 h-5 rounded-full" />
-                                      <div>
-                                        <div className="text-xs font-medium text-gray-900">Amazon</div>
-                                        <div className="text-sm font-bold text-gray-900">
-                                          ${itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00'}
-                                          {itemPricing[item.id]?.pricing?.amazon?.available && (
-                                            <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <button 
-                                      onClick={() => {
-                                        if (!item.isFulfilled) {
-                                          setSelectedProduct({
-                                            title: item.title,
-                                            price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00',
-                                            link: itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl,
-                                            retailer: 'amazon',
-                                            image: item.imageUrl,
-                                            itemId: item.id
-                                          });
-                                          setShowPurchaseModal(true);
-                                        }
-                                      }}
-                                      disabled={item.isFulfilled}
-                                      className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                        item.isFulfilled
-                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                          : 'bg-coral text-white hover:bg-coral/90'
-                                      }`}
-                                    >
-                                      {item.isFulfilled ? 'Fulfilled' : 'View'}
-                                    </button>
-                                  </div>
-                                )}
+                              <button 
+                                onClick={() => {
+                                  if (!item.isFulfilled && (itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl)) {
+                                    setSelectedProduct({
+                                      title: item.title,
+                                      price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00',
+                                      link: itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl,
+                                      retailer: 'amazon',
+                                      image: item.imageUrl,
+                                      itemId: item.id
+                                    });
+                                    setShowPurchaseModal(true);
+                                  }
+                                }}
+                                disabled={item.isFulfilled || (!itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl)}
+                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                  item.isFulfilled || (!itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl)
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-coral text-white hover:bg-coral/90'
+                                }`}
+                              >
+                                {item.isFulfilled ? 'Fulfilled' : 
+                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl ? 'Unavailable' : 'View'}
+                              </button>
+                            </div>
 
-                                {/* Target - Only show if available */}
-                                {itemPricing[item.id]?.pricing?.target?.available && (
-                                  <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                                    <div className="flex items-center space-x-2">
-                                      <img src="/logos/target-logo.png" alt="Target" className="w-5 h-5 rounded-full" />
-                                      <div>
-                                        <div className="text-xs font-medium text-gray-900">Target</div>
-                                        <div className="text-sm font-bold text-gray-900">
-                                          ${itemPricing[item.id]?.pricing?.target?.price}
-                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <button 
-                                      onClick={() => {
-                                        if (!item.isFulfilled) {
-                                          setSelectedProduct({
-                                            title: item.title,
-                                            price: itemPricing[item.id]?.pricing?.target?.price,
-                                            link: itemPricing[item.id]?.pricing?.target?.link,
-                                            retailer: 'target',
-                                            image: item.imageUrl,
-                                            itemId: item.id
-                                          });
-                                          setShowPurchaseModal(true);
-                                        }
-                                      }}
-                                      disabled={item.isFulfilled}
-                                      className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                        item.isFulfilled
-                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                          : 'bg-coral text-white hover:bg-coral/90'
-                                      }`}
-                                    >
-                                      {item.isFulfilled ? 'Fulfilled' : 'View'}
-                                    </button>
+                            {/* Target */}
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-2">
+                                <img src="/logos/target-logo.png" alt="Target" className="w-5 h-5 rounded-full" />
+                                <div>
+                                  <div className="text-xs font-medium text-gray-900">Target</div>
+                                  <div className="text-sm font-bold text-gray-900">
+                                    ${itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00'}
+                                    {itemPricing[item.id]?.pricing?.target?.available && (
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    )}
                                   </div>
-                                )}
+                                </div>
+                              </div>
+                              <button 
+                                onClick={() => {
+                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
+                                    setSelectedProduct({
+                                      title: item.title,
+                                      price: itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00',
+                                      link: itemPricing[item.id]?.pricing?.target?.link,
+                                      retailer: 'target',
+                                      image: item.imageUrl,
+                                      itemId: item.id
+                                    });
+                                    setShowPurchaseModal(true);
+                                  }
+                                }}
+                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available}
+                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-coral text-white hover:bg-coral/90'
+                                }`}
+                              >
+                                {item.isFulfilled ? 'Fulfilled' : 
+                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing?.target?.available ? 'Unavailable' : 'View'}
+                              </button>
+                            </div>
 
-                                {/* Walmart - Only show if available */}
-                                {itemPricing[item.id]?.pricing?.walmart?.available && (
-                                  <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                                    <div className="flex items-center space-x-2">
-                                      <img src="/logos/walmart-logo.png" alt="Walmart" className="w-5 h-5 rounded-full" />
-                                      <div>
-                                        <div className="text-xs font-medium text-gray-900">Walmart</div>
-                                        <div className="text-sm font-bold text-gray-900">
-                                          ${itemPricing[item.id]?.pricing?.walmart?.price}
-                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <button 
-                                      onClick={() => {
-                                        if (!item.isFulfilled) {
-                                          setSelectedProduct({
-                                            title: item.title,
-                                            price: itemPricing[item.id]?.pricing?.walmart?.price,
-                                            link: itemPricing[item.id]?.pricing?.walmart?.link,
-                                            retailer: 'walmart',
-                                            image: item.imageUrl,
-                                            itemId: item.id
-                                          });
-                                          setShowPurchaseModal(true);
-                                        }
-                                      }}
-                                      disabled={item.isFulfilled}
-                                      className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                        item.isFulfilled
-                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                          : 'bg-coral text-white hover:bg-coral/90'
-                                      }`}
-                                    >
-                                      {item.isFulfilled ? 'Fulfilled' : 'View'}
-                                    </button>
+                            {/* Walmart */}
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                              <div className="flex items-center space-x-2">
+                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-5 h-5 rounded-full" />
+                                <div>
+                                  <div className="text-xs font-medium text-gray-900">Walmart</div>
+                                  <div className="text-sm font-bold text-gray-900">
+                                    ${itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00'}
+                                    {itemPricing[item.id]?.pricing?.walmart?.available && (
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    )}
                                   </div>
-                                )}
-
-                                {/* Show message if no retailers are available */}
-                                {!itemPricing[item.id]?.pricing?.amazon?.available && 
-                                 !itemPricing[item.id]?.pricing?.target?.available && 
-                                 !itemPricing[item.id]?.pricing?.walmart?.available && 
-                                 !item.productUrl && (
-                                  <div className="flex items-center justify-center p-4 bg-white rounded-lg border border-dashed">
-                                    <div className="text-center">
-                                      <div className="text-sm text-gray-500 mb-1">No retailers found</div>
-                                      <div className="text-xs text-gray-400">Try searching manually</div>
-                                    </div>
-                                  </div>
-                                )}
-                              </>
-                            )}
+                                </div>
+                              </div>
+                              <button 
+                                onClick={() => {
+                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
+                                    setSelectedProduct({
+                                      title: item.title,
+                                      price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00',
+                                      link: itemPricing[item.id]?.pricing?.walmart?.link,
+                                      retailer: 'walmart',
+                                      image: item.imageUrl,
+                                      itemId: item.id
+                                    });
+                                    setShowPurchaseModal(true);
+                                  }
+                                }}
+                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available}
+                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                    : 'bg-coral text-white hover:bg-coral/90'
+                                }`}
+                              >
+                                {item.isFulfilled ? 'Fulfilled' : 
+                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
