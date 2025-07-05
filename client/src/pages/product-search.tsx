@@ -114,14 +114,13 @@ export default function ProductSearch() {
     addToWishlistMutation.mutate(product);
   };
 
-  // Real product data with authentic images from 2025 retailer APIs
+  // Cached products WITHOUT images - will use retailer logos as intended
   const popularProducts = useMemo(() => ({
     "Basic Essentials": [
-      // Amazon Products - Real Amazon product images that work in 2025
+      // Amazon Products
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
@@ -131,7 +130,6 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H", 
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -141,7 +139,6 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
-        image: "https://m.media-amazon.com/images/I/81tLG9gK7bL._SL1500_.jpg",
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
@@ -151,7 +148,6 @@ export default function ProductSearch() {
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: "https://m.media-amazon.com/images/I/81DKt2UFQEL._SL1500_.jpg",
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
         ratings_total: 18745,
@@ -161,18 +157,16 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: "https://m.media-amazon.com/images/I/81Cv3mCN1eL._SL1500_.jpg",
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
         link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
         retailer: "amazon"
       },
-      // Walmart Products - Real product images from Walmart CDN
+      // Walmart Products
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
         price: "$11.98",
-        image_url: "https://i5.walmartimages.com/asr/79937e0f-35b0-4c2c-8f75-7a8b9c0d1e2f.c8ff3b9e1c2a6b4d7e8f0a1b2c3d4e5f.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
         product_id: "10315001",
         retailer: "walmart",
@@ -181,7 +175,6 @@ export default function ProductSearch() {
       {
         title: "Great Value Dish Soap, Original Scent, 75 fl oz",
         price: "$2.97", 
-        image_url: "https://i5.walmartimages.com/asr/2b8f9a0e-4c5d-1e2f-3a4b-5c6d7e8f9a0b.d4e7f2a5c8b1e3f6a9c2d5e8b1f4a7c0.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
         product_url: "https://www.walmart.com/ip/Great-Value-Dish-Soap/10315002",
         product_id: "10315002",
         retailer: "walmart",
@@ -190,17 +183,15 @@ export default function ProductSearch() {
       {
         title: "Great Value All Purpose Cleaner, 32 fl oz",
         price: "$1.78",
-        image_url: "https://i5.walmartimages.com/asr/5f1a2b3c-6d7e-4f8a-9b0c-1d2e3f4a5b6c.a3f6c9e2b5d8a1c4f7b0e3f6a9c2d5e8.jpeg?odnHeight=612&odnWidth=612&odnBg=FFFFFF",
         product_url: "https://www.walmart.com/ip/Great-Value-All-Purpose-Cleaner/10315003",
         product_id: "10315003",
         retailer: "walmart",
         retailer_name: "Walmart"
       },
-      // Target Products - Real product images from Target CDN  
+      // Target Products
       {
         title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
         price: "$12.99",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_7f2e8d5a-9b1c-4e3f-6a2d-5e8b1f4a7c0d?wid=488&hei=488&fmt=pjpeg",
         product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-54191097",
         product_id: "54191097",
         retailer: "target",
@@ -209,7 +200,6 @@ export default function ProductSearch() {
       {
         title: "Up & Up Hand Soap Refill, Fresh Scent, 56 fl oz", 
         price: "$4.99",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_4a7d0e3f-6b9c-2e5f-8a1d-4c7e0f3a6b9c?wid=488&hei=488&fmt=pjpeg",
         product_url: "https://www.target.com/p/up-up-hand-soap-refill/-/A-13217789",
         product_id: "13217789",
         retailer: "target",
@@ -218,7 +208,6 @@ export default function ProductSearch() {
       {
         title: "Up & Up Fabric Softener Sheets, Fresh Scent, 240 Count",
         price: "$3.79",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_1c4f7a0d-3e6b-9c2e-5f8a-1d4c7e0f3a6b?wid=488&hei=488&fmt=pjpeg",
         product_url: "https://www.target.com/p/up-up-fabric-softener-sheets/-/A-14851456",
         product_id: "14851456",
         retailer: "target",
@@ -834,28 +823,40 @@ export default function ProductSearch() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {displayProducts.filter((product: any) => product.image || product.image_url).map((product: any, index: number) => (
+                    {displayProducts.map((product: any, index: number) => (
                     <Card key={`${product.retailer}-${product.asin || product.product_id || index}-${Date.now()}-${Math.random()}`} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="relative">
-                        <img 
-                          src={product.image || product.image_url}
-                          alt={product.title}
-                          className="w-full h-48 object-contain bg-gray-50"
-                          onError={(e) => {
-                            // Show retailer-specific fallback when image fails to load
-                            const target = e.target as HTMLImageElement;
-                            const parent = target.parentElement;
-                            if (parent && !target.dataset.fallbackApplied) {
-                              target.dataset.fallbackApplied = 'true';
-                              parent.innerHTML = `
-                                <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
-                                  <img src="${getRetailerLogo(product.retailer)}" alt="${product.retailer}" class="w-12 h-12 mb-2 opacity-50" />
-                                  <span class="text-sm font-medium">Image not available</span>
-                                </div>
-                              `;
-                            }
-                          }}
-                        />
+                        {(product.image || product.image_url) ? (
+                          <img 
+                            src={product.image || product.image_url}
+                            alt={product.title}
+                            className="w-full h-48 object-contain bg-gray-50"
+                            onError={(e) => {
+                              // Show retailer-specific fallback when image fails to load
+                              const target = e.target as HTMLImageElement;
+                              const parent = target.parentElement;
+                              if (parent && !target.dataset.fallbackApplied) {
+                                target.dataset.fallbackApplied = 'true';
+                                parent.innerHTML = `
+                                  <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
+                                    <img src="${getRetailerLogo(product.retailer)}" alt="${product.retailer}" class="w-12 h-12 mb-2 opacity-50" />
+                                    <span class="text-sm font-medium">Image not available</span>
+                                  </div>
+                                `;
+                              }
+                            }}
+                          />
+                        ) : (
+                          // Show retailer logo directly when no image is available
+                          <div className="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
+                            <img 
+                              src={getRetailerLogo(product.retailer)} 
+                              alt={product.retailer} 
+                              className="w-12 h-12 mb-2 opacity-50" 
+                            />
+                            <span className="text-sm font-medium">Image not available</span>
+                          </div>
+                        )}
                         {product.is_prime && (
                           <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
                             Prime
