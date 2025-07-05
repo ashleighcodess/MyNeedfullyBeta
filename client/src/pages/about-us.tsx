@@ -198,21 +198,21 @@ export default function AboutUs() {
               </h2>
               
               <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
-                MyNeedfully.com Was Born From A Simple Observation: When <span className="font-bold">People</span> Face 
-                Crises Like Natural Disasters, Domestic Violence, Or Homelessness, They Often 
-                <span className="font-bold"> Need</span> Specific Items To Rebuild Their Lives - But It's Hard For Friends, Family, And 
-                Community Members To Know Exactly What To Provide.
+                MyNeedfully.com was born from a simple observation: when people face 
+                crises like natural disasters, domestic violence, or homelessness, they often 
+                need specific items to rebuild their lives - but it's hard for friends, family, and 
+                community members to know exactly what to provide.
               </p>
               <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
-                We Created A Platform That Makes It Easy For Individuals In <span className="font-bold">Need</span> To Create 
-                Wishlists Of Essential Items, And For Others To Directly <span className="font-bold">Fulfill Wishes</span>. By 
-                Connecting <span className="font-bold">People</span> In Crisis With Those Who Want To Help, We Enable 
-                Communities To Provide Targeted, Meaningful Support.
+                We created a platform that makes it easy for individuals in need to create 
+                wishlists of essential items, and for others to directly fulfill wishes. By 
+                connecting people in crisis with those who want to help, we enable 
+                communities to provide targeted, meaningful support.
               </p>
               <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
-                Our <span className="font-bold">Dream</span> Is A World Where No One Faces Crisis Alone, Where Communities 
-                Respond Effectively To Individuals <span className="font-bold">Needs</span>, And Where The Path To Recovery Is 
-                Made Smoother Through Direct, Tangible Support.
+                Our dream is a world where no one faces crisis alone, where communities 
+                respond effectively to individuals needs, and where the path to recovery is 
+                made smoother through direct, tangible support.
               </p>
               
               <div className="pt-4">
