@@ -197,26 +197,49 @@ export class SerpAPIService {
             extractedPrice = result.price || result.extracted_price || 'Price varies';
             imageUrl = result.thumbnail || result.image || '';
           } else {
-            // Organic results need price extraction from snippets
-            if (result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.detected_extensions) {
-              const priceExt = result.rich_snippet.top.detected_extensions.find((ext: string) => 
-                ext.match(/\$[\d,]+\.?\d*/));
-              if (priceExt) {
-                const priceMatch = priceExt.match(/\$[\d,]+\.?\d*/);
-                if (priceMatch) extractedPrice = priceMatch[0];
+            // Enhanced price extraction for organic results
+            const snippet = result.snippet || '';
+            const richSnippet = result.rich_snippet || {};
+            
+            // Multiple price extraction strategies
+            let priceFound = false;
+            
+            // Strategy 1: Rich snippet extensions
+            if (richSnippet.top && richSnippet.top.detected_extensions) {
+              for (const ext of richSnippet.top.detected_extensions) {
+                const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
+                if (priceMatch) {
+                  extractedPrice = priceMatch[0];
+                  priceFound = true;
+                  break;
+                }
               }
             }
             
-            // Fallback: look for price in snippet
-            if (extractedPrice === 'Price varies' && result.snippet) {
-              const priceMatch = result.snippet.match(/\$[\d,]+\.?\d*/);
-              if (priceMatch) extractedPrice = priceMatch[0];
+            // Strategy 2: Rich snippet bottom extensions
+            if (!priceFound && richSnippet.bottom && richSnippet.bottom.detected_extensions) {
+              for (const ext of richSnippet.bottom.detected_extensions) {
+                const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
+                if (priceMatch) {
+                  extractedPrice = priceMatch[0];
+                  priceFound = true;
+                  break;
+                }
+              }
             }
             
-            // Target-specific image handling for organic results
+            // Strategy 3: Main snippet text
+            if (!priceFound && snippet) {
+              const priceMatch = snippet.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
+              if (priceMatch) {
+                extractedPrice = priceMatch[0];
+                priceFound = true;
+              }
+            }
+            
+            // Enhanced Target image handling for organic results
             if (resultLink.includes('target.com')) {
-              // Check for any available image data in the result
-              imageUrl = result.thumbnail || result.image || result.favicon || '';
+              imageUrl = result.thumbnail || result.image || '';
               
               // For organic results, SerpAPI sometimes provides images in different fields
               if (!imageUrl && result.serpapi_thumbnail) {
@@ -246,6 +269,7 @@ export class SerpAPIService {
             product_url: resultLink,
             product_id: this.extractTargetProductId(resultLink),
             retailer: 'target' as const,
+            retailer_name: 'Target',
             brand: result.brand || undefined,
             description: result.snippet || undefined,
           };
