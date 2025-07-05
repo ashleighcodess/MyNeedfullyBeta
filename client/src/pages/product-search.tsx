@@ -231,7 +231,7 @@ export default function ProductSearch() {
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [searchUrl],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // No caching - always fresh data
     placeholderData: () => {
       // Return cached popular products instantly while fetching fresh data  
       const cached = getCachedProducts(debouncedQuery);
@@ -241,24 +241,12 @@ export default function ProductSearch() {
       return undefined;
     },
     queryFn: async () => {
-      // Check cache first
-      const cached = getCachedResult(cacheKey);
-      if (cached) {
-        return cached;
-      }
-      
-      // Use the fast Amazon-only search for better performance
-      const fastSearchUrl = `/api/search?query=${encodeURIComponent(debouncedQuery)}&page=${page}`;
-      const response = await fetch(fastSearchUrl);
+      // Simple, direct API call without caching overhead
+      const response = await fetch(searchUrl);
       if (!response.ok) {
         throw new Error('Search failed');
       }
       const data = await response.json();
-      
-      // Cache the result
-      setCacheResult(cacheKey, data);
-      setTotalResults(data.total || 0);
-      setHasMoreResults(data.hasMore || false);
       return data;
     },
   });

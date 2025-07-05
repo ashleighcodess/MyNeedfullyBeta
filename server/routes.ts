@@ -263,39 +263,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Fast Amazon-only search endpoint
+  // Fast Amazon-only search endpoint - ULTRA FAST VERSION
   app.get('/api/search', async (req, res) => {
-    console.log('🔍 Search endpoint called with query:', req.query);
     try {
       const { query, page = '1' } = req.query;
       
       if (!query) {
-        console.log('❌ No query provided');
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      console.log(`🚀 Fast Amazon search for: "${query}"`);
+      console.log(`🚀 ULTRA FAST Amazon search for: "${query}"`);
       const startTime = Date.now();
 
+      // Direct RainforestAPI call without any class wrappers
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        const params = new URLSearchParams({
+          api_key: RAINFOREST_API_KEY,
+          type: "search",
+          amazon_domain: "amazon.com",
+          search_term: query as string
+        });
+
+        const url = `https://api.rainforestapi.com/request?${params.toString()}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        const endTime = Date.now();
+        
+        console.log(`✅ ULTRA FAST: ${data.search_results?.length || 0} products in ${endTime - startTime}ms`);
+        
+        return res.json({
+          data: data.search_results?.map((product: any) => ({
+            ...product,
+            retailer: 'amazon',
+            retailer_name: 'Amazon',
+            link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+          })) || []
+        });
+      }
+
+      res.status(500).json({ message: "Search service unavailable" });
+    } catch (error) {
+      console.error("Search error:", error);
+      res.status(500).json({ message: "Search failed" });
+    }
+  });
+
+  // Legacy endpoint - keep for backward compatibility but redirect to fast version
+  app.get('/api/search/old', async (req, res) => {
+    try {
+      const { query, page = '1' } = req.query;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
       const rainforestService = getRainforestAPIService();
-      console.log('🔧 RainforestAPI service available:', !!rainforestService);
       
       if (!rainforestService) {
-        console.log('❌ RainforestAPI service not available');
         return res.status(503).json({ 
           message: "Search service temporarily unavailable",
           data: [] 
         });
       }
 
-      console.log('📡 Making API call...');
       const results = await rainforestService.searchProducts(query as string, {
         type: "search",
         page: parseInt(page as string),
       });
-
-      const searchTime = Date.now() - startTime;
-      console.log(`✅ Fast Amazon search: ${results.length} products in ${searchTime}ms`);
       
       const response = {
         data: results.map((product: any) => ({
@@ -1481,8 +1516,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`✅ FAST: ${data.search_results?.length || 0} products in ${endTime - startTime}ms`);
         
         return res.json({
-          request_info: { success: true },
-          search_results: data.search_results?.map((product: any) => ({
+          data: data.search_results?.map((product: any) => ({
             ...product,
             retailer: 'amazon',
             retailer_name: 'Amazon',
