@@ -2052,11 +2052,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const amazonData = await amazonResponse.json();
             if (amazonData.search_results && amazonData.search_results.length > 0) {
               const bestMatch = amazonData.search_results[0];
-              results.amazon = {
-                price: bestMatch.price?.value || bestMatch.price?.raw || item.price,
-                available: true,
-                link: `https://amazon.com/dp/${bestMatch.asin}?tag=needfully-20`
-              };
+              const amazonPrice = bestMatch.price?.value || bestMatch.price?.raw;
+              // Only mark as available if we have a valid price and ASIN
+              if (amazonPrice && bestMatch.asin) {
+                results.amazon = {
+                  price: amazonPrice,
+                  available: true,
+                  link: `https://amazon.com/dp/${bestMatch.asin}?tag=needfully-20`
+                };
+              }
             }
           }
         } catch (error) {
@@ -2076,26 +2080,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const bestWalmartMatch = walmartResults[0];
             let walmartPrice = bestWalmartMatch.price;
             if (typeof walmartPrice === 'string') {
-              walmartPrice = parseFloat(walmartPrice.replace(/[^0-9.]/g, '')) || parseFloat(item.price || '0');
+              walmartPrice = parseFloat(walmartPrice.replace(/[^0-9.]/g, ''));
             }
-            results.walmart = {
-              price: (walmartPrice || 0).toString(),
-              available: true,
-              link: bestWalmartMatch.product_url
-            };
+            // Only mark as available if we have a valid price greater than 0
+            if (walmartPrice && walmartPrice > 0) {
+              results.walmart = {
+                price: walmartPrice.toString(),
+                available: true,
+                link: bestWalmartMatch.product_url
+              };
+            }
           }
 
           if (targetResults.length > 0) {
             const bestTargetMatch = targetResults[0];
             let targetPrice = bestTargetMatch.price;
             if (typeof targetPrice === 'string') {
-              targetPrice = parseFloat(targetPrice.replace(/[^0-9.]/g, '')) || parseFloat(item.price || '0');
+              targetPrice = parseFloat(targetPrice.replace(/[^0-9.]/g, ''));
             }
-            results.target = {
-              price: (targetPrice || 0).toString(),
-              available: true,
-              link: bestTargetMatch.product_url
-            };
+            // Only mark as available if we have a valid price greater than 0
+            if (targetPrice && targetPrice > 0) {
+              results.target = {
+                price: targetPrice.toString(),
+                available: true,
+                link: bestTargetMatch.product_url
+              };
+            }
           }
         } catch (error) {
           console.error('SerpAPI pricing lookup error:', error);
