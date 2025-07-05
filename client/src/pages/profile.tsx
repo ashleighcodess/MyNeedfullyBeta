@@ -816,40 +816,40 @@ export default function Profile() {
 
             {/* Purchase History Section */}
             {activeTab === 'purchases' && (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <h2 className="text-2xl font-bold text-navy">My Purchase History</h2>
-                    <p className="text-gray-600">Items you've purchased to support others in need</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-navy">My Purchase History</h2>
+                    <p className="text-gray-600 text-sm sm:text-base">Items you've purchased to support others in need</p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold text-coral">{userDonations?.length || 0}</div>
-                    <div className="text-sm text-gray-600">Total Items Purchased</div>
+                  <div className="text-center sm:text-right">
+                    <div className="text-2xl sm:text-3xl font-bold text-coral">{userDonations?.length || 0}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Total Items Purchased</div>
                   </div>
                 </div>
 
                 {/* Purchase Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-r from-coral to-orange-500 rounded-xl p-6 text-white">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="bg-gradient-to-r from-coral to-orange-500 rounded-xl p-4 sm:p-6 text-white">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-orange-100">Items Purchased</p>
-                        <p className="text-2xl font-bold">{userDonations?.length || 0}</p>
+                        <p className="text-orange-100 text-sm">Items Purchased</p>
+                        <p className="text-xl sm:text-2xl font-bold">{userDonations?.length || 0}</p>
                       </div>
-                      <ShoppingCart className="h-8 w-8" />
+                      <ShoppingCart className="h-6 w-6 sm:h-8 sm:w-8" />
                     </div>
                   </div>
                   
-                  <div className="bg-gradient-to-r from-navy to-indigo-600 rounded-xl p-6 text-white">
+                  <div className="bg-gradient-to-r from-navy to-indigo-600 rounded-xl p-4 sm:p-6 text-white">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-indigo-100">People Helped</p>
-                        <p className="text-2xl font-bold">
+                        <p className="text-indigo-100 text-sm">People Helped</p>
+                        <p className="text-xl sm:text-2xl font-bold">
                           {userDonations ? [...new Set(userDonations.map((d: any) => d.wishlistUserId))].length : 0}
                         </p>
                       </div>
-                      <Heart className="h-8 w-8" />
+                      <Heart className="h-6 w-6 sm:h-8 sm:w-8" />
                     </div>
                   </div>
                 </div>
@@ -876,16 +876,16 @@ export default function Profile() {
                       
                       return (
                         <Card key={purchase.id} className="hover:shadow-lg transition-all duration-200">
-                          <CardContent className="p-6">
-                            <div className="flex items-start justify-between">
+                          <CardContent className="p-4 sm:p-6">
+                            <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <div className="flex-1">
-                                <div className="flex items-center space-x-3 mb-4">
-                                  <div className="p-2 bg-coral rounded-lg">
-                                    <ShoppingCart className="h-5 w-5 text-white" />
+                                <div className="flex items-start space-x-3 mb-3 sm:mb-4">
+                                  <div className="p-2 bg-coral rounded-lg flex-shrink-0">
+                                    <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                                   </div>
-                                  <div className="flex-1">
-                                    <h3 className="font-semibold text-navy">{purchase.itemTitle}</h3>
-                                    <p className="text-sm text-gray-600">
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold text-navy text-sm sm:text-base leading-tight">{purchase.itemTitle}</h3>
+                                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
                                       Purchased for: <Link 
                                         href={`/wishlist/${purchase.wishlistId}`}
                                         className="font-medium text-coral hover:text-coral/80 underline cursor-pointer transition-colors"
@@ -894,15 +894,20 @@ export default function Profile() {
                                       </Link>
                                     </p>
                                   </div>
-                                  <div className={`px-3 py-1 rounded-full text-white text-xs font-medium ${retailerInfo.color}`}>
-                                    {retailerInfo.name}
+                                  <div className="flex flex-col sm:flex-row gap-2 items-end sm:items-center">
+                                    <div className={`px-2 sm:px-3 py-1 rounded-full text-white text-xs font-medium ${retailerInfo.color}`}>
+                                      {retailerInfo.name}
+                                    </div>
+                                    <Badge variant="secondary" className="bg-coral text-white text-xs">
+                                      Confirmed
+                                    </Badge>
                                   </div>
                                 </div>
                                 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 text-xs sm:text-sm">
                                   <div className="flex items-center space-x-2 text-gray-600">
-                                    <Calendar className="h-4 w-4" />
-                                    <div>
+                                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                    <div className="min-w-0">
                                       <div className="font-medium">
                                         {new Date(purchase.fulfilledAt || purchase.createdAt).toLocaleDateString('en-US', { 
                                           year: 'numeric', 
@@ -921,24 +926,21 @@ export default function Profile() {
                                   </div>
                                   
                                   <div className="flex items-center space-x-2 text-gray-600">
-                                    <MapPin className="h-4 w-4" />
-                                    <span>{purchase.wishlistLocation || 'Location not specified'}</span>
+                                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                    <span className="truncate">{purchase.wishlistLocation || 'Location not specified'}</span>
                                   </div>
                                   
                                   <div className="flex items-center space-x-2 text-gray-600">
-                                    <User className="h-4 w-4" />
-                                    <span>For: {purchase.recipientFirstName && purchase.recipientLastName 
+                                    <User className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                    <span className="truncate">For: {purchase.recipientFirstName && purchase.recipientLastName 
                                       ? `${purchase.recipientFirstName} ${purchase.recipientLastName}` 
                                       : purchase.recipientFirstName || 'Anonymous'}</span>
                                   </div>
                                 </div>
                               </div>
                               
-                              <div className="text-right ml-4">
-                                <Badge variant="secondary" className="bg-coral text-white mb-2">
-                                  Confirmed
-                                </Badge>
-                                <div className="text-sm text-gray-600">
+                              <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 sm:gap-1 pt-2 sm:pt-0 border-t sm:border-t-0 sm:ml-4">
+                                <div className="text-xs sm:text-sm text-gray-600 font-medium">
                                   Qty: {purchase.quantity || 1}
                                 </div>
                               </div>
@@ -948,22 +950,22 @@ export default function Profile() {
                       );
                     })
                   ) : (
-                    <div className="text-center py-16">
-                      <div className="mb-6">
-                        <ShoppingCart className="mx-auto h-16 w-16 text-gray-300" />
+                    <div className="text-center py-8 sm:py-16">
+                      <div className="mb-4 sm:mb-6">
+                        <ShoppingCart className="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-gray-300" />
                       </div>
-                      <h3 className="text-xl font-semibold text-navy mb-2">No Purchases Yet</h3>
-                      <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                      <h3 className="text-lg sm:text-xl font-semibold text-navy mb-2">No Purchases Yet</h3>
+                      <p className="text-gray-600 mb-4 sm:mb-6 max-w-md mx-auto text-sm sm:text-base px-4">
                         You haven't purchased any items for others yet. Browse needs lists to start supporting your community.
                       </p>
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                         <Link href="/browse">
-                          <Button className="bg-coral hover:bg-coral/90 text-white">
+                          <Button className="bg-coral hover:bg-coral/90 text-white w-full sm:w-auto">
                             Browse Needs Lists
                           </Button>
                         </Link>
                         <Link href="/products">
-                          <Button variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white">
+                          <Button variant="outline" className="border-navy text-navy hover:bg-navy hover:text-white w-full sm:w-auto">
                             Shop Emergency Supplies
                           </Button>
                         </Link>
