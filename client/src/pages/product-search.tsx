@@ -701,7 +701,7 @@ export default function ProductSearch() {
             )}
 
             {/* Search Results Grid */}
-            {displayProducts && displayProducts.length > 0 && debouncedQuery && debouncedQuery.length >= 3 && (
+            {displayProducts && displayProducts.length > 0 && debouncedQuery && debouncedQuery.length >= 3 && !isLoading && (
               <>
                 <div className="space-y-4">
                   {/* Search Info */}
