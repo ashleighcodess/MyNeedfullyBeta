@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import Navigation from "@/components/navigation";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -64,9 +63,31 @@ export default function ProductSearch() {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   
-  // Get wishlistId from URL parameters
+  // Get parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
   const wishlistId = urlParams.get('wishlistId');
+  const initialQuery = urlParams.get('q') || "";
+  const initialCategory = urlParams.get('category') || "";
+  const initialMinPrice = urlParams.get('min_price') || "";
+  const initialMaxPrice = urlParams.get('max_price') || "";
+
+  // Initialize search from URL parameters
+  useEffect(() => {
+    if (initialQuery) {
+      setSearchQuery(initialQuery);
+      setDebouncedQuery(initialQuery);
+      setActiveSearch(initialQuery); // Set activeSearch to trigger search immediately
+    }
+    if (initialCategory && initialCategory !== "all") {
+      setCategory(initialCategory);
+    }
+    if (initialMinPrice) {
+      setMinPrice(initialMinPrice);
+    }
+    if (initialMaxPrice) {
+      setMaxPrice(initialMaxPrice);
+    }
+  }, [initialQuery, initialCategory, initialMinPrice, initialMaxPrice]);
 
   // Handle adding to needs list with authentication check
   const handleAddToNeedsList = (product: any) => {
@@ -391,8 +412,6 @@ export default function ProductSearch() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      <Navigation />
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
