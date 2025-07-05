@@ -28,8 +28,13 @@ const signupSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
 type LoginForm = z.infer<typeof loginSchema>;
 type SignupForm = z.infer<typeof signupSchema>;
+type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
 export default function AuthPage() {
   const [, setLocation] = useLocation();
@@ -54,6 +59,14 @@ export default function AuthPage() {
       lastName: "",
       email: "",
       password: "",
+    },
+  });
+
+  // Forgot password form
+  const forgotPasswordForm = useForm<ForgotPasswordForm>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
     },
   });
 
@@ -127,12 +140,50 @@ export default function AuthPage() {
     },
   });
 
+  // Forgot password mutation
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (data: ForgotPasswordForm) => {
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Password reset failed");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Password reset email sent",
+        description: "Check your email for instructions to reset your password.",
+      });
+      setActiveTab("login");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Password reset failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const onLoginSubmit = (data: LoginForm) => {
     loginMutation.mutate(data);
   };
 
   const onSignupSubmit = (data: SignupForm) => {
     signupMutation.mutate(data);
+  };
+
+  const onForgotPasswordSubmit = (data: ForgotPasswordForm) => {
+    forgotPasswordMutation.mutate(data);
   };
 
   return (
@@ -160,9 +211,12 @@ export default function AuthPage() {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className={`grid w-full ${activeTab === "forgot-password" ? "grid-cols-3" : "grid-cols-2"}`}>
                 <TabsTrigger value="login">Sign In</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                {activeTab === "forgot-password" && (
+                  <TabsTrigger value="forgot-password">Reset Password</TabsTrigger>
+                )}
               </TabsList>
 
               {/* Login Tab */}
@@ -221,6 +275,16 @@ export default function AuthPage() {
                       {loginMutation.isPending ? "Signing in..." : "Sign In"}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
+
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("forgot-password")}
+                        className="text-sm text-coral-600 hover:text-coral-700 underline"
+                      >
+                        Forgot your password?
+                      </button>
+                    </div>
                   </form>
                 </Form>
 
@@ -446,6 +510,58 @@ export default function AuthPage() {
                     </svg>
                     Continue with Replit
                   </Button>
+                </div>
+              </TabsContent>
+
+              {/* Forgot Password Tab */}
+              <TabsContent value="forgot-password" className="space-y-4">
+                <Form {...forgotPasswordForm}>
+                  <form onSubmit={forgotPasswordForm.handleSubmit(onForgotPasswordSubmit)} className="space-y-4">
+                    <FormField
+                      control={forgotPasswordForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email Address</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                              <Input
+                                {...field}
+                                type="email"
+                                placeholder="Enter your email address"
+                                className="pl-10"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-coral-500 hover:bg-coral-600"
+                      disabled={forgotPasswordMutation.isPending}
+                    >
+                      {forgotPasswordMutation.isPending ? "Sending..." : "Send Reset Email"}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("login")}
+                        className="text-sm text-coral-600 hover:text-coral-700 underline"
+                      >
+                        Back to Sign In
+                      </button>
+                    </div>
+                  </form>
+                </Form>
+
+                <div className="text-center text-sm text-gray-600">
+                  <p>We'll send you an email with instructions to reset your password.</p>
                 </div>
               </TabsContent>
             </Tabs>
