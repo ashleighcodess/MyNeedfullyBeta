@@ -1402,17 +1402,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         searchPromises.push(amazonSearch());
       }
 
-      // SerpAPI search promise
-      const serpService = getSerpAPIService();
-      if (serpService) {
+      // SerpAPI search promise - TEMPORARILY DISABLED for maximum speed
+      const serpService = null; // getSerpAPIService();
+      if (false && serpService) {
         const serpSearch = async () => {
           try {
             console.log('🐍 SerpAPI search started (parallel)');
             const optimizedQuery = generateSearchQuery(query as string);
             
-            // Add 3-second timeout to prevent long delays
+            // Add 2-second timeout to prevent long delays
             const timeoutPromise = new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('SerpAPI timeout')), 3000)
+              setTimeout(() => reject(new Error('SerpAPI timeout')), 2000)
             );
             
             const serpResults = await Promise.race([
@@ -1443,7 +1443,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return { source: 'serpapi', success: true, products: transformedResults };
           } catch (error: any) {
             if (error.message === 'SerpAPI timeout') {
-              console.log('🕐 SerpAPI search timed out after 3 seconds - continuing with Amazon results only');
+              console.log('🕐 SerpAPI search timed out after 2 seconds - continuing with Amazon results only');
             } else {
               console.log(`❌ SerpAPI failed: ${error}`);
             }
