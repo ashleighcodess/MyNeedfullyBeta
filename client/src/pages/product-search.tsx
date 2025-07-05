@@ -283,10 +283,6 @@ export default function ProductSearch() {
     if (searchQuery.trim() && searchQuery.trim().length > 2) {
       setPage(1);
       setActiveSearch(searchQuery.trim()); // Set activeSearch to trigger results display
-      toast({
-        title: "Searching products...",
-        description: "This may take 5-10 seconds due to real-time product data retrieval.",
-      });
     }
   };
 
