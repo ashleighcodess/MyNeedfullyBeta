@@ -244,7 +244,7 @@ export default function ProductSearch() {
     if (maxPrice) params.append('max_price', maxPrice);
     if (page && page !== 1) params.append('page', page.toString());
     
-    return `/api/products/search?${params.toString()}`;
+    return `/api/search/enhanced?${params.toString()}`;
   }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists when no wishlistId is provided
