@@ -6,6 +6,7 @@ import { Link, useLocation } from "wouter";
 import handIcon from "@assets/hand.png";
 import handsIcon from "@assets/hands.png";
 import shieldIcon from "@assets/shield.png";
+import logoIcon from "@assets/Logo_5_1751660244282.png";
 
 export default function Signup() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -50,11 +51,18 @@ export default function Signup() {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
+          {/* Header with Logo */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Welcome To MyNeedfully
-            </h1>
+            <div className="flex justify-center items-center mb-6">
+              <img 
+                src={logoIcon} 
+                alt="MyNeedfully Logo" 
+                className="w-16 h-16 mr-4"
+              />
+              <h1 className="text-4xl font-bold text-gray-900">
+                MyNeedfully
+              </h1>
+            </div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Choose Your Path Below
             </p>
@@ -119,9 +127,9 @@ export default function Signup() {
           <div className="text-center mt-8">
             <p className="text-gray-500">
               Already have an account?{" "}
-              <a href="/api/login" className="text-coral hover:underline font-medium">
+              <Link href="/login" className="text-coral hover:underline font-medium">
                 Login
-              </a>
+              </Link>
             </p>
           </div>
         </div>
