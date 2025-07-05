@@ -219,7 +219,12 @@ export default function WishlistDetail() {
       console.error("Error fulfilling item:", error);
       
       if (isUnauthorizedError(error)) {
-        navigate("/login");
+        toast({
+          title: "Authentication Required",
+          description: "Please sign up or log in to purchase items for others.",
+          variant: "destructive",
+        });
+        setTimeout(() => navigate("/signup"), 2000);
         return;
       }
       
@@ -644,7 +649,22 @@ export default function WishlistDetail() {
                             {item.isFulfilled ? 'Item Fulfilled' : 'Buying Options'}
                           </h4>
                           
-                          <div className="space-y-2">
+                          {/* Show authentication message for non-authenticated users */}
+                          {!user && !item.isFulfilled && (
+                            <div className="text-center py-4">
+                              <p className="text-sm text-gray-600 mb-3">Sign up to purchase items for others</p>
+                              <Button 
+                                onClick={() => navigate("/signup")}
+                                className="w-full bg-coral hover:bg-coral/90 text-white text-sm py-2"
+                              >
+                                Sign Up to Help
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {/* Show retailer buttons only for authenticated users */}
+                          {user && !item.isFulfilled && (
+                            <div className="space-y-2">
                             {/* Amazon */}
                             <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
                               <div className="flex items-center space-x-2">
@@ -767,7 +787,8 @@ export default function WishlistDetail() {
                                  !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
-                          </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
