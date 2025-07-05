@@ -40,13 +40,58 @@ const RAINFOREST_API_URL = "https://api.rainforestapi.com/request";
 // RainforestAPI service class
 class RainforestAPIService {
   private apiKey: string;
+  private cache = new Map<string, { data: any; timestamp: number }>();
+  private lastRequestTime = 0;
+  private readonly MIN_REQUEST_INTERVAL = 1000; // 1 second between requests
+  private readonly CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
   
   constructor(apiKey: string) {
     this.apiKey = apiKey;
   }
+
+  private async rateLimitDelay(): Promise<void> {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    if (timeSinceLastRequest < this.MIN_REQUEST_INTERVAL) {
+      const delay = this.MIN_REQUEST_INTERVAL - timeSinceLastRequest;
+      console.log(`Rate limiting: waiting ${delay}ms before RainforestAPI request`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    this.lastRequestTime = Date.now();
+  }
+
+  private getCacheKey(query: string, options: any = {}): string {
+    return `${query.toLowerCase()}:${JSON.stringify(options)}`;
+  }
+
+  private getFromCache(key: string): any | null {
+    const cached = this.cache.get(key);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      console.log(`💰 RainforestAPI Cache HIT for ${key} - SAVED $$$`);
+      return cached.data;
+    }
+    if (cached) {
+      this.cache.delete(key); // Remove expired cache
+    }
+    return null;
+  }
+
+  private setCache(key: string, data: any): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+    console.log(`💰 RainforestAPI Cache SET for ${key} - ${data.length} items`);
+  }
   
   async searchProducts(query: string, options: any = {}): Promise<any[]> {
     try {
+      const cacheKey = this.getCacheKey(query, options);
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return cached;
+      }
+
+      console.log(`💰 RainforestAPI: Searching for "${query}" (LIVE REQUEST - COSTS $$$)`);
+      await this.rateLimitDelay();
+
       const params = new URLSearchParams({
         api_key: this.apiKey,
         type: options.type || "search",
@@ -65,7 +110,9 @@ class RainforestAPIService {
       }
       
       const data = await response.json();
-      return data.search_results || [];
+      const results = data.search_results || [];
+      this.setCache(cacheKey, results);
+      return results;
     } catch (error) {
       console.error('RainforestAPI error:', error);
       return [];

@@ -15,14 +15,57 @@ export interface SerpProduct {
 
 export class SerpAPIService {
   private apiKey: string;
+  private cache = new Map<string, { data: any; timestamp: number }>();
+  private lastRequestTime = 0;
+  private readonly MIN_REQUEST_INTERVAL = 2000; // 2 seconds between requests
+  private readonly CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
   }
 
+  private async rateLimitDelay(): Promise<void> {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    if (timeSinceLastRequest < this.MIN_REQUEST_INTERVAL) {
+      const delay = this.MIN_REQUEST_INTERVAL - timeSinceLastRequest;
+      console.log(`Rate limiting: waiting ${delay}ms before SerpAPI request`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    this.lastRequestTime = Date.now();
+  }
+
+  private getCacheKey(retailer: string, query: string, location: string): string {
+    return `${retailer}:${query.toLowerCase()}:${location}`;
+  }
+
+  private getFromCache(key: string): any | null {
+    const cached = this.cache.get(key);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      console.log(`Cache HIT for ${key}`);
+      return cached.data;
+    }
+    if (cached) {
+      this.cache.delete(key); // Remove expired cache
+    }
+    return null;
+  }
+
+  private setCache(key: string, data: any): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+    console.log(`Cache SET for ${key} - ${data.length} items`);
+  }
+
   async searchWalmart(query: string, location: string = '60602', limit: number = 40): Promise<SerpProduct[]> {
     try {
-      console.log(`Searching Walmart for: "${query}"`);
+      const cacheKey = this.getCacheKey('walmart', query, location);
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return cached;
+      }
+
+      console.log(`🔍 SerpAPI: Searching Walmart for: "${query}" (LIVE REQUEST)`);
+      await this.rateLimitDelay();
       
       const params = {
         api_key: this.apiKey,
@@ -84,6 +127,7 @@ export class SerpAPIService {
       });
       
       console.log(`Walmart search found ${walmartResults.length} products`);
+      this.setCache(cacheKey, walmartResults);
       return walmartResults;
     } catch (error) {
       console.error('Error searching Walmart:', error);
@@ -93,7 +137,14 @@ export class SerpAPIService {
 
   async searchTarget(query: string, location: string = '10001', limit: number = 40): Promise<SerpProduct[]> {
     try {
-      console.log(`Searching Target with SerpAPI for: "${query}"`);
+      const cacheKey = this.getCacheKey('target', query, location);
+      const cached = this.getFromCache(cacheKey);
+      if (cached) {
+        return cached;
+      }
+
+      console.log(`🔍 SerpAPI: Searching Target for: "${query}" (LIVE REQUEST)`);
+      await this.rateLimitDelay();
       
       // Try approach that was working earlier - using google engine with target.com site filter
       const params = {
@@ -210,6 +261,7 @@ export class SerpAPIService {
         });
 
       console.log(`Target search found ${targetResults.length} products`);
+      this.setCache(cacheKey, targetResults);
       return targetResults;
     } catch (error) {
       console.error('Error searching Target:', error);
