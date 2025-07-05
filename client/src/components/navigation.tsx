@@ -143,10 +143,12 @@ export default function Navigation() {
                     My Needs Lists
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem className="cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
+                <Link href="/settings">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </Link>
                 {user?.userType === 'admin' && (
                   <Link href="/admin">
                     <DropdownMenuItem className="cursor-pointer">
