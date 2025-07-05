@@ -592,10 +592,6 @@ export default function ProductSearch() {
                   setCategory(category.value);
                   setPage(1);
                   setShowCategories(false); // Hide categories on mobile after selection
-                  toast({
-                    title: "Searching products...",
-                    description: `Looking for ${category.label} products`,
-                  });
                 }}
               >
                 <i className={`${category.icon} text-coral text-lg md:text-2xl mb-1 md:mb-2`}></i>
