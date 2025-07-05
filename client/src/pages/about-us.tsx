@@ -89,28 +89,28 @@ export default function AboutUs() {
         </div>
 
         {/* Main Story Section */}
-        <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-8">
+        <div className="mb-12 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-8 animate-slide-up">
             Our <span className="text-navy">Dream</span> Is To Transform<br />
             The Way To <span className="text-navy">Fulfill Wishes</span><br />
             Of <span className="text-navy">People In Need</span>.
           </h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
-            <div className="space-y-6">
-              <p className="text-gray-700 leading-relaxed">
+            <div className="space-y-6 animate-slide-in-left">
+              <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2">
                 MyNeedfully.com Was Born From A Simple Observation: When People Face 
                 Crises Like Natural Disasters, Domestic Violence, Or Homelessness, They Often 
                 Need Specific Items To Rebuild Their Lives - But It's Hard For Friends, Family, And 
                 Community Members To Know Exactly What To Provide.
               </p>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2">
                 We Created A Platform That Makes It Easy For Individuals In Need To Create 
                 Wishlists Of Essential Items, And For Others To Directly Fulfill These Needs. By 
                 Connecting People In Crisis With Those Who Want To Help, We Enable 
                 Communities To Provide Targeted, Meaningful Support.
               </p>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2">
                 Our Vision Is A World Where No One Faces Crisis Alone, Where Communities 
                 Respond Effectively To Individuals Needs, And Where The Path To Recovery Is 
                 Made Smoother Through Direct, Tangible Support.
@@ -120,7 +120,7 @@ export default function AboutUs() {
                 <Link href="/browse">
                   <Button 
                     size="lg" 
-                    className="bg-white text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-8 py-3"
+                    className="bg-white text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-8 py-3 transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
                   >
                     Support A Needs List
                   </Button>
@@ -128,41 +128,44 @@ export default function AboutUs() {
               </div>
             </div>
             
-            <div className="flex justify-center">
-              <img 
-                src={aboutUsImage} 
-                alt="Family with needs list showing community support" 
-                className="w-full max-w-md h-auto"
-              />
+            <div className="flex justify-center animate-slide-in-right">
+              <div className="relative group">
+                <img 
+                  src={aboutUsImage} 
+                  alt="Family with needs list showing community support" 
+                  className="w-full max-w-md h-auto rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-coral/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
             </div>
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="text-center bg-coral/10 border-coral/20">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
+            <Card className="text-center bg-coral/10 border-coral/20 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/15">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-navy mb-1">900+</div>
+                <div className="text-2xl font-bold text-navy mb-1 animate-pulse">900+</div>
                 <div className="text-sm text-gray-600 uppercase tracking-wide">Needs List Fulfilled</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-coral border-coral">
+            <Card className="text-center bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-white mb-1">$000,000</div>
+                <div className="text-2xl font-bold text-white mb-1 animate-pulse">$000,000</div>
                 <div className="text-sm text-white/90 uppercase tracking-wide">Donation Raised</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-amber-100 border-amber-200">
+            <Card className="text-center bg-amber-100 border-amber-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-amber-200">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-navy mb-1">100K</div>
+                <div className="text-2xl font-bold text-navy mb-1 animate-pulse">100K</div>
                 <div className="text-sm text-gray-600 uppercase tracking-wide">Smiles Spread</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-coral border-coral">
+            <Card className="text-center bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-white mb-1">000K</div>
+                <div className="text-2xl font-bold text-white mb-1 animate-pulse">000K</div>
                 <div className="text-sm text-white/90 uppercase tracking-wide">Products Delivered</div>
               </CardContent>
             </Card>
