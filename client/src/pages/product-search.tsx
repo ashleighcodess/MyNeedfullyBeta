@@ -593,7 +593,7 @@ export default function ProductSearch() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {displayProducts.map((product: any, index: number) => (
-                    <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <Card key={product.asin || product.product_id || index} className="overflow-hidden hover:shadow-lg transition-shadow">
                       {product.image && (
                         <div className="relative">
                           <img 
@@ -644,23 +644,23 @@ export default function ProductSearch() {
                           <Button 
                             className="w-full bg-coral hover:bg-coral/90"
                             onClick={() => handleAddToNeedsList(product)}
-                            disabled={addingProductId === product.asin}
+                            disabled={addingProductId === (product.asin || product.product_id)}
                           >
                             <Heart className="mr-2 h-4 w-4" />
-                            {addingProductId === product.asin ? "Adding..." : "Add to Needs List"}
+                            {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add to Needs List"}
                           </Button>
                         </div>
 
                         {/* Product details link */}
                         <div className="mt-2 text-center">
                           <a 
-                            href={buildAmazonAffiliateLink(product.asin)}
+                            href={product.retailer === 'amazon' ? buildAmazonAffiliateLink(product.asin) : (product.link || product.product_url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs text-gray-500 hover:text-coral inline-flex items-center"
                           >
                             <ExternalLink className="mr-1 h-3 w-3" />
-                            View Details
+                            View on {product.retailer_name || 'Amazon'}
                           </a>
                         </div>
                       </CardContent>
