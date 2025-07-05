@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import Navigation from "@/components/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
   if (user?.userType !== 'admin') {
     return (
       <div className="min-h-screen bg-warm-bg">
+        <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card className="p-12 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
@@ -107,6 +109,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
+      <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

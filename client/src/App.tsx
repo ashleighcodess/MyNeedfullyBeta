@@ -23,7 +23,7 @@ import Signup from "@/pages/signup";
 import NotFound from "@/pages/not-found";
 import CommunityImpact from "@/pages/community-impact";
 import Footer from "@/components/footer";
-
+import QuickTips from "@/components/quick-tips";
 import Navigation from "@/components/navigation";
 
 function Router() {
@@ -82,6 +82,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <QuickTips />
       </TooltipProvider>
     </QueryClientProvider>
   );

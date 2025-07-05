@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Star, ShoppingCart, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Navigation from "@/components/navigation";
 
 export default function ProductSearchSimple() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,6 +58,7 @@ export default function ProductSearchSimple() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
+      <Navigation />
       
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center mb-8">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import Navigation from "@/components/navigation";
 import ProductCard from "@/components/product-card";
 import ThankYouNote from "@/components/thank-you-note";
 import PurchaseConfirmationModal from "@/components/purchase-confirmation-modal";
@@ -334,6 +335,7 @@ export default function WishlistDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-warm-bg">
+        <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
@@ -353,6 +355,7 @@ export default function WishlistDetail() {
   if (!wishlist) {
     return (
       <div className="min-h-screen bg-warm-bg">
+        <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card className="p-12 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -369,6 +372,7 @@ export default function WishlistDetail() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
+      <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

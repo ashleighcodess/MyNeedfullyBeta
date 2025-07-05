@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Navigation from "@/components/navigation";
 import { Link } from "wouter";
 import { 
   Gift, 
@@ -70,6 +71,7 @@ export default function AboutUs() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
+      <Navigation />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}

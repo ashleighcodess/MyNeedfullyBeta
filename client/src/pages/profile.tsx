@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import Navigation from "@/components/navigation";
 import WishlistCard from "@/components/wishlist-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -178,6 +179,7 @@ export default function Profile() {
   if (!user) {
     return (
       <div className="min-h-screen bg-warm-bg">
+        <Navigation />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card className="p-12 text-center">
             <h3 className="text-lg font-semibold mb-2">Please Log In</h3>
@@ -190,6 +192,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
+      <Navigation />
       
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
         {/* Page Header */}

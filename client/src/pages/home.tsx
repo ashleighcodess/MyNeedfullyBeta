@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import Navigation from "@/components/navigation";
 import { Link } from "wouter";
 import { 
   Plus, 
@@ -20,6 +20,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
+      <Navigation />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <div className="mb-8">

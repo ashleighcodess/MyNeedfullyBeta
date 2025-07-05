@@ -201,7 +201,7 @@ export default function MobileNavigation() {
               {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
                 <Link key={item.href} href={item.href}>
                   <div 
-
+                    {...(item.dataTip && { 'data-tip': item.dataTip })}
                     className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
                       isActiveLink(item.href)
                         ? 'text-coral bg-coral/10' 

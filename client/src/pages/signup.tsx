@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import Navigation from "@/components/navigation";
 import { Link } from "wouter";
 import handIcon from "@assets/hand.png";
 import handsIcon from "@assets/hands.png";
@@ -57,6 +58,7 @@ export default function Signup() {
   if (showAuthOptions) {
     return (
       <div className="min-h-screen bg-white">
+        <Navigation />
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-md mx-auto">
             {/* Header */}
@@ -139,6 +141,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Navigation />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           {/* Header */}

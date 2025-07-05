@@ -10,6 +10,7 @@ import { Search, Star, ShoppingCart, ExternalLink, Filter, SlidersHorizontal, Cl
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -328,6 +329,7 @@ export default function ProductSearchWorking() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
+      <Navigation />
       
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}

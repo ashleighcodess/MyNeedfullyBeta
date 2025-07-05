@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Navigation from "@/components/navigation";
 import { Link } from "wouter";
 import submarkLogo from "@assets/Logo_5_1751594497665.png";
 import { 
@@ -164,6 +165,7 @@ export default function Resources() {
 
   return (
     <div className="min-h-screen bg-warm-bg relative">
+      <Navigation />
       
       {/* Background Submark */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">

@@ -249,76 +249,55 @@ export default function Landing() {
         
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Mobile-Optimized Social Proof */}
-          <div className="flex flex-wrap justify-center gap-2 mb-4 sm:mb-6">
-            <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs sm:text-sm font-medium text-navy shadow-md animate-pulse">
-              ✨ {needsFulfilled} needs fulfilled
-            </div>
-            <div className="bg-coral/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs sm:text-sm font-medium text-white shadow-md animate-pulse">
-              💝 {needsCreated} lists created
-            </div>
-          </div>
-          
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-navy mb-4 sm:mb-6 leading-tight hero-text-shadow">
+          <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 leading-tight hero-text-shadow">
             A Registry For Recovery,
             <span className="text-coral"> Relief and Hardships</span>
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl text-gray-800 mb-6 sm:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium px-2">
+          <p className="text-lg md:text-xl text-gray-800 mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
             Create and Share a Needs List to Help Yourself or Loved Ones. Get the Support You Need During Tough Times.
           </p>
 
-          {/* Enhanced Search Bar - Mobile First */}
-          <div className="max-w-2xl mx-auto mb-6 sm:mb-8">
-            <Card className="p-3 sm:p-4 shadow-xl bg-white/95 backdrop-blur-sm">
-              <form onSubmit={handleNeedsListSearch} className="flex flex-col gap-3 sm:gap-2 sm:flex-row">
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <Card className="p-2 shadow-xl">
+              <form onSubmit={handleNeedsListSearch} className="flex flex-col md:flex-row gap-2">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input 
-                    placeholder="Search by location, need, or keywords..." 
-                    className="pl-10 sm:pl-12 py-3 sm:py-4 text-base sm:text-lg border-0 focus:ring-2 focus:ring-coral/50 rounded-lg"
+                    placeholder="Search needs lists by keywords, location, or needs..." 
+                    className="pl-12 py-4 text-lg border-0 focus:ring-2 focus:ring-coral/50"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg whitespace-nowrap rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-                  <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg whitespace-nowrap rounded-xl">
+                  <Search className="mr-2 h-5 w-5" />
                   Search Needs
                 </Button>
               </form>
             </Card>
           </div>
 
-          {/* Enhanced Quick Actions - Mobile Optimized */}
-          <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row justify-center items-center max-w-md sm:max-w-none mx-auto">
+          {/* Quick Actions */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               variant="outline" 
-              className="w-full sm:w-auto bg-white/95 backdrop-blur-sm text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-              onClick={() => setLocation('/browse')}
+              className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-8 py-4 text-lg shadow-lg"
             >
-              <Gift className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              <Gift className="mr-2 h-5 w-5" />
               Browse Needs Lists
             </Button>
             <Button 
-              className="w-full sm:w-auto bg-navy text-white hover:bg-navy/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              className="bg-navy text-white hover:bg-navy/90 rounded-full px-8 py-4 text-lg shadow-lg"
               onClick={handleLogin}
             >
-              <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Create Needs List
+              <Plus className="mr-2 h-5 w-5" />
+              Create Wishlist
             </Button>
-          </div>
-          
-          {/* Mobile-Specific Trust Indicator */}
-          <div className="mt-6 sm:mt-8 flex justify-center">
-            <div className="bg-white/80 backdrop-blur-sm rounded-xl px-4 py-2 text-sm text-gray-600 shadow-sm">
-              <Heart className="inline h-4 w-4 text-coral mr-1" />
-              Helping families in crisis since 2024
-            </div>
           </div>
         </div>
       </section>
-
-
 
       {/* User Journey Map */}
       <section className="bg-white py-20">
@@ -1040,43 +1019,6 @@ export default function Landing() {
           </div>
         </div>
       </footer>
-
-      {/* Mobile Floating Action Button - Create Needs List */}
-      <div className="fixed bottom-6 right-6 z-50 sm:hidden">
-        <Button
-          onClick={handleLogin}
-          className="w-14 h-14 bg-coral hover:bg-coral/90 text-white rounded-full shadow-2xl transform transition-all duration-300 hover:scale-110 active:scale-95 animate-pulse"
-          style={{
-            boxShadow: '0 8px 25px rgba(234, 88, 12, 0.3), 0 4px 12px rgba(234, 88, 12, 0.2)'
-          }}
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
-        
-        {/* FAB Label - appears on mobile for guidance */}
-        <div className="absolute bottom-16 right-0 bg-navy text-white text-xs px-3 py-2 rounded-lg shadow-lg transform transition-all duration-300 opacity-90 pointer-events-none animate-bounce-subtle">
-          Create list
-          <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-navy"></div>
-        </div>
-      </div>
-
-      {/* Mobile Quick Access Menu */}
-      <div className="fixed bottom-6 left-6 z-40 sm:hidden">
-        <div className="flex flex-col space-y-3">
-          <Button
-            onClick={() => setLocation('/browse')}
-            className="w-12 h-12 bg-white border-2 border-coral text-coral hover:bg-coral hover:text-white rounded-full shadow-lg transform transition-all duration-200 hover:scale-105"
-          >
-            <Search className="h-5 w-5" />
-          </Button>
-          <Button
-            onClick={() => setLocation('/products')}
-            className="w-12 h-12 bg-white border-2 border-navy text-navy hover:bg-navy hover:text-white rounded-full shadow-lg transform transition-all duration-200 hover:scale-105"
-          >
-            <Gift className="h-5 w-5" />
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
