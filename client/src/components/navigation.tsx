@@ -57,7 +57,7 @@ export default function Navigation() {
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8">
             {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
@@ -178,7 +178,7 @@ export default function Navigation() {
             )}
 
             {/* Mobile menu trigger - always visible */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm">
