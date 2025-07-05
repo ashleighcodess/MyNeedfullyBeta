@@ -168,9 +168,9 @@ export default function Landing() {
   const handleNeedsListSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      setLocation(`/product-search?q=${encodeURIComponent(searchQuery)}`);
+      setLocation(`/browse?q=${encodeURIComponent(searchQuery)}`);
     } else {
-      setLocation('/product-search');
+      setLocation('/browse');
     }
   };
 
