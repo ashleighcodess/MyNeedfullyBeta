@@ -419,16 +419,7 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Initialize search for "Basic Essentials" on page load to get real product images
-  useEffect(() => {
-    if (!debouncedQuery && !activeSearch) {
-      setSearchQuery("Basic Essentials");
-      setDebouncedQuery("Basic Essentials");
-      setActiveSearch("Basic Essentials");
-    }
-  }, [debouncedQuery, activeSearch]);
-
-  // Get display products - prioritize live API results with real images
+  // Get display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
@@ -442,13 +433,13 @@ export default function ProductSearch() {
       }
     }
     
-    // Priority 2: Show cached products only as fallback when no live results
-    if (!debouncedQuery && !activeSearch) {
-      return [];
+    // Priority 2: Show cached "Basic Essentials" when no search has been performed
+    if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
+      return popularProducts["Basic Essentials"] || [];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, activeSearch]);
+  }, [debouncedQuery, searchResults, popularProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
