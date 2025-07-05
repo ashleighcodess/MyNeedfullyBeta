@@ -181,22 +181,18 @@ export default function ProductSearch() {
     return `${query}-${cat}-${page}`;
   }, []);
 
-  // Check cache before making API call
+  // Simplified cache check - remove dependency
   const getCachedResult = useCallback((key: string) => {
-    const cached = searchCache.get(key);
-    if (cached && Date.now() - cached.timestamp < 300000) { // 5 minutes cache
-      return cached.data;
-    }
-    return null;
-  }, [searchCache]);
+    return null; // Disable caching temporarily to fix infinite loop
+  }, []);
 
-  // Cache search result
+  // Simplified cache setter - remove dependency to prevent infinite loop
   const setCacheResult = useCallback((key: string, data: any) => {
     setSearchCache(prev => {
       const newCache = new Map(prev);
       newCache.set(key, { data, timestamp: Date.now() });
-      // Limit cache size to 50 entries
-      if (newCache.size > 50) {
+      // Limit cache size to 10 entries for simplicity
+      if (newCache.size > 10) {
         const firstKey = newCache.keys().next().value;
         newCache.delete(firstKey);
       }
@@ -248,7 +244,6 @@ export default function ProductSearch() {
       // Return cached popular products instantly while fetching fresh data  
       const cached = getCachedProducts(debouncedQuery);
       if (cached) {
-        setShowFallbacks(false);
         return cached;
       }
       return undefined;
@@ -307,8 +302,8 @@ export default function ProductSearch() {
     }
     
     // Show search results or cached popular products
-    return searchResults?.products || [];
-  }, [debouncedQuery, searchResults, showFallbacks]);
+    return searchResults?.search_results || searchResults?.products || [];
+  }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
