@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import PurchaseConfirmationModal from "@/components/purchase-confirmation-modal";
 import { CATEGORIES } from "@/lib/constants";
 import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -55,6 +56,8 @@ export default function ProductSearch() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
@@ -532,6 +535,32 @@ export default function ProductSearch() {
     },
   });
 
+  // Purchase confirmation mutation
+  const confirmPurchaseMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedProduct) throw new Error("No product selected");
+      
+      // This is a simulated purchase confirmation since we don't have actual wishlist items to fulfill
+      // In real usage, this would call an API to mark an item as fulfilled
+      console.log("Purchase confirmed for product:", selectedProduct);
+      
+      return { success: true };
+    },
+    onSuccess: () => {
+      toast({
+        title: "Thank You!",
+        description: "Thank you for supporting someone in need. Your purchase helps make a real difference!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to confirm purchase",
+        variant: "destructive",
+      });
+    },
+  });
+
   return (
     <div className="min-h-screen bg-warm-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
@@ -897,17 +926,24 @@ export default function ProductSearch() {
                           </Button>
                         </div>
 
-                        {/* Product details link */}
+                        {/* Purchase button */}
                         <div className="mt-2 text-center">
-                          <a 
-                            href={product.retailer === 'amazon' ? buildAmazonAffiliateLink(product.asin) : (product.link || product.product_url)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-gray-500 hover:text-coral inline-flex items-center"
+                          <button 
+                            onClick={() => {
+                              setSelectedProduct({
+                                title: product.title,
+                                price: formatPrice(product.price),
+                                link: product.retailer === 'amazon' ? buildAmazonAffiliateLink(product.asin) : (product.link || product.product_url),
+                                retailer: product.retailer || 'amazon',
+                                image: product.image || product.image_url
+                              });
+                              setShowPurchaseModal(true);
+                            }}
+                            className="text-xs text-gray-500 hover:text-coral inline-flex items-center transition-colors"
                           >
                             <ExternalLink className="mr-1 h-3 w-3" />
                             View on {product.retailer_name || 'Amazon'}
-                          </a>
+                          </button>
                         </div>
                       </CardContent>
                     </Card>
@@ -988,6 +1024,25 @@ export default function ProductSearch() {
           </div>
         )}
       </div>
+
+      {/* Purchase Confirmation Modal */}
+      {selectedProduct && (
+        <PurchaseConfirmationModal
+          isOpen={showPurchaseModal}
+          onClose={() => {
+            setShowPurchaseModal(false);
+            setSelectedProduct(null);
+          }}
+          product={selectedProduct}
+          wishlistOwner={{
+            firstName: 'Someone',
+            lastName: 'in need',
+            shippingAddress: 'Shipping address will be shared after purchase confirmation'
+          }}
+          onPurchaseConfirm={() => confirmPurchaseMutation.mutate()}
+          itemId={0} // Not applicable for product search
+        />
+      )}
     </div>
   );
 }
