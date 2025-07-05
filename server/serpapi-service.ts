@@ -95,20 +95,20 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      // Try approach that was working earlier - using google engine with target.com site filter
+      // Use Google Shopping engine with Target filter for product searches
+      // Add "buy" to trigger product results instead of category pages
+      const productQuery = `${query} buy target.com`;
       const params = {
         api_key: this.apiKey,
-        engine: 'google',
-        q: `${query} site:target.com`,
+        engine: 'google_shopping',
+        q: productQuery,
         location: location,
         google_domain: 'google.com',
         gl: 'us',
         hl: 'en',
         num: Math.min(limit, 60).toString(),
         start: '0',
-        device: 'desktop',
-        safe: 'off',
-        lr: 'lang_en'
+        device: 'desktop'
       };
 
       const url = `https://serpapi.com/search.json`;
@@ -166,17 +166,21 @@ export class SerpAPIService {
         })
         .slice(0, limit)
         .map((result: any, index: number) => {
-          // Debug logging for Target image data structure
+          // Debug logging for Target data structure
           if (index === 0) {
             console.log('=== TARGET RESULT DEBUG ===');
+            console.log('Result type:', resultType);
             console.log('Result keys:', Object.keys(result));
-            console.log('Has thumbnail:', !!result.thumbnail);
-            console.log('Has image:', !!result.image);
-            console.log('Has favicon:', !!result.favicon);
-            console.log('Has serpapi_thumbnail:', !!result.serpapi_thumbnail);
-            console.log('Rich snippet available:', !!result.rich_snippet);
-            if (result.rich_snippet) {
-              console.log('Rich snippet keys:', Object.keys(result.rich_snippet));
+            console.log('Title:', result.title);
+            console.log('Link:', result.link);
+            if (resultType === 'shopping_results') {
+              console.log('Shopping - price:', result.price);
+              console.log('Shopping - extracted_price:', result.extracted_price);
+              console.log('Shopping - thumbnail:', result.thumbnail);
+            } else {
+              console.log('Organic - snippet contains $:', !!(result.snippet && result.snippet.includes('$')));
+              console.log('Organic - thumbnail:', !!result.thumbnail);
+              console.log('Organic - favicon:', !!result.favicon);
             }
             console.log('=== END DEBUG ===');
           }
