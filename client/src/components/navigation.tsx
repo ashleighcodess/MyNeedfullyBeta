@@ -75,117 +75,14 @@ export default function Navigation() {
             ))}
           </div>
 
-          {/* Mobile Test - Should be visible */}
-          <div className="lg:hidden bg-red-500 text-white p-2 text-xs">MOBILE TEST</div>
-          
-          {/* Right Side */}
-          <div className="flex items-center space-x-4">
-            {/* Notifications */}
-            {user && (
-              <div className="relative" data-tip="notifications">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="relative"
-                  onClick={() => setNotificationCenterOpen(true)}
-                >
-                  <Bell className="h-5 w-5" />
-                  {unreadCount > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                    >
-                      {unreadCount}
-                    </Badge>
-                  )}
-                </Button>
-              </div>
-            )}
-
-            {/* User Menu or Login Button */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
-                    {user?.profileImageUrl ? (
-                      <img 
-                        src={user.profileImageUrl} 
-                        alt="Profile" 
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
-                        <User className="h-4 w-4 text-coral" />
-                      </div>
-                    )}
-                    <span className="hidden sm:block text-sm font-medium">
-                      {user?.firstName || 'Menu'}
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <Link href="/dashboard">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Zap className="mr-2 h-4 w-4" />
-                      Quick Actions
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/profile">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/my-needs-lists">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Heart className="mr-2 h-4 w-4" />
-                      My Needs Lists
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/settings">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </DropdownMenuItem>
-                  </Link>
-                  {user?.userType === 'admin' && (
-                    <Link href="/admin">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Admin Dashboard
-                      </DropdownMenuItem>
-                    </Link>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="cursor-pointer text-red-600 hover:text-red-600 hover:bg-red-50"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button 
-                onClick={() => window.location.href = "/api/login"}
-                className="hidden sm:block"
-              >
-                Sign In
-              </Button>
-            )}
-
-            {/* Mobile menu trigger - always visible */}
-            <div className="lg:hidden ml-2">
+          {/* Right Side - Mobile First Approach */}
+          <div className="flex items-center space-x-2">
+            {/* Always show hamburger menu on small screens */}
+            <div className="block sm:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="border-2 border-coral bg-coral/10 hover:bg-coral/20">
-                    <Menu className="h-6 w-6 text-coral" />
+                  <Button size="sm" className="bg-coral text-white border-2 border-coral hover:bg-coral/90">
+                    <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80">
@@ -273,6 +170,108 @@ export default function Navigation() {
                   </div>
                 </SheetContent>
               </Sheet>
+            </div>
+
+            {/* Desktop navigation items */}
+            <div className="hidden sm:flex items-center space-x-4">
+              {/* Notifications */}
+              {user && (
+                <div className="relative" data-tip="notifications">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="relative"
+                    onClick={() => setNotificationCenterOpen(true)}
+                  >
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
+              )}
+
+              {/* User Menu or Login Button */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
+                      {user?.profileImageUrl ? (
+                        <img 
+                          src={user.profileImageUrl} 
+                          alt="Profile" 
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                          <User className="h-4 w-4 text-coral" />
+                        </div>
+                      )}
+                      <span className="text-sm font-medium">
+                        {user?.firstName || 'Menu'}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Zap className="mr-2 h-4 w-4" />
+                        Quick Actions
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/profile">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/my-needs-lists">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Heart className="mr-2 h-4 w-4" />
+                        My Needs Lists
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/settings">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                      </DropdownMenuItem>
+                    </Link>
+                    {user?.userType === 'admin' && (
+                      <Link href="/admin">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Settings className="mr-2 h-4 w-4" />
+                          Admin Dashboard
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      className="cursor-pointer text-red-600 hover:text-red-600 hover:bg-red-50"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button 
+                  onClick={() => window.location.href = "/api/login"}
+                >
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>
