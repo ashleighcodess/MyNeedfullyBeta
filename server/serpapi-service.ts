@@ -39,24 +39,47 @@ export class SerpAPIService {
 
       const response = await getJson(params);
       console.log(`Walmart search response status: ${response ? 'success' : 'no response'}`);
+      console.log('Walmart response keys:', response ? Object.keys(response) : 'no response');
       
-      if (!response.organic_results) {
-        console.log('No Walmart organic_results found');
+      // Check for different possible result structures
+      const results = response.organic_results || response.search_results || response.products || [];
+      console.log(`Walmart results structure found: ${results.length} items`);
+      
+      if (!results || results.length === 0) {
+        console.log('No Walmart results found in any structure');
+        console.log('Sample response:', JSON.stringify(response).substring(0, 500));
         return [];
       }
 
-      const walmartResults = response.organic_results.slice(0, limit).map((product: any) => ({
-        title: product.title || '',
-        price: product.primary_offer?.offer_price || product.price || '0',
-        rating: product.rating?.toString() || '',
-        reviews: product.reviews?.toString() || '',
-        image_url: product.thumbnail || product.image || '',
-        product_url: product.product_page_url || product.link || '',
-        product_id: product.product_id || product.us_item_id || Math.random().toString(36).substr(2, 9),
-        retailer: 'walmart' as const,
-        brand: product.brand || '',
-        description: product.description || product.short_description || ''
-      }));
+      const walmartResults = results.slice(0, limit).map((product: any) => {
+        // Format price properly - SerpAPI returns price as number in primary_offer
+        const priceValue = product.primary_offer?.offer_price || product.price || 0;
+        const formattedPrice = typeof priceValue === 'number' ? `$${priceValue.toFixed(2)}` : priceValue;
+        
+        return {
+          // Match RainforestAPI structure
+          position: product.position || Math.floor(Math.random() * 100),
+          title: product.title || '',
+          price: formattedPrice,
+          rating: product.rating || 0,
+          reviews_count: product.reviews || 0,
+          image: product.thumbnail || product.image || '',
+          link: product.product_page_url || product.link || '',
+          asin: product.us_item_id || product.product_id || Math.random().toString(36).substr(2, 9),
+          
+          // SerpAPI-specific fields mapped to expected structure
+          product_id: product.us_item_id || product.product_id,
+          product_url: product.product_page_url || product.link || '',
+          retailer: 'walmart' as const,
+          retailer_name: 'Walmart',
+          brand: product.brand || '',
+          description: product.description || product.short_description || '',
+          
+          // Additional fields for compatibility
+          thumbnail: product.thumbnail || product.image || '',
+          image_url: product.thumbnail || product.image || ''
+        };
+      });
       
       console.log(`Walmart search found ${walmartResults.length} products`);
       return walmartResults;
@@ -203,16 +226,27 @@ export class SerpAPIService {
           console.log(`Target product: ${result.title.substring(0, 50)}... | Price: ${extractedPrice} | Image: ${imageUrl ? 'YES' : 'NO'}`);
           
           return {
+            // Match RainforestAPI structure
+            position: result.position || Math.floor(Math.random() * 100),
             title: result.title || '',
             price: extractedPrice,
-            rating: '',
-            reviews: '',
-            image_url: imageUrl,
-            product_url: result.link || '',
+            rating: 0,
+            reviews_count: 0,
+            image: imageUrl,
+            link: result.link || '',
+            asin: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
+            
+            // SerpAPI-specific fields mapped to expected structure
             product_id: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
+            product_url: result.link || '',
             retailer: 'target' as const,
+            retailer_name: 'Target',
             brand: '',
-            description: result.snippet || ''
+            description: result.snippet || '',
+            
+            // Additional fields for compatibility
+            thumbnail: imageUrl,
+            image_url: imageUrl
           };
         });
       
