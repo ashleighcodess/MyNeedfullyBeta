@@ -109,25 +109,16 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center space-x-2">
-                {unreadCount > 0 && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => markAllAsReadMutation.mutate()}
-                    disabled={markAllAsReadMutation.isPending}
-                  >
-                    Mark all read
-                  </Button>
-                )}
+              {unreadCount > 0 && (
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  onClick={onClose}
+                  onClick={() => markAllAsReadMutation.mutate()}
+                  disabled={markAllAsReadMutation.isPending}
                 >
-                  <X className="h-4 w-4" />
+                  Mark all read
                 </Button>
-              </div>
+              )}
             </DialogTitle>
           </DialogHeader>
 
