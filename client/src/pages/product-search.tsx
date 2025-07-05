@@ -679,33 +679,14 @@ export default function ProductSearch() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {displayProducts.map((product: any, index: number) => (
+                    {displayProducts.filter((product: any) => product.image).map((product: any, index: number) => (
                     <Card key={`${product.retailer}-${product.asin || product.product_id || index}-${Date.now()}-${Math.random()}`} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="relative">
-                        {product.image ? (
-                          <img 
-                            src={product.image}
-                            alt={product.title}
-                            className="w-full h-48 object-contain bg-gray-50"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              const placeholderDiv = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
-                              if (placeholderDiv) placeholderDiv.style.display = 'flex';
-                            }}
-                          />
-                        ) : null}
-                        {/* Placeholder for products without images */}
-                        <div 
-                          className={`w-full h-48 bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center ${product.image ? 'hidden' : 'flex'}`}
-                          style={{display: product.image ? 'none' : 'flex'}}
-                        >
-                          <div className="text-center text-gray-500">
-                            <Package className="mx-auto h-8 w-8 mb-2" />
-                            <p className="text-sm font-medium">Product Image</p>
-                            <p className="text-xs">Not Available</p>
-                          </div>
-                        </div>
-                        
+                        <img 
+                          src={product.image}
+                          alt={product.title}
+                          className="w-full h-48 object-contain bg-gray-50"
+                        />
                         {product.is_prime && (
                           <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
                             Prime
