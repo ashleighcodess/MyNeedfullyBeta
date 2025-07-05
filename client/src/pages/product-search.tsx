@@ -81,10 +81,10 @@ export default function ProductSearch() {
       setDebouncedQuery(initialQuery);
       setActiveSearch(initialQuery); // Set activeSearch to trigger search immediately
     } else {
-      // Auto-load with "Basic Essentials" when no query parameter is provided
+      // Auto-load with pre-cached "Basic Essentials" results when no query parameter is provided
       const defaultQuery = "Basic Essentials";
       setSearchQuery(defaultQuery);
-      setDebouncedQuery(defaultQuery);
+      // Don't set debouncedQuery - this prevents the automatic search trigger
       setActiveSearch(defaultQuery);
     }
     if (initialCategory && initialCategory !== "all") {
@@ -111,6 +111,54 @@ export default function ProductSearch() {
 
   // Popular cached products for instant loading
   const popularProducts = useMemo(() => ({
+    "Basic Essentials": [
+      {
+        asin: "B08TMLHWTD",
+        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
+        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
+        price: { value: 18.97, currency: "USD" },
+        rating: 4.7,
+        ratings_total: 29853,
+        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        asin: "B073V1T37H",
+        title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
+        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
+        price: { value: 23.94, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 47832,
+        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        asin: "B0949V7VRH",
+        title: "Pampers Baby Dry Diapers, Size 3, 172 Count",
+        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
+        price: { value: 28.94, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 15234,
+        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
+        price: "$11.98",
+        image_url: "https://i5.walmartimages.com/asr/1b8c7b7e-6f4f-4b7a-9f5e-8c1d2e3f4g5h.jpeg",
+        product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/123456789",
+        product_id: "123456789",
+        retailer: "walmart"
+      },
+      {
+        title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
+        price: "$12.99",
+        image_url: "https://target.scene7.com/is/image/Target/GUEST_12345678-01",
+        product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-12345678",
+        product_id: "12345678",
+        retailer: "target"
+      }
+    ],
     "baby wipes": [
       {
         asin: "B08TMLHWTD",
@@ -306,21 +354,35 @@ export default function ProductSearch() {
 
   // Get display products
   const displayProducts = useMemo(() => {
-    // Only show results if we have a valid search query
-    if (!debouncedQuery || debouncedQuery.length < 3) {
+    // If we have search results and a valid debounced query, show search results
+    if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
+      const results = searchResults?.search_results || searchResults?.data || [];
+      // Debug: Check Target products specifically
+      if (results.length > 0) {
+        const targetProducts = results.filter((p: any) => p.retailer === 'target');
+        const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
+        const amazonProducts = results.filter((p: any) => p.retailer === 'amazon');
+        console.log(`Frontend breakdown: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
+        if (targetProducts.length > 0) {
+          console.log('Sample Target product:', targetProducts[0]);
+        }
+      }
+      return results;
+    }
+    
+    // If we have an active search query but no debouncedQuery (auto-loaded state), show cached products
+    if (activeSearch && popularProducts[activeSearch as keyof typeof popularProducts]) {
+      return popularProducts[activeSearch as keyof typeof popularProducts];
+    }
+    
+    // If loading, show empty array
+    if (isLoading) {
       return [];
     }
     
-    // If we're loading or don't have results yet, return empty array
-    if (isLoading || !searchResults) {
-      return [];
-    }
-    
-    // Handle different response formats - check search_results first (correct format)
-    const results = searchResults?.search_results || searchResults?.data || [];
-    
-    return results;
-  }, [debouncedQuery, searchResults, isLoading]);
+    // Default to empty array if no search query
+    return [];
+  }, [debouncedQuery, searchResults, isLoading, activeSearch, popularProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
