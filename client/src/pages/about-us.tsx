@@ -241,21 +241,21 @@ export default function AboutUs() {
           
           {/* Statistics Cards */}
           <div className="grid grid-cols-2 gap-4 animate-fade-in-up" data-stats-section>
-            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
+            <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-white mb-1">
-                      127+
+                    <div className="text-2xl font-bold text-gray-800 mb-1">
+                      000+
                     </div>
-                    <div className="text-sm text-white/90">Needs List Fulfilled</div>
+                    <div className="text-sm text-gray-600">Needs List Created</div>
                   </div>
-                  <BoxHeartIcon className="h-6 w-6 text-white mt-1" />
+                  <Users className="h-6 w-6 text-gray-600 mt-1" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
+            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
@@ -269,21 +269,21 @@ export default function AboutUs() {
               </CardContent>
             </Card>
             
-            <Card className="text-left bg-orange-200 border-orange-300 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-orange-300">
+            <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-navy mb-1">
+                    <div className="text-2xl font-bold text-gray-800 mb-1">
                       000k
                     </div>
                     <div className="text-sm text-gray-600">Smiles Spread</div>
                   </div>
-                  <Smile className="h-6 w-6 text-orange-500 mt-1" />
+                  <Smile className="h-6 w-6 text-gray-600 mt-1" />
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
+            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
@@ -292,7 +292,7 @@ export default function AboutUs() {
                     </div>
                     <div className="text-sm text-white/90">Products Delivered</div>
                   </div>
-                  <PersonCarryBoxIcon className="h-6 w-6 text-white mt-1" />
+                  <Package className="h-6 w-6 text-white mt-1" />
                 </div>
               </CardContent>
             </Card>
