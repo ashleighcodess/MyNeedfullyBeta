@@ -441,10 +441,38 @@ export class DatabaseStorage implements IStorage {
     return donation;
   }
 
-  async getUserDonations(userId: string): Promise<Donation[]> {
+  async getUserDonations(userId: string): Promise<any[]> {
     return await db
-      .select()
+      .select({
+        id: donations.id,
+        supporterId: donations.supporterId,
+        wishlistId: donations.wishlistId,
+        itemId: donations.itemId,
+        amount: donations.amount,
+        currency: donations.currency,
+        status: donations.status,
+        isAnonymous: donations.isAnonymous,
+        message: donations.message,
+        createdAt: donations.createdAt,
+        updatedAt: donations.updatedAt,
+        // Item details
+        itemTitle: wishlistItems.title,
+        itemPrice: wishlistItems.price,
+        retailer: wishlistItems.retailer,
+        quantity: wishlistItems.quantity,
+        fulfilledAt: wishlistItems.fulfilledAt,
+        // Wishlist details
+        wishlistTitle: wishlists.title,
+        wishlistLocation: wishlists.location,
+        wishlistUserId: wishlists.userId,
+        // Recipient details
+        recipientFirstName: users.firstName,
+        recipientLastName: users.lastName,
+      })
       .from(donations)
+      .leftJoin(wishlistItems, eq(donations.itemId, wishlistItems.id))
+      .leftJoin(wishlists, eq(donations.wishlistId, wishlists.id))
+      .leftJoin(users, eq(wishlists.userId, users.id))
       .where(eq(donations.supporterId, userId))
       .orderBy(desc(donations.createdAt));
   }
