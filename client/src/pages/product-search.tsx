@@ -74,12 +74,18 @@ export default function ProductSearch() {
   const initialMinPrice = urlParams.get('min_price') || "";
   const initialMaxPrice = urlParams.get('max_price') || "";
 
-  // Initialize search from URL parameters
+  // Initialize search from URL parameters or default to "Basic Essentials"
   useEffect(() => {
     if (initialQuery) {
       setSearchQuery(initialQuery);
       setDebouncedQuery(initialQuery);
       setActiveSearch(initialQuery); // Set activeSearch to trigger search immediately
+    } else {
+      // Auto-load with "Basic Essentials" when no query parameter is provided
+      const defaultQuery = "Basic Essentials";
+      setSearchQuery(defaultQuery);
+      setDebouncedQuery(defaultQuery);
+      setActiveSearch(defaultQuery);
     }
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
