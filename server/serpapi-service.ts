@@ -95,108 +95,79 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      // Target temporarily disabled - SerpAPI Target engine requires special configuration
-      console.log('Target search temporarily disabled - returning empty results');
-      return [];
+      const params = {
+        api_key: this.apiKey,
+        engine: 'google_shopping',
+        q: `${query} site:target.com`,
+        location: location,
+        google_domain: 'google.com',
+        gl: 'us',
+        hl: 'en',
+        num: Math.min(limit, 100).toString(),
+        start: '0',
+        device: 'desktop',
+        no_cache: 'false'
+      };
 
-      const response = await fetch(`https://serpapi.com/search?${new URLSearchParams(params).toString()}`);
+      const url = `https://serpapi.com/search.json`;
+      const searchParams = new URLSearchParams(params);
       
+      const response = await fetch(`${url}?${searchParams}`, {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
+
       if (!response.ok) {
-        console.error(`Target SerpAPI responded with ${response.status}`);
+        console.log(`Target SerpAPI responded with ${response.status}`);
         return [];
       }
 
       const data = await response.json();
       console.log('Target SerpAPI response structure:', Object.keys(data));
 
-      const resultType = data.products ? 'products' : 
-                        data.product_results ? 'product_results' :
-                        data.shopping_results ? 'shopping_results' : 
-                        data.organic_results ? 'organic_results' : null;
-      
-      if (!resultType) {
-        console.log('No valid results structure found in Target response');
+      // Check for shopping_results (Google Shopping format)
+      if (!data.shopping_results || !Array.isArray(data.shopping_results)) {
+        console.log('No shopping_results found in Target response');
         return [];
       }
 
-      const resultsArray = data[resultType];
-      if (!resultsArray || resultsArray.length === 0) {
-        console.log('No Target results found');
-        return [];
-      }
+      console.log(`Target shopping_results found: ${data.shopping_results.length}`);
 
-      console.log(`Target ${resultType} found: ${resultsArray.length}`);
-
-      const targetResults = resultsArray
+      const targetResults = data.shopping_results
         .filter((result: any) => {
-          const resultLink = result.link || result.product_link || result.url || '';
-          const resultTitle = result.title || result.product_title || result.name || '';
+          const resultLink = result.link || '';
+          const resultTitle = result.title || '';
           
-          if (!resultTitle || resultTitle.length < 5) return false;
-          if (resultType === 'products' || resultType === 'product_results') return true;
-          if (resultType === 'shopping_results' && resultLink.includes('target.com')) return true;
+          // Must have title and be from Target
+          if (!resultTitle || resultTitle.length < 3) return false;
           if (!resultLink.includes('target.com')) return false;
           
           return true;
         })
         .slice(0, limit)
         .map((result: any) => {
-          const resultTitle = result.title || result.product_title || result.name || '';
-          const resultLink = result.link || result.product_link || result.url || '';
-          const resultSnippet = result.snippet || result.extracted_price || result.description || '';
-          
-          let extractedPrice = 'Price varies';
-          let imageUrl = '';
-          
-          if (resultType === 'product_results' || resultType === 'products') {
-            extractedPrice = result.price || result.current_price || result.extracted_price || 'Price varies';
-            imageUrl = result.image || result.thumbnail || result.main_image || '';
-          } else if (resultType === 'shopping_results') {
-            extractedPrice = result.price || result.extracted_price || 'Price varies';
-            imageUrl = result.thumbnail || result.image || '';
-          } else {
-            if (result.rich_snippet && result.rich_snippet.top) {
-              const extensions = result.rich_snippet.top.detected_extensions || [];
-              const priceExt = extensions.find((ext: string) => ext.match(/\$[\d,]+\.?\d*/));
-              if (priceExt) {
-                const priceMatch = priceExt.match(/\$[\d,]+\.?\d*/);
-                if (priceMatch) {
-                  extractedPrice = priceMatch[0];
-                }
-              }
-            }
-            
-            if (extractedPrice === 'Price varies' && result.snippet) {
-              const priceMatch = result.snippet.match(/\$[\d,]+\.?\d*/);
-              if (priceMatch) {
-                extractedPrice = priceMatch[0];
-              }
-            }
-            
-            imageUrl = result.thumbnail || '';
-          }
-          
+          const resultTitle = result.title || '';
+          const resultLink = result.link || '';
+          const extractedPrice = result.price || result.extracted_price || 'Price varies';
+          const imageUrl = result.thumbnail || '';
+
           return {
-            position: result.position || Math.floor(Math.random() * 100),
             title: resultTitle,
             price: extractedPrice,
-            rating: 0,
-            reviews_count: 0,
-            image: imageUrl,
-            link: resultLink,
-            asin: this.extractTargetProductId(resultLink) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-            product_id: this.extractTargetProductId(resultLink) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+            rating: result.rating || undefined,
+            reviews: result.reviews || undefined,
+            image_url: imageUrl || undefined,
             product_url: resultLink,
+            product_id: this.extractTargetProductId(resultLink),
             retailer: 'target' as const,
-            retailer_name: 'Target',
-            brand: '',
-            description: resultSnippet,
-            thumbnail: imageUrl,
-            image_url: imageUrl
+            brand: result.brand || undefined,
+            description: result.snippet || undefined,
           };
         });
-      
-      console.log(`Target search found ${targetResults.length} products after filtering`);
+
+      console.log(`Target search found ${targetResults.length} products`);
       return targetResults;
     } catch (error) {
       console.error('Error searching Target:', error);
