@@ -347,6 +347,12 @@ export default function Profile() {
                         <div className="text-lg font-semibold text-navy">Member ID</div>
                         <div className="text-xl font-semibold text-gray-700">#{user.id?.slice(-6) || '000000'}</div>
                       </div>
+                      <div>
+                        <div className="text-lg font-semibold text-navy">Account Status</div>
+                        <div className={`text-xl font-semibold ${user?.isVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                          {user?.isVerified ? 'Verified' : 'Unverified'}
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
