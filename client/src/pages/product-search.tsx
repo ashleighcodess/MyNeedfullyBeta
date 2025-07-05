@@ -268,6 +268,7 @@ export default function ProductSearch() {
       // Return cached popular products instantly while fetching fresh data  
       const cached = getCachedProducts(debouncedQuery);
       if (cached) {
+        console.log('Using cached products:', cached);
         return cached;
       }
       return undefined;
@@ -320,13 +321,22 @@ export default function ProductSearch() {
 
   // Get display products with smart fallbacks
   const displayProducts = useMemo(() => {
+    console.log('Display products calculation:', {
+      debouncedQuery,
+      searchResults,
+      showFallbacks,
+      fallbackProducts: fallbackProducts?.length
+    });
+    
     if (!debouncedQuery || debouncedQuery.length < 3) {
       // Show fallback products when no search query
       return showFallbacks ? fallbackProducts : [];
     }
     
     // Show search results or cached popular products
-    return searchResults?.search_results || searchResults?.products || [];
+    const results = searchResults?.search_results || searchResults?.products || [];
+    console.log('Found search results:', results?.length);
+    return results;
   }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts]);
 
   const formatPrice = (price: any) => {
