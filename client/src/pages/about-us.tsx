@@ -125,25 +125,25 @@ export default function AboutUs() {
       icon: Gift,
       title: "Create a Needs List",
       description: "Build a Needs List of essential items you or someone you know needs during a difficult time.",
-      color: "bg-coral/10 text-coral"
+      color: "text-coral"
     },
     {
       icon: Share,
       title: "Share with Community",
       description: "Share your Needs List with friends, family, and your social network — and the broader community who want to help.",
-      color: "bg-blue-500/10 text-blue-600"
+      color: "text-coral"
     },
     {
       icon: Heart,
       title: "Receive Support",
       description: "Items purchased from your Needs List are sent directly to you or your loved ones in need.",
-      color: "bg-pink-500/10 text-pink-600"
+      color: "text-coral"
     },
     {
       icon: CheckCircle,
       title: "Track Fulfillment",
       description: "Easily track which items have been fulfilled and those still needed.",
-      color: "bg-green-500/10 text-green-600"
+      color: "text-coral"
     }
   ];
 
@@ -318,8 +318,8 @@ export default function AboutUs() {
               {howItWorks.map((step, index) => (
                 <Card key={index} className="text-center bg-white/90 backdrop-blur-sm">
                   <CardContent className="p-6">
-                    <div className={`w-16 h-16 rounded-full ${step.color} flex items-center justify-center mx-auto mb-4`}>
-                      <step.icon className="h-8 w-8" />
+                    <div className="flex items-center justify-center mx-auto mb-4">
+                      <step.icon className={`h-8 w-8 ${step.color}`} />
                     </div>
                     <h3 className="text-lg font-semibold text-navy mb-3">{step.title}</h3>
                     <p className="text-gray-600 text-sm">{step.description}</p>
