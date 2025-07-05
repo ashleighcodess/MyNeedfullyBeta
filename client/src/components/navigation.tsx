@@ -125,7 +125,7 @@ export default function Navigation() {
                   <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
-                <Link href="/">
+                <Link href="/dashboard">
                   <DropdownMenuItem className="cursor-pointer">
                     <Zap className="mr-2 h-4 w-4" />
                     Quick Actions

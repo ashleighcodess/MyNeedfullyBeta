@@ -60,23 +60,11 @@ function Router() {
           <Route path="/community-impact" component={CommunityImpact} />
           <Route path="/impact" component={CommunityImpact} />
           
-          {/* Home route */}
-          {isLoading ? (
-            <Route path="/">
-              {() => (
-                <div className="min-h-screen flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading...</p>
-                  </div>
-                </div>
-              )}
-            </Route>
-          ) : !isAuthenticated ? (
-            <Route path="/" component={Landing} />
-          ) : (
-            <Route path="/" component={Home} />
-          )}
+          {/* Home route - always shows landing page */}
+          <Route path="/" component={Landing} />
+          
+          {/* Dashboard route for authenticated users */}
+          <Route path="/dashboard" component={Home} />
           
           <Route component={NotFound} />
         </Switch>
