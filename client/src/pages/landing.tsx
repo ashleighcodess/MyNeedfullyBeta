@@ -156,7 +156,7 @@ export default function Landing() {
   }, [startTickerAnimation]);
 
   const handleLogin = () => {
-    setLocation("/login");
+    setLocation("/signup");
   };
 
   const handleNeedsListSearch = (e: React.FormEvent) => {
