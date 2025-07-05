@@ -228,11 +228,11 @@ export default function AboutUs() {
             </div>
             
             <div className="flex justify-center lg:justify-end animate-slide-in-right">
-              <div className="relative group">
+              <div className="relative group w-full">
                 <img 
                   src={aboutUsImage} 
                   alt="Family with needs list showing community support" 
-                  className="w-full max-w-sm lg:max-w-md xl:max-w-lg h-auto rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
+                  className="w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-coral/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
@@ -241,51 +241,59 @@ export default function AboutUs() {
           
           {/* Statistics Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up" data-stats-section>
-            <Card className="text-center bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
+            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
-                <div className="flex items-center justify-center mb-3">
-                  <BoxHeartIcon className="h-8 w-8 text-white" />
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-2xl font-bold text-white mb-1">
+                      {needsListFulfilled}+
+                    </div>
+                    <div className="text-sm text-white/90">Needs List Fulfilled</div>
+                  </div>
+                  <BoxHeartIcon className="h-6 w-6 text-white mt-1" />
                 </div>
-                <div className="text-2xl font-bold text-white mb-1">
-                  {needsListFulfilled}+
-                </div>
-                <div className="text-sm text-white/90 uppercase tracking-wide">Needs List Fulfilled</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+            <Card className="text-left bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
               <CardContent className="p-6">
-                <div className="flex items-center justify-center mb-3">
-                  <Users className="h-8 w-8 text-navy" />
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-2xl font-bold text-navy mb-1">
+                      {needsListCreated}+
+                    </div>
+                    <div className="text-sm text-gray-600">Needs List Created</div>
+                  </div>
+                  <Users className="h-6 w-6 text-coral mt-1" />
                 </div>
-                <div className="text-2xl font-bold text-navy mb-1">
-                  {needsListCreated}+
-                </div>
-                <div className="text-sm text-gray-600 uppercase tracking-wide">Needs List Created</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+            <Card className="text-left bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
               <CardContent className="p-6">
-                <div className="flex items-center justify-center mb-3">
-                  <Smile className="h-8 w-8 text-navy" />
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-2xl font-bold text-navy mb-1">
+                      {smilesSpread}k
+                    </div>
+                    <div className="text-sm text-gray-600">Smiles Spread</div>
+                  </div>
+                  <Smile className="h-6 w-6 text-yellow-500 mt-1" />
                 </div>
-                <div className="text-2xl font-bold text-navy mb-1">
-                  {smilesSpread}k
-                </div>
-                <div className="text-sm text-gray-600 uppercase tracking-wide">Smiles Spread</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
+            <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
-                <div className="flex items-center justify-center mb-3">
-                  <PersonCarryBoxIcon className="h-8 w-8 text-white" />
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="text-2xl font-bold text-white mb-1">
+                      {productsDelivered}k
+                    </div>
+                    <div className="text-sm text-white/90">Products Delivered</div>
+                  </div>
+                  <PersonCarryBoxIcon className="h-6 w-6 text-white mt-1" />
                 </div>
-                <div className="text-2xl font-bold text-white mb-1">
-                  {productsDelivered}k
-                </div>
-                <div className="text-sm text-white/90 uppercase tracking-wide">Products Delivered</div>
               </CardContent>
             </Card>
           </div>
