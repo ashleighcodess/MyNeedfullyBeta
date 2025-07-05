@@ -2462,10 +2462,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Send violation notification email to the user being removed
       if (userToRemove.email) {
-        await emailService.sendAccountSecurityAlert(
+        await emailService.sendUserRemovalNotification(
           userToRemove.email,
           userToRemove.firstName || 'User',
-          'Account Removed',
           'Your account has been removed from MyNeedfully due to violation of our terms and conditions. If you believe this was done in error, please contact our support team.'
         );
       }
@@ -2473,10 +2472,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Send notification email to admin about the removal
       const adminUser = await storage.getUser(req.user.claims.sub);
       if (adminUser && adminUser.email) {
-        await emailService.sendAccountSecurityAlert(
+        await emailService.sendUserRemovalNotification(
           adminUser.email,
           adminUser.firstName || 'Admin',
-          'User Account Removed',
           `User account has been successfully removed from the platform:\n\nRemoved User: ${userToRemove.firstName || ''} ${userToRemove.lastName || ''} (${userToRemove.email})\nUser ID: ${userToRemove.id}\nRemoval Date: ${new Date().toLocaleString()}\n\nAll associated data including wishlists, donations, and activity has been permanently deleted.`
         );
       }

@@ -376,6 +376,72 @@ class EmailService {
     });
   }
 
+  async sendUserRemovalNotification(
+    userEmail: string,
+    userName: string,
+    reason: string
+  ): Promise<boolean> {
+    const subject = 'Account Removal Notification - MyNeedfully';
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
+          <h1 style="margin: 0;">⚠️ Account Removal Notice</h1>
+        </div>
+        
+        <div style="padding: 30px; background-color: #f9f9f9;">
+          <h2 style="color: #333;">Hello ${userName},</h2>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            ${reason}
+          </p>
+          
+          <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #dc3545;">
+            <h3 style="color: #dc3545; margin-top: 0;">Activity Details:</h3>
+            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+            <p><strong>Action:</strong> User account has been successfully removed from the platform</p>
+            <p><strong>Status:</strong> All associated data including wishlists, donations, and activity has been permanently deleted</p>
+          </div>
+          
+          <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="margin: 0; color: #856404; font-size: 14px;">
+              <strong>Not you?</strong> If you didn't make this change, please contact our support team immediately by replying to this email.
+            </p>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            We take your account security seriously. If this activity looks suspicious, please review your account settings and consider updating your password.
+          </p>
+          
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile/privacy" 
+               style="background-color: #dc3545; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
+              Review Account Settings
+            </a>
+          </div>
+          
+          <p style="font-size: 14px; color: #888; text-align: center;">
+            Keep your account secure by using a strong, unique password.
+          </p>
+        </div>
+        
+        <div style="background-color: #333; color: white; padding: 20px; text-align: center; font-size: 14px;">
+          <p style="margin: 0;">© 2025 MyNeedfully. Protecting your account.</p>
+        </div>
+      </div>
+    `;
+
+    const text = `Account Removal Notice: ${reason} on ${new Date().toLocaleString()}. If this wasn't authorized, please contact support immediately.`;
+
+    return this.sendEmail({
+      to: userEmail,
+      from: 'data@myneedfully.app',
+      subject,
+      html,
+      text,
+    });
+  }
+
   async sendAccountSecurityAlert(
     userEmail: string,
     userName: string,
