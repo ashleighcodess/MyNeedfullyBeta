@@ -384,49 +384,69 @@ class EmailService {
     const subject = 'Account Removal Notification - MyNeedfully';
     
     const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
-          <h1 style="margin: 0;">⚠️ Account Removal Notice</h1>
+      <div style="font-family: 'JUST Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: white;">
+        <!-- Header with Logo -->
+        <div style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%); color: white; padding: 30px 20px; text-align: center;">
+          <div style="margin-bottom: 15px;">
+            <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="45" fill="white" opacity="0.2"/>
+              <path d="M50 20 L65 40 L50 35 L35 40 Z" fill="white"/>
+              <circle cx="50" cy="60" r="15" fill="white"/>
+              <path d="M35 75 Q50 85 65 75" stroke="white" stroke-width="3" fill="none"/>
+            </svg>
+          </div>
+          <h1 style="margin: 0; font-size: 28px; font-weight: 600;">⚠️ Account Removal Notice</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">MyNeedfully Security Team</p>
         </div>
         
-        <div style="padding: 30px; background-color: #f9f9f9;">
-          <h2 style="color: #333;">Hello ${userName},</h2>
+        <div style="padding: 40px 30px; background-color: #f9f9f9;">
+          <h2 style="color: #333; margin-bottom: 20px; font-size: 24px;">Hello ${userName},</h2>
           
-          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+          <p style="font-size: 16px; line-height: 1.6; color: #555; margin-bottom: 25px;">
             ${reason}
           </p>
           
-          <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #dc3545;">
-            <h3 style="color: #dc3545; margin-top: 0;">Activity Details:</h3>
-            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
-            <p><strong>Action:</strong> User account has been successfully removed from the platform</p>
-            <p><strong>Status:</strong> All associated data including wishlists, donations, and activity has been permanently deleted</p>
+          <div style="background-color: white; padding: 25px; border-radius: 12px; margin: 30px 0; border-left: 5px solid #FF6B6B; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="color: #FF6B6B; margin-top: 0; margin-bottom: 20px; font-size: 20px;">Activity Details:</h3>
+            <div style="color: #555; line-height: 1.6;">
+              <p style="margin: 8px 0;"><strong style="color: #333;">Date:</strong> ${new Date().toLocaleString()}</p>
+              <p style="margin: 8px 0;"><strong style="color: #333;">Action:</strong> User account has been successfully removed from the platform</p>
+              <p style="margin: 8px 0;"><strong style="color: #333;">Status:</strong> All associated data including wishlists, donations, and activity has been permanently deleted</p>
+            </div>
           </div>
           
-          <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <p style="margin: 0; color: #856404; font-size: 14px;">
-              <strong>Not you?</strong> If you didn't make this change, please contact our support team immediately by replying to this email.
+          <div style="background: linear-gradient(135deg, #FFF4E6 0%, #FFE8CC 100%); border: 1px solid #FFD93D; padding: 20px; border-radius: 12px; margin: 30px 0;">
+            <p style="margin: 0; color: #B8860B; font-size: 14px; line-height: 1.5;">
+              <strong>Not you?</strong> If you didn't authorize this change, please contact our support team immediately by replying to this email.
             </p>
           </div>
           
-          <p style="font-size: 16px; line-height: 1.6; color: #555;">
-            We take your account security seriously. If this activity looks suspicious, please review your account settings and consider updating your password.
+          <p style="font-size: 16px; line-height: 1.6; color: #555; margin: 25px 0;">
+            We take your account security seriously. If you believe this action was taken in error, please don't hesitate to reach out to our support team.
           </p>
           
-          <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile/privacy" 
-               style="background-color: #dc3545; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
-              Review Account Settings
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/contact" 
+               style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 25px; display: inline-block; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); transition: all 0.3s ease;">
+              Contact Support
             </a>
           </div>
           
-          <p style="font-size: 14px; color: #888; text-align: center;">
-            Keep your account secure by using a strong, unique password.
+          <p style="font-size: 14px; color: #888; text-align: center; margin-top: 30px;">
+            Thank you for being part of the MyNeedfully community.
           </p>
         </div>
         
-        <div style="background-color: #333; color: white; padding: 20px; text-align: center; font-size: 14px;">
-          <p style="margin: 0;">© 2025 MyNeedfully. Protecting your account.</p>
+        <div style="background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%); color: white; padding: 25px; text-align: center;">
+          <div style="margin-bottom: 10px;">
+            <svg width="30" height="30" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="45" fill="white" opacity="0.1"/>
+              <path d="M50 20 L65 40 L50 35 L35 40 Z" fill="white"/>
+              <circle cx="50" cy="60" r="15" fill="white"/>
+              <path d="M35 75 Q50 85 65 75" stroke="white" stroke-width="3" fill="none"/>
+            </svg>
+          </div>
+          <p style="margin: 0; font-size: 14px; opacity: 0.9;">© 2025 MyNeedfully. Protecting your account and community.</p>
         </div>
       </div>
     `;
