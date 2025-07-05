@@ -227,12 +227,12 @@ export default function AboutUs() {
               </div>
             </div>
             
-            <div className="flex justify-center lg:justify-end animate-slide-in-right">
+            <div className="flex justify-center lg:justify-end animate-slide-in-right lg:mt-8">
               <div className="relative group w-full">
                 <img 
                   src={aboutUsImage} 
                   alt="Family with needs list showing community support" 
-                  className="w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
+                  className="w-full h-[300px] lg:h-[350px] xl:h-[400px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-coral/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
@@ -240,17 +240,17 @@ export default function AboutUs() {
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-2 gap-4 animate-fade-in-up" data-stats-section>
+          <div className="grid grid-cols-4 gap-4 animate-fade-in-up" data-stats-section>
             <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-gray-800 mb-1">
-                      000+
+                      127+
                     </div>
-                    <div className="text-sm text-gray-600">Needs List Created</div>
+                    <div className="text-sm text-gray-600">Needs Lists Fulfilled</div>
                   </div>
-                  <Users className="h-6 w-6 text-gray-600 mt-1" />
+                  <BoxHeartIcon className="h-6 w-6 text-gray-600 mt-1" />
                 </div>
               </CardContent>
             </Card>
@@ -260,9 +260,9 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">
-                      $000,000
+                      453+
                     </div>
-                    <div className="text-sm text-white/90">Donation Raised</div>
+                    <div className="text-sm text-white/90">Needs Lists Created</div>
                   </div>
                   <Users className="h-6 w-6 text-white mt-1" />
                 </div>
@@ -274,7 +274,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-gray-800 mb-1">
-                      000k
+                      2k
                     </div>
                     <div className="text-sm text-gray-600">Smiles Spread</div>
                   </div>
@@ -288,7 +288,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">
-                      000k
+                      1k
                     </div>
                     <div className="text-sm text-white/90">Products Delivered</div>
                   </div>
