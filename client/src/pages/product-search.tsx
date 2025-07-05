@@ -150,18 +150,20 @@ export default function ProductSearch() {
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
         price: "$11.98",
-        image_url: "https://i5.walmartimages.com/asr/1b8c7b7e-6f4f-4b7a-9f5e-8c1d2e3f4g5h.jpeg",
+        image_url: "https://i5.walmartimages.com/asr/d8e1b982-7afc-4e1a-8321-c47b8f2d9e73.jpeg",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/123456789",
         product_id: "123456789",
-        retailer: "walmart"
+        retailer: "walmart",
+        retailer_name: "Walmart"
       },
       {
         title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
         price: "$12.99",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_12345678-01",
+        image_url: "https://target.scene7.com/is/image/Target/GUEST_12345678_01",
         product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-12345678",
         product_id: "12345678",
-        retailer: "target"
+        retailer: "target",
+        retailer_name: "Target"
       }
     ],
     "baby wipes": [
@@ -773,11 +775,11 @@ export default function ProductSearch() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {displayProducts.filter((product: any) => product.image).map((product: any, index: number) => (
+                    {displayProducts.filter((product: any) => product.image || product.image_url).map((product: any, index: number) => (
                     <Card key={`${product.retailer}-${product.asin || product.product_id || index}-${Date.now()}-${Math.random()}`} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="relative">
                         <img 
-                          src={product.image}
+                          src={product.image || product.image_url}
                           alt={product.title}
                           className="w-full h-48 object-contain bg-gray-50"
                         />
