@@ -1624,28 +1624,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         searchPromises.push(Promise.resolve([]));
       }
 
-      // Walmart search (SerpAPI) with 3-second timeout
+      // Walmart search (SerpAPI) with 8-second timeout
       if (serpService) {
         const walmartPromise = Promise.race([
           serpService.searchWalmart(optimizedQuery, '60602', 10).catch(error => {
             console.error("Walmart search error:", error);
             return [];
           }),
-          new Promise<any[]>((resolve) => setTimeout(() => resolve([]), 3000))
+          new Promise<any[]>((resolve) => setTimeout(() => {
+            console.log("Walmart search timed out after 8 seconds");
+            resolve([]);
+          }, 8000))
         ]);
         searchPromises.push(walmartPromise);
       } else {
         searchPromises.push(Promise.resolve([]));
       }
 
-      // Target search (SerpAPI) with 3-second timeout  
+      // Target search (SerpAPI) with 8-second timeout  
       if (serpService) {
         const targetPromise = Promise.race([
           serpService.searchTarget(optimizedQuery, '10001', 10).catch(error => {
             console.error("Target search error:", error);
             return [];
           }),
-          new Promise<any[]>((resolve) => setTimeout(() => resolve([]), 3000))
+          new Promise<any[]>((resolve) => setTimeout(() => {
+            console.log("Target search timed out after 8 seconds");
+            resolve([]);
+          }, 8000))
         ]);
         searchPromises.push(targetPromise);
       } else {
@@ -1657,6 +1663,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const searchTime = Date.now() - startTime;
       console.log(`Search completed in ${searchTime}ms - Amazon: ${amazonResults.length}, Walmart: ${walmartResults.length}, Target: ${targetResults.length}`);
+      
+
+      
+
 
       // Transform and combine results
       const transformedResults: any[] = [];
@@ -1689,9 +1699,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           transformedResults.push({
             title: product.title,
             price: { value: price, currency: "USD" },
-            image: product.image_url,
-            product_url: product.product_url,
-            product_id: product.product_id,
+            image: product.image_url || product.image || product.thumbnail,
+            product_url: product.product_url || product.link,
+            product_id: product.product_id || product.asin,
             retailer: 'walmart' as const,
             rating: parseFloat(product.rating || '0'),
             ratings_total: parseInt(product.reviews?.replace(/[^0-9]/g, '') || '0')
@@ -1701,15 +1711,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Add Target results
       if (targetResults && targetResults.length > 0) {
-        targetResults.forEach((product: any) => {
+        targetResults.forEach((product: any, index: number) => {
           const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
           const price = parseFloat(priceStr.replace(/[^0-9.]/g, '') || '0');
           transformedResults.push({
             title: product.title,
             price: { value: price, currency: "USD" },
-            image: product.image_url,
-            product_url: product.product_url,
-            product_id: product.product_id,
+            image: product.image_url || product.image || product.thumbnail,
+            product_url: product.product_url || product.link,
+            product_id: product.product_id || product.asin || `target-${Date.now()}-${index}`,
             retailer: 'target' as const,
             rating: parseFloat(product.rating || '0'),
             ratings_total: parseInt((typeof product.reviews === 'string' ? product.reviews : String(product.reviews || '0')).replace(/[^0-9]/g, '') || '0')
