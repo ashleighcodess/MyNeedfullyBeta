@@ -132,7 +132,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H", 
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "PLACEHOLDER_CHARMIN_TOILET_PAPER_IMAGE",
+        image: "@assets/81Ml0P+qqnL._AC__1751759916227.jpg",
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
