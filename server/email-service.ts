@@ -678,6 +678,7 @@ class EmailService {
   async sendWeeklyImpactSummary(
     userEmail: string,
     userName: string,
+    emailMarketingEnabled: boolean,
     weeklyStats: {
       donationsReceived: number;
       itemsFulfilled: number;
@@ -685,6 +686,11 @@ class EmailService {
       totalValue: number;
     }
   ): Promise<boolean> {
+    // Respect user's email marketing preferences
+    if (!emailMarketingEnabled) {
+      console.log(`Skipping weekly impact email for ${userEmail} - email marketing disabled`);
+      return true; // Return true to indicate successful "non-send"
+    }
     const subject = `Your Weekly Impact Summary - MyNeedfully`;
     
     const html = `

@@ -679,6 +679,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         showDonationHistory: user.showDonationHistory,
         emailNotifications: user.emailNotifications,
         pushNotifications: user.pushNotifications,
+        emailMarketing: user.emailMarketing,
       });
     } catch (error) {
       console.error("Error fetching user settings:", error);
@@ -696,7 +697,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'firstName', 'lastName', 'email', 'phone', 'location', 'bio',
         'userPreference', 'showNeedsListsLive', 'hideNeedsListsFromPublic',
         'showProfileInSearch', 'allowDirectMessages', 'showDonationHistory',
-        'emailNotifications', 'pushNotifications'
+        'emailNotifications', 'pushNotifications', 'emailMarketing'
       ];
 
       const filteredUpdates: any = {};
