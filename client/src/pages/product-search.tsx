@@ -14,6 +14,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CATEGORIES } from "@/lib/constants";
+import myneedfullyLogo from "@assets/Logo_1_1751586104302.png";
+import amazonLogo from "@assets/amazon_1751644244382.png";
+import walmartLogo from "@assets/walmart_1751644244383.png";
+import targetLogo from "@assets/target_1751644244383.png";
 import { 
   Search, 
   Filter, 
@@ -25,6 +29,20 @@ import {
   Package,
   ChevronLeft
 } from "lucide-react";
+
+// Helper function to get retailer logo
+const getRetailerLogo = (retailer: string) => {
+  switch (retailer?.toLowerCase()) {
+    case 'amazon':
+      return amazonLogo;
+    case 'walmart':
+      return walmartLogo;
+    case 'target':
+      return targetLogo;
+    default:
+      return amazonLogo; // Default to Amazon for backward compatibility
+  }
+};
 
 export default function ProductSearch() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -559,20 +577,20 @@ export default function ProductSearch() {
                       {/* Branded Logo Spinner */}
                       <div className="relative flex items-center">
                         <img 
-                          src="/attached_assets/Logo_5_1751594497665.png" 
+                          src={myneedfullyLogo} 
                           alt="MyNeedfully" 
                           className="h-8 w-8 animate-spin mr-3"
                         />
                         <div className="flex flex-col">
-                          <span className="text-lg font-medium text-gray-800">Searching Products</span>
+                          <span className="text-lg font-medium text-gray-800">Finding Ways to Help</span>
                           <div className="text-sm text-coral font-medium h-5 overflow-hidden">
                             <div className="animate-pulse">
-                              <div className="transition-all duration-1000 ease-in-out">
-                                <span className="inline-block animate-pulse">Amazon</span>
+                              <div className="transition-all duration-2000 ease-in-out">
+                                <span className="inline-block animate-pulse">Connecting Hearts</span>
                                 <span className="mx-1">•</span>
-                                <span className="inline-block animate-pulse delay-200">Walmart</span>
+                                <span className="inline-block animate-pulse delay-300">Fulfilling Needs</span>
                                 <span className="mx-1">•</span>
-                                <span className="inline-block animate-pulse delay-500">Target</span>
+                                <span className="inline-block animate-pulse delay-700">Spreading Hope</span>
                               </div>
                             </div>
                           </div>
@@ -641,12 +659,12 @@ export default function ProductSearch() {
                           <Badge className="absolute top-2 left-2 bg-coral text-white">
                             Popular
                           </Badge>
-                          {/* Amazon Logo */}
-                          <div className="absolute top-2 right-2 bg-white rounded p-1">
+                          {/* Retailer Logo */}
+                          <div className="absolute top-2 right-2 bg-white rounded p-1 shadow-sm">
                             <img 
-                              src="/attached_assets/amazon_1751644244382.png" 
-                              alt="Amazon" 
-                              className="h-4 w-4"
+                              src={getRetailerLogo(product.retailer || 'amazon')} 
+                              alt={product.retailer_name || 'Amazon'} 
+                              className="h-4 w-4 object-contain"
                             />
                           </div>
                         </div>
@@ -750,12 +768,12 @@ export default function ProductSearch() {
                               Prime
                             </Badge>
                           )}
-                          {/* Amazon Logo */}
-                          <div className="absolute top-2 right-2 bg-white rounded p-1">
+                          {/* Retailer Logo */}
+                          <div className="absolute top-2 right-2 bg-white rounded p-1 shadow-sm">
                             <img 
-                              src="/attached_assets/amazon_1751644244382.png" 
-                              alt="Amazon" 
-                              className="h-4 w-4"
+                              src={getRetailerLogo(product.retailer || 'amazon')} 
+                              alt={product.retailer_name || 'Amazon'} 
+                              className="h-4 w-4 object-contain"
                             />
                           </div>
                         </div>

@@ -1351,14 +1351,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      // Try RainforestAPI first if available
+      // Multi-retailer search: Amazon (RainforestAPI) + Walmart/Target (SerpAPI)
+      const allProducts: any[] = [];
+      let totalResults = 0;
+      
+      // Amazon search with RainforestAPI
       if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
         try {
+          const optimizedQuery = generateSearchQuery(query as string);
           const params = new URLSearchParams({
             api_key: RAINFOREST_API_KEY,
             type: "search",
             amazon_domain: "amazon.com",
-            search_term: query as string,
+            search_term: optimizedQuery,
           });
 
           if (category && category !== 'all') {
@@ -1382,23 +1387,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const data = await response.json();
             console.log('RainforestAPI success:', Object.keys(data));
             
-            // Record analytics event
-            await storage.recordEvent({
-              eventType: "product_search",
-              userId: (req as any).user?.claims?.sub,
-              data: { query, category, resultsCount: data.search_results?.length || 0, source: 'rainforest' },
-              userAgent: req.get('User-Agent'),
-              ipAddress: req.ip,
-            });
-            
-            return res.json(data);
+            // Add Amazon products to results
+            if (data.search_results && Array.isArray(data.search_results)) {
+              // Transform Amazon results to include retailer info
+              const amazonProducts = data.search_results.map((product: any) => ({
+                ...product,
+                retailer: 'amazon',
+                retailer_name: 'Amazon',
+                link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+              }));
+              allProducts.push(...amazonProducts);
+              totalResults += data.search_results.length;
+            }
           } else {
-            const errorText = await response.text();
-            console.log(`RainforestAPI failed (${response.status}), falling back to demo data`);
+            console.log(`RainforestAPI failed (${response.status})`);
           }
         } catch (apiError) {
-          console.log('RainforestAPI error, falling back to demo data:', (apiError as Error).message);
+          console.log('RainforestAPI error:', (apiError as Error).message);
         }
+      }
+
+      // Walmart and Target search with SerpAPI
+      const serpService = getSerpAPIService();
+      if (serpService) {
+        try {
+          const optimizedQuery = generateSearchQuery(query as string);
+          const serpResults = await serpService.searchBothStores(optimizedQuery, '60602', 8);
+          
+          if (serpResults && serpResults.length > 0) {
+            console.log(`SerpAPI success: Found ${serpResults.length} products from Walmart/Target`);
+            
+            // Transform SerpAPI results to match RainforestAPI format
+            const transformedResults = serpResults.map((product: SerpProduct) => {
+              const price = parseFloat(product.price.replace(/[$,]/g, '')) || 0;
+              return {
+                title: product.title,
+                price: { value: price, currency: "USD", raw: product.price },
+                image: product.image_url || '',
+                link: product.product_url,
+                asin: product.product_id,
+                rating: product.rating ? parseFloat(product.rating) : null,
+                ratings_total: product.reviews ? parseInt(product.reviews.replace(/[^\d]/g, '')) : null,
+                retailer: product.retailer,
+                retailer_name: product.retailer === 'walmart' ? 'Walmart' : 'Target',
+                position: allProducts.length + serpResults.indexOf(product) + 1,
+                is_prime: false,
+                delivery: "Available for pickup or delivery"
+              };
+            });
+            
+            allProducts.push(...transformedResults);
+            totalResults += serpResults.length;
+          } else {
+            console.log('SerpAPI: No results found');
+          }
+        } catch (serpError) {
+          console.log('SerpAPI error:', (serpError as Error).message);
+        }
+      }
+
+      // If we have products from any source, return them
+      if (allProducts.length > 0) {
+        // Record analytics event
+        await storage.recordEvent({
+          eventType: "product_search",
+          userId: (req as any).user?.claims?.sub,
+          data: { 
+            query, 
+            category, 
+            resultsCount: allProducts.length, 
+            source: 'multi-retailer',
+            retailers: [...new Set(allProducts.map(p => p.retailer))]
+          },
+          userAgent: req.get('User-Agent'),
+          ipAddress: req.ip,
+        });
+
+        // Return results in RainforestAPI format for compatibility
+        return res.json({
+          request_info: { success: true },
+          search_results: allProducts,
+          search_information: {
+            query: query,
+            total_results: totalResults,
+            retailers_searched: [...new Set(allProducts.map(p => p.retailer_name))]
+          },
+          pagination: {
+            current_page: parseInt(page as string),
+            total_pages: Math.ceil(totalResults / 20)
+          }
+        });
       }
 
       // Generate realistic sample products based on search query
