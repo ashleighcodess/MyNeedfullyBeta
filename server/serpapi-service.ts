@@ -178,6 +178,7 @@ export class SerpAPIService {
           if (index === 0) {
             console.log(`🔍 Target result fields: ${Object.keys(result).join(', ')}`);
             console.log(`📸 Target image URL: ${imageUrl} | Price extracted: ${extractedPrice}`);
+            console.log(`🔗 Target product link: ${resultLink}`);
             console.log(`🔍 Target snippet: ${snippet.substring(0, 100)}...`);
           }
 
@@ -197,6 +198,12 @@ export class SerpAPIService {
         });
 
       console.log(`Target search found ${targetResults.length} products`);
+      
+      // Debug: Show first Target product URL
+      if (targetResults.length > 0) {
+        console.log(`🔗 First Target product URL: ${targetResults[0].product_url}`);
+      }
+      
       return targetResults;
     } catch (error) {
       console.error('Error searching Target:', error);
