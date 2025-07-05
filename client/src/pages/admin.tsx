@@ -148,16 +148,16 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                 Welcome {user?.firstName || 'Admin'}
               </h1>
               <p className="mt-1 text-sm text-gray-500">
                 Monitor and manage your MyNeedfully platform
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <Badge 
                 variant="outline" 
                 className={`${
@@ -169,37 +169,42 @@ export default function AdminDashboard() {
                 <Activity className="h-3 w-3 mr-1" />
                 {systemHealth?.status === 'healthy' ? 'System Online' : 'System Issues'}
               </Badge>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  const today = new Date().toISOString().split('T')[0];
-                  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-                  window.open(`/api/admin/export/analytics?start=${oneWeekAgo}&end=${today}`, '_blank');
-                }}
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Export Report
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  window.location.href = '/';
-                }}
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                Exit Admin
-              </Button>
+              <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                    window.open(`/api/admin/export/analytics?start=${oneWeekAgo}&end=${today}`, '_blank');
+                  }}
+                  className="flex-1 sm:flex-none text-xs sm:text-sm"
+                >
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Export Report</span>
+                  <span className="sm:hidden">Export</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    window.location.href = '/';
+                  }}
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 flex-1 sm:flex-none text-xs sm:text-sm"
+                >
+                  <Shield className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Exit Admin</span>
+                  <span className="sm:hidden">Exit</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -262,18 +267,21 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Dashboard Content */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="wishlists">Needs Lists</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="system">System</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-5 gap-1">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+            <TabsTrigger value="users" className="text-xs sm:text-sm">Users</TabsTrigger>
+            <TabsTrigger value="wishlists" className="text-xs sm:text-sm">
+              <span className="hidden sm:inline">Needs Lists</span>
+              <span className="sm:hidden">Lists</span>
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="text-xs sm:text-sm">Activity</TabsTrigger>
+            <TabsTrigger value="system" className="text-xs sm:text-sm">System</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Recent Activity Feed */}
               <Card className="lg:col-span-2">
                 <CardHeader className="pb-3">

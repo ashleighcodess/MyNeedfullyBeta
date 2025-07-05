@@ -466,34 +466,34 @@ export default function Profile() {
             )}
 
             {activeTab === 'lists' && (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Active Wishlists */}
                 <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle className="flex items-center">
-                      <Heart className="mr-2 h-5 w-5 text-coral" />
+                  <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 pb-4">
+                    <CardTitle className="flex items-center text-lg sm:text-xl">
+                      <Heart className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-coral" />
                       Active Wishlists ({activeWishlists.length})
                     </CardTitle>
                     <Link href="/create">
-                      <Button className="bg-coral hover:bg-coral/90">
+                      <Button className="bg-coral hover:bg-coral/90 w-full sm:w-auto text-sm">
                         <Plus className="mr-2 h-4 w-4" />
                         Create New
                       </Button>
                     </Link>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     {activeWishlists.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {activeWishlists.map((wishlist: any) => (
                           <WishlistCard key={wishlist.id} wishlist={wishlist} isOwner={true} />
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8">
-                        <Heart className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                        <p className="text-gray-500 mb-4">You don't have any active wishlists yet</p>
+                      <div className="text-center py-6 sm:py-8">
+                        <Heart className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-300 mb-3 sm:mb-4" />
+                        <p className="text-gray-500 mb-3 sm:mb-4 text-sm sm:text-base">You don't have any active wishlists yet</p>
                         <Link href="/create">
-                          <Button className="bg-coral hover:bg-coral/90">
+                          <Button className="bg-coral hover:bg-coral/90 w-full sm:w-auto">
                             <Plus className="mr-2 h-4 w-4" />
                             Create Your First Wishlist
                           </Button>
@@ -506,14 +506,14 @@ export default function Profile() {
                 {/* Completed Wishlists */}
                 {completedWishlists.length > 0 && (
                   <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <Check className="mr-2 h-5 w-5 text-green-600" />
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center text-lg sm:text-xl">
+                        <Check className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                         Completed Wishlists ({completedWishlists.length})
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {completedWishlists.map((wishlist: any) => (
                           <WishlistCard key={wishlist.id} wishlist={wishlist} isOwner={true} />
                         ))}
@@ -524,19 +524,19 @@ export default function Profile() {
               </div>
             )}
 
-            {/* Other tabs can be implemented similarly */}
+            {/* Thank You Notes Section */}
             {activeTab === 'thankyou' && (
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {/* Header */}
                 <div className="text-center">
-                  <h2 className="text-3xl font-bold text-navy mb-2">Thank You Notes</h2>
-                  <p className="text-gray-600">Messages of gratitude shared within our community</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-navy mb-2">Thank You Notes</h2>
+                  <p className="text-gray-600 text-sm sm:text-base">Messages of gratitude shared within our community</p>
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div 
-                    className={`cursor-pointer rounded-xl p-6 border-2 transition-all hover:shadow-lg ${
+                    className={`cursor-pointer rounded-xl p-4 sm:p-6 border-2 transition-all hover:shadow-lg ${
                       notesFilter === 'all' 
                         ? 'bg-navy text-white border-navy' 
                         : 'bg-white border-gray-200 hover:border-gray-300'
@@ -544,20 +544,20 @@ export default function Profile() {
                     onClick={() => setNotesFilter('all')}
                   >
                     <div className="flex items-center">
-                      <div className={`p-3 rounded-lg ${notesFilter === 'all' ? 'bg-white/20' : 'bg-gray-100'}`}>
-                        <MessageSquare className={`h-6 w-6 ${notesFilter === 'all' ? 'text-white' : 'text-gray-600'}`} />
+                      <div className={`p-2 sm:p-3 rounded-lg ${notesFilter === 'all' ? 'bg-white/20' : 'bg-gray-100'}`}>
+                        <MessageSquare className={`h-5 w-5 sm:h-6 sm:w-6 ${notesFilter === 'all' ? 'text-white' : 'text-gray-600'}`} />
                       </div>
-                      <div className="ml-4">
-                        <div className="text-2xl font-bold">
+                      <div className="ml-3 sm:ml-4">
+                        <div className="text-xl sm:text-2xl font-bold">
                           {thankYouNotes?.length || 0}
                         </div>
-                        <div className="text-sm opacity-80">All Notes</div>
+                        <div className="text-xs sm:text-sm opacity-80">All Notes</div>
                       </div>
                     </div>
                   </div>
                   
                   <div 
-                    className={`cursor-pointer rounded-xl p-6 border-2 transition-all hover:shadow-lg ${
+                    className={`cursor-pointer rounded-xl p-4 sm:p-6 border-2 transition-all hover:shadow-lg ${
                       notesFilter === 'sent' 
                         ? 'bg-coral text-white border-coral' 
                         : 'bg-gradient-to-r from-coral/10 to-coral/5 border-coral/20 hover:border-coral/30'
@@ -565,20 +565,20 @@ export default function Profile() {
                     onClick={() => setNotesFilter('sent')}
                   >
                     <div className="flex items-center">
-                      <div className={`p-3 rounded-lg ${notesFilter === 'sent' ? 'bg-white/20' : 'bg-coral'}`}>
-                        <MessageCircle className={`h-6 w-6 ${notesFilter === 'sent' ? 'text-white' : 'text-white'}`} />
+                      <div className={`p-2 sm:p-3 rounded-lg ${notesFilter === 'sent' ? 'bg-white/20' : 'bg-coral'}`}>
+                        <MessageCircle className={`h-5 w-5 sm:h-6 sm:w-6 ${notesFilter === 'sent' ? 'text-white' : 'text-white'}`} />
                       </div>
-                      <div className="ml-4">
-                        <div className="text-2xl font-bold">
+                      <div className="ml-3 sm:ml-4">
+                        <div className="text-xl sm:text-2xl font-bold">
                           {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0}
                         </div>
-                        <div className="text-sm opacity-80">Notes Sent</div>
+                        <div className="text-xs sm:text-sm opacity-80">Notes Sent</div>
                       </div>
                     </div>
                   </div>
                   
                   <div 
-                    className={`cursor-pointer rounded-xl p-6 border-2 transition-all hover:shadow-lg ${
+                    className={`cursor-pointer rounded-xl p-4 sm:p-6 border-2 transition-all hover:shadow-lg ${
                       notesFilter === 'received' 
                         ? 'bg-green-500 text-white border-green-500' 
                         : 'bg-gradient-to-r from-green-50 to-green-25 border-green-200 hover:border-green-300'
@@ -586,14 +586,14 @@ export default function Profile() {
                     onClick={() => setNotesFilter('received')}
                   >
                     <div className="flex items-center">
-                      <div className={`p-3 rounded-lg ${notesFilter === 'received' ? 'bg-white/20' : 'bg-green-500'}`}>
-                        <Heart className={`h-6 w-6 ${notesFilter === 'received' ? 'text-white' : 'text-white'}`} />
+                      <div className={`p-2 sm:p-3 rounded-lg ${notesFilter === 'received' ? 'bg-white/20' : 'bg-green-500'}`}>
+                        <Heart className={`h-5 w-5 sm:h-6 sm:w-6 ${notesFilter === 'received' ? 'text-white' : 'text-white'}`} />
                       </div>
-                      <div className="ml-4">
-                        <div className="text-2xl font-bold">
+                      <div className="ml-3 sm:ml-4">
+                        <div className="text-xl sm:text-2xl font-bold">
                           {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0}
                         </div>
-                        <div className="text-sm opacity-80">Notes Received</div>
+                        <div className="text-xs sm:text-sm opacity-80">Notes Received</div>
                       </div>
                     </div>
                   </div>
