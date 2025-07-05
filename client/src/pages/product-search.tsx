@@ -56,7 +56,7 @@ export default function ProductSearch() {
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
-  const [showFallbacks, setShowFallbacks] = useState(true);
+
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
@@ -162,39 +162,7 @@ export default function ProductSearch() {
     ]
   }), []);
 
-  // Recently donated/popular items for fallback display
-  const fallbackProducts = useMemo(() => [
-    {
-      asin: "fallback-1",
-      title: "Emergency Food Kit - 72 Hour Family Pack",
-      image: "https://m.media-amazon.com/images/I/81GbDXYf+8L._SL1500_.jpg",
-      price: { value: 49.99, currency: "USD" },
-      rating: 4.6,
-      ratings_total: 2156,
-      link: "https://www.amazon.com/dp/B08KS3QWT4?tag=needfully-20",
-      category: "emergency"
-    },
-    {
-      asin: "fallback-2", 
-      title: "Warm Winter Coat - Adult Size Medium",
-      image: "https://m.media-amazon.com/images/I/71KkGPJg7qL._SL1500_.jpg",
-      price: { value: 35.00, currency: "USD" },
-      rating: 4.4,
-      ratings_total: 1834,
-      link: "https://www.amazon.com/dp/B07X9MQ8R7?tag=needfully-20",
-      category: "clothing"
-    },
-    {
-      asin: "fallback-3",
-      title: "First Aid Emergency Kit - 250 Pieces",
-      image: "https://m.media-amazon.com/images/I/81FLHjlFFcL._SL1500_.jpg",
-      price: { value: 24.95, currency: "USD" },
-      rating: 4.7,
-      ratings_total: 3456,
-      link: "https://www.amazon.com/dp/B07SF2SYC4?tag=needfully-20",
-      category: "medical"
-    }
-  ], []);
+
 
   // Debounce search input to reduce API calls
   useEffect(() => {
@@ -320,7 +288,7 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products with smart fallbacks
+  // Get display products
   const displayProducts = useMemo(() => {
     console.log('Display calculation:', {
       debouncedQuery,
@@ -328,12 +296,12 @@ export default function ProductSearch() {
       isLoading,
       hasSearchResults: !!searchResults,
       searchResultsKeys: searchResults ? Object.keys(searchResults) : null,
-      resultsLength: searchResults?.search_results?.length || searchResults?.products?.length || 0
+      resultsLength: searchResults?.data?.length || 0
     });
     
+    // Only show results if we have a valid search query
     if (!debouncedQuery || debouncedQuery.length < 3) {
-      // Show fallback products when no search query
-      return showFallbacks ? fallbackProducts : [];
+      return [];
     }
     
     // If we're loading or don't have results yet, return empty array
@@ -341,12 +309,12 @@ export default function ProductSearch() {
       return [];
     }
     
-    // Handle different response formats (Amazon vs multi-retailer)
-    const results = searchResults?.data || searchResults?.search_results || searchResults?.products || [];
+    // Handle different response formats
+    const results = searchResults?.data || [];
     console.log('Final results to display:', results?.length);
     console.log('SearchResults object keys:', searchResults ? Object.keys(searchResults) : 'no searchResults');
     return results;
-  }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts, isLoading]);
+  }, [debouncedQuery, searchResults, isLoading]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -612,95 +580,7 @@ export default function ProductSearch() {
               </Card>
             )}
 
-            {/* No Search Query - Show Fallback Products */}
-            {(!debouncedQuery || debouncedQuery.length < 3) && showFallbacks && (
-              <div className="space-y-6">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-navy mb-2">Popular Items People Are Requesting</h3>
-                  <p className="text-gray-600 text-sm">Here are some items that supporters have been helping with recently</p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {fallbackProducts.map((product: any, index: number) => (
-                    <Card key={`fallback-${index}`} className="overflow-hidden hover:shadow-lg transition-shadow border-l-4 border-l-coral">
-                      {product.image && (
-                        <div className="relative">
-                          <img 
-                            src={product.image}
-                            alt={product.title}
-                            className="w-full h-48 object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/placeholder-image.png';
-                            }}
-                          />
-                          <Badge className="absolute top-2 left-2 bg-coral text-white">
-                            Popular
-                          </Badge>
-                          {/* Retailer Logo */}
-                          <div className="absolute top-2 right-2 bg-white rounded p-1 shadow-sm">
-                            <img 
-                              src={getRetailerLogo(product.retailer || 'amazon')} 
-                              alt={product.retailer_name || 'Amazon'} 
-                              className="h-4 w-4 object-contain"
-                            />
-                          </div>
-                        </div>
-                      )}
-                      
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold text-navy mb-2 line-clamp-2 text-sm">
-                          {product.title}
-                        </h3>
-                        
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-lg font-bold text-coral">
-                            {formatPrice(product.price)}
-                          </span>
-                          <div className="flex items-center">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                            <span className="text-sm font-medium">{product.rating}</span>
-                            <span className="text-xs text-gray-500 ml-1">
-                              ({product.ratings_total?.toLocaleString()})
-                            </span>
-                          </div>
-                        </div>
 
-                        <Button 
-                          onClick={() => addToWishlistMutation.mutate(product)}
-                          disabled={addingProductId === product.asin || addToWishlistMutation.isPending}
-                          className="w-full bg-coral hover:bg-coral-dark text-white text-sm py-2"
-                          size="sm"
-                        >
-                          {addingProductId === product.asin ? (
-                            <>
-                              <Package className="mr-2 h-4 w-4 animate-pulse" />
-                              Adding...
-                            </>
-                          ) : (
-                            <>
-                              <ShoppingCart className="mr-2 h-4 w-4" />
-                              Add to Needs List
-                            </>
-                          )}
-                        </Button>
-
-                        <div className="mt-2 text-center">
-                          <a 
-                            href={product.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-gray-500 hover:text-coral inline-flex items-center"
-                          >
-                            <ExternalLink className="mr-1 h-3 w-3" />
-                            View Details
-                          </a>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Search Results Grid */}
             {displayProducts && displayProducts.length > 0 && (
@@ -853,8 +733,8 @@ export default function ProductSearch() {
               </>
             )}
 
-            {/* No Results */}
-            {searchResults && !isLoading && (!searchResults.data || searchResults.data.length === 0) && (
+            {/* No Results - Only show if we have completed a search and got empty results */}
+            {!isLoading && searchResults && searchResults.data && searchResults.data.length === 0 && (activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
               <Card className="p-12 text-center">
                 <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No Products Found</h3>
