@@ -55,7 +55,7 @@ export default function ProductSearch() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
-  const [activeSearch, setActiveSearch] = useState("");
+
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
@@ -74,18 +74,24 @@ export default function ProductSearch() {
   const initialMinPrice = urlParams.get('min_price') || "";
   const initialMaxPrice = urlParams.get('max_price') || "";
 
+  // Synchronously initialize activeSearch to ensure immediate cached product display
+  const [activeSearch, setActiveSearch] = useState(() => {
+    // Initialize with cached products ready - this prevents any loading flash
+    return initialQuery || "Basic Essentials";
+  });
+
   // Initialize search from URL parameters or default to "Basic Essentials"
   useEffect(() => {
     if (initialQuery) {
       setSearchQuery(initialQuery);
       setDebouncedQuery(initialQuery);
-      setActiveSearch(initialQuery); // Set activeSearch to trigger search immediately
+      // activeSearch already set in useState initializer
     } else {
       // Auto-load with pre-cached "Basic Essentials" results when no query parameter is provided
       const defaultQuery = "Basic Essentials";
       setSearchQuery(defaultQuery);
       // Don't set debouncedQuery - this prevents the automatic search trigger
-      setActiveSearch(defaultQuery);
+      // activeSearch already set in useState initializer
     }
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
@@ -352,9 +358,20 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products
+  // Get display products - prioritize cached products to prevent skeleton flash
   const displayProducts = useMemo(() => {
-    // If we have search results and a valid debounced query, show search results
+    // Priority 1: Always default to "Basic Essentials" when no specific search is active
+    // This ensures immediate content display on page load
+    if (!activeSearch && !debouncedQuery) {
+      return popularProducts["Basic Essentials"] || [];
+    }
+    
+    // Priority 2: If we have an active search, check for cached products first
+    if (activeSearch && popularProducts[activeSearch as keyof typeof popularProducts]) {
+      return popularProducts[activeSearch as keyof typeof popularProducts];
+    }
+    
+    // Priority 3: If we have search results and a valid debounced query, show search results
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       const results = searchResults?.search_results || searchResults?.data || [];
       // Debug: Check Target products specifically
@@ -370,19 +387,13 @@ export default function ProductSearch() {
       return results;
     }
     
-    // If we have an active search query but no debouncedQuery (auto-loaded state), show cached products
+    // Priority 4: Fallback to cached products if available, otherwise empty array
     if (activeSearch && popularProducts[activeSearch as keyof typeof popularProducts]) {
       return popularProducts[activeSearch as keyof typeof popularProducts];
     }
     
-    // If loading, show empty array
-    if (isLoading) {
-      return [];
-    }
-    
-    // Default to empty array if no search query
     return [];
-  }, [debouncedQuery, searchResults, isLoading, activeSearch, popularProducts]);
+  }, [debouncedQuery, searchResults, activeSearch, popularProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -683,8 +694,8 @@ export default function ProductSearch() {
               </div>
             )}
 
-            {/* Loading State */}
-            {isLoading && (
+            {/* Loading State - Only show if we don't have cached products to display */}
+            {isLoading && displayProducts.length === 0 && (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coral mx-auto mb-4"></div>
                 <p className="text-gray-600">Searching for products...</p>
