@@ -118,10 +118,11 @@ export default function ProductSearch() {
   // Cached products - real product search will provide actual images from APIs
   const popularProducts = useMemo(() => ({
     "Basic Essentials": [
-      // Amazon Products - images will come from live API responses
+      // Amazon Products - placeholder images to be replaced with exact URLs
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
+        image: "PLACEHOLDER_PAMPERS_WIPES_IMAGE",
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
@@ -131,6 +132,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H", 
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
+        image: "PLACEHOLDER_CHARMIN_TOILET_PAPER_IMAGE",
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -140,6 +142,7 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
+        image: "PLACEHOLDER_PAMPERS_DIAPERS_IMAGE",
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
@@ -149,6 +152,7 @@ export default function ProductSearch() {
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
+        image: "PLACEHOLDER_TIDE_DETERGENT_IMAGE",
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
         ratings_total: 18745,
@@ -158,15 +162,17 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
+        image: "PLACEHOLDER_BOUNTY_PAPER_TOWELS_IMAGE",
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
         link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
         retailer: "amazon"
       },
-      // Walmart Products - images will come from live API responses
+      // Walmart Products - placeholder images to be replaced with exact URLs
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
+        image: "PLACEHOLDER_WALMART_TOILET_PAPER_IMAGE",
         price: "$11.98",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
         product_id: "10315001",
@@ -175,6 +181,7 @@ export default function ProductSearch() {
       },
       {
         title: "Great Value Dish Soap, Original Scent, 75 fl oz",
+        image: "PLACEHOLDER_WALMART_DISH_SOAP_IMAGE",
         price: "$2.97", 
         product_url: "https://www.walmart.com/ip/Great-Value-Dish-Soap/10315002",
         product_id: "10315002",
@@ -183,15 +190,17 @@ export default function ProductSearch() {
       },
       {
         title: "Great Value All Purpose Cleaner, 32 fl oz",
+        image: "PLACEHOLDER_WALMART_CLEANER_IMAGE",
         price: "$1.78",
         product_url: "https://www.walmart.com/ip/Great-Value-All-Purpose-Cleaner/10315003",
         product_id: "10315003",
         retailer: "walmart",
         retailer_name: "Walmart"
       },
-      // Target Products - images will come from live API responses
+      // Target Products - placeholder images to be replaced with exact URLs
       {
         title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
+        image: "PLACEHOLDER_TARGET_BABY_WIPES_IMAGE",
         price: "$12.99",
         product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-54191097",
         product_id: "54191097",
@@ -200,6 +209,7 @@ export default function ProductSearch() {
       },
       {
         title: "Up & Up Hand Soap Refill, Fresh Scent, 56 fl oz", 
+        image: "PLACEHOLDER_TARGET_HAND_SOAP_IMAGE",
         price: "$4.99",
         product_url: "https://www.target.com/p/up-up-hand-soap-refill/-/A-13217789",
         product_id: "13217789",
@@ -208,6 +218,7 @@ export default function ProductSearch() {
       },
       {
         title: "Up & Up Fabric Softener Sheets, Fresh Scent, 240 Count",
+        image: "PLACEHOLDER_TARGET_FABRIC_SOFTENER_IMAGE",
         price: "$3.79",
         product_url: "https://www.target.com/p/up-up-fabric-softener-sheets/-/A-14851456",
         product_id: "14851456",
