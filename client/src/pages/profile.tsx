@@ -30,7 +30,8 @@ import {
   Archive,
   LogOut,
   Award,
-  Edit
+  Edit,
+  ShoppingCart
 } from "lucide-react";
 
 export default function Profile() {
@@ -137,6 +138,7 @@ export default function Profile() {
   const sidebarItems = [
     { id: 'profile', label: 'My Profile', icon: User, active: activeTab === 'profile' },
     { id: 'lists', label: 'My Lists', icon: List, active: activeTab === 'lists' },
+    { id: 'purchases', label: 'My Purchases', icon: ShoppingCart, active: activeTab === 'purchases' },
     { id: 'thankyou', label: 'Thank You Notes', icon: MessageCircle, active: activeTab === 'thankyou' },
     { id: 'privacy', label: 'Privacy Settings', icon: Settings, active: activeTab === 'privacy' },
     { id: 'create', label: 'Create List', icon: Gift, active: activeTab === 'create' },
@@ -245,6 +247,7 @@ export default function Profile() {
                       href={
                         item.id === 'profile' ? '/profile' :
                         item.id === 'lists' ? '/profile' :
+                        item.id === 'purchases' ? '/profile' :
                         item.id === 'privacy' ? '/profile/privacy' :
                         item.id === 'create' ? '/create' :
                         item.id === 'find' ? '/find' :
@@ -780,7 +783,142 @@ export default function Profile() {
               </div>
             )}
 
-            {activeTab !== 'profile' && activeTab !== 'lists' && activeTab !== 'thankyou' && (
+            {/* Purchase History Section */}
+            {activeTab === 'purchases' && (
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-navy">My Purchase History</h2>
+                    <p className="text-gray-600">Items you've purchased to support others in need</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-coral">{userDonations?.length || 0}</div>
+                    <div className="text-sm text-gray-600">Total Items Purchased</div>
+                  </div>
+                </div>
+
+                {/* Purchase Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl p-6 text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-blue-100">Items Purchased</p>
+                        <p className="text-2xl font-bold">{userDonations?.length || 0}</p>
+                      </div>
+                      <ShoppingCart className="h-8 w-8" />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-green-500 to-teal-500 rounded-xl p-6 text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-green-100">People Helped</p>
+                        <p className="text-2xl font-bold">
+                          {userDonations ? [...new Set(userDonations.map((d: any) => d.wishlistUserId))].length : 0}
+                        </p>
+                      </div>
+                      <Heart className="h-8 w-8" />
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-coral to-orange-500 rounded-xl p-6 text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-orange-100">Thank You Notes</p>
+                        <p className="text-2xl font-bold">
+                          {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0}
+                        </p>
+                      </div>
+                      <MessageCircle className="h-8 w-8" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Purchase List */}
+                <div className="space-y-4">
+                  {userDonations && userDonations.length > 0 ? (
+                    userDonations.map((donation: any) => (
+                      <Card key={donation.id} className="hover:shadow-lg transition-all duration-200">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-3">
+                                <div className="p-2 bg-coral rounded-lg">
+                                  <Gift className="h-5 w-5 text-white" />
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold text-navy">{donation.itemTitle}</h3>
+                                  <p className="text-sm text-gray-600">
+                                    Purchased for: <span className="font-medium">{donation.wishlistTitle}</span>
+                                  </p>
+                                </div>
+                              </div>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Calendar className="h-4 w-4" />
+                                  <span>
+                                    {new Date(donation.fulfilledAt).toLocaleDateString('en-US', { 
+                                      year: 'numeric', 
+                                      month: 'long', 
+                                      day: 'numeric' 
+                                    })}
+                                  </span>
+                                </div>
+                                
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <MapPin className="h-4 w-4" />
+                                  <span>{donation.wishlistLocation || 'Location not specified'}</span>
+                                </div>
+                                
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                  <Heart className="h-4 w-4" />
+                                  <span>Recipient: {donation.recipientName || 'Anonymous'}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="text-right ml-4">
+                              <Badge variant="secondary" className="bg-green-100 text-green-700 mb-2">
+                                Fulfilled
+                              </Badge>
+                              <div className="text-sm text-gray-600">
+                                Qty: {donation.quantity || 1}
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="text-center py-16">
+                      <div className="mb-6">
+                        <ShoppingCart className="mx-auto h-16 w-16 text-gray-300" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-navy mb-2">No Purchases Yet</h3>
+                      <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                        You haven't purchased any items for others yet. Browse needs lists to start supporting your community.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link href="/browse">
+                          <Button className="bg-coral hover:bg-coral/90">
+                            Browse Needs Lists
+                          </Button>
+                        </Link>
+                        <Link href="/categories">
+                          <Button variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white">
+                            Shop Emergency Supplies
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeTab !== 'profile' && activeTab !== 'lists' && activeTab !== 'thankyou' && activeTab !== 'purchases' && (
               <Card>
                 <CardContent className="p-12 text-center">
                   <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
