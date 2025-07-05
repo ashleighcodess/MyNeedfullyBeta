@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CATEGORIES } from "@/lib/constants";
 import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -27,7 +28,8 @@ import {
   Heart,
   DollarSign,
   Package,
-  ChevronLeft
+  ChevronLeft,
+  X
 } from "lucide-react";
 
 // Helper function to get retailer logo
@@ -56,6 +58,7 @@ export default function ProductSearch() {
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [location, navigate] = useLocation();
   const { toast } = useToast();
@@ -436,56 +439,112 @@ export default function ProductSearch() {
                     className="pl-10 py-3"
                   />
                 </div>
+                
+                {/* Filter Dropdown */}
+                <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-2 px-4 border-gray-300 hover:bg-gray-50"
+                    >
+                      <Filter className="h-4 w-4" />
+                      <span className="hidden sm:inline">Filters</span>
+                      {(category || minPrice || maxPrice) && (
+                        <Badge variant="secondary" className="ml-1 bg-coral text-white">
+                          {[category, minPrice, maxPrice].filter(Boolean).length}
+                        </Badge>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4" align="end">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-sm">Filter Products</h4>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsFilterOpen(false)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-sm font-medium">Category</Label>
+                          <Select value={category} onValueChange={handleCategoryChange}>
+                            <SelectTrigger className="mt-1">
+                              <SelectValue placeholder="All Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Categories</SelectItem>
+                              {CATEGORIES.map((cat) => (
+                                <SelectItem key={cat.value} value={cat.value}>
+                                  <div className="flex items-center space-x-2">
+                                    <i className={`${cat.icon} text-coral`}></i>
+                                    <span>{cat.label}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium">Min Price</Label>
+                          <Input
+                            placeholder="Min Price"
+                            type="number"
+                            value={minPrice}
+                            onChange={(e) => setMinPrice(e.target.value)}
+                            className="mt-1"
+                          />
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium">Max Price</Label>
+                          <Input
+                            placeholder="Max Price"
+                            type="number"
+                            value={maxPrice}
+                            onChange={(e) => setMaxPrice(e.target.value)}
+                            className="mt-1"
+                          />
+                        </div>
+
+                        <div className="flex gap-2 pt-2">
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setCategory("");
+                              setMinPrice("");
+                              setMaxPrice("");
+                              setPage(1);
+                            }}
+                            className="flex-1"
+                          >
+                            Clear Filters
+                          </Button>
+                          <Button 
+                            type="button"
+                            size="sm"
+                            onClick={() => setIsFilterOpen(false)}
+                            className="flex-1 bg-coral hover:bg-coral/90"
+                          >
+                            Apply Filters
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
                 <Button type="submit" className="bg-coral hover:bg-coral/90 px-8 whitespace-nowrap">
                   <Search className="mr-2 h-4 w-4" />
                   Search
-                </Button>
-              </div>
-
-              {/* Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Select value={category} onValueChange={handleCategoryChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
-                        <div className="flex items-center space-x-2">
-                          <i className={`${cat.icon} text-coral`}></i>
-                          <span>{cat.label}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Input
-                  placeholder="Min Price"
-                  type="number"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                />
-
-                <Input
-                  placeholder="Max Price"
-                  type="number"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                />
-
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => {
-                    setCategory("");
-                    setMinPrice("");
-                    setMaxPrice("");
-                    setPage(1);
-                  }}
-                >
-                  Clear Filters
                 </Button>
               </div>
             </form>
