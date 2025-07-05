@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Eye, Heart, Edit } from "lucide-react";
+import { MapPin, Clock, Eye, Heart, Edit, Share2 } from "lucide-react";
+import { ShareModal } from "@/components/share-modal";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 interface WishlistCardProps {
   wishlist: {
@@ -28,6 +31,20 @@ interface WishlistCardProps {
 }
 
 export default function WishlistCard({ wishlist, showActions = true, isOwner = false }: WishlistCardProps) {
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const handleShare = async () => {
+    // Increment share count in the database
+    try {
+      await apiRequest('POST', `/api/wishlists/${wishlist.id}/share`);
+      // Invalidate wishlist cache to refresh the share count
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${wishlist.id}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/wishlists'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/wishlists/featured'] });
+    } catch (error) {
+      console.error('Failed to increment share count:', error);
+    }
+  };
   const completionPercentage = wishlist.totalItems > 0 
     ? Math.round((wishlist.fulfilledItems / wishlist.totalItems) * 100) 
     : 0;
@@ -157,18 +174,27 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
                 </Button>
               </Link>
             )}
-            {!isOwner && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-coral text-coral hover:bg-coral/10"
-              >
-                <Heart className="h-4 w-4" />
-              </Button>
-            )}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-coral text-coral hover:bg-coral/10"
+              onClick={() => setShowShareModal(true)}
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
           </div>
         )}
       </CardContent>
+
+      {/* Share Modal */}
+      <ShareModal
+        open={showShareModal}
+        onOpenChange={setShowShareModal}
+        title={wishlist.title}
+        description={wishlist.description}
+        url={`${window.location.origin}/wishlist/${wishlist.id}`}
+        onShare={handleShare}
+      />
     </Card>
   );
 }

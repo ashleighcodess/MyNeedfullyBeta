@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import ProductCard from "@/components/product-card";
 import ThankYouNote from "@/components/thank-you-note";
 import PurchaseConfirmationModal from "@/components/purchase-confirmation-modal";
+import { ShareModal } from "@/components/share-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,6 +56,7 @@ export default function WishlistDetail() {
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showAllActivity, setShowAllActivity] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Helper function to format relative time
   const formatRelativeTime = (dateString: string) => {
@@ -265,9 +267,11 @@ export default function WishlistDetail() {
     }
   };
 
-  const shareWishlist = async () => {
-    const url = window.location.href;
-    
+  const shareWishlist = () => {
+    setShowShareModal(true);
+  };
+
+  const handleShare = async () => {
     // Increment share count in the database
     try {
       await apiRequest('POST', `/api/wishlists/${wishlist?.id}/share`);
@@ -275,29 +279,6 @@ export default function WishlistDetail() {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${wishlist?.id}`] });
     } catch (error) {
       console.error('Failed to increment share count:', error);
-    }
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: wishlist?.title,
-          text: wishlist?.description,
-          url: url,
-        });
-      } catch (error) {
-        // Fallback to clipboard
-        await navigator.clipboard.writeText(url);
-        toast({
-          title: "Link Copied",
-          description: "Wishlist link has been copied to your clipboard.",
-        });
-      }
-    } else {
-      await navigator.clipboard.writeText(url);
-      toast({
-        title: "Link Copied",
-        description: "Wishlist link has been copied to your clipboard.",
-      });
     }
   };
 
@@ -1147,6 +1128,18 @@ export default function WishlistDetail() {
           }}
           onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
           itemId={selectedProduct.itemId}
+        />
+      )}
+
+      {/* Share Modal */}
+      {wishlist && (
+        <ShareModal
+          open={showShareModal}
+          onOpenChange={setShowShareModal}
+          title={wishlist.title}
+          description={wishlist.description}
+          url={window.location.href}
+          onShare={handleShare}
         />
       )}
     </div>
