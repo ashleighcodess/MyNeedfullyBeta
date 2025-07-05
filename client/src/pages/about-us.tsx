@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -13,17 +13,112 @@ import {
   Package,
   Smile
 } from "lucide-react";
+
+// Custom Box Heart SVG Component for Needs List Fulfilled
+const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Box outline */}
+    <rect x="4" y="8" width="16" height="12" rx="1" fill="currentColor" opacity="0.9" />
+    {/* Box top flaps */}
+    <path d="M6 8v-1c0-0.5 0.5-1 1-1h2v2H6z" opacity="0.7" />
+    <path d="M15 6h2c0.5 0 1 0.5 1 1v1h-3V6z" opacity="0.7" />
+    {/* Heart on box */}
+    <path d="M12 18c-1.5-1.2-4-3.5-4-6 0-1.1 0.9-2 2-2s2 0.9 2 2c0-1.1 0.9-2 2-2s2 0.9 2 2c0 2.5-2.5 4.8-4 6z" 
+          fill="white" opacity="0.95" />
+  </svg>
+);
+
+// Custom Person Carry Box SVG Component for Products Delivered  
+const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Person head */}
+    <circle cx="8" cy="4" r="2" />
+    {/* Person body */}
+    <path d="M8 6c-1.5 0-2.5 1-2.5 2.5v3c0 0.5 0.2 1 0.6 1.3l1.4 1.2v4c0 0.6 0.4 1 1 1s1-0.4 1-1v-4l1.4-1.2c0.4-0.3 0.6-0.8 0.6-1.3v-3C10.5 7 9.5 6 8 6z" />
+    {/* Arms holding box */}
+    <path d="M5.5 9c-0.3 0-0.5 0.2-0.5 0.5v2c0 0.3 0.2 0.5 0.5 0.5h1v-3h-1z" />
+    <path d="M10.5 9v3h1c0.3 0 0.5-0.2 0.5-0.5v-2c0-0.3-0.2-0.5-0.5-0.5h-1z" />
+    {/* Box being carried */}
+    <rect x="13" y="8" width="6" height="5" rx="0.5" fill="currentColor" opacity="0.8" />
+    {/* Box details */}
+    <rect x="14" y="9" width="1" height="1" opacity="0.6" />
+    <rect x="17" y="9" width="1" height="1" opacity="0.6" />
+    <rect x="14" y="11" width="4" height="0.5" opacity="0.6" />
+    {/* Motion lines */}
+    <path d="M20 6l1.5-1 M21 8l1-0.5 M20.5 10l1.2-0.8" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+  </svg>
+);
+
+// Custom animated counter hook
+function useAnimatedCounter(targetValue: number, duration: number = 2000, startAnimation: boolean = false) {
+  const [value, setValue] = useState(0);
+  
+  useEffect(() => {
+    if (!startAnimation) return;
+    
+    const startTime = Date.now();
+    const startValue = 0;
+    
+    const animate = () => {
+      const currentTime = Date.now();
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuart);
+      
+      setValue(currentValue);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [targetValue, duration, startAnimation]);
+  
+  return value;
+}
 import aboutUsImage from "@assets/AboutUsIMage2_1751592833990.png";
 import missionImage from "@assets/AboutUsImage3_1751592935275.png";
 import howItWorksBackground from "@assets/HowIcons_1751593054903.png";
 
 export default function AboutUs() {
-  const stats = [
-    { icon: Gift, label: "Needs Lists Fulfilled", value: "300+", color: "text-coral" },
-    { icon: DollarSign, label: "Donations Raised", value: "$20,000", color: "text-green-600" },
-    { icon: Smile, label: "Smiles Spread", value: "400+", color: "text-amber-500" },
-    { icon: Package, label: "Products Delivered", value: "1,200+", color: "text-blue-600" }
-  ];
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const aboutSection = document.querySelector('[data-stats-section]');
+      if (aboutSection) {
+        const rect = aboutSection.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isInViewport && !isVisible) {
+          setIsVisible(true);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check on mount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isVisible]);
+
+  // Animated counter values
+  const needsListFulfilled = useAnimatedCounter(127, 2000, isVisible);
+  const needsListCreated = useAnimatedCounter(453, 2000, isVisible);
+  const smilesSpread = useAnimatedCounter(2, 2000, isVisible); // Will display as 2k
+  const productsDelivered = useAnimatedCounter(1, 2000, isVisible); // Will display as 1k
 
   const howItWorks = [
     {
@@ -145,31 +240,51 @@ export default function AboutUs() {
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
-            <Card className="text-center bg-coral/10 border-coral/20 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/15">
-              <CardContent className="p-6">
-                <div className="text-2xl font-bold text-navy mb-1 animate-pulse">900+</div>
-                <div className="text-sm text-gray-600 uppercase tracking-wide">Needs List Fulfilled</div>
-              </CardContent>
-            </Card>
-            
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up" data-stats-section>
             <Card className="text-center bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-white mb-1 animate-pulse">$000,000</div>
-                <div className="text-sm text-white/90 uppercase tracking-wide">Donation Raised</div>
+                <div className="flex items-center justify-center mb-3">
+                  <BoxHeartIcon className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-white mb-1">
+                  {needsListFulfilled}+
+                </div>
+                <div className="text-sm text-white/90 uppercase tracking-wide">Needs List Fulfilled</div>
               </CardContent>
             </Card>
             
-            <Card className="text-center bg-amber-100 border-amber-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-amber-200">
+            <Card className="text-center bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-navy mb-1 animate-pulse">100K</div>
+                <div className="flex items-center justify-center mb-3">
+                  <Users className="h-8 w-8 text-navy" />
+                </div>
+                <div className="text-2xl font-bold text-navy mb-1">
+                  {needsListCreated}+
+                </div>
+                <div className="text-sm text-gray-600 uppercase tracking-wide">Needs List Created</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center bg-white border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-50">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-center mb-3">
+                  <Smile className="h-8 w-8 text-navy" />
+                </div>
+                <div className="text-2xl font-bold text-navy mb-1">
+                  {smilesSpread}k
+                </div>
                 <div className="text-sm text-gray-600 uppercase tracking-wide">Smiles Spread</div>
               </CardContent>
             </Card>
             
             <Card className="text-center bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-coral/90">
               <CardContent className="p-6">
-                <div className="text-2xl font-bold text-white mb-1 animate-pulse">000K</div>
+                <div className="flex items-center justify-center mb-3">
+                  <PersonCarryBoxIcon className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-white mb-1">
+                  {productsDelivered}k
+                </div>
                 <div className="text-sm text-white/90 uppercase tracking-wide">Products Delivered</div>
               </CardContent>
             </Card>
