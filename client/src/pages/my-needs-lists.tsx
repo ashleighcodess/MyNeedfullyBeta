@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import Navigation from "@/components/navigation";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +19,6 @@ export default function MyNeedsLists() {
   if (!user) {
     return (
       <div className="min-h-screen bg-warm-bg">
-        <Navigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-navy mb-4">My Needs Lists</h1>
@@ -38,7 +36,6 @@ export default function MyNeedsLists() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

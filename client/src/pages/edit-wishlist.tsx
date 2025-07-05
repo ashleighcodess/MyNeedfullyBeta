@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import Navigation from "@/components/navigation";
 import AddressAutocomplete from "@/components/address-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -190,7 +189,6 @@ export default function EditWishlist() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-warm-bg">
-        <Navigation />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
@@ -209,7 +207,6 @@ export default function EditWishlist() {
   if (!wishlist || !isOwner) {
     return (
       <div className="min-h-screen bg-warm-bg">
-        <Navigation />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card className="p-12 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -224,7 +221,6 @@ export default function EditWishlist() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      <Navigation />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
