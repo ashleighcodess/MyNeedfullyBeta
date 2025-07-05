@@ -750,8 +750,8 @@ export default function Landing() {
               </div>
               
               <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
-                Need More Than <span className="text-coral">Just Items?</span><br />
-                We're <span className="text-navy font-black">Here to Help.</span>
+                Need More Than<br />
+                <span className="text-coral">Just Items?</span> We're <span className="text-navy font-black">Here to Help.</span>
               </h2>
               
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
