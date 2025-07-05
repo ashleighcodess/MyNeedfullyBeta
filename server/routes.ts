@@ -263,7 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Fast Amazon-only search endpoint - ULTRA FAST VERSION
+  // ULTRA FAST Multi-Retailer Search Endpoint (Amazon + Walmart + Target)
   app.get('/api/search', async (req, res) => {
     try {
       const { query, page = '1' } = req.query;
@@ -272,39 +272,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      console.log(`🚀 ULTRA FAST Amazon search for: "${query}"`);
+      console.log(`🚀 ULTRA FAST Multi-Retailer search for: "${query}"`);
       const startTime = Date.now();
 
-      // Direct RainforestAPI call without any class wrappers
+      // Parallel search across all three retailers with 3-second timeout
+      const searchPromises = [];
+
+      // 1. Amazon Search (RainforestAPI)
       if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-        const params = new URLSearchParams({
+        const amazonPromise = fetch(`https://api.rainforestapi.com/request?${new URLSearchParams({
           api_key: RAINFOREST_API_KEY,
           type: "search",
           amazon_domain: "amazon.com",
           search_term: query as string
-        });
-
-        const url = `https://api.rainforestapi.com/request?${params.toString()}`;
-        
-        const response = await fetch(url);
-        const data = await response.json();
-        const endTime = Date.now();
-        
-        console.log(`✅ ULTRA FAST: ${data.search_results?.length || 0} products in ${endTime - startTime}ms`);
-        
-        return res.json({
-          data: data.search_results?.map((product: any) => ({
+        }).toString()}`)
+        .then(res => res.json())
+        .then(data => ({
+          retailer: 'amazon',
+          products: data.search_results?.map((product: any) => ({
             ...product,
             retailer: 'amazon',
             retailer_name: 'Amazon',
             link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
           })) || []
-        });
+        }))
+        .catch(() => ({ retailer: 'amazon', products: [] }));
+        
+        searchPromises.push(amazonPromise);
       }
 
-      res.status(500).json({ message: "Search service unavailable" });
+      // 2. Walmart Search (SerpAPI)
+      const serpApiService = getSerpAPIService();
+      if (serpApiService) {
+        const walmartPromise = Promise.race([
+          serpApiService.searchWalmart(query as string, '60602', 20),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 3000))
+        ])
+        .then((products: any) => ({ retailer: 'walmart', products }))
+        .catch(() => ({ retailer: 'walmart', products: [] }));
+        
+        searchPromises.push(walmartPromise);
+
+        // 3. Target Search (SerpAPI)
+        const targetPromise = Promise.race([
+          serpApiService.searchTarget(query as string, '10001', 20),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 3000))
+        ])
+        .then((products: any) => ({ retailer: 'target', products }))
+        .catch(() => ({ retailer: 'target', products: [] }));
+        
+        searchPromises.push(targetPromise);
+      }
+
+      // Execute all searches in parallel
+      const results = await Promise.all(searchPromises);
+      const endTime = Date.now();
+
+      // Combine and shuffle results
+      const allProducts = results.flatMap(result => result.products);
+      const shuffledProducts = allProducts.sort(() => Math.random() - 0.5);
+
+      console.log(`✅ ULTRA FAST Multi-Retailer: ${allProducts.length} products (${results.map(r => `${r.retailer}: ${r.products.length}`).join(', ')}) in ${endTime - startTime}ms`);
+      
+      return res.json({
+        data: shuffledProducts.slice(0, 60) // Limit to 60 total products
+      });
+
     } catch (error) {
-      console.error("Search error:", error);
+      console.error("Multi-retailer search error:", error);
       res.status(500).json({ message: "Search failed" });
     }
   });

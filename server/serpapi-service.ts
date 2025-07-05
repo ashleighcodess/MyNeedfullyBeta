@@ -29,7 +29,12 @@ export class SerpAPIService {
         engine: 'walmart',
         query: query,
         location: location,
-        device: 'desktop'
+        device: 'desktop',
+        store_id: '2280',         // Specific store for fastest response
+        page: 1,                  // First page only
+        no_cache: false,          // Use cache when available (1hr)
+        output: 'json',           // Structured format
+        sort: 'best_match'        // Fastest processing
       };
 
       const response = await getJson(params);
@@ -70,9 +75,13 @@ export class SerpAPIService {
         api_key: this.apiKey,
         engine: 'google',
         q: `"${query}" site:target.com`,
-        location: location,
+        location: 'United States',
         device: 'desktop',
-        num: limit * 2 // Request more to have options after filtering
+        hl: 'en',                 // English language
+        gl: 'us',                 // US region
+        num: limit,               // Exact number needed
+        no_cache: false,          // Use cache when available
+        output: 'json'            // Structured format
       };
 
       const response = await getJson(params);
