@@ -246,7 +246,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-gray-800 mb-1">
-                      127+
+                      {needsListFulfilled}+
                     </div>
                     <div className="text-sm text-gray-600">Needs Lists Fulfilled</div>
                   </div>
@@ -260,7 +260,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">
-                      453+
+                      {needsListCreated}+
                     </div>
                     <div className="text-sm text-white/90">Needs Lists Created</div>
                   </div>
@@ -274,7 +274,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-gray-800 mb-1">
-                      2k
+                      {smilesSpread}k
                     </div>
                     <div className="text-sm text-gray-600">Smiles Spread</div>
                   </div>
@@ -288,7 +288,7 @@ export default function AboutUs() {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">
-                      1k
+                      {productsDelivered}k
                     </div>
                     <div className="text-sm text-white/90">Products Delivered</div>
                   </div>
