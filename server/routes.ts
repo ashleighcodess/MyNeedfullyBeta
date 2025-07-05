@@ -86,6 +86,48 @@ function getActivityIcon(eventType: string): string {
   }
 }
 
+function generateSearchQuery(productTitle: string): string {
+  // Remove common noise words and extract key product terms
+  const stopWords = [
+    'with', 'for', 'and', 'or', 'the', 'a', 'an', 'in', 'on', 'at', 'to', 'from',
+    'by', 'of', 'as', 'is', 'was', 'are', 'were', 'be', 'been', 'being',
+    'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should',
+    'may', 'might', 'must', 'can', 'featuring', 'includes', 'contains', 'comes',
+    'made', 'designed', 'perfect', 'great', 'best', 'premium', 'quality',
+    'pack', 'count', 'size', 'color', 'may', 'vary', 'assorted', 'mixed',
+    'microwave', 'safe', 'resistant', 'proof', 'free', 'reduced', 'ultra',
+    'filtered', 'spring', 'plastic', 'bottles', 'fl', 'oz', 'inch', 'stronger'
+  ];
+
+  // Clean and split the title
+  let cleanTitle = productTitle
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, ' ') // Remove special characters except hyphens
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+
+  // Split into words and filter out stop words and short words
+  const words = cleanTitle.split(' ').filter(word => 
+    word.length > 2 && !stopWords.includes(word)
+  );
+
+  // Take the first 3-4 most important words
+  let keyWords = words.slice(0, 4);
+  
+  // Prioritize brand names if found
+  const brandKeywords = ['oral', 'dove', 'clorox', 'fairlife', 'dixie', 'nutrafol', 'mountain', 'choice', 'rickyh', 'convenience'];
+  const foundBrands = keyWords.filter(word => 
+    brandKeywords.some(brand => word.includes(brand))
+  );
+  
+  // If we found brands, use them first
+  if (foundBrands.length > 0) {
+    keyWords = [...foundBrands, ...keyWords.filter(word => !foundBrands.includes(word))].slice(0, 3);
+  }
+  
+  return keyWords.join(' ').substring(0, 40); // Limit length for better search
+}
+
 function getTimeAgo(date: Date): string {
   const now = new Date();
   const diffInMs = now.getTime() - date.getTime();
@@ -1985,7 +2027,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
-      const searchQuery = item.title;
+      const searchQuery = generateSearchQuery(item.title);
+      console.log(`🔍 Optimized search query: "${item.title}" → "${searchQuery}"`);
       
       const serpService = getSerpAPIService();
       const results: any = {
