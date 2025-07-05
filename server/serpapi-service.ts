@@ -95,18 +95,20 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
+      // Try approach that was working earlier - using google engine with target.com site filter
       const params = {
         api_key: this.apiKey,
-        engine: 'google_shopping',
+        engine: 'google',
         q: `${query} site:target.com`,
         location: location,
         google_domain: 'google.com',
         gl: 'us',
         hl: 'en',
-        num: Math.min(limit, 100).toString(),
+        num: Math.min(limit, 60).toString(),
         start: '0',
         device: 'desktop',
-        no_cache: 'false'
+        safe: 'off',
+        lr: 'lang_en'
       };
 
       const url = `https://serpapi.com/search.json`;
@@ -127,15 +129,31 @@ export class SerpAPIService {
       const data = await response.json();
       console.log('Target SerpAPI response structure:', Object.keys(data));
 
-      // Check for shopping_results (Google Shopping format)
-      if (!data.shopping_results || !Array.isArray(data.shopping_results)) {
-        console.log('No shopping_results found in Target response');
+      // Check for error messages
+      if (data.error) {
+        console.log('Target SerpAPI error:', data.error);
         return [];
       }
 
-      console.log(`Target shopping_results found: ${data.shopping_results.length}`);
+      // Check for shopping_results first, fallback to organic_results
+      let resultsArray = [];
+      let resultType = '';
+      
+      if (data.shopping_results && Array.isArray(data.shopping_results) && data.shopping_results.length > 0) {
+        resultsArray = data.shopping_results;
+        resultType = 'shopping_results';
+        console.log(`Target shopping_results found: ${data.shopping_results.length}`);
+      } else if (data.organic_results && Array.isArray(data.organic_results) && data.organic_results.length > 0) {
+        resultsArray = data.organic_results;
+        resultType = 'organic_results';
+        console.log(`Target organic_results found: ${data.organic_results.length}`);
+      } else {
+        console.log('No shopping_results or organic_results found in Target response');
+        console.log('Available response keys:', Object.keys(data));
+        return [];
+      }
 
-      const targetResults = data.shopping_results
+      const targetResults = resultsArray
         .filter((result: any) => {
           const resultLink = result.link || '';
           const resultTitle = result.title || '';
@@ -150,8 +168,32 @@ export class SerpAPIService {
         .map((result: any) => {
           const resultTitle = result.title || '';
           const resultLink = result.link || '';
-          const extractedPrice = result.price || result.extracted_price || 'Price varies';
-          const imageUrl = result.thumbnail || '';
+          
+          // Extract price based on result type
+          let extractedPrice = 'Price varies';
+          let imageUrl = '';
+          
+          if (resultType === 'shopping_results') {
+            // Shopping results have structured price data
+            extractedPrice = result.price || result.extracted_price || 'Price varies';
+            imageUrl = result.thumbnail || result.image || '';
+          } else {
+            // Organic results need price extraction from snippets
+            if (result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.detected_extensions) {
+              const priceExt = result.rich_snippet.top.detected_extensions.find((ext: string) => 
+                ext.match(/\$[\d,]+\.?\d*/));
+              if (priceExt) {
+                const priceMatch = priceExt.match(/\$[\d,]+\.?\d*/);
+                if (priceMatch) extractedPrice = priceMatch[0];
+              }
+            }
+            
+            // Fallback: look for price in snippet
+            if (extractedPrice === 'Price varies' && result.snippet) {
+              const priceMatch = result.snippet.match(/\$[\d,]+\.?\d*/);
+              if (priceMatch) extractedPrice = priceMatch[0];
+            }
+          }
 
           return {
             title: resultTitle,
