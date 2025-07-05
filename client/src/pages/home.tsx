@@ -80,7 +80,7 @@ export default function Home() {
             <div className="space-y-0">
               <Link href="/create">
                 <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Plus className="h-5 w-5 text-coral mt-1" />
+                  <Plus className="h-5 w-5 text-coral mt-1 icon-wiggle" />
                   <div>
                     <h3 className="font-semibold">Create Your First Needs List</h3>
                     <p className="text-gray-600">Share what you need with our caring community</p>
@@ -95,7 +95,7 @@ export default function Home() {
               
               <Link href="/browse">
                 <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Heart className="h-5 w-5 text-coral mt-1" />
+                  <Heart className="h-5 w-5 text-coral mt-1 icon-wiggle-delayed-1" />
                   <div>
                     <h3 className="font-semibold">Browse and Help Others</h3>
                     <p className="text-gray-600">Find needs lists where you can make a difference</p>
@@ -110,7 +110,7 @@ export default function Home() {
               
               <Link href="/products">
                 <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Gift className="h-5 w-5 text-coral mt-1" />
+                  <Gift className="h-5 w-5 text-coral mt-1 icon-wiggle-delayed-2" />
                   <div>
                     <h3 className="font-semibold">Search for Specific Items</h3>
                     <p className="text-gray-600">Use our product search to find exactly what's needed</p>
@@ -125,7 +125,7 @@ export default function Home() {
               
               <Link href="/profile#my-lists">
                 <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Settings className="h-5 w-5 text-coral mt-1" />
+                  <Settings className="h-5 w-5 text-coral mt-1 icon-wiggle-delayed-3" />
                   <div>
                     <h3 className="font-semibold">Manage my Needs Lists</h3>
                     <p className="text-gray-600">Edit, update, and track your existing needs lists</p>

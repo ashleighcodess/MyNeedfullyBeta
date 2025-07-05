@@ -254,6 +254,63 @@
     animation: shimmer 3s ease-in-out infinite;
   }
 
+  /* Icon wiggle animations */
+  .icon-wiggle {
+    animation: wiggle 2s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .icon-wiggle-delayed-1 {
+    animation: wiggle 2s ease-in-out infinite;
+    animation-delay: 0.5s;
+    transform-origin: center;
+  }
+
+  .icon-wiggle-delayed-2 {
+    animation: wiggle 2s ease-in-out infinite;
+    animation-delay: 1s;
+    transform-origin: center;
+  }
+
+  .icon-wiggle-delayed-3 {
+    animation: wiggle 2s ease-in-out infinite;
+    animation-delay: 1.5s;
+    transform-origin: center;
+  }
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(0deg) scale(1);
+    }
+    10% {
+      transform: rotate(-3deg) scale(1.05);
+    }
+    20% {
+      transform: rotate(3deg) scale(1.1);
+    }
+    30% {
+      transform: rotate(-2deg) scale(1.05);
+    }
+    40% {
+      transform: rotate(2deg) scale(1);
+    }
+    50% {
+      transform: rotate(0deg) scale(1.05);
+    }
+    60% {
+      transform: rotate(-1deg) scale(1);
+    }
+    70% {
+      transform: rotate(1deg) scale(1.02);
+    }
+    80% {
+      transform: rotate(0deg) scale(1);
+    }
+    90% {
+      transform: rotate(-0.5deg) scale(1.01);
+    }
+  }
+
   @keyframes shimmer {
     0% {
       opacity: 0.3;
