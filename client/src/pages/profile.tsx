@@ -302,14 +302,7 @@ export default function Profile() {
                           <Mail className="h-4 w-4" />
                           <span>{user.email}</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-600">
-                          <User className="h-4 w-4" />
-                          <span>Student</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-gray-600">
-                          <MapPin className="h-4 w-4" />
-                          <span>Location</span>
-                        </div>
+
                         <div className="flex items-center space-x-2 text-gray-600">
                           <Calendar className="h-4 w-4" />
                           <span>Member since {memberSince}</span>
@@ -353,10 +346,6 @@ export default function Profile() {
                       <div>
                         <div className="text-lg font-semibold text-navy">Member ID</div>
                         <div className="text-xl font-semibold text-gray-700">#{user.id?.slice(-6) || '000000'}</div>
-                      </div>
-                      <div>
-                        <div className="text-lg font-semibold text-navy">Age Range</div>
-                        <div className="text-xl font-semibold text-gray-700">25-34</div>
                       </div>
                     </div>
                   </CardContent>
