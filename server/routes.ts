@@ -140,19 +140,14 @@ const isAdmin: RequestHandler = async (req: any, res, next) => {
   try {
     const userId = req.user?.claims?.sub;
     if (!userId) {
-      console.log("Admin middleware: No userId found");
       return res.status(401).json({ message: "Unauthorized" });
     }
 
     const user = await storage.getUser(userId);
-    console.log("Admin middleware: User found:", { id: user?.id, userType: user?.userType });
-    
     if (!user || user.userType !== 'admin') {
-      console.log("Admin middleware: Access denied for user:", userId);
       return res.status(403).json({ message: "Admin access required" });
     }
 
-    console.log("Admin middleware: Access granted for admin user:", userId);
     next();
   } catch (error) {
     console.error("Admin middleware error:", error);
