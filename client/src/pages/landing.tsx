@@ -1082,8 +1082,8 @@ export default function Landing() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-8">
               {/* Fire Disaster Relief */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors flex-shrink-0">
-                  <Zap className="h-6 w-6 text-red-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Zap className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Fire Disaster Relief</h3>
@@ -1093,8 +1093,8 @@ export default function Landing() {
 
               {/* Emergency Flood Relief */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors flex-shrink-0">
-                  <Shield className="h-6 w-6 text-blue-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Shield className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Emergency Flood Relief</h3>
@@ -1104,8 +1104,8 @@ export default function Landing() {
 
               {/* Medical Necessity */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors flex-shrink-0">
-                  <Heart className="h-6 w-6 text-green-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Heart className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Medical Necessity</h3>
@@ -1115,8 +1115,8 @@ export default function Landing() {
 
               {/* Essential Items */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors flex-shrink-0">
-                  <Gift className="h-6 w-6 text-orange-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Gift className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Essential Items</h3>
@@ -1126,8 +1126,8 @@ export default function Landing() {
 
               {/* Groceries and Food */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center group-hover:bg-yellow-200 transition-colors flex-shrink-0">
-                  <Users className="h-6 w-6 text-yellow-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Users className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Groceries and Food</h3>
@@ -1137,8 +1137,8 @@ export default function Landing() {
 
               {/* Baby Items */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors flex-shrink-0">
-                  <Heart className="h-6 w-6 text-pink-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Heart className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Baby Items</h3>
@@ -1148,8 +1148,8 @@ export default function Landing() {
 
               {/* School Supplies */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors flex-shrink-0">
-                  <Users className="h-6 w-6 text-purple-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Users className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">School Supplies</h3>
@@ -1159,8 +1159,8 @@ export default function Landing() {
 
               {/* Clothing */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors flex-shrink-0">
-                  <Shield className="h-6 w-6 text-indigo-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Shield className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Clothing</h3>
@@ -1170,8 +1170,8 @@ export default function Landing() {
 
               {/* Community Help */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center group-hover:bg-teal-200 transition-colors flex-shrink-0">
-                  <Users className="h-6 w-6 text-teal-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Users className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Community Help</h3>
@@ -1181,8 +1181,8 @@ export default function Landing() {
 
               {/* Personal Care Supplies */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center group-hover:bg-cyan-200 transition-colors flex-shrink-0">
-                  <Heart className="h-6 w-6 text-cyan-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Heart className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Personal Care Supplies</h3>
@@ -1192,8 +1192,8 @@ export default function Landing() {
 
               {/* Crisis Relief Support */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors flex-shrink-0">
-                  <Shield className="h-6 w-6 text-red-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                  <Shield className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Crisis Relief Support</h3>
