@@ -227,12 +227,12 @@ export default function AboutUs() {
               </div>
             </div>
             
-            <div className="flex justify-center lg:justify-end items-center animate-slide-in-right lg:mt-8">
+            <div className="flex justify-center lg:justify-end animate-slide-in-right mt-16 lg:mt-24">
               <div className="relative group w-full">
                 <img 
                   src={aboutUsImage} 
                   alt="Family with needs list showing community support" 
-                  className="w-full h-[300px] lg:h-[350px] xl:h-[400px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
+                  className="w-full h-[250px] lg:h-[280px] xl:h-[300px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-coral/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
