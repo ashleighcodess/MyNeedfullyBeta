@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap } from "lucide-react";
+import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield } from "lucide-react";
 import { useLocation } from "wouter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +15,7 @@ import essentialClothingImage from "@assets/essentialclothin_1751658676599.jpg";
 import babyEssentialsImage from "@assets/babyandfamily_1751658729999.jpg";
 import crisisHygieneImage from "@assets/crisishygiene_1751658766232.jpg";
 import familyTreeImage from "@assets/Familywithtree_1751744939187.png";
+import warmBackgroundImage from "@assets/AboutUsIMage2_1751592833990.png";
 
 // Custom Person Carry Box SVG Component for Products Delivered
 const PersonCarryBoxIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
@@ -913,7 +914,15 @@ export default function Landing() {
       </section>
 
       {/* How It Works - Stylized Version */}
-      <section id="how" className="py-20 bg-warm-bg relative">
+      <section 
+        id="how" 
+        className="py-20 relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${warmBackgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-navy mb-4">How MyNeedfully Works</h2>
@@ -924,7 +933,7 @@ export default function Landing() {
             {/* Step 1 - Create A Needs List */}
             <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
               <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Gift className="text-white h-8 w-8" />
+                <Gift className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-semibold text-navy mb-4">Create A Needs List</h3>
               <p className="text-gray-600 text-sm leading-relaxed">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
@@ -933,7 +942,7 @@ export default function Landing() {
             {/* Step 2 - Share With Community */}
             <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
               <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users className="text-white h-8 w-8" />
+                <Share2 className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-semibold text-navy mb-4">Share With Community</h3>
               <p className="text-gray-600 text-sm leading-relaxed">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
@@ -942,7 +951,7 @@ export default function Landing() {
             {/* Step 3 - Receive Support */}
             <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
               <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Heart className="text-white h-8 w-8" />
+                <Heart className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-semibold text-navy mb-4">Receive Support</h3>
               <p className="text-gray-600 text-sm leading-relaxed">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
@@ -951,7 +960,7 @@ export default function Landing() {
             {/* Step 4 - Track Fulfillment */}
             <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
               <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Zap className="text-white h-8 w-8" />
+                <Shield className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-semibold text-navy mb-4">Track Fulfillment</h3>
               <p className="text-gray-600 text-sm leading-relaxed">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
