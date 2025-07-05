@@ -93,212 +93,117 @@ export class SerpAPIService {
 
   async searchTarget(query: string, location: string = '10001', limit: number = 40): Promise<SerpProduct[]> {
     try {
-      console.log(`Searching Target for: "${query}"`);
+      console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      // Use regular Google search with specific Target search terms
       const params = {
         api_key: this.apiKey,
-        engine: 'google',
-        q: `"${query}" site:target.com/p`,
-        location: 'United States',
-        device: 'desktop',
-        hl: 'en',                 // English language
-        gl: 'us',                 // US region
-        num: limit,               // Exact number needed
-        no_cache: false,          // Use cache when available
-        output: 'json'            // Structured format
+        engine: 'google_shopping',
+        q: `${query} site:target.com`,
+        location: location,
+        google_domain: 'google.com',
+        gl: 'us',
+        hl: 'en',
+        num: limit.toString(),
+        start: '0'
       };
 
-      const response = await getJson(params);
-      console.log(`Target search response status: ${response ? 'success' : 'no response'}`);
+      const response = await fetch(`https://serpapi.com/search?${new URLSearchParams(params).toString()}`);
       
-      if (!response || !response.organic_results) {
-        console.log('No Target organic_results found');
+      if (!response.ok) {
+        console.error(`Target SerpAPI responded with ${response.status}`);
         return [];
       }
 
-      console.log(`Target organic_results found: ${response.organic_results.length}`);
+      const data = await response.json();
+      console.log('Target SerpAPI response structure:', Object.keys(data));
 
-      const targetResults = response.organic_results
+      const resultType = data.shopping_results ? 'shopping_results' : 
+                        data.products ? 'products' : 
+                        data.organic_results ? 'organic_results' : null;
+      
+      if (!resultType) {
+        console.log('No valid results structure found in Target response');
+        return [];
+      }
+
+      const resultsArray = data[resultType];
+      if (!resultsArray || resultsArray.length === 0) {
+        console.log('No Target results found');
+        return [];
+      }
+
+      console.log(`Target ${resultType} found: ${resultsArray.length}`);
+
+      const targetResults = resultsArray
         .filter((result: any) => {
-          // Ultra strict filter for Target individual product pages only
-          if (!result.link || !result.link.includes('target.com/p/')) return false;
-          if (!result.title || result.title.length < 5) return false;
+          const resultLink = result.link || result.product_link || result.url || '';
+          const resultTitle = result.title || result.product_title || result.name || '';
           
-          // Must have the Target product ID pattern (-/A-xxxxxxxx)
-          if (!result.link.match(/-\/A-\d+/)) return false;
+          if (!resultTitle || resultTitle.length < 5) return false;
+          if (resultType === 'shopping_results' && resultLink.includes('target.com')) return true;
+          if (resultType === 'products') return true;
+          if (!resultLink.includes('target.com')) return false;
           
-          // Exclude any category pages, brand pages, and collection URLs
-          const excludePatterns = [
-            '/c/',           // category pages
-            '?Nao=',         // pagination 
-            'Page ',         // page indicators
-            ': Page',        // page indicators  
-            'Featured Brands', // brand collections
-            'Baby Bottles :', // category collections
-            'Ounce Baby Bottles', // size collections
-            'Household Essentials', // generic collections
-            ': Household',   // brand collections
-            'from Top',      // collection pages
-          ];
-          
-          for (const pattern of excludePatterns) {
-            if (result.link.includes(pattern) || result.title.includes(pattern)) {
-              return false;
-            }
-          }
-          
-          // Product title must not contain collection indicators
-          const titleExcludes = [
-            'Page ',
-            ': Page',
-            'Featured Brands',
-            'Brands :',
-            'Collection',
-            'All :',
-            'Shop ',
-            'Baby Bottles :'
-          ];
-          
-          for (const exclude of titleExcludes) {
-            if (result.title.includes(exclude)) {
-              return false;
-            }
-          }
-          
-          // Must be an individual product page
           return true;
         })
         .slice(0, limit)
         .map((result: any) => {
-          // Enhanced price extraction for Target
-          let extractedPrice = '$0.00';
+          const resultTitle = result.title || result.product_title || result.name || '';
+          const resultLink = result.link || result.product_link || result.url || '';
+          const resultSnippet = result.snippet || result.extracted_price || result.description || '';
           
-          // Try multiple sources for price information
-          const searchTexts = [
-            result.title || '',
-            result.snippet || '',
-            result.rich_snippet?.top?.detected_extensions?.join(' ') || '',
-            result.rich_snippet?.top?.extensions?.join(' ') || '',
-            (result.sitelinks && Array.isArray(result.sitelinks)) ? result.sitelinks.map((link: any) => link.title || '').join(' ') : ''
-          ].filter(Boolean);
+          let extractedPrice = 'Price varies';
+          let imageUrl = '';
           
-          // Multiple price patterns to catch different formats
-          const pricePatterns = [
-            /\$[\d,]+\.?\d*/g,           // Standard $X.XX format
-            /[\d,]+\.?\d*\s*dollars?/gi, // X dollars format
-            /[\d,]+\.?\d*\s*usd/gi,      // X USD format
-            /price:?\s*\$?[\d,]+\.?\d*/gi, // Price: $X.XX format
-            /starting\s+at\s+\$[\d,]+\.?\d*/gi, // Starting at $X.XX
-            /from\s+\$[\d,]+\.?\d*/gi,   // From $X.XX
-            /\$[\d,]+(?:\.\d{2})?/g      // Strict $X.XX format
-          ];
-          
-          for (const text of searchTexts) {
-            for (const pattern of pricePatterns) {
-              const matches = text.match(pattern);
-              if (matches && matches.length > 0) {
-                // Take the first valid price found
-                const priceMatch = matches[0];
-                // Extract just the dollar amount
-                const dollarMatch = priceMatch.match(/\$[\d,]+(?:\.\d{2})?/);
-                if (dollarMatch) {
-                  extractedPrice = dollarMatch[0];
-                  break;
-                }
-                // If no dollar sign, add one to pure numbers
-                const numberMatch = priceMatch.match(/([\d,]+(?:\.\d{2})?)/);
-                if (numberMatch && parseFloat(numberMatch[1].replace(',', '')) > 0) {
-                  extractedPrice = '$' + numberMatch[1];
-                  break;
-                }
-              }
-            }
-            if (extractedPrice !== '$0.00') break;
-          }
-          
-          // If still no price found, try to extract from structured data
-          if (extractedPrice === '$0.00' && result.rich_snippet) {
-            const richSnippet = result.rich_snippet;
-            if (richSnippet.top?.detected_extensions) {
-              for (const ext of richSnippet.top.detected_extensions) {
-                const priceMatch = ext.match(/\$[\d,]+(?:\.\d{2})?/);
+          if (resultType === 'shopping_results') {
+            extractedPrice = result.price || result.extracted_price || 'Price varies';
+            imageUrl = result.thumbnail || result.image || '';
+          } else if (resultType === 'products') {
+            extractedPrice = result.price || result.current_price || 'Price varies';
+            imageUrl = result.image || result.thumbnail || result.main_image || '';
+          } else {
+            if (result.rich_snippet && result.rich_snippet.top) {
+              const extensions = result.rich_snippet.top.detected_extensions || [];
+              const priceExt = extensions.find((ext: string) => ext.match(/\$[\d,]+\.?\d*/));
+              if (priceExt) {
+                const priceMatch = priceExt.match(/\$[\d,]+\.?\d*/);
                 if (priceMatch) {
                   extractedPrice = priceMatch[0];
-                  break;
                 }
               }
             }
-          }
-          
-          // If price is still $0.00, set a reasonable placeholder that indicates pricing needed
-          if (extractedPrice === '$0.00') {
-            extractedPrice = 'Price varies'; // More honest than $0.00
-          }
-          
-          // Try to get better image URL - check for featured_snippet images or rich_snippets
-          let imageUrl = result.thumbnail || '';
-          if (!imageUrl && result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.extensions) {
-            const extensions = result.rich_snippet.top.extensions;
-            for (const ext of extensions) {
-              if (ext.includes('http') && (ext.includes('.jpg') || ext.includes('.png') || ext.includes('.webp'))) {
-                imageUrl = ext;
-                break;
+            
+            if (extractedPrice === 'Price varies' && result.snippet) {
+              const priceMatch = result.snippet.match(/\$[\d,]+\.?\d*/);
+              if (priceMatch) {
+                extractedPrice = priceMatch[0];
               }
             }
+            
+            imageUrl = result.thumbnail || '';
           }
-          
-          // No fallback images - let frontend handle missing images properly
-          if (!imageUrl) {
-            imageUrl = '';
-          }
-          
-          // Debug pricing extraction for Target
-          if (extractedPrice === 'Price varies') {
-            console.log(`Target pricing debug for "${result.title.substring(0, 30)}...":`, {
-              snippet: result.snippet?.substring(0, 100),
-              hasRichSnippet: !!result.rich_snippet,
-              extensions: result.rich_snippet?.top?.detected_extensions?.slice(0, 2)
-            });
-          }
-          
-          console.log(`Target product: ${result.title.substring(0, 50)}... | Price: ${extractedPrice} | Image: ${imageUrl ? 'YES' : 'NO'}`);
           
           return {
-            // Match RainforestAPI structure
             position: result.position || Math.floor(Math.random() * 100),
-            title: result.title || '',
+            title: resultTitle,
             price: extractedPrice,
             rating: 0,
             reviews_count: 0,
             image: imageUrl,
-            link: result.link || '',
-            asin: this.extractTargetProductId(result.link) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-            
-            // SerpAPI-specific fields mapped to expected structure
-            product_id: this.extractTargetProductId(result.link) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-            product_url: result.link || '',
+            link: resultLink,
+            asin: this.extractTargetProductId(resultLink) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+            product_id: this.extractTargetProductId(resultLink) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+            product_url: resultLink,
             retailer: 'target' as const,
             retailer_name: 'Target',
             brand: '',
-            description: result.snippet || '',
-            
-            // Additional fields for compatibility
+            description: resultSnippet,
             thumbnail: imageUrl,
             image_url: imageUrl
           };
         });
       
       console.log(`Target search found ${targetResults.length} products after filtering`);
-      
-      // Debug: Log the first few raw results before filtering
-      if (response.organic_results.length > 0) {
-        console.log('Sample Target URLs found:', response.organic_results.slice(0, 3).map(r => ({
-          url: r.link,
-          title: r.title?.substring(0, 50)
-        })));
-      }
-      
       return targetResults;
     } catch (error) {
       console.error('Error searching Target:', error);
