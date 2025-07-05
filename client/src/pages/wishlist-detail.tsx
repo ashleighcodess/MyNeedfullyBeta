@@ -401,21 +401,10 @@ export default function WishlistDetail() {
                 {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
               </Badge>
               {isOwner && (
-                <>
-                  <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => mergeDuplicatesMutation.mutate()}
-                    disabled={mergeDuplicatesMutation.isPending}
-                  >
-                    <GitMerge className="mr-2 h-4 w-4" />
-                    {mergeDuplicatesMutation.isPending ? "Merging..." : "Merge Duplicates"}
-                  </Button>
-                </>
+                <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
               )}
               <Button variant="outline" size="sm" onClick={shareWishlist}>
                 <Share2 className="mr-2 h-4 w-4" />
