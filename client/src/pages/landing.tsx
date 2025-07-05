@@ -1018,73 +1018,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Logo and Description */}
-            <div className="md:col-span-1">
-              <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto mb-4" />
-              <p className="text-gray-400 mb-4">Connecting hearts and fulfilling needs through verified wishlists and transparent donations.</p>
-              <div className="flex space-x-4">
-                <i className="fab fa-facebook text-gray-400 hover:text-coral cursor-pointer transition-colors"></i>
-                <i className="fab fa-twitter text-gray-400 hover:text-coral cursor-pointer transition-colors"></i>
-                <i className="fab fa-instagram text-gray-400 hover:text-coral cursor-pointer transition-colors"></i>
-                <i className="fab fa-linkedin text-gray-400 hover:text-coral cursor-pointer transition-colors"></i>
-              </div>
-            </div>
-            
-            {/* For Supporters */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">For Supporters</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Browse Wishlists</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">How to Donate</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Impact Stories</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Tax Information</a></li>
-              </ul>
-            </div>
-            
-            {/* For Recipients */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">For Recipients</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Create Wishlist</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Verification Process</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Success Tips</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Support Resources</a></li>
-              </ul>
-            </div>
-            
-            {/* Company */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Support</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <hr className="border-gray-800 my-8" />
-          
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">© 2024 MyNeedfully. All rights reserved.</p>
-            <div className="flex items-center space-x-6 mt-4 md:mt-0">
-              <div className="flex items-center space-x-2 text-sm text-gray-400">
-                <i className="fas fa-shield-alt text-green-400"></i>
-                <span>Verified Secure</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-400">
-                <i className="fas fa-lock text-green-400"></i>
-                <span>SSL Protected</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+
     </div>
   );
 }

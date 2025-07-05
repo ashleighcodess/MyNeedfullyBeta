@@ -51,9 +51,8 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center space-x-3 cursor-pointer">
+            <div className="flex items-center cursor-pointer">
               <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
-              <span className="text-xl font-bold text-navy">MyNeedfully</span>
             </div>
           </Link>
           
