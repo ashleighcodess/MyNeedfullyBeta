@@ -493,33 +493,37 @@ export default function ProductSearch() {
         </Card>
 
         {/* Popular Categories */}
-        {!activeSearch && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Popular Categories</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {CATEGORIES.slice(0, 6).map((category) => (
-                  <div
-                    key={category.value}
-                    className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer text-center"
-                    onClick={() => {
-                      setSearchQuery(category.label);
-                      setDebouncedQuery(category.label); // Set debounced query immediately for categories
-                      setActiveSearch(category.label);
-                      setCategory(category.value);
-                      setPage(1); // Reset to first page
-                    }}
-                  >
-                    <i className={`${category.icon} text-coral text-2xl mb-2`}></i>
-                    <div className="text-sm font-medium">{category.label}</div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Popular Categories</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {CATEGORIES.slice(0, 6).map((category) => (
+                <div
+                  key={category.value}
+                  className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer text-center bg-white hover:bg-gray-50"
+                  onClick={() => {
+                    console.log('Category clicked:', category.label);
+                    setSearchQuery(category.label);
+                    setDebouncedQuery(category.label); // Set debounced query immediately for categories
+                    setActiveSearch(category.label);
+                    setCategory(category.value);
+                    setPage(1); // Reset to first page
+                    // Show toast to indicate search is happening
+                    toast({
+                      title: "Searching products...",
+                      description: `Looking for ${category.label} products`,
+                    });
+                  }}
+                >
+                  <i className={`${category.icon} text-coral text-2xl mb-2`}></i>
+                  <div className="text-sm font-medium">{category.label}</div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Search Results */}
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
