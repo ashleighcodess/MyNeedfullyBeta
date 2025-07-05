@@ -240,7 +240,7 @@ export default function AboutUs() {
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-4 gap-4 animate-fade-in-up" data-stats-section>
+          <div className="grid grid-cols-4 gap-4 animate-fade-in-up mt-8" data-stats-section>
             <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
