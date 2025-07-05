@@ -49,6 +49,10 @@ export default function Navigation() {
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* EMERGENCY TEST - Always visible red box */}
+          <div className="fixed top-20 right-4 bg-red-500 text-white p-4 z-50 text-lg font-bold">
+            EMERGENCY TEST - CAN YOU SEE THIS?
+          </div>
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
