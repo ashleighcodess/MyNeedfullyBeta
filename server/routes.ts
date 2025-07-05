@@ -1845,10 +1845,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get pricing for a specific wishlist item
   app.get('/api/items/:id/pricing', async (req, res) => {
     try {
-      console.log('Pricing endpoint hit for item:', req.params.id);
       const itemId = parseInt(req.params.id);
       const item = await storage.getWishlistItem(itemId);
-      console.log('Item found:', item ? 'Yes' : 'No');
       
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
