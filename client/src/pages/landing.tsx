@@ -1060,6 +1060,170 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      {/* What Do People Use MyNeedfully For? */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-navy mb-6">What Do People Use MyNeedfully For?</h2>
+            <div className="max-w-4xl mx-auto space-y-4 text-lg text-gray-600 leading-relaxed">
+              <p>
+                MyNeedfully is your trusted place to create Needs Lists and support for the things that truly matter. Whether you're facing an unexpected crisis, working toward a personal goal, or rallying around someone in need, MyNeedfully makes it easy to connect real needs with real help.
+              </p>
+              <p>
+                What matters most is getting the support you need, when you need it. Our platform is designed to empower people with simple tools and a transparent process, so giving feels personal and impactful every time.
+              </p>
+            </div>
+            <p className="text-gray-600 mt-8 text-lg">For more inspiration and help creating your needs list, explore the categories below.</p>
+          </div>
+
+          {/* Category Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Fire Disaster Relief */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                  <Zap className="h-6 w-6 text-red-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Fire Disaster Relief</h3>
+              <p className="text-gray-600 text-sm">Essential items for families recovering from fire damage</p>
+            </div>
+
+            {/* Emergency Flood Relief */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                  <Shield className="h-6 w-6 text-blue-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Emergency Flood Relief</h3>
+              <p className="text-gray-600 text-sm">Recovery supplies for flood-affected communities</p>
+            </div>
+
+            {/* Medical Necessity */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                  <Heart className="h-6 w-6 text-green-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Medical Necessity</h3>
+              <p className="text-gray-600 text-sm">Medical equipment and supplies for health needs</p>
+            </div>
+
+            {/* Essential Items */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+                  <Gift className="h-6 w-6 text-orange-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Essential Items</h3>
+              <p className="text-gray-600 text-sm">Basic household necessities and daily living items</p>
+            </div>
+
+            {/* Groceries and Food */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
+                  <Users className="h-6 w-6 text-yellow-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Groceries and Food</h3>
+              <p className="text-gray-600 text-sm">Food assistance and nutritional support</p>
+            </div>
+
+            {/* Baby Items */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                  <Heart className="h-6 w-6 text-pink-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Baby Items</h3>
+              <p className="text-gray-600 text-sm">Diapers, formula, and essential baby care products</p>
+            </div>
+
+            {/* School Supplies */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">School Supplies</h3>
+              <p className="text-gray-600 text-sm">Educational materials and supplies for students</p>
+            </div>
+
+            {/* Clothing */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                  <Shield className="h-6 w-6 text-indigo-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Clothing</h3>
+              <p className="text-gray-600 text-sm">Essential clothing items for all ages and seasons</p>
+            </div>
+
+            {/* Community Help */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center group-hover:bg-teal-200 transition-colors">
+                  <Users className="h-6 w-6 text-teal-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Community Help</h3>
+              <p className="text-gray-600 text-sm">Support for community projects and local initiatives</p>
+            </div>
+
+            {/* Personal Care Supplies */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center group-hover:bg-cyan-200 transition-colors">
+                  <Heart className="h-6 w-6 text-cyan-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Personal Care Supplies</h3>
+              <p className="text-gray-600 text-sm">Hygiene products and personal care essentials</p>
+            </div>
+
+            {/* Crisis Relief Support */}
+            <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                  <Shield className="h-6 w-6 text-red-600" />
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all" />
+              </div>
+              <h3 className="font-semibold text-navy text-lg mb-2 group-hover:text-coral transition-colors">Crisis Relief Support</h3>
+              <p className="text-gray-600 text-sm">Emergency assistance for unexpected crisis situations</p>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center mt-16">
+            <p className="text-lg text-gray-700 mb-6">Ready to create a needs list for yourself or someone in need?</p>
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-full text-lg font-semibold"
+              onClick={handleLogin}
+            >
+              Get Started Now
+            </Button>
+          </div>
+        </div>
+      </section>
 
 
 
