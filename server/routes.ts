@@ -37,6 +37,58 @@ function generateSecureToken(): string {
 const RAINFOREST_API_KEY = process.env.RAINFOREST_API_KEY || "8789CC1433C54D12B5F2DF1A401E844E";
 const RAINFOREST_API_URL = "https://api.rainforestapi.com/request";
 
+// RainforestAPI service class
+class RainforestAPIService {
+  private apiKey: string;
+  
+  constructor(apiKey: string) {
+    this.apiKey = apiKey;
+  }
+  
+  async searchProducts(query: string, options: any = {}): Promise<any[]> {
+    try {
+      const params = new URLSearchParams({
+        api_key: this.apiKey,
+        type: options.type || "search",
+        amazon_domain: "amazon.com",
+        search_term: query,
+        ...(options.page && { page: options.page.toString() }),
+        ...(options.category_id && { category_id: options.category_id }),
+        ...(options.min_price && { min_price: options.min_price.toString() }),
+        ...(options.max_price && { max_price: options.max_price.toString() }),
+      });
+
+      const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
+      
+      if (!response.ok) {
+        throw new Error(`RainforestAPI request failed: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data.search_results || [];
+    } catch (error) {
+      console.error('RainforestAPI error:', error);
+      return [];
+    }
+  }
+}
+
+// Service instance management
+let rainforestAPIService: RainforestAPIService | null = null;
+
+function getRainforestAPIService(): RainforestAPIService | null {
+  if (!RAINFOREST_API_KEY || RAINFOREST_API_KEY === 'your_api_key_here') {
+    console.warn('RAINFOREST_API_KEY not found or invalid');
+    return null;
+  }
+
+  if (!rainforestAPIService) {
+    rainforestAPIService = new RainforestAPIService(RAINFOREST_API_KEY);
+  }
+
+  return rainforestAPIService;
+}
+
 // Helper functions for activity formatting
 function formatActivityMessage(activity: any): string {
   const { eventType, data } = activity;
