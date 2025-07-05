@@ -414,7 +414,10 @@ export default function Profile() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-coral/30"
+                    onClick={() => setActiveTab('thankyou')}
+                  >
                     <CardContent className="p-6 text-center">
                       <Award className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
@@ -488,82 +491,126 @@ export default function Profile() {
 
             {/* Other tabs can be implemented similarly */}
             {activeTab === 'thankyou' && (
-              <div className="space-y-6">
-                {/* Sent Thank You Notes */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <MessageCircle className="mr-2 h-5 w-5 text-coral" />
-                      Sent Thank You Notes ({thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length > 0 ? (
-                        thankYouNotes.filter((note: any) => note.fromUserId === user?.id).map((note: any) => (
-                          <div key={note.id} className="p-4 border rounded-lg">
-                            <div className="flex justify-between items-start mb-2">
-                              <div className="font-medium">To: {note.toUserName || 'Anonymous'}</div>
-                              <div className="text-sm text-gray-500">
-                                {new Date(note.createdAt).toLocaleDateString()}
-                              </div>
-                            </div>
-                            <p className="text-gray-700 mb-2">{note.message}</p>
-                            {note.wishlistTitle && (
-                              <div className="text-sm text-gray-500">
-                                For: {note.wishlistTitle}
-                              </div>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-gray-500">
-                          <MessageCircle className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                          <p>No thank you notes sent yet</p>
-                          <p className="text-sm">Send a thank you note after making a purchase</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="space-y-8">
+                {/* Header */}
+                <div className="text-center">
+                  <h2 className="text-3xl font-bold text-navy mb-2">Thank You Notes</h2>
+                  <p className="text-gray-600">Messages of gratitude shared within our community</p>
+                </div>
 
-                {/* Received Thank You Notes */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Heart className="mr-2 h-5 w-5 text-coral" />
-                      Received Thank You Notes ({thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                {/* Summary Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-gradient-to-r from-coral/10 to-coral/5 rounded-xl p-6 border border-coral/20">
+                    <div className="flex items-center">
+                      <div className="p-3 bg-coral rounded-lg">
+                        <MessageCircle className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-2xl font-bold text-navy">
+                          {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0}
+                        </div>
+                        <div className="text-sm text-gray-600">Notes Sent</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-50 to-green-25 rounded-xl p-6 border border-green-200">
+                    <div className="flex items-center">
+                      <div className="p-3 bg-green-500 rounded-lg">
+                        <Heart className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-2xl font-bold text-navy">
+                          {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0}
+                        </div>
+                        <div className="text-sm text-gray-600">Notes Received</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Notes List */}
+                <div className="space-y-6">
+                  {thankYouNotes && thankYouNotes.length > 0 ? (
                     <div className="space-y-4">
-                      {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length > 0 ? (
-                        thankYouNotes.filter((note: any) => note.toUserId === user?.id).map((note: any) => (
-                          <div key={note.id} className="p-4 border rounded-lg bg-coral/5">
-                            <div className="flex justify-between items-start mb-2">
-                              <div className="font-medium">From: {note.fromUserName || 'Anonymous'}</div>
-                              <div className="text-sm text-gray-500">
-                                {new Date(note.createdAt).toLocaleDateString()}
+                      {thankYouNotes.map((note: any) => {
+                        const isSent = note.fromUserId === user?.id;
+                        return (
+                          <div 
+                            key={note.id} 
+                            className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
+                              isSent 
+                                ? 'bg-coral/5 border-coral/20 hover:border-coral/30' 
+                                : 'bg-green-50 border-green-200 hover:border-green-300'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center space-x-3">
+                                <div className={`p-2 rounded-full ${isSent ? 'bg-coral' : 'bg-green-500'}`}>
+                                  {isSent ? (
+                                    <MessageCircle className="h-4 w-4 text-white" />
+                                  ) : (
+                                    <Heart className="h-4 w-4 text-white" />
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-navy">
+                                    {isSent ? `To: ${note.toUserName || 'Anonymous'}` : `From: ${note.fromUserName || 'Anonymous'}`}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {new Date(note.createdAt).toLocaleDateString('en-US', { 
+                                      year: 'numeric', 
+                                      month: 'long', 
+                                      day: 'numeric' 
+                                    })}
+                                  </div>
+                                </div>
                               </div>
+                              <Badge 
+                                variant="secondary" 
+                                className={`${isSent ? 'bg-coral/10 text-coral' : 'bg-green-100 text-green-700'}`}
+                              >
+                                {isSent ? 'Sent' : 'Received'}
+                              </Badge>
                             </div>
-                            <p className="text-gray-700 mb-2">{note.message}</p>
+                            
+                            <div className="mb-4">
+                              <p className="text-gray-700 leading-relaxed italic">"{note.message}"</p>
+                            </div>
+                            
                             {note.wishlistTitle && (
-                              <div className="text-sm text-gray-500">
-                                For: {note.wishlistTitle}
+                              <div className="flex items-center text-sm text-gray-600 bg-white/50 rounded-lg p-3">
+                                <Gift className="h-4 w-4 mr-2" />
+                                <span>Related to: <span className="font-medium">{note.wishlistTitle}</span></span>
                               </div>
                             )}
                           </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-gray-500">
-                          <Heart className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                          <p>No thank you notes received yet</p>
-                          <p className="text-sm">Create a needs list to start receiving support</p>
-                        </div>
-                      )}
+                        );
+                      })}
                     </div>
-                  </CardContent>
-                </Card>
+                  ) : (
+                    <div className="text-center py-16">
+                      <div className="mb-6">
+                        <MessageCircle className="mx-auto h-16 w-16 text-gray-300" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-navy mb-2">No Thank You Notes Yet</h3>
+                      <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                        Thank you notes will appear here when you send or receive messages of gratitude within our community.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link href="/browse">
+                          <Button className="bg-coral hover:bg-coral/90">
+                            Browse Needs Lists
+                          </Button>
+                        </Link>
+                        <Link href="/create">
+                          <Button variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white">
+                            Create Needs List
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
