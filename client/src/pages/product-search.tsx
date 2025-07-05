@@ -562,9 +562,7 @@ export default function ProductSearch() {
             {/* Results Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="text-gray-600">
-                {isLoading ? (
-                  'Searching...'
-                ) : error ? (
+                {error ? (
                   'Search failed'
                 ) : searchResults?.search_results ? (
                   `Found ${searchResults.search_results.length} results for "${activeSearch}"`
@@ -579,40 +577,7 @@ export default function ProductSearch() {
               )}
             </div>
 
-            {/* Loading State with Branded Spinner */}
-            {isLoading && (
-              <>
-                <Card className="mb-6 p-8">
-                  <div className="text-center">
-                    <div className="flex flex-col items-center justify-center mb-6">
-                      {/* Centered Logo Spinner */}
-                      <img 
-                        src={myneedfullyLogo} 
-                        alt="MyNeedfully" 
-                        className="h-12 w-12 animate-spin mb-4"
-                      />
-                      <span className="text-lg font-medium text-gray-800">Finding Ways to Help</span>
-                    </div>
-                    {/* Search Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-coral h-2 rounded-full animate-pulse" style={{width: '75%'}}></div>
-                    </div>
-                  </div>
-                </Card>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <Card key={i} className="overflow-hidden">
-                      <Skeleton className="h-48 w-full" />
-                      <CardContent className="p-4">
-                        <Skeleton className="h-4 w-full mb-2" />
-                        <Skeleton className="h-4 w-3/4 mb-2" />
-                        <Skeleton className="h-6 w-20" />
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </>
-            )}
+
 
             {/* Error State */}
             {error && (

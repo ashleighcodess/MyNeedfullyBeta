@@ -1409,7 +1409,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           try {
             console.log('🐍 SerpAPI search started (parallel)');
             const optimizedQuery = generateSearchQuery(query as string);
-            const serpResults = await serpService.searchBothStores(optimizedQuery, '60602', 10);
+            
+            // Add 3-second timeout to prevent long delays
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('SerpAPI timeout')), 3000)
+            );
+            
+            const serpResults = await Promise.race([
+              serpService.searchBothStores(optimizedQuery, '60602', 10),
+              timeoutPromise
+            ]) as any;
             
             const transformedResults = serpResults.map((product: SerpProduct) => {
               const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
@@ -1432,8 +1441,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
             console.log(`✅ SerpAPI: ${transformedResults.length} products (Walmart/Target)`);
             return { source: 'serpapi', success: true, products: transformedResults };
-          } catch (error) {
-            console.log(`❌ SerpAPI failed: ${error}`);
+          } catch (error: any) {
+            if (error.message === 'SerpAPI timeout') {
+              console.log('🕐 SerpAPI search timed out after 3 seconds - continuing with Amazon results only');
+            } else {
+              console.log(`❌ SerpAPI failed: ${error}`);
+            }
             return { source: 'serpapi', success: false, products: [] };
           }
         };
