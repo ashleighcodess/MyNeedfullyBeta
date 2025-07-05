@@ -532,7 +532,7 @@ export default function Landing() {
                 id="store-select"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
               >
-                <option value="">🏪 Select Store</option>
+                <option value="">Select Store</option>
                 <option value="amazon">Amazon</option>
                 <option value="walmart">Walmart</option>
                 <option value="target">Target</option>
@@ -544,7 +544,7 @@ export default function Landing() {
                 id="category-select"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
               >
-                <option value="">📋 Select Categories</option>
+                <option value="">Select Categories</option>
                 <option value="emergency">Emergency Supplies</option>
                 <option value="food">Food & Groceries</option>
                 <option value="baby">Baby & Kids</option>
@@ -559,7 +559,7 @@ export default function Landing() {
                 id="price-select"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
               >
-                <option value="">💰 Price Range</option>
+                <option value="">Price Range</option>
                 <option value="0-25">$0 - $25</option>
                 <option value="25-50">$25 - $50</option>
                 <option value="50-100">$50 - $100</option>
