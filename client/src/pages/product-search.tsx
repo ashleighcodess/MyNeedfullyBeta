@@ -577,9 +577,18 @@ export default function ProductSearch() {
                         Search Results for "{debouncedQuery}"
                       </h3>
                       {totalResults > 0 && (
-                        <p className="text-sm text-gray-600">
-                          Showing {displayProducts.length} of {totalResults} results
-                        </p>
+                        <div className="space-y-1">
+                          <p className="text-sm text-gray-600">
+                            Showing {displayProducts.length} of {totalResults} results
+                          </p>
+                          {displayProducts && displayProducts.length > 0 && (
+                            <p className="text-xs text-gray-500">
+                              Retailers: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
+                              Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
+                              Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
+                            </p>
+                          )}
+                        </div>
                       )}
                     </div>
                     
@@ -593,7 +602,7 @@ export default function ProductSearch() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {displayProducts.map((product: any, index: number) => (
-                    <Card key={product.asin || product.product_id || index} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <Card key={`${product.retailer}-${product.asin || product.product_id || index}`} className="overflow-hidden hover:shadow-lg transition-shadow">
                       {product.image && (
                         <div className="relative">
                           <img 
