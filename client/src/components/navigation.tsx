@@ -248,7 +248,7 @@ export default function Navigation() {
                           className="w-full"
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            window.location.href = "/api/login";
+                            window.location.href = "/login";
                           }}
                         >
                           Sign In
@@ -355,7 +355,7 @@ export default function Navigation() {
                 </DropdownMenu>
               ) : (
                 <Button 
-                  onClick={() => window.location.href = "/api/login"}
+                  onClick={() => window.location.href = "/login"}
                 >
                   Sign In
                 </Button>

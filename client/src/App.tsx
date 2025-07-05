@@ -20,6 +20,7 @@ import AdminDashboard from "@/pages/admin";
 import AboutUs from "@/pages/about-us";
 import Resources from "@/pages/resources";
 import Signup from "@/pages/signup";
+import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 import CommunityImpact from "@/pages/community-impact";
 import Footer from "@/components/footer";
@@ -40,6 +41,8 @@ function Router() {
           <Route path="/resources" component={Resources} />
           <Route path="/signup" component={Signup} />
           <Route path="/sign-up" component={Signup} />
+          <Route path="/login" component={AuthPage} />
+          <Route path="/auth" component={AuthPage} />
           <Route path="/browse" component={BrowseWishlists} />
           <Route path="/find" component={BrowseWishlists} />
           <Route path="/products" component={ProductSearch} />

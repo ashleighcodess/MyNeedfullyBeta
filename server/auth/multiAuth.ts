@@ -2,6 +2,7 @@ import * as client from "openid-client";
 import { Strategy as ReplitStrategy, type VerifyFunction } from "openid-client/passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
+import { Strategy as LocalStrategy } from "passport-local";
 
 import passport from "passport";
 import session from "express-session";
@@ -9,6 +10,7 @@ import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "../storage";
+import bcrypt from "bcryptjs";
 
 // Types for OAuth providers
 interface OAuthUser {
@@ -17,7 +19,7 @@ interface OAuthUser {
   firstName?: string;
   lastName?: string;
   profileImageUrl?: string;
-  provider: 'replit' | 'google' | 'facebook';
+  provider: 'replit' | 'google' | 'facebook' | 'email';
 }
 
 // Replit OIDC configuration
@@ -188,6 +190,29 @@ export async function setupMultiAuth(app: Express) {
     }));
   }
 
+  // Local Strategy for Email/Password Authentication
+  passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  },
+  async (email: string, password: string, done) => {
+    try {
+      const user = await storage.authenticateUser(email, password);
+      if (!user) {
+        return done(null, false, { message: 'Invalid email or password' });
+      }
+      
+      const sessionUser = {
+        provider: 'email',
+        profile: user
+      };
+      
+      return done(null, sessionUser);
+    } catch (error) {
+      return done(error);
+    }
+  }));
+
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
@@ -235,6 +260,60 @@ export async function setupMultiAuth(app: Express) {
       }
     );
   }
+
+  // Email/Password Auth Routes
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      
+      // Create new user
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await storage.createUser({
+        id: `email_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        authProvider: 'email',
+        isVerified: false
+      });
+      
+      // Auto-login after signup
+      req.login({ provider: 'email', profile: newUser }, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login after signup failed" });
+        }
+        res.json({ message: "User created successfully", user: newUser });
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/auth/login", (req, res, next) => {
+    passport.authenticate("local", (err: any, user: any, info: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Authentication error" });
+      }
+      if (!user) {
+        return res.status(401).json({ message: info?.message || "Invalid credentials" });
+      }
+      
+      req.logIn(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login error" });
+        }
+        res.json({ message: "Login successful", user: user.profile });
+      });
+    })(req, res, next);
+  });
 
   // Unified logout route
   app.get("/api/logout", (req, res) => {

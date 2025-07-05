@@ -32,6 +32,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
@@ -40,6 +41,10 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
   deleteUser(id: string): Promise<void>;
+  
+  // Email/Password authentication
+  createUser(userData: UpsertUser): Promise<User>;
+  authenticateUser(email: string, password: string): Promise<User | null>;
 
   // Authentication token operations
   createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken>;
@@ -178,6 +183,40 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  // Email/Password authentication methods
+  async createUser(userData: UpsertUser): Promise<User> {
+    // Hash password if provided
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10);
+    }
+    
+    // Generate unique ID for email users
+    if (!userData.id) {
+      userData.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    }
+    
+    // Set auth provider
+    userData.authProvider = 'email';
+    
+    const [user] = await db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  async authenticateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.getUserByEmail(email);
+    
+    if (!user || !user.password) {
+      return null;
+    }
+    
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return null;
+    }
+    
     return user;
   }
 
