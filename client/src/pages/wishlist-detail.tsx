@@ -682,8 +682,8 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: item.price || '99.00',
-                                      link: item.productUrl || '#',
+                                      price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00',
+                                      link: itemPricing[item.id]?.pricing?.amazon?.url || item.productUrl || '#',
                                       retailer: 'amazon',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -721,8 +721,8 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: item.price || '99.00',
-                                      link: item.productUrl || '#',
+                                      price: itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00',
+                                      link: itemPricing[item.id]?.pricing?.target?.url || '#',
                                       retailer: 'target',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -760,8 +760,8 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: item.price || '99.00',
-                                      link: item.productUrl || '#',
+                                      price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00',
+                                      link: itemPricing[item.id]?.pricing?.walmart?.url || '#',
                                       retailer: 'walmart',
                                       image: item.imageUrl,
                                       itemId: item.id
