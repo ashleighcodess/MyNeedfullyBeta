@@ -122,7 +122,7 @@ export default function ProductSearch() {
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "PLACEHOLDER_PAMPERS_WIPES_IMAGE",
+        image: "@assets/71oOkIoaqXL._AC__1751759839615.jpg",
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
