@@ -1343,74 +1343,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Fast Amazon-only search endpoint
-  app.get('/api/products/search-amazon', async (req, res) => {
-    try {
-      const { query, category, min_price, max_price, page = 1 } = req.query;
-      
-      if (!query) {
-        return res.status(400).json({ message: "Search query is required" });
-      }
-
-      // Amazon search only with RainforestAPI (fast)
-      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-        try {
-          const optimizedQuery = generateSearchQuery(query as string);
-          const params = new URLSearchParams({
-            api_key: RAINFOREST_API_KEY,
-            type: "search",
-            amazon_domain: "amazon.com",
-            search_term: optimizedQuery,
-          });
-
-          if (category && category !== 'all') {
-            params.append('category_id', category as string);
-          }
-          if (min_price) params.append('min_price', min_price as string);
-          if (max_price) params.append('max_price', max_price as string);
-          if (page) params.append('page', page as string);
-
-          const url = `https://api.rainforestapi.com/request?${params.toString()}`;
-          console.log('Trying RainforestAPI:', url);
-
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`RainforestAPI responded with status: ${response.status}`);
-          }
-
-          const data = await response.json();
-          console.log('RainforestAPI success:', Object.keys(data));
-
-          // Add retailer information to each product
-          if (data.search_results) {
-            data.search_results = data.search_results.map((product: any) => ({
-              ...product,
-              retailer: 'amazon',
-              retailer_name: 'Amazon'
-            }));
-          }
-
-          return res.json(data);
-        } catch (error) {
-          console.error('RainforestAPI error:', error);
-          return res.status(500).json({ 
-            message: "Amazon search failed", 
-            error: error instanceof Error ? error.message : 'Unknown error' 
-          });
-        }
-      } else {
-        return res.status(503).json({ 
-          message: "Amazon search not available - API key not configured" 
-        });
-      }
-    } catch (error) {
-      console.error('Search error:', error);
-      res.status(500).json({ 
-        message: "Search failed", 
-        error: error instanceof Error ? error.message : 'Unknown error' 
-      });
-    }
-  });
 
   app.get('/api/products/search', async (req, res) => {
     try {
@@ -1420,76 +1352,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      // Multi-retailer search: Amazon (RainforestAPI) + Walmart/Target (SerpAPI)
-      const allProducts: any[] = [];
-      let totalResults = 0;
-      
-      // Amazon search with RainforestAPI
-      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-        try {
-          const optimizedQuery = generateSearchQuery(query as string);
-          const params = new URLSearchParams({
-            api_key: RAINFOREST_API_KEY,
-            type: "search",
-            amazon_domain: "amazon.com",
-            search_term: optimizedQuery,
-          });
+      // PARALLEL multi-retailer search for maximum speed
+      console.log(`🔍 Starting PARALLEL search for: "${query}"`);
+      const startTime = Date.now();
 
-          if (category && category !== 'all') {
-            params.append('category_id', category as string);
-          }
-          if (min_price) {
-            params.append('min_price', min_price as string);
-          }
-          if (max_price) {
-            params.append('max_price', max_price as string);
-          }
-          if (page && page !== '1') {
-            params.append('page', page as string);
-          }
-          
-          console.log(`Trying RainforestAPI: ${RAINFOREST_API_URL}?${params.toString()}`);
-          
-          const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('RainforestAPI success:', Object.keys(data));
+      const searchPromises: Promise<any>[] = [];
+      
+      // Amazon search promise
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        const amazonSearch = async () => {
+          try {
+            const optimizedQuery = generateSearchQuery(query as string);
+            const params = new URLSearchParams({
+              api_key: RAINFOREST_API_KEY,
+              type: "search",
+              amazon_domain: "amazon.com",
+              search_term: optimizedQuery,
+            });
+
+            if (category && category !== 'all') params.append('category_id', category as string);
+            if (min_price) params.append('min_price', min_price as string);
+            if (max_price) params.append('max_price', max_price as string);
+            if (page && page !== '1') params.append('page', page as string);
+
+            const url = `https://api.rainforestapi.com/request?${params.toString()}`;
+            console.log('🌧️ Amazon search started (parallel)');
             
-            // Add Amazon products to results
-            if (data.search_results && Array.isArray(data.search_results)) {
-              // Transform Amazon results to include retailer info
-              const amazonProducts = data.search_results.map((product: any) => ({
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Status ${response.status}`);
+            
+            const data = await response.json();
+            console.log(`✅ Amazon: ${data.search_results?.length || 0} products`);
+            
+            return {
+              source: 'amazon',
+              success: true,
+              products: data.search_results?.map((product: any) => ({
                 ...product,
                 retailer: 'amazon',
                 retailer_name: 'Amazon',
                 link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
-              }));
-              allProducts.push(...amazonProducts);
-              totalResults += data.search_results.length;
-            }
-          } else {
-            console.log(`RainforestAPI failed (${response.status})`);
+              })) || []
+            };
+          } catch (error) {
+            console.log(`❌ Amazon failed: ${error}`);
+            return { source: 'amazon', success: false, products: [] };
           }
-        } catch (apiError) {
-          console.log('RainforestAPI error:', (apiError as Error).message);
-        }
+        };
+        searchPromises.push(amazonSearch());
       }
 
-      // Walmart and Target search with SerpAPI
+      // SerpAPI search promise
       const serpService = getSerpAPIService();
       if (serpService) {
-        try {
-          const optimizedQuery = generateSearchQuery(query as string);
-          const serpResults = await serpService.searchBothStores(optimizedQuery, '60602', 8);
-          
-          if (serpResults && serpResults.length > 0) {
-            console.log(`SerpAPI success: Found ${serpResults.length} products from Walmart/Target`);
+        const serpSearch = async () => {
+          try {
+            console.log('🐍 SerpAPI search started (parallel)');
+            const optimizedQuery = generateSearchQuery(query as string);
+            const serpResults = await serpService.searchBothStores(optimizedQuery, '60602', 10);
             
-            // Transform SerpAPI results to match RainforestAPI format
             const transformedResults = serpResults.map((product: SerpProduct) => {
               const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
               const price = parseFloat(priceStr.replace(/[$,]/g, '')) || 0;
+              
               return {
                 title: product.title,
                 price: { value: price, currency: "USD", raw: product.price },
@@ -1500,21 +1425,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 ratings_total: product.reviews ? parseInt(product.reviews.replace(/[^\d]/g, '')) : null,
                 retailer: product.retailer,
                 retailer_name: product.retailer === 'walmart' ? 'Walmart' : 'Target',
-                position: allProducts.length + serpResults.indexOf(product) + 1,
                 is_prime: false,
                 delivery: "Available for pickup or delivery"
               };
             });
-            
-            allProducts.push(...transformedResults);
-            totalResults += serpResults.length;
-          } else {
-            console.log('SerpAPI: No results found');
+
+            console.log(`✅ SerpAPI: ${transformedResults.length} products (Walmart/Target)`);
+            return { source: 'serpapi', success: true, products: transformedResults };
+          } catch (error) {
+            console.log(`❌ SerpAPI failed: ${error}`);
+            return { source: 'serpapi', success: false, products: [] };
           }
-        } catch (serpError) {
-          console.log('SerpAPI error:', (serpError as Error).message);
-        }
+        };
+        searchPromises.push(serpSearch());
       }
+
+      // Execute ALL searches in parallel with Promise.all()
+      const results = await Promise.all(searchPromises);
+      const totalTime = Date.now() - startTime;
+      
+      // Combine results from all successful sources
+      const allProducts: any[] = [];
+      let totalResults = 0;
+      
+      results.forEach(result => {
+        if (result.success) {
+          allProducts.push(...result.products);
+          totalResults += result.products.length;
+        }
+      });
+
+      // Shuffle for fair retailer representation
+      allProducts.sort(() => Math.random() - 0.5);
+
+      console.log(`🎯 PARALLEL search completed in ${totalTime}ms: ${allProducts.length} products`)
 
       // If we have products from any source, return them
       if (allProducts.length > 0) {
