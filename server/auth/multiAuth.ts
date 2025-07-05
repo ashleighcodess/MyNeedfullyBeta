@@ -337,7 +337,7 @@ export async function setupMultiAuth(app: Express) {
 
   // Legacy route for backward compatibility
   app.get("/api/login", (req, res) => {
-    res.redirect("/api/login/replit");
+    res.redirect("/login");
   });
 }
 
