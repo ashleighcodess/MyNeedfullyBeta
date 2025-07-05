@@ -88,59 +88,84 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Main Story */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <h2 className="text-3xl font-bold text-navy mb-6 text-center">
-              Our Dream Is To Transform The Way To Fulfill Needs Of People In Need.
-            </h2>
-            <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
-              <p>
-                MyNeedfully.com was born from a simple observation: when people face crises like natural disasters, 
-                domestic violence, or homelessness, they often need specific items to rebuild their lives – but it's 
-                hard for friends, family, and community members to know exactly what to provide.
+        {/* Main Story Section */}
+        <div className="mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-8">
+            Our <span className="text-navy">Dream</span> Is To Transform<br />
+            The Way To <span className="text-navy">Fulfill Wishes</span><br />
+            Of <span className="text-navy">People In Need</span>.
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
+            <div className="space-y-6">
+              <p className="text-gray-700 leading-relaxed">
+                MyNeedfully.com Was Born From A Simple Observation: When People Face 
+                Crises Like Natural Disasters, Domestic Violence, Or Homelessness, They Often 
+                Need Specific Items To Rebuild Their Lives - But It's Hard For Friends, Family, And 
+                Community Members To Know Exactly What To Provide.
               </p>
-              <p>
-                We created a platform that makes it easy for individuals in need to create needs lists of essential items, 
-                and for others to directly fulfill these needs. By connecting people in crisis with those who want to help, 
-                we enable communities to provide targeted, meaningful support.
+              <p className="text-gray-700 leading-relaxed">
+                We Created A Platform That Makes It Easy For Individuals In Need To Create 
+                Wishlists Of Essential Items, And For Others To Directly Fulfill These Needs. By 
+                Connecting People In Crisis With Those Who Want To Help, We Enable 
+                Communities To Provide Targeted, Meaningful Support.
               </p>
-              <p>
-                Our vision is a world where no one faces crisis alone, where communities respond effectively to individuals' 
-                needs, and where the path to recovery is made smoother through direct, tangible support.
+              <p className="text-gray-700 leading-relaxed">
+                Our Vision Is A World Where No One Faces Crisis Alone, Where Communities 
+                Respond Effectively To Individuals Needs, And Where The Path To Recovery Is 
+                Made Smoother Through Direct, Tangible Support.
               </p>
+              
+              <div className="pt-4">
+                <Link href="/browse">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-8 py-3"
+                  >
+                    Support A Needs List
+                  </Button>
+                </Link>
+              </div>
             </div>
-            <div className="text-center mt-8">
-              <Link href="/browse">
-                <Button size="lg" className="bg-coral hover:bg-coral/90">
-                  Support A Needs List
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Image and Statistics Section */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-8">
-            <div>
+            
+            <div className="flex justify-center">
               <img 
                 src={aboutUsImage} 
-                alt="Community helping and supporting each other" 
-                className="w-full h-auto rounded-xl shadow-lg"
+                alt="Family with needs list showing community support" 
+                className="w-full max-w-md h-auto"
               />
             </div>
-            <div className="grid grid-cols-2 gap-6">
-              {stats.map((stat, index) => (
-                <Card key={index} className="text-center">
-                  <CardContent className="p-6">
-                    <stat.icon className={`h-12 w-12 mx-auto mb-4 ${stat.color}`} />
-                    <div className="text-3xl font-bold text-navy mb-2">{stat.value}</div>
-                    <div className="text-sm text-gray-600">{stat.label}</div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          </div>
+          
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="text-center bg-coral/10 border-coral/20">
+              <CardContent className="p-6">
+                <div className="text-2xl font-bold text-navy mb-1">900+</div>
+                <div className="text-sm text-gray-600 uppercase tracking-wide">Needs List Fulfilled</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center bg-coral border-coral">
+              <CardContent className="p-6">
+                <div className="text-2xl font-bold text-white mb-1">$000,000</div>
+                <div className="text-sm text-white/90 uppercase tracking-wide">Donation Raised</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center bg-amber-100 border-amber-200">
+              <CardContent className="p-6">
+                <div className="text-2xl font-bold text-navy mb-1">100K</div>
+                <div className="text-sm text-gray-600 uppercase tracking-wide">Smiles Spread</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center bg-coral border-coral">
+              <CardContent className="p-6">
+                <div className="text-2xl font-bold text-white mb-1">000K</div>
+                <div className="text-sm text-white/90 uppercase tracking-wide">Products Delivered</div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
