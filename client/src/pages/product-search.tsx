@@ -686,7 +686,7 @@ export default function ProductSearch() {
                           <img 
                             src={product.image}
                             alt={product.title}
-                            className="w-full h-48 object-cover"
+                            className="w-full h-48 object-contain bg-gray-50"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = '/placeholder-image.png';
                             }}
