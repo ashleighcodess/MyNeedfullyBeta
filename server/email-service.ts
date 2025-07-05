@@ -674,6 +674,96 @@ class EmailService {
       text,
     });
   }
+
+  async sendWeeklyImpactSummary(
+    userEmail: string,
+    userName: string,
+    weeklyStats: {
+      donationsReceived: number;
+      itemsFulfilled: number;
+      thankYouNotes: number;
+      totalValue: number;
+    }
+  ): Promise<boolean> {
+    const subject = `Your Weekly Impact Summary - MyNeedfully`;
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #FF6B6B; color: white; padding: 20px; text-align: center;">
+          <h1 style="margin: 0;">Your Weekly Impact</h1>
+        </div>
+        
+        <div style="padding: 30px; background-color: #f9f9f9;">
+          <h2 style="color: #333;">Hello ${userName},</h2>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            Here's a summary of the amazing impact you've made this week on MyNeedfully!
+          </p>
+          
+          <div style="background-color: white; padding: 25px; border-radius: 12px; margin: 25px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="color: #FF6B6B; margin-top: 0; text-align: center;">This Week's Highlights</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+              <div style="text-align: center; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 24px; font-weight: bold; color: #FF6B6B;">${weeklyStats.donationsReceived}</div>
+                <div style="font-size: 14px; color: #666;">Donations Received</div>
+              </div>
+              
+              <div style="text-align: center; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 24px; font-weight: bold; color: #FF6B6B;">${weeklyStats.itemsFulfilled}</div>
+                <div style="font-size: 14px; color: #666;">Items Fulfilled</div>
+              </div>
+              
+              <div style="text-align: center; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 24px; font-weight: bold; color: #FF6B6B;">${weeklyStats.thankYouNotes}</div>
+                <div style="font-size: 14px; color: #666;">Thank You Notes</div>
+              </div>
+              
+              <div style="text-align: center; padding: 15px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 24px; font-weight: bold; color: #FF6B6B;">$${weeklyStats.totalValue.toFixed(0)}</div>
+                <div style="font-size: 14px; color: #666;">Total Value</div>
+              </div>
+            </div>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            ${weeklyStats.donationsReceived > 0 
+              ? `You've touched ${weeklyStats.donationsReceived} ${weeklyStats.donationsReceived === 1 ? 'life' : 'lives'} this week! Each act of kindness creates ripples of hope and positivity.`
+              : 'Remember, every small act of kindness matters. Your presence in our community makes a difference!'
+            }
+          </p>
+          
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile" 
+               style="background-color: #FF6B6B; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
+              View Your Impact Dashboard
+            </a>
+          </div>
+          
+          <p style="font-size: 14px; color: #888; text-align: center;">
+            Keep making a difference, one need at a time! 💝
+          </p>
+        </div>
+        
+        <div style="background-color: #333; color: white; padding: 20px; text-align: center; font-size: 14px;">
+          <p style="margin: 0;">© 2025 MyNeedfully. Connecting hearts, fulfilling needs.</p>
+          <p style="margin: 5px 0 0 0;">
+            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/settings" style="color: #FF6B6B;">Manage email preferences</a>
+          </p>
+        </div>
+      </div>
+    `;
+
+    const text = `Hello ${userName}, here's your weekly impact summary: ${weeklyStats.donationsReceived} donations received, ${weeklyStats.itemsFulfilled} items fulfilled, ${weeklyStats.thankYouNotes} thank you notes, $${weeklyStats.totalValue.toFixed(0)} total value. Keep making a difference!`;
+
+    return this.sendEmail({
+      to: userEmail,
+      from: 'data@myneedfully.app',
+      subject,
+      html,
+      text,
+    });
+  }
 }
 
 export const emailService = new EmailService();

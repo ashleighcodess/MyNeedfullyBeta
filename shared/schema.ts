@@ -46,6 +46,7 @@ export const users = pgTable("users", {
   showDonationHistory: boolean("show_donation_history").default(true),
   emailNotifications: boolean("email_notifications").default(true),
   pushNotifications: boolean("push_notifications").default(true),
+  emailMarketing: boolean("email_marketing").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

@@ -2318,6 +2318,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Resend email verification
+  app.post('/api/auth/resend-verification', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.email) {
+        return res.status(400).json({ message: "User email not found" });
+      }
+
+      if (user.isVerified) {
+        return res.json({ message: "Email is already verified" });
+      }
+
+      // Generate secure token
+      const token = generateSecureToken();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Store verification token
+      await storage.createEmailVerificationToken({
+        userId: user.id,
+        token: token,
+        email: user.email,
+        expiresAt: expiresAt
+      });
+
+      // Send verification email
+      const verificationSuccess = await emailService.sendEmailVerificationEmail(
+        user.email,
+        user.firstName || 'User',
+        token
+      );
+
+      if (verificationSuccess) {
+        res.json({ message: "Verification email sent successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to send verification email" });
+      }
+    } catch (error) {
+      console.error("Error resending verification email:", error);
+      res.status(500).json({ message: "Failed to resend verification email" });
+    }
+  });
+
   // Confirm email verification
   app.post('/api/auth/confirm-email', async (req, res) => {
     try {

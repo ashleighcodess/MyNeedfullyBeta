@@ -83,6 +83,26 @@ export default function Settings() {
     },
   });
 
+  // Resend verification email mutation
+  const resendVerificationMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('POST', '/api/auth/resend-verification');
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification Email Sent",
+        description: "Please check your email for verification instructions.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send verification email",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Download data mutation
   const downloadDataMutation = useMutation({
     mutationFn: async () => {
@@ -133,6 +153,10 @@ export default function Settings() {
         deleteAccountMutation.mutate();
       }
     }
+  };
+
+  const handleResendVerification = () => {
+    resendVerificationMutation.mutate();
   };
 
   if (isLoading || settingsLoading) {
@@ -417,6 +441,21 @@ export default function Settings() {
                       onCheckedChange={(checked) => handleSettingChange('pushNotifications', checked)}
                     />
                   </div>
+
+                  <Separator />
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Email Marketing and Promotions</Label>
+                      <p className="text-sm text-gray-500">
+                        Receive updates about new features, community highlights, and platform news
+                      </p>
+                    </div>
+                    <Switch
+                      checked={userSettings?.emailMarketing ?? false}
+                      onCheckedChange={(checked) => handleSettingChange('emailMarketing', checked)}
+                    />
+                  </div>
                 </CardContent>
               </Card>
 
@@ -504,9 +543,22 @@ export default function Settings() {
                         </p>
                       </div>
                     </div>
-                    <Badge variant={user?.isVerified ? "default" : "secondary"}>
-                      {user?.isVerified ? 'Verified' : 'Unverified'}
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                      <Badge variant={user?.isVerified ? "default" : "secondary"}>
+                        {user?.isVerified ? 'Verified' : 'Unverified'}
+                      </Badge>
+                      {!user?.isVerified && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={handleResendVerification}
+                          disabled={resendVerificationMutation.isPending}
+                        >
+                          <Mail className="h-4 w-4 mr-2" />
+                          {resendVerificationMutation.isPending ? 'Sending...' : 'Resend Email'}
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
