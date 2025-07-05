@@ -424,34 +424,34 @@ export default function WishlistDetail() {
             </div>
           </div>
 
-          {/* Featured Image */}
-          {getStoryImages().length > 0 && (
-            <div className="mb-8">
-              <div 
-                className="relative h-80 w-full rounded-lg overflow-hidden cursor-pointer group"
-                onClick={() => openCarousel(0)}
-              >
-                <img
-                  src={getStoryImages()[0]}
-                  alt={wishlist.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                  <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
-                </div>
-                {getStoryImages().length > 1 && (
-                  <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full">
-                    +{getStoryImages().length - 1} more photos
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Featured Image */}
+            {getStoryImages().length > 0 && (
+              <div className="mb-8">
+                <div 
+                  className="relative h-80 w-full rounded-lg overflow-hidden cursor-pointer group"
+                  onClick={() => openCarousel(0)}
+                >
+                  <img
+                    src={getStoryImages()[0]}
+                    alt={wishlist.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                    <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
+                  </div>
+                  {getStoryImages().length > 1 && (
+                    <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full">
+                      +{getStoryImages().length - 1} more photos
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             {/* Story */}
             <Card>
               <CardHeader>
