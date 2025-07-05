@@ -290,15 +290,6 @@ export default function ProductSearch() {
 
   // Get display products
   const displayProducts = useMemo(() => {
-    console.log('Display calculation:', {
-      debouncedQuery,
-      queryLength: debouncedQuery?.length,
-      isLoading,
-      hasSearchResults: !!searchResults,
-      searchResultsKeys: searchResults ? Object.keys(searchResults) : null,
-      resultsLength: searchResults?.data?.length || 0
-    });
-    
     // Only show results if we have a valid search query
     if (!debouncedQuery || debouncedQuery.length < 3) {
       return [];
@@ -311,8 +302,6 @@ export default function ProductSearch() {
     
     // Handle different response formats
     const results = searchResults?.data || [];
-    console.log('Final results to display:', results?.length);
-    console.log('SearchResults object keys:', searchResults ? Object.keys(searchResults) : 'no searchResults');
     return results;
   }, [debouncedQuery, searchResults, isLoading]);
 
