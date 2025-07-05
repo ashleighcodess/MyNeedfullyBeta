@@ -95,20 +95,17 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      // Strategy: Use Google search with specific Target product URL patterns
-      // This should return actual product pages instead of category pages
-      const productQuery = `"${query}" site:target.com/p/ OR site:target.com/s/ -inurl:c/ -inurl:categories`;
+      // Strategy: Direct Target shopping search without site operator
       const params = {
         api_key: this.apiKey,
-        engine: 'google',
-        q: productQuery,
+        engine: 'google_shopping',
+        q: `${query} Target`,
         location: location,
         google_domain: 'google.com',
         gl: 'us',
         hl: 'en',
-        num: Math.min(limit, 60).toString(),
-        start: '0',
-        device: 'desktop'
+        num: Math.min(limit, 40).toString(),
+        tbs: 'mr:1,merchagg:m2' // Shopping-specific parameters
       };
 
       const url = `https://serpapi.com/search.json`;
@@ -122,12 +119,14 @@ export class SerpAPIService {
       });
 
       if (!response.ok) {
-        console.log(`Target SerpAPI responded with ${response.status}`);
+        const errorText = await response.text();
+        console.log(`Target SerpAPI responded with ${response.status}: ${errorText}`);
         return [];
       }
 
       const data = await response.json();
       console.log('Target SerpAPI response structure:', Object.keys(data));
+      console.log('Target shopping_results exists:', !!data.shopping_results);
 
       // Check for error messages
       if (data.error) {
@@ -135,146 +134,51 @@ export class SerpAPIService {
         return [];
       }
 
-      // Check for shopping_results first, fallback to organic_results
-      let resultsArray = [];
-      let resultType = '';
-      
-      if (data.shopping_results && Array.isArray(data.shopping_results) && data.shopping_results.length > 0) {
-        resultsArray = data.shopping_results;
-        resultType = 'shopping_results';
-        console.log(`Target shopping_results found: ${data.shopping_results.length}`);
-      } else if (data.organic_results && Array.isArray(data.organic_results) && data.organic_results.length > 0) {
-        resultsArray = data.organic_results;
-        resultType = 'organic_results';
-        console.log(`Target organic_results found: ${data.organic_results.length}`);
-      } else {
-        console.log('No shopping_results or organic_results found in Target response');
+      // Process Google Shopping results for Target products
+      if (!data.shopping_results || !Array.isArray(data.shopping_results) || data.shopping_results.length === 0) {
+        console.log('No shopping_results found in Target Google Shopping search response');
         console.log('Available response keys:', Object.keys(data));
         return [];
       }
 
+      const resultsArray = data.shopping_results;
+      console.log(`Target shopping results found: ${data.shopping_results.length}`);
+      
+      // Debug: Show first result structure  
+      if (data.shopping_results[0]) {
+        console.log(`Target first shopping result: "${data.shopping_results[0]?.title}" | Price: ${data.shopping_results[0]?.price}`);
+        console.log('🔍 Target shopping result fields:', Object.keys(data.shopping_results[0]).join(', '));
+      }
+
       // Target product processing optimized for authentic results
 
+      console.log(`🔍 Target: Processing ${resultsArray.length} shopping results`);
+      
       const targetResults = resultsArray
+        .slice(0, 20) // Take first 20 results
         .filter((result: any) => {
-          const resultLink = result.link || '';
-          const resultTitle = result.title || '';
-          const resultSource = result.source || result.merchant || '';
-          
-          // Must have title
-          if (!resultTitle || resultTitle.length < 3) return false;
-          
-          // For shopping results, check source/merchant field, for organic check link
-          if (resultType === 'shopping_results') {
-            // Shopping results may have Target in source/merchant field instead of link
-            if (resultSource.toLowerCase().includes('target') || resultLink.includes('target.com')) {
-              return true;
-            }
-          } else {
-            // Organic results should have target.com in link
-            if (resultLink.includes('target.com')) {
-              return true;
-            }
-          }
-          
-          return false;
+          // Very basic filtering - just check for essential fields
+          return result.title && result.price && result.product_link;
         })
         .slice(0, limit)
         .map((result: any, index: number) => {
-          // Enhanced logging for first Target result
-          if (index === 0) {
-            console.log(`Target first result: "${result.title}" | URL: ${result.link} | Price in snippet: ${!!(result.snippet && result.snippet.includes('$'))}`);
-          }
           const resultTitle = result.title || '';
-          const resultLink = result.link || '';
+          const resultLink = result.product_link || result.link || '';
           
-          // Extract price based on result type
-          let extractedPrice = 'Price varies';
-          let imageUrl = '';
+          // Extract price from Google Shopping results
+          let extractedPrice = result.price || result.extracted_price || 'Price varies';
           
-          if (resultType === 'shopping_results') {
-            // Shopping results have structured price data
-            extractedPrice = result.price || result.extracted_price || 'Price varies';
-            imageUrl = result.thumbnail || result.image || '';
-          } else {
-            // Enhanced price extraction for organic results
-            const snippet = result.snippet || '';
-            const richSnippet = result.rich_snippet || {};
-            
-            // Multiple price extraction strategies
-            let priceFound = false;
-            
-            // Strategy 1: Rich snippet extensions
-            if (richSnippet.top && richSnippet.top.detected_extensions) {
-              const topExtensions = richSnippet.top.detected_extensions;
-              if (Array.isArray(topExtensions)) {
-                for (const ext of topExtensions) {
-                  const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
-                  if (priceMatch) {
-                    extractedPrice = priceMatch[0];
-                    priceFound = true;
-                    break;
-                  }
-                }
-              } else {
-                console.log('⚠️ Target top extensions not iterable:', typeof topExtensions, topExtensions);
-              }
-            }
-            
-            // Strategy 2: Rich snippet bottom extensions
-            if (!priceFound && richSnippet.bottom && richSnippet.bottom.detected_extensions) {
-              const bottomExtensions = richSnippet.bottom.detected_extensions;
-              if (Array.isArray(bottomExtensions)) {
-                for (const ext of bottomExtensions) {
-                  const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
-                  if (priceMatch) {
-                    extractedPrice = priceMatch[0];
-                    priceFound = true;
-                    break;
-                  }
-                }
-              } else if (typeof bottomExtensions === 'object' && bottomExtensions !== null) {
-                // Handle Target's object-based price extensions
-                if (bottomExtensions.price) {
-                  extractedPrice = `$${bottomExtensions.price}`;
-                  priceFound = true;
-                } else if (bottomExtensions.price_from) {
-                  extractedPrice = `$${bottomExtensions.price_from}`;
-                  priceFound = true;
-                }
-              }
-            }
-            
-            // Strategy 3: Main snippet text
-            if (!priceFound && snippet) {
-              const priceMatch = snippet.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
-              if (priceMatch) {
-                extractedPrice = priceMatch[0];
-                priceFound = true;
-              }
-            }
-            
-            // Enhanced Target image handling for organic results
-            if (resultLink.includes('target.com')) {
-              imageUrl = result.thumbnail || result.image || '';
-              
-              // For organic results, SerpAPI sometimes provides images in different fields
-              if (!imageUrl && result.serpapi_thumbnail) {
-                imageUrl = result.serpapi_thumbnail;
-              }
-              
-              // Extract additional image sources from rich snippets if available
-              if (!imageUrl && result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.extensions && Array.isArray(result.rich_snippet.top.extensions)) {
-                const extensions = result.rich_snippet.top.extensions;
-                // Look for image URLs in extensions
-                for (const ext of extensions) {
-                  if (typeof ext === 'string' && (ext.includes('http') && (ext.includes('.jpg') || ext.includes('.png') || ext.includes('.jpeg')))) {
-                    imageUrl = ext;
-                    break;
-                  }
-                }
-              }
-            }
+          // Enhanced image extraction for Google Shopping results
+          let imageUrl = result.thumbnail || result.image || '';
+          
+          // Extract snippet for description
+          const snippet = result.snippet || '';
+          
+          // Debug: Show Target result structure
+          if (index === 0) {
+            console.log(`🔍 Target result fields: ${Object.keys(result).join(', ')}`);
+            console.log(`📸 Target image URL: ${imageUrl} | Price extracted: ${extractedPrice}`);
+            console.log(`🔍 Target snippet: ${snippet.substring(0, 100)}...`);
           }
 
           return {
