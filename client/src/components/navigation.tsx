@@ -77,6 +77,94 @@ export default function Navigation() {
 
           {/* Right Side - Mobile First Approach */}
           <div className="flex items-center space-x-2">
+            {/* Mobile notifications and user menu - show on small screens when logged in */}
+            {user && (
+              <div className="flex items-center space-x-2 sm:hidden">
+                {/* Mobile Notifications */}
+                <div className="relative">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="relative"
+                    onClick={() => setNotificationCenterOpen(true)}
+                  >
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
+                
+                {/* Mobile User Avatar */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      {user?.profileImageUrl ? (
+                        <img 
+                          src={user.profileImageUrl} 
+                          alt="Profile" 
+                          className="w-7 h-7 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-7 h-7 bg-coral/10 rounded-full flex items-center justify-center">
+                          <User className="h-4 w-4 text-coral" />
+                        </div>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Zap className="mr-2 h-4 w-4" />
+                        Quick Actions
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/profile">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/my-needs-lists">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Heart className="mr-2 h-4 w-4" />
+                        My Needs Lists
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/settings">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                      </DropdownMenuItem>
+                    </Link>
+                    {user?.userType === 'admin' && (
+                      <Link href="/admin">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Shield className="mr-2 h-4 w-4" />
+                          Admin
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer text-red-600" onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+            
             {/* Always show hamburger menu on small screens */}
             <div className="block sm:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
