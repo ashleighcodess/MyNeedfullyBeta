@@ -99,7 +99,7 @@ export class SerpAPIService {
       const params = {
         api_key: this.apiKey,
         engine: 'google',
-        q: `"${query}" site:target.com`,
+        q: `"${query}" site:target.com/p`,
         location: 'United States',
         device: 'desktop',
         hl: 'en',                 // English language
@@ -121,24 +121,52 @@ export class SerpAPIService {
 
       const targetResults = response.organic_results
         .filter((result: any) => {
-          // Basic filter for Target results
-          if (!result.link || !result.link.includes('target.com')) return false;
+          // Ultra strict filter for Target individual product pages only
+          if (!result.link || !result.link.includes('target.com/p/')) return false;
           if (!result.title || result.title.length < 5) return false;
           
-          // Only exclude obvious non-product pages
-          const strongExcludes = [
-            '/account',    // account pages
-            '/cart',       // cart pages
-            '/store-locator', // store pages
-            'target.com/c/organic', // specific category exclusions
-            'target.com/gp/help'    // help pages
+          // Must have the Target product ID pattern (-/A-xxxxxxxx)
+          if (!result.link.match(/-\/A-\d+/)) return false;
+          
+          // Exclude any category pages, brand pages, and collection URLs
+          const excludePatterns = [
+            '/c/',           // category pages
+            '?Nao=',         // pagination 
+            'Page ',         // page indicators
+            ': Page',        // page indicators  
+            'Featured Brands', // brand collections
+            'Baby Bottles :', // category collections
+            'Ounce Baby Bottles', // size collections
+            'Household Essentials', // generic collections
+            ': Household',   // brand collections
+            'from Top',      // collection pages
           ];
           
-          for (const exclude of strongExcludes) {
-            if (result.link.includes(exclude)) return false;
+          for (const pattern of excludePatterns) {
+            if (result.link.includes(pattern) || result.title.includes(pattern)) {
+              return false;
+            }
           }
           
-          // Allow more product pages through - be very permissive
+          // Product title must not contain collection indicators
+          const titleExcludes = [
+            'Page ',
+            ': Page',
+            'Featured Brands',
+            'Brands :',
+            'Collection',
+            'All :',
+            'Shop ',
+            'Baby Bottles :'
+          ];
+          
+          for (const exclude of titleExcludes) {
+            if (result.title.includes(exclude)) {
+              return false;
+            }
+          }
+          
+          // Must be an individual product page
           return true;
         })
         .slice(0, limit)
