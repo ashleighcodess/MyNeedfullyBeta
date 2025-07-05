@@ -232,42 +232,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      {/* Navigation Header */}
-      <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
-            </div>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#browse" className="text-gray-700 hover:text-coral transition-colors">Browse Wishlists</a>
-              <a href="#create" className="text-gray-700 hover:text-coral transition-colors">Create Wishlist</a>
-              <a href="#how" className="text-gray-700 hover:text-coral transition-colors">How It Works</a>
-              <a href="#about" className="text-gray-700 hover:text-coral transition-colors">About</a>
-            </div>
-
-            {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" onClick={handleLogin} className="text-gray-700 hover:text-coral">
-                Sign In
-              </Button>
-              <Button onClick={handleLogin} className="bg-coral text-white hover:bg-coral/90 rounded-full px-6">
-                Get Started
-              </Button>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <Button variant="ghost" size="sm">
-                <i className="fas fa-bars text-xl"></i>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
