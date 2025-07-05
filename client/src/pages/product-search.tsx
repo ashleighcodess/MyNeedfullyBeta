@@ -236,7 +236,6 @@ export default function ProductSearch() {
       // Return cached popular products instantly while fetching fresh data  
       const cached = getCachedProducts(debouncedQuery);
       if (cached) {
-        console.log('Using cached products:', cached);
         return cached;
       }
       return undefined;
@@ -519,8 +518,10 @@ export default function ProductSearch() {
                     className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer text-center"
                     onClick={() => {
                       setSearchQuery(category.label);
+                      setDebouncedQuery(category.label); // Set debounced query immediately for categories
                       setActiveSearch(category.label);
                       setCategory(category.value);
+                      setPage(1); // Reset to first page
                     }}
                   >
                     <i className={`${category.icon} text-coral text-2xl mb-2`}></i>
