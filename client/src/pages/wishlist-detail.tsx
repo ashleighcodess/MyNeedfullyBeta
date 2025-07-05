@@ -721,9 +721,9 @@ export default function WishlistDetail() {
                                     setShowPurchaseModal(true);
                                   }
                                 }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available}
+                                disabled={item.isFulfilled || (itemPricing[item.id]?.pricing?.target && !itemPricing[item.id]?.pricing?.target?.available)}
                                 className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available
+                                  item.isFulfilled || (itemPricing[item.id]?.pricing?.target && !itemPricing[item.id]?.pricing?.target?.available)
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
@@ -762,9 +762,9 @@ export default function WishlistDetail() {
                                     setShowPurchaseModal(true);
                                   }
                                 }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available}
+                                disabled={item.isFulfilled || (itemPricing[item.id]?.pricing?.walmart && !itemPricing[item.id]?.pricing?.walmart?.available)}
                                 className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available
+                                  item.isFulfilled || (itemPricing[item.id]?.pricing?.walmart && !itemPricing[item.id]?.pricing?.walmart?.available)
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
