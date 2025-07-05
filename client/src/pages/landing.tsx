@@ -156,7 +156,7 @@ export default function Landing() {
   }, [startTickerAnimation]);
 
   const handleLogin = () => {
-    window.location.href = "/api/login";
+    setLocation("/login");
   };
 
   const handleNeedsListSearch = (e: React.FormEvent) => {
