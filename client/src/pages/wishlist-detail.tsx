@@ -614,18 +614,7 @@ export default function WishlistDetail() {
                             </div>
                           </div>
 
-                          {/* Mark as Fulfilled button (for non-owners) */}
-                          {!isOwner && (item.quantityFulfilled < item.quantity) && (
-                            <div className="mt-4">
-                              <button
-                                onClick={() => fulfillItemMutation.mutate(item.id)}
-                                disabled={fulfillItemMutation.isPending}
-                                className="bg-green-600 text-white py-2 px-4 rounded text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
-                              >
-                                {fulfillItemMutation.isPending ? 'Marking as Fulfilled...' : 'Mark as Fulfilled'}
-                              </button>
-                            </div>
-                          )}
+
 
                           {item.isFulfilled && (
                             <div className="mt-4">
