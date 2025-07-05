@@ -178,11 +178,11 @@ export default function Navigation() {
             )}
 
             {/* Mobile menu trigger - always visible */}
-            <div className="lg:hidden">
+            <div className="lg:hidden ml-2">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Menu className="h-5 w-5" />
+                  <Button variant="ghost" size="sm" className="border-2 border-coral bg-coral/10 hover:bg-coral/20">
+                    <Menu className="h-6 w-6 text-coral" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80">
