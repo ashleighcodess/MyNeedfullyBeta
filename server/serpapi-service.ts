@@ -165,7 +165,21 @@ export class SerpAPIService {
           return true;
         })
         .slice(0, limit)
-        .map((result: any) => {
+        .map((result: any, index: number) => {
+          // Debug logging for Target image data structure
+          if (index === 0) {
+            console.log('=== TARGET RESULT DEBUG ===');
+            console.log('Result keys:', Object.keys(result));
+            console.log('Has thumbnail:', !!result.thumbnail);
+            console.log('Has image:', !!result.image);
+            console.log('Has favicon:', !!result.favicon);
+            console.log('Has serpapi_thumbnail:', !!result.serpapi_thumbnail);
+            console.log('Rich snippet available:', !!result.rich_snippet);
+            if (result.rich_snippet) {
+              console.log('Rich snippet keys:', Object.keys(result.rich_snippet));
+            }
+            console.log('=== END DEBUG ===');
+          }
           const resultTitle = result.title || '';
           const resultLink = result.link || '';
           
@@ -192,6 +206,29 @@ export class SerpAPIService {
             if (extractedPrice === 'Price varies' && result.snippet) {
               const priceMatch = result.snippet.match(/\$[\d,]+\.?\d*/);
               if (priceMatch) extractedPrice = priceMatch[0];
+            }
+            
+            // Target-specific image handling for organic results
+            if (resultLink.includes('target.com')) {
+              // Check for any available image data in the result
+              imageUrl = result.thumbnail || result.image || result.favicon || '';
+              
+              // For organic results, SerpAPI sometimes provides images in different fields
+              if (!imageUrl && result.serpapi_thumbnail) {
+                imageUrl = result.serpapi_thumbnail;
+              }
+              
+              // Extract additional image sources from rich snippets if available
+              if (!imageUrl && result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.extensions) {
+                const extensions = result.rich_snippet.top.extensions;
+                // Look for image URLs in extensions
+                for (const ext of extensions) {
+                  if (typeof ext === 'string' && (ext.includes('http') && (ext.includes('.jpg') || ext.includes('.png') || ext.includes('.jpeg')))) {
+                    imageUrl = ext;
+                    break;
+                  }
+                }
+              }
             }
           }
 
