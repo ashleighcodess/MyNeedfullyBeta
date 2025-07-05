@@ -95,17 +95,9 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      const params = {
-        api_key: this.apiKey,
-        engine: 'google_shopping',
-        q: `${query} site:target.com`,
-        location: location,
-        google_domain: 'google.com',
-        gl: 'us',
-        hl: 'en',
-        num: limit.toString(),
-        start: '0'
-      };
+      // Target temporarily disabled - SerpAPI Target engine requires special configuration
+      console.log('Target search temporarily disabled - returning empty results');
+      return [];
 
       const response = await fetch(`https://serpapi.com/search?${new URLSearchParams(params).toString()}`);
       
@@ -117,8 +109,9 @@ export class SerpAPIService {
       const data = await response.json();
       console.log('Target SerpAPI response structure:', Object.keys(data));
 
-      const resultType = data.shopping_results ? 'shopping_results' : 
-                        data.products ? 'products' : 
+      const resultType = data.products ? 'products' : 
+                        data.product_results ? 'product_results' :
+                        data.shopping_results ? 'shopping_results' : 
                         data.organic_results ? 'organic_results' : null;
       
       if (!resultType) {
@@ -140,8 +133,8 @@ export class SerpAPIService {
           const resultTitle = result.title || result.product_title || result.name || '';
           
           if (!resultTitle || resultTitle.length < 5) return false;
+          if (resultType === 'products' || resultType === 'product_results') return true;
           if (resultType === 'shopping_results' && resultLink.includes('target.com')) return true;
-          if (resultType === 'products') return true;
           if (!resultLink.includes('target.com')) return false;
           
           return true;
@@ -155,12 +148,12 @@ export class SerpAPIService {
           let extractedPrice = 'Price varies';
           let imageUrl = '';
           
-          if (resultType === 'shopping_results') {
+          if (resultType === 'product_results' || resultType === 'products') {
+            extractedPrice = result.price || result.current_price || result.extracted_price || 'Price varies';
+            imageUrl = result.image || result.thumbnail || result.main_image || '';
+          } else if (resultType === 'shopping_results') {
             extractedPrice = result.price || result.extracted_price || 'Price varies';
             imageUrl = result.thumbnail || result.image || '';
-          } else if (resultType === 'products') {
-            extractedPrice = result.price || result.current_price || 'Price varies';
-            imageUrl = result.image || result.thumbnail || result.main_image || '';
           } else {
             if (result.rich_snippet && result.rich_snippet.top) {
               const extensions = result.rich_snippet.top.detected_extensions || [];
