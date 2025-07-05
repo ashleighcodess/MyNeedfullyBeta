@@ -866,7 +866,12 @@ export default function Profile() {
                                   <div className="flex-1">
                                     <h3 className="font-semibold text-navy">{purchase.itemTitle}</h3>
                                     <p className="text-sm text-gray-600">
-                                      Purchased for: <span className="font-medium text-coral">{purchase.wishlistTitle}</span>
+                                      Purchased for: <Link 
+                                        href={`/wishlist/${purchase.wishlistId}`}
+                                        className="font-medium text-coral hover:text-coral/80 underline cursor-pointer transition-colors"
+                                      >
+                                        {purchase.wishlistTitle}
+                                      </Link>
                                     </p>
                                   </div>
                                   <div className={`px-3 py-1 rounded-full text-white text-xs font-medium ${retailerInfo.color}`}>
