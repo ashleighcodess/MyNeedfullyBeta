@@ -98,11 +98,15 @@ export default function AdminDashboard() {
     },
     onSuccess: () => {
       toast({
-        title: "User Removed",
-        description: "User has been removed and notified via email.",
+        title: "✅ User Successfully Removed",
+        description: "The user has been removed from the platform and notified via email.",
+        duration: 5000, // Show for 5 seconds
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+      // Add slight delay to ensure user sees the notification before data updates
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+      }, 100);
     },
     onError: (error: any) => {
       toast({
