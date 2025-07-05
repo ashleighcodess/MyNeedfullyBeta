@@ -353,7 +353,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (serpApiService) {
         const walmartPromise = Promise.race([
           serpApiService.searchWalmart(query as string, '60602', 20),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 3000))
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 8000))
         ])
         .then((products: any) => ({ retailer: 'walmart', products }))
         .catch(() => ({ retailer: 'walmart', products: [] }));
@@ -363,7 +363,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // 3. Target Search (SerpAPI)
         const targetPromise = Promise.race([
           serpApiService.searchTarget(query as string, '10001', 20),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 3000))
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 8000))
         ])
         .then((products: any) => ({ retailer: 'target', products }))
         .catch(() => ({ retailer: 'target', products: [] }));
