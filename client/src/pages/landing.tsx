@@ -610,22 +610,16 @@ export default function Landing() {
                     Food
                   </span>
                 </div>
-                <div className="absolute top-3 right-3">
-                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                  </svg>
-                </div>
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-navy mb-2">Emergency Food Kit</h3>
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Ready-to-eat meals, canned goods, and emergency water supply for disaster preparedness</p>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-center mb-3">
                   <div className="flex items-center space-x-2">
                     <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
                     <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
                     <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
-                  <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
                 <Link href="/product-search?q=emergency+food+kit">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
@@ -648,22 +642,16 @@ export default function Landing() {
                     Clothes
                   </span>
                 </div>
-                <div className="absolute top-3 right-3">
-                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                  </svg>
-                </div>
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-navy mb-2">Essential Clothing</h3>
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Basic clothing items including shirts, pants, and undergarments for emergency situations</p>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-center mb-3">
                   <div className="flex items-center space-x-2">
                     <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
                     <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
                     <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
-                  <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
                 <Link href="/product-search?q=emergency+clothing+basic">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
@@ -686,22 +674,16 @@ export default function Landing() {
                     Baby & Kids
                   </span>
                 </div>
-                <div className="absolute top-3 right-3">
-                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                  </svg>
-                </div>
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-navy mb-2">Baby & Family Essentials</h3>
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Diapers, formula, baby food, and family necessities for emergency preparedness</p>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-center mb-3">
                   <div className="flex items-center space-x-2">
                     <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
                     <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
                     <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
-                  <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
                 <Link href="/product-search?q=baby+diapers+formula">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
@@ -724,22 +706,16 @@ export default function Landing() {
                     Crisis Care
                   </span>
                 </div>
-                <div className="absolute top-3 right-3">
-                  <svg className="w-5 h-5 text-white bg-black/20 p-1 rounded-full" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                  </svg>
-                </div>
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-navy mb-2">Crisis Hygiene Kit</h3>
                 <p className="text-sm text-gray-600 mb-3 line-clamp-2">Toothbrushes, soap, feminine products, toilet paper, and essential hygiene items for emergencies</p>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-center mb-3">
                   <div className="flex items-center space-x-2">
                     <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
                     <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
                     <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
-                  <span className="text-lg font-bold text-coral">$79.00</span>
                 </div>
                 <Link href="/product-search?q=toothbrush+soap+toilet+paper+tampons+hygiene+essentials">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
