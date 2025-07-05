@@ -241,20 +241,31 @@ export default function Profile() {
             <Card>
               <CardContent className="p-4">
                 <nav className="space-y-2">
-                  {sidebarItems.map((item) => (
-                    <Link 
-                      key={item.id}
-                      href={
-                        item.id === 'profile' ? '/profile' :
-                        item.id === 'lists' ? '/profile' :
-                        item.id === 'purchases' ? '/profile' :
-                        item.id === 'privacy' ? '/profile/privacy' :
-                        item.id === 'create' ? '/create' :
-                        item.id === 'find' ? '/find' :
-                        item.id === 'archive' ? '/profile' : '/profile'
-                      }
-                    >
+                  {sidebarItems.map((item) => {
+                    // For external navigation items, use Link
+                    if (item.id === 'privacy' || item.id === 'create' || item.id === 'find') {
+                      return (
+                        <Link key={item.id} href={
+                          item.id === 'privacy' ? '/profile/privacy' :
+                          item.id === 'create' ? '/create' :
+                          item.id === 'find' ? '/find' : '/profile'
+                        }>
+                          <div className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors cursor-pointer ${
+                            item.active 
+                              ? 'bg-coral text-white' 
+                              : 'text-gray-600 hover:bg-gray-100'
+                          }`}>
+                            <item.icon className="h-4 w-4" />
+                            <span className="text-sm">{item.label}</span>
+                          </div>
+                        </Link>
+                      );
+                    }
+                    
+                    // For internal tab navigation, use button
+                    return (
                       <button
+                        key={item.id}
                         onClick={() => setActiveTab(item.id)}
                         className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
                           item.active 
@@ -265,8 +276,8 @@ export default function Profile() {
                         <item.icon className="h-4 w-4" />
                         <span className="text-sm">{item.label}</span>
                       </button>
-                    </Link>
-                  ))}
+                    );
+                  })}
                   
                   <div className="border-t pt-2 mt-4">
                     <button 
