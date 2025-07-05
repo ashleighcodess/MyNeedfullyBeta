@@ -577,61 +577,165 @@ export default function Profile() {
                     }
                     
                     return filteredNotes.length > 0 ? (
-                      <div className="space-y-4">
-                        {filteredNotes.map((note: any) => {
-                          const isSent = note.fromUserId === user?.id;
-                          return (
-                          <div 
-                            key={note.id} 
-                            className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
-                              isSent 
-                                ? 'bg-coral/5 border-coral/20 hover:border-coral/30' 
-                                : 'bg-green-50 border-green-200 hover:border-green-300'
-                            }`}
-                          >
-                            <div className="flex items-start justify-between mb-4">
-                              <div className="flex items-center space-x-3">
-                                <div className={`p-2 rounded-full ${isSent ? 'bg-coral' : 'bg-green-500'}`}>
-                                  {isSent ? (
-                                    <MessageCircle className="h-4 w-4 text-white" />
-                                  ) : (
-                                    <Heart className="h-4 w-4 text-white" />
-                                  )}
-                                </div>
-                                <div>
-                                  <div className="font-semibold text-navy">
-                                    {isSent ? `To: ${note.toUserName || 'Anonymous'}` : `From: ${note.fromUserName || 'Anonymous'}`}
+                      <div className="space-y-6">
+                        {notesFilter === 'all' ? (
+                          // For "All Notes" view, group by type with section headers
+                          <>
+                            {/* Sent Notes Section */}
+                            {filteredNotes.filter((note: any) => note.fromUserId === user?.id).length > 0 && (
+                              <div>
+                                <div className="flex items-center mb-4">
+                                  <div className="p-2 bg-coral rounded-lg mr-3">
+                                    <MessageCircle className="h-5 w-5 text-white" />
                                   </div>
-                                  <div className="text-sm text-gray-500">
-                                    {new Date(note.createdAt).toLocaleDateString('en-US', { 
-                                      year: 'numeric', 
-                                      month: 'long', 
-                                      day: 'numeric' 
-                                    })}
-                                  </div>
+                                  <h3 className="text-lg font-semibold text-navy">Notes You've Sent ({filteredNotes.filter((note: any) => note.fromUserId === user?.id).length})</h3>
                                 </div>
-                              </div>
-                              <Badge 
-                                variant="secondary" 
-                                className={`${isSent ? 'bg-coral/10 text-coral' : 'bg-green-100 text-green-700'}`}
-                              >
-                                {isSent ? 'Sent' : 'Received'}
-                              </Badge>
-                            </div>
-                            
-                            <div className="mb-4">
-                              <p className="text-gray-700 leading-relaxed italic">"{note.message}"</p>
-                            </div>
-                            
-                            {note.wishlistTitle && (
-                              <div className="flex items-center text-sm text-gray-600 bg-white/50 rounded-lg p-3">
-                                <Gift className="h-4 w-4 mr-2" />
-                                <span>Related to: <span className="font-medium">{note.wishlistTitle}</span></span>
+                                <div className="space-y-3">
+                                  {filteredNotes.filter((note: any) => note.fromUserId === user?.id).map((note: any) => (
+                                    <div 
+                                      key={note.id} 
+                                      className="p-5 rounded-lg bg-coral/5 border border-coral/20 hover:border-coral/30 transition-all hover:shadow-md"
+                                    >
+                                      <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center space-x-3">
+                                          <div className="p-1.5 bg-coral rounded-full">
+                                            <MessageCircle className="h-3 w-3 text-white" />
+                                          </div>
+                                          <div>
+                                            <div className="font-medium text-navy">To: {note.toUserName || 'Anonymous'}</div>
+                                            <div className="text-xs text-gray-500">
+                                              {new Date(note.createdAt).toLocaleDateString('en-US', { 
+                                                year: 'numeric', 
+                                                month: 'short', 
+                                                day: 'numeric' 
+                                              })}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <Badge variant="secondary" className="bg-coral/10 text-coral text-xs">
+                                          Sent
+                                        </Badge>
+                                      </div>
+                                      <p className="text-gray-700 text-sm italic mb-3">"{note.message}"</p>
+                                      {note.wishlistTitle && (
+                                        <div className="flex items-center text-xs text-gray-600 bg-white/70 rounded p-2">
+                                          <Gift className="h-3 w-3 mr-1.5" />
+                                          <span>For: <span className="font-medium">{note.wishlistTitle}</span></span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             )}
+
+                            {/* Received Notes Section */}
+                            {filteredNotes.filter((note: any) => note.toUserId === user?.id).length > 0 && (
+                              <div>
+                                <div className="flex items-center mb-4">
+                                  <div className="p-2 bg-green-500 rounded-lg mr-3">
+                                    <Heart className="h-5 w-5 text-white" />
+                                  </div>
+                                  <h3 className="text-lg font-semibold text-navy">Notes You've Received ({filteredNotes.filter((note: any) => note.toUserId === user?.id).length})</h3>
+                                </div>
+                                <div className="space-y-3">
+                                  {filteredNotes.filter((note: any) => note.toUserId === user?.id).map((note: any) => (
+                                    <div 
+                                      key={note.id} 
+                                      className="p-5 rounded-lg bg-green-50 border border-green-200 hover:border-green-300 transition-all hover:shadow-md"
+                                    >
+                                      <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center space-x-3">
+                                          <div className="p-1.5 bg-green-500 rounded-full">
+                                            <Heart className="h-3 w-3 text-white" />
+                                          </div>
+                                          <div>
+                                            <div className="font-medium text-navy">From: {note.fromUserName || 'Anonymous'}</div>
+                                            <div className="text-xs text-gray-500">
+                                              {new Date(note.createdAt).toLocaleDateString('en-US', { 
+                                                year: 'numeric', 
+                                                month: 'short', 
+                                                day: 'numeric' 
+                                              })}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
+                                          Received
+                                        </Badge>
+                                      </div>
+                                      <p className="text-gray-700 text-sm italic mb-3">"{note.message}"</p>
+                                      {note.wishlistTitle && (
+                                        <div className="flex items-center text-xs text-gray-600 bg-white/70 rounded p-2">
+                                          <Gift className="h-3 w-3 mr-1.5" />
+                                          <span>For: <span className="font-medium">{note.wishlistTitle}</span></span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          // For filtered views (sent/received only), show single list
+                          <div className="space-y-4">
+                            {filteredNotes.map((note: any) => {
+                              const isSent = note.fromUserId === user?.id;
+                              return (
+                                <div 
+                                  key={note.id} 
+                                  className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
+                                    isSent 
+                                      ? 'bg-coral/5 border-coral/20 hover:border-coral/30' 
+                                      : 'bg-green-50 border-green-200 hover:border-green-300'
+                                  }`}
+                                >
+                                  <div className="flex items-start justify-between mb-4">
+                                    <div className="flex items-center space-x-3">
+                                      <div className={`p-2 rounded-full ${isSent ? 'bg-coral' : 'bg-green-500'}`}>
+                                        {isSent ? (
+                                          <MessageCircle className="h-4 w-4 text-white" />
+                                        ) : (
+                                          <Heart className="h-4 w-4 text-white" />
+                                        )}
+                                      </div>
+                                      <div>
+                                        <div className="font-semibold text-navy">
+                                          {isSent ? `To: ${note.toUserName || 'Anonymous'}` : `From: ${note.fromUserName || 'Anonymous'}`}
+                                        </div>
+                                        <div className="text-sm text-gray-500">
+                                          {new Date(note.createdAt).toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric' 
+                                          })}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <Badge 
+                                      variant="secondary" 
+                                      className={`${isSent ? 'bg-coral/10 text-coral' : 'bg-green-100 text-green-700'}`}
+                                    >
+                                      {isSent ? 'Sent' : 'Received'}
+                                    </Badge>
+                                  </div>
+                                  
+                                  <div className="mb-4">
+                                    <p className="text-gray-700 leading-relaxed italic">"{note.message}"</p>
+                                  </div>
+                                  
+                                  {note.wishlistTitle && (
+                                    <div className="flex items-center text-sm text-gray-600 bg-white/50 rounded-lg p-3">
+                                      <Gift className="h-4 w-4 mr-2" />
+                                      <span>Related to: <span className="font-medium">{note.wishlistTitle}</span></span>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
-                          );
-                        })}
+                        )}
                       </div>
                     ) : (
                         <div className="text-center py-16">
