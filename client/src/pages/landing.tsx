@@ -3,8 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield } from "lucide-react";
+import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -69,7 +70,6 @@ import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_17515863
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 
 // Custom hook for animated counters
 function useAnimatedCounter(targetValue: number, duration: number = 2000, startAnimation: boolean = false) {
@@ -222,10 +222,102 @@ export default function Landing() {
         }
       ];
 
-  const recentActivity = [
-    { supporter: "Sarah M.", action: "supported", item: "Baby formula and diapers to help newborn twins", timeAgo: "2 hours ago" },
-    { supporter: "Michael D.", action: "fulfilled", item: "School backpacks for three children", timeAgo: "4 hours ago" },
-    { supporter: "Local Church", action: "completed", item: "Emergency food package for hurricane victims", timeAgo: "6 hours ago" }
+  // Real-time activity data from platform
+  const { data: recentActivity = [] } = useQuery({
+    queryKey: ['/api/recent-activity'],
+    refetchInterval: 15000, // Refresh every 15 seconds for live updates
+  });
+
+  // State for interactive features
+  const [likedActivities, setLikedActivities] = useState(new Set());
+  const [visibleActivities, setVisibleActivities] = useState(3);
+  const [activityRef, setActivityRef] = useState<HTMLDivElement | null>(null);
+  const [isActivityVisible, setIsActivityVisible] = useState(false);
+
+  // Handle heart reactions
+  const handleLike = (activityId: string) => {
+    setLikedActivities(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(activityId)) {
+        newSet.delete(activityId);
+      } else {
+        newSet.add(activityId);
+      }
+      return newSet;
+    });
+  };
+
+  // Intersection observer for activity section
+  useEffect(() => {
+    if (!activityRef) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsActivityVisible(entry.isIntersecting);
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(activityRef);
+    return () => observer.disconnect();
+  }, [activityRef]);
+
+  // Fallback data for empty state (using real platform activity when available)
+  const displayActivity = recentActivity.length > 0 ? recentActivity : [
+    { 
+      id: "demo-1",
+      supporter: "Sarah M.", 
+      action: "supported", 
+      item: "Baby formula and diapers to help newborn twins", 
+      timeAgo: "2 hours ago",
+      location: "Austin, TX",
+      impact: "twins"
+    },
+    { 
+      id: "demo-2",
+      supporter: "Michael D.", 
+      action: "fulfilled", 
+      item: "School backpacks for three children", 
+      timeAgo: "4 hours ago",
+      location: "Denver, CO", 
+      impact: "3 children"
+    },
+    { 
+      id: "demo-3",
+      supporter: "Local Church", 
+      action: "completed", 
+      item: "Emergency food package for hurricane victims", 
+      timeAgo: "6 hours ago",
+      location: "Miami, FL",
+      impact: "12 families"
+    },
+    { 
+      id: "demo-4",
+      supporter: "Jennifer K.", 
+      action: "donated", 
+      item: "Winter coats and blankets for homeless shelter", 
+      timeAgo: "8 hours ago",
+      location: "Chicago, IL",
+      impact: "25 people"
+    },
+    { 
+      id: "demo-5",
+      supporter: "Tech Team Inc.", 
+      action: "sponsored", 
+      item: "Laptops and school supplies for remote learning", 
+      timeAgo: "12 hours ago",
+      location: "San Francisco, CA",
+      impact: "30 students"
+    },
+    { 
+      id: "demo-6",
+      supporter: "Maria R.", 
+      action: "fulfilled", 
+      item: "Medical supplies for elderly care facility", 
+      timeAgo: "1 day ago",
+      location: "Phoenix, AZ",
+      impact: "50+ seniors"
+    }
   ];
 
   const getUrgencyColor = (level: string) => {
@@ -971,27 +1063,136 @@ export default function Landing() {
 
 
 
-      {/* Recent Activity Ticker */}
-      <section className="py-12 bg-coral text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-center mb-8">Recent Acts of Kindness</h3>
-          
-          {/* Horizontal scrolling ticker */}
-          <div className="flex animate-scroll space-x-8">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="flex-shrink-0 bg-white/10 rounded-xl p-6 min-w-80">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Gift className="text-coral-light h-5 w-5" />
-                  <span className="font-semibold">{activity.supporter}</span>
-                  <span>{activity.action}</span>
-                </div>
-                <div className="text-sm opacity-90">{activity.item}</div>
-                <div className="text-xs opacity-75 mt-2 flex items-center">
-                  <Clock className="mr-1 h-3 w-3" />
-                  {activity.timeAgo}
+      {/* Recent Acts of Kindness - Ultra Modern Interactive Section */}
+      <section 
+        ref={setActivityRef}
+        className="py-20 bg-gradient-to-br from-coral via-coral/90 to-coral/80 text-white overflow-hidden relative"
+      >
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float-delayed"></div>
+          <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Section Header with Typing Effect */}
+          <div className="text-center mb-12">
+            <h3 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+              Recent Acts of Kindness
+            </h3>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+              Real-time kindness happening right now across our community ✨
+            </p>
+            <div className="mt-6 flex items-center justify-center space-x-2">
+              <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
+              <span className="text-white/70 text-sm">Live updates every 15 seconds</span>
+            </div>
+          </div>
+
+          {/* Interactive Activity Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {displayActivity.slice(0, visibleActivities).map((activity, index) => (
+              <div
+                key={activity.id || index}
+                className={`group relative bg-white/10 backdrop-blur-md rounded-2xl p-6 transform transition-all duration-500 hover:scale-105 hover:bg-white/20 border border-white/20 ${
+                  isActivityVisible ? 'animate-fade-in-up' : 'opacity-0'
+                }`}
+                style={{ animationDelay: `${index * 0.2}s` }}
+              >
+                {/* Glassmorphism card with interactive elements */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 rounded-2xl blur-sm"></div>
+                
+                <div className="relative z-10">
+                  {/* Header with supporter info and heart reaction */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                        <Heart className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-white">{activity.supporter}</p>
+                        <p className="text-white/70 text-sm">{activity.location}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Interactive Heart Button */}
+                    <button
+                      onClick={() => handleLike(activity.id || `activity-${index}`)}
+                      className="group/heart transition-all duration-300 hover:scale-110"
+                    >
+                      <Heart 
+                        className={`h-6 w-6 transition-all duration-300 ${
+                          likedActivities.has(activity.id || `activity-${index}`)
+                            ? 'text-pink-300 fill-pink-300 scale-110' 
+                            : 'text-white/60 hover:text-pink-300'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Action Badge */}
+                  <div className="mb-3">
+                    <span className="inline-block px-3 py-1 bg-white/20 text-white text-sm font-medium rounded-full">
+                      {activity.action}
+                    </span>
+                  </div>
+
+                  {/* Item Description with Typing Effect */}
+                  <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-3">
+                    {activity.item}
+                  </p>
+
+                  {/* Impact and Time */}
+                  <div className="flex items-center justify-between text-xs text-white/70">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                      <span>Impact: {activity.impact}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{activity.timeAgo}</span>
+                    </div>
+                  </div>
+
+                  {/* Hover overlay effect */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Load More / View All Section */}
+          <div className="text-center">
+            {visibleActivities < displayActivity.length ? (
+              <Button
+                onClick={() => setVisibleActivities(prev => Math.min(prev + 3, displayActivity.length))}
+                className="bg-white/20 text-white border border-white/30 hover:bg-white/30 backdrop-blur-md px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
+              >
+                Show More Acts of Kindness
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <div className="flex flex-col items-center space-y-4">
+                <div className="flex items-center space-x-2 text-white/80">
+                  <CheckCircle className="h-5 w-5" />
+                  <span>You've seen all recent acts of kindness!</span>
+                </div>
+                <Button
+                  onClick={() => window.location.href = '/browse'}
+                  className="bg-white text-coral hover:bg-white/90 px-8 py-3 rounded-full transition-all duration-300 hover:scale-105 font-semibold"
+                >
+                  Start Your Own Act of Kindness
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Live Activity Pulse */}
+          <div className="absolute top-6 right-6 flex items-center space-x-2 text-white/60">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm">Live</span>
           </div>
         </div>
       </section>
