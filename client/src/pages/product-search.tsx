@@ -681,31 +681,45 @@ export default function ProductSearch() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {displayProducts.map((product: any, index: number) => (
                     <Card key={`${product.retailer}-${product.asin || product.product_id || index}-${Date.now()}-${Math.random()}`} className="overflow-hidden hover:shadow-lg transition-shadow">
-                      {product.image && (
-                        <div className="relative">
+                      <div className="relative">
+                        {product.image ? (
                           <img 
                             src={product.image}
                             alt={product.title}
                             className="w-full h-48 object-contain bg-gray-50"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              const placeholderDiv = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                              if (placeholderDiv) placeholderDiv.style.display = 'flex';
                             }}
                           />
-                          {product.is_prime && (
-                            <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
-                              Prime
-                            </Badge>
-                          )}
-                          {/* Retailer Logo */}
-                          <div className="absolute top-2 right-2 bg-white rounded p-1 shadow-sm">
-                            <img 
-                              src={getRetailerLogo(product.retailer || 'amazon')} 
-                              alt={product.retailer_name || 'Amazon'} 
-                              className="h-4 w-4 object-contain"
-                            />
+                        ) : null}
+                        {/* Placeholder for products without images */}
+                        <div 
+                          className={`w-full h-48 bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center ${product.image ? 'hidden' : 'flex'}`}
+                          style={{display: product.image ? 'none' : 'flex'}}
+                        >
+                          <div className="text-center text-gray-500">
+                            <Package className="mx-auto h-8 w-8 mb-2" />
+                            <p className="text-sm font-medium">Product Image</p>
+                            <p className="text-xs">Not Available</p>
                           </div>
                         </div>
-                      )}
+                        
+                        {product.is_prime && (
+                          <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
+                            Prime
+                          </Badge>
+                        )}
+                        {/* Retailer Logo */}
+                        <div className="absolute top-2 right-2 bg-white rounded p-1 shadow-sm">
+                          <img 
+                            src={getRetailerLogo(product.retailer || 'amazon')} 
+                            alt={product.retailer_name || 'Amazon'} 
+                            className="h-4 w-4 object-contain"
+                          />
+                        </div>
+                      </div>
                       
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-navy mb-2 line-clamp-2 text-sm">
