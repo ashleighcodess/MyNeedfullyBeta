@@ -77,9 +77,9 @@ export default function Home() {
             <CardTitle>Getting Started with MyNeedfully</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-0">
               <Link href="/create">
-                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Plus className="h-5 w-5 text-coral mt-1" />
                   <div>
                     <h3 className="font-semibold">Create Your First Needs List</h3>
@@ -87,8 +87,15 @@ export default function Home() {
                   </div>
                 </div>
               </Link>
+              
+              {/* Animated Separator */}
+              <div className="my-2 px-8">
+                <div className="relative h-px bg-gradient-to-r from-transparent via-coral/40 to-transparent separator-draw transform origin-center" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent separator-line" style={{animationDelay: '0.7s'}}></div>
+              </div>
+              
               <Link href="/browse">
-                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Heart className="h-5 w-5 text-coral mt-1" />
                   <div>
                     <h3 className="font-semibold">Browse and Help Others</h3>
@@ -96,8 +103,15 @@ export default function Home() {
                   </div>
                 </div>
               </Link>
+              
+              {/* Animated Separator */}
+              <div className="my-2 px-8">
+                <div className="relative h-px bg-gradient-to-r from-transparent via-coral/40 to-transparent separator-draw transform origin-center" style={{animationDelay: '0.4s'}}></div>
+                <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent separator-line" style={{animationDelay: '0.9s'}}></div>
+              </div>
+              
               <Link href="/products">
-                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Gift className="h-5 w-5 text-coral mt-1" />
                   <div>
                     <h3 className="font-semibold">Search for Specific Items</h3>
@@ -105,8 +119,15 @@ export default function Home() {
                   </div>
                 </div>
               </Link>
+              
+              {/* Animated Separator */}
+              <div className="my-2 px-8">
+                <div className="relative h-px bg-gradient-to-r from-transparent via-coral/40 to-transparent separator-draw transform origin-center" style={{animationDelay: '0.6s'}}></div>
+                <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent separator-line" style={{animationDelay: '1.1s'}}></div>
+              </div>
+              
               <Link href="/profile#my-lists">
-                <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <div className="flex items-start space-x-3 p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Settings className="h-5 w-5 text-coral mt-1" />
                   <div>
                     <h3 className="font-semibold">Manage my Needs Lists</h3>
