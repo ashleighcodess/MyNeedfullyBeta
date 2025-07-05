@@ -1559,7 +1559,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add Walmart results
       if (walmartResults && walmartResults.length > 0) {
         walmartResults.forEach((product: any) => {
-          const price = parseFloat(product.price?.replace(/[^0-9.]/g, '') || '0');
+          const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
+          const price = parseFloat(priceStr.replace(/[^0-9.]/g, '') || '0');
           transformedResults.push({
             title: product.title,
             price: { value: price, currency: "USD" },
@@ -1576,7 +1577,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add Target results
       if (targetResults && targetResults.length > 0) {
         targetResults.forEach((product: any) => {
-          const price = parseFloat(product.price?.replace(/[^0-9.]/g, '') || '0');
+          const priceStr = typeof product.price === 'string' ? product.price : String(product.price || '0');
+          const price = parseFloat(priceStr.replace(/[^0-9.]/g, '') || '0');
           transformedResults.push({
             title: product.title,
             price: { value: price, currency: "USD" },
@@ -1585,7 +1587,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             product_id: product.product_id,
             retailer: 'target' as const,
             rating: parseFloat(product.rating || '0'),
-            ratings_total: parseInt(product.reviews?.replace(/[^0-9]/g, '') || '0')
+            ratings_total: parseInt((typeof product.reviews === 'string' ? product.reviews : String(product.reviews || '0')).replace(/[^0-9]/g, '') || '0')
           });
         });
       }
