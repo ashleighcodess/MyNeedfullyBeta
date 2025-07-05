@@ -89,9 +89,8 @@ export default function Home() {
               </Link>
               
               {/* Animated Separator */}
-              <div className="my-2 px-8">
-                <div className="relative h-px bg-gradient-to-r from-transparent via-coral/40 to-transparent separator-draw transform origin-center" style={{animationDelay: '0.2s'}}></div>
-                <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent separator-line" style={{animationDelay: '0.7s'}}></div>
+              <div className="my-3 mx-8">
+                <div className="h-px bg-gradient-to-r from-transparent via-coral/80 to-transparent separator-draw" style={{animationDelay: '0.2s'}}></div>
               </div>
               
               <Link href="/browse">
@@ -105,9 +104,8 @@ export default function Home() {
               </Link>
               
               {/* Animated Separator */}
-              <div className="my-2 px-8">
-                <div className="relative h-px bg-gradient-to-r from-transparent via-coral/40 to-transparent separator-draw transform origin-center" style={{animationDelay: '0.4s'}}></div>
-                <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent separator-line" style={{animationDelay: '0.9s'}}></div>
+              <div className="my-3 mx-8">
+                <div className="h-px bg-gradient-to-r from-transparent via-coral/80 to-transparent separator-draw" style={{animationDelay: '0.4s'}}></div>
               </div>
               
               <Link href="/products">
@@ -121,9 +119,8 @@ export default function Home() {
               </Link>
               
               {/* Animated Separator */}
-              <div className="my-2 px-8">
-                <div className="relative h-px bg-gradient-to-r from-transparent via-coral/40 to-transparent separator-draw transform origin-center" style={{animationDelay: '0.6s'}}></div>
-                <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-coral/20 to-transparent separator-line" style={{animationDelay: '1.1s'}}></div>
+              <div className="my-3 mx-8">
+                <div className="h-px bg-gradient-to-r from-transparent via-coral/80 to-transparent separator-draw" style={{animationDelay: '0.6s'}}></div>
               </div>
               
               <Link href="/profile#my-lists">
