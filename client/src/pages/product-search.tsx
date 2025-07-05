@@ -117,10 +117,11 @@ export default function ProductSearch() {
   // Popular cached products for instant loading
   const popularProducts = useMemo(() => ({
     "Basic Essentials": [
+      // Amazon Products
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
+        image: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=400&fit=crop&crop=center",
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
@@ -130,7 +131,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H",
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
+        image: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=400&fit=crop&crop=center",
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -140,7 +141,7 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count",
-        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
+        image: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=400&h=400&fit=crop&crop=center",
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
@@ -148,20 +149,78 @@ export default function ProductSearch() {
         retailer: "amazon"
       },
       {
+        asin: "B07MJBT4T1",
+        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=center",
+        price: { value: 12.97, currency: "USD" },
+        rating: 4.8,
+        ratings_total: 18745,
+        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        asin: "B08BYND8YN",
+        title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
+        image: "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400&h=400&fit=crop&crop=center",
+        price: { value: 19.49, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 32156,
+        link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
+        retailer: "amazon"
+      },
+      // Walmart Products
+      {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
         price: "$11.98",
-        image_url: "https://i5.walmartimages.com/asr/d8e1b982-7afc-4e1a-8321-c47b8f2d9e73.jpeg",
+        image_url: "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=400&fit=crop&crop=center",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/123456789",
         product_id: "123456789",
         retailer: "walmart",
         retailer_name: "Walmart"
       },
       {
+        title: "Great Value Dish Soap, Original Scent, 75 fl oz",
+        price: "$2.97",
+        image_url: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=400&fit=crop&crop=center",
+        product_url: "https://www.walmart.com/ip/Great-Value-Dish-Soap/789012345",
+        product_id: "789012345",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      },
+      {
+        title: "Great Value All Purpose Cleaner, 32 fl oz",
+        price: "$1.78",
+        image_url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=center",
+        product_url: "https://www.walmart.com/ip/Great-Value-All-Purpose-Cleaner/345678901",
+        product_id: "345678901",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      },
+      // Target Products  
+      {
         title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
         price: "$12.99",
-        image_url: "https://target.scene7.com/is/image/Target/GUEST_12345678_01",
+        image_url: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=400&fit=crop&crop=center",
         product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-12345678",
         product_id: "12345678",
+        retailer: "target",
+        retailer_name: "Target"
+      },
+      {
+        title: "Up & Up Hand Soap Refill, Fresh Scent, 56 fl oz",
+        price: "$4.99",
+        image_url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop&crop=center",
+        product_url: "https://www.target.com/p/up-up-hand-soap-refill/-/A-23456789",
+        product_id: "23456789",
+        retailer: "target",
+        retailer_name: "Target"
+      },
+      {
+        title: "Up & Up Fabric Softener Sheets, Fresh Scent, 240 Count",
+        price: "$3.79",
+        image_url: "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400&h=400&fit=crop&crop=center",
+        product_url: "https://www.target.com/p/up-up-fabric-softener-sheets/-/A-34567890",
+        product_id: "34567890",
         retailer: "target",
         retailer_name: "Target"
       }
@@ -782,6 +841,13 @@ export default function ProductSearch() {
                           src={product.image || product.image_url}
                           alt={product.title}
                           className="w-full h-48 object-contain bg-gray-50"
+                          onError={(e) => {
+                            // Fallback to a generic product image if the original fails
+                            const target = e.target as HTMLImageElement;
+                            if (target.src !== 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&h=400&fit=crop&crop=center') {
+                              target.src = 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&h=400&fit=crop&crop=center';
+                            }
+                          }}
                         />
                         {product.is_prime && (
                           <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
