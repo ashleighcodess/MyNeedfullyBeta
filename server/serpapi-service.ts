@@ -97,7 +97,7 @@ export class SerpAPIService {
       const params = {
         api_key: this.apiKey,
         engine: 'google',
-        q: `"${query}" site:target.com`,
+        q: `"${query}" site:target.com/p -inurl:"/c/" -inurl:"category"`,
         location: 'United States',
         device: 'desktop',
         hl: 'en',                 // English language
@@ -223,6 +223,15 @@ export class SerpAPIService {
             imageUrl = '';
           }
           
+          // Debug pricing extraction for Target
+          if (extractedPrice === 'Price varies') {
+            console.log(`Target pricing debug for "${result.title.substring(0, 30)}...":`, {
+              snippet: result.snippet?.substring(0, 100),
+              hasRichSnippet: !!result.rich_snippet,
+              extensions: result.rich_snippet?.top?.detected_extensions?.slice(0, 2)
+            });
+          }
+          
           console.log(`Target product: ${result.title.substring(0, 50)}... | Price: ${extractedPrice} | Image: ${imageUrl ? 'YES' : 'NO'}`);
           
           return {
@@ -234,10 +243,10 @@ export class SerpAPIService {
             reviews_count: 0,
             image: imageUrl,
             link: result.link || '',
-            asin: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
+            asin: this.extractTargetProductId(result.link) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
             
             // SerpAPI-specific fields mapped to expected structure
-            product_id: this.extractTargetProductId(result.link) || Math.random().toString(36).substr(2, 9),
+            product_id: this.extractTargetProductId(result.link) || `target_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
             product_url: result.link || '',
             retailer: 'target' as const,
             retailer_name: 'Target',
