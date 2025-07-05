@@ -1078,15 +1078,15 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Section Header with Typing Effect */}
           <div className="text-center mb-12">
-            <h3 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+            <h3 className="text-4xl md:text-5xl font-bold mb-4 text-white">
               Recent Acts of Kindness
             </h3>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+            <p className="text-xl text-white max-w-2xl mx-auto">
               Real-time kindness happening right now across our community ✨
             </p>
             <div className="mt-6 flex items-center justify-center space-x-2">
-              <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
-              <span className="text-white/70 text-sm">Live updates every 15 seconds</span>
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <span className="text-white text-sm">Live updates every 15 seconds</span>
             </div>
           </div>
 
@@ -1112,7 +1112,7 @@ export default function Landing() {
                       </div>
                       <div>
                         <p className="font-semibold text-white">{activity.supporter}</p>
-                        <p className="text-white/70 text-sm">{activity.location}</p>
+                        <p className="text-white text-sm">{activity.location}</p>
                       </div>
                     </div>
                     
@@ -1133,18 +1133,18 @@ export default function Landing() {
 
                   {/* Action Badge */}
                   <div className="mb-3">
-                    <span className="inline-block px-3 py-1 bg-white/20 text-white text-sm font-medium rounded-full">
+                    <span className="inline-block px-3 py-1 bg-white/30 text-white text-sm font-medium rounded-full">
                       {activity.action}
                     </span>
                   </div>
 
                   {/* Item Description with Typing Effect */}
-                  <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-3">
+                  <p className="text-white text-sm leading-relaxed mb-4 line-clamp-3">
                     {activity.item}
                   </p>
 
                   {/* Impact and Time */}
-                  <div className="flex items-center justify-between text-xs text-white/70">
+                  <div className="flex items-center justify-between text-xs text-white">
                     <div className="flex items-center space-x-2">
                       <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
                       <span>Impact: {activity.impact}</span>
