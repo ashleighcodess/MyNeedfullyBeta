@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
-import Navigation from "@/components/navigation";
 import SearchFilters from "@/components/search-filters";
 import WishlistCard from "@/components/wishlist-card";
 import { Input } from "@/components/ui/input";
@@ -63,7 +62,6 @@ export default function BrowseWishlists() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
