@@ -1066,15 +1066,9 @@ export default function Landing() {
           {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-navy mb-6">What Do People Use MyNeedfully For?</h2>
-            <div className="max-w-4xl mx-auto space-y-4 text-lg text-gray-600 leading-relaxed">
-              <p>
-                MyNeedfully is your trusted place to create Needs Lists and support for the things that truly matter. Whether you're facing an unexpected crisis, working toward a personal goal, or rallying around someone in need, MyNeedfully makes it easy to connect real needs with real help.
-              </p>
-              <p>
-                What matters most is getting the support you need, when you need it. Our platform is designed to empower people with simple tools and a transparent process, so giving feels personal and impactful every time.
-              </p>
-            </div>
-            <p className="text-gray-600 mt-8 text-lg">For more inspiration and help creating your needs list, explore the categories below.</p>
+            <p className="max-w-4xl mx-auto text-lg text-gray-600 leading-relaxed">
+              What matters most is getting the support you need, when you need it. Our platform is designed to empower people with simple tools and a transparent process, so giving feels personal and impactful every time.
+            </p>
           </div>
 
           {/* Category Cards Grid - Compact Style */}
