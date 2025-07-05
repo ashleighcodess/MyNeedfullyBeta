@@ -244,7 +244,7 @@ export default function ProductSearch() {
     if (maxPrice) params.append('max_price', maxPrice);
     if (page && page !== 1) params.append('page', page.toString());
     
-    return `/api/search/enhanced?${params.toString()}`;
+    return `/api/search?${params.toString()}`;
   }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists when no wishlistId is provided
@@ -280,8 +280,9 @@ export default function ProductSearch() {
         return cached;
       }
       
-      // Fetch from API with limited results for better performance
-      const response = await fetch(searchUrl + (searchUrl.includes('?') ? '&' : '?') + 'limit=10');
+      // Use the fast Amazon-only search for better performance
+      const fastSearchUrl = `/api/search?query=${encodeURIComponent(debouncedQuery)}&page=${page}`;
+      const response = await fetch(fastSearchUrl);
       if (!response.ok) {
         throw new Error('Search failed');
       }
@@ -340,9 +341,10 @@ export default function ProductSearch() {
       return [];
     }
     
-    // Show search results or cached popular products
-    const results = searchResults?.search_results || searchResults?.products || [];
+    // Handle different response formats (Amazon vs multi-retailer)
+    const results = searchResults?.data || searchResults?.search_results || searchResults?.products || [];
     console.log('Final results to display:', results?.length);
+    console.log('SearchResults object keys:', searchResults ? Object.keys(searchResults) : 'no searchResults');
     return results;
   }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts, isLoading]);
 

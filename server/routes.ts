@@ -263,6 +263,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Fast Amazon-only search endpoint
+  app.get('/api/search', async (req, res) => {
+    console.log('🔍 Search endpoint called with query:', req.query);
+    try {
+      const { query, page = '1' } = req.query;
+      
+      if (!query) {
+        console.log('❌ No query provided');
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      console.log(`🚀 Fast Amazon search for: "${query}"`);
+      const startTime = Date.now();
+
+      const rainforestService = getRainforestAPIService();
+      console.log('🔧 RainforestAPI service available:', !!rainforestService);
+      
+      if (!rainforestService) {
+        console.log('❌ RainforestAPI service not available');
+        return res.status(503).json({ 
+          message: "Search service temporarily unavailable",
+          data: [] 
+        });
+      }
+
+      console.log('📡 Making API call...');
+      const results = await rainforestService.searchProducts(query as string, {
+        type: "search",
+        page: parseInt(page as string),
+      });
+
+      const searchTime = Date.now() - startTime;
+      console.log(`✅ Fast Amazon search: ${results.length} products in ${searchTime}ms`);
+      
+      const response = {
+        data: results.map((product: any) => ({
+          ...product,
+          retailer: 'amazon',
+          retailer_name: 'Amazon',
+          link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+        })),
+        total: results.length,
+        hasMore: results.length >= 16
+      };
+      
+      console.log('📤 Sending response with', response.data.length, 'products');
+      return res.json(response);
+    } catch (error) {
+      console.error('❌ Amazon search error:', error);
+      res.status(500).json({ 
+        message: "Search failed", 
+        data: [] 
+      });
+    }
+  });
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {

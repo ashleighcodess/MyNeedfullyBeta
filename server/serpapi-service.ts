@@ -20,7 +20,7 @@ export class SerpAPIService {
     this.apiKey = apiKey;
   }
 
-  async searchWalmart(query: string, location: string = '60602', limit: number = 20): Promise<SerpProduct[]> {
+  async searchWalmart(query: string, location: string = '60602', limit: number = 40): Promise<SerpProduct[]> {
     try {
       console.log(`Searching Walmart for: "${query}"`);
       
@@ -61,7 +61,7 @@ export class SerpAPIService {
     }
   }
 
-  async searchTarget(query: string, location: string = '10001', limit: number = 20): Promise<SerpProduct[]> {
+  async searchTarget(query: string, location: string = '10001', limit: number = 40): Promise<SerpProduct[]> {
     try {
       console.log(`Searching Target for: "${query}"`);
       
@@ -246,7 +246,7 @@ export class SerpAPIService {
     return url.replace(/[^a-zA-Z0-9]/g, '').substr(-8) || Math.random().toString(36).substr(2, 9);
   }
 
-  async searchBothStores(query: string, location: string = '60602', limit: number = 10): Promise<SerpProduct[]> {
+  async searchBothStores(query: string, location: string = '60602', limit: number = 30): Promise<SerpProduct[]> {
     try {
       const [walmartResults, targetResults] = await Promise.all([
         this.searchWalmart(query, location, limit),
