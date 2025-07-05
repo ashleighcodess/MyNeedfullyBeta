@@ -291,16 +291,17 @@ export default function Landing() {
             <Button 
               variant="outline" 
               className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-8 py-4 text-lg shadow-lg"
+              onClick={() => setLocation('/products')}
             >
-              <Gift className="mr-2 h-5 w-5" />
-              Browse Needs Lists
+              <Search className="mr-2 h-5 w-5" />
+              Browse Products
             </Button>
             <Button 
               className="bg-navy text-white hover:bg-navy/90 rounded-full px-8 py-4 text-lg shadow-lg"
               onClick={handleLogin}
             >
               <Plus className="mr-2 h-5 w-5" />
-              Create Wishlist
+              Create Needs List
             </Button>
           </div>
         </div>
