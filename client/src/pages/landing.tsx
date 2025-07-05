@@ -740,19 +740,26 @@ export default function Landing() {
       </section>
 
       {/* Need More Than Just Items Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left content */}
-            <div className="flex-1 lg:pr-8">
-              <h2 className="text-4xl font-bold text-navy mb-6">
-                Need More Than Just Items? We're Here to Help.
+            <div className="animate-fade-in-up">
+              <div className="mb-4">
+                <span className="text-coral text-sm font-semibold tracking-wider uppercase">Support Resources</span>
+              </div>
+              
+              <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
+                Need More Than <span className="text-coral">Just Items?</span><br />
+                We're <span className="text-navy font-black">Here to Help.</span>
               </h2>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              
+              <p className="text-gray-600 text-lg mb-8 leading-relaxed">
                 Life Can Get Tough, And Sometimes We All Need A Little More Support. Whether It's Housing, Food Assistance, Mental Health Resources, Or Emergency Aid — Explore Trusted Organizations Ready To Help You Beyond Material Needs.
               </p>
+              
               <Button 
-                className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full"
+                className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 onClick={() => window.location.href = '/resources'}
               >
                 Browse Support Resources
@@ -760,12 +767,16 @@ export default function Landing() {
             </div>
             
             {/* Right image */}
-            <div className="flex-1">
-              <img 
-                src={familyTreeImage}
-                alt="Family with support tree illustration"
-                className="w-full h-auto rounded-2xl"
-              />
+            <div className="flex-1 animate-fade-in-right">
+              <div className="relative">
+                <img 
+                  src={familyTreeImage}
+                  alt="Family with support tree illustration"
+                  className="w-full h-auto rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-105"
+                />
+                {/* Decorative gradient overlay */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-coral/20 to-transparent rounded-3xl -z-10"></div>
+              </div>
             </div>
           </div>
         </div>
