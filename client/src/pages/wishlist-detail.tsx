@@ -679,11 +679,11 @@ export default function WishlistDetail() {
                               </div>
                               <button 
                                 onClick={() => {
-                                  if (!item.isFulfilled) {
+                                  if (!item.isFulfilled && (itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl)) {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '99.00',
-                                      link: itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl || '#',
+                                      link: itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl,
                                       retailer: 'amazon',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -691,14 +691,16 @@ export default function WishlistDetail() {
                                     setShowPurchaseModal(true);
                                   }
                                 }}
-                                disabled={item.isFulfilled}
+                                disabled={item.isFulfilled || (!itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl)}
                                 className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled 
+                                  item.isFulfilled || (!itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl)
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
-                                {item.isFulfilled ? 'Fulfilled' : 'View'}
+                                {item.isFulfilled ? 'Fulfilled' : 
+                                 !itemPricing[item.id]?.pricing?.amazon && !item.productUrl ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl ? 'Unavailable' : 'View'}
                               </button>
                             </div>
 
@@ -718,11 +720,11 @@ export default function WishlistDetail() {
                               </div>
                               <button 
                                 onClick={() => {
-                                  if (!item.isFulfilled) {
+                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.target?.price || item.price || '99.00',
-                                      link: itemPricing[item.id]?.pricing?.target?.link || '#',
+                                      link: itemPricing[item.id]?.pricing?.target?.link,
                                       retailer: 'target',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -730,14 +732,16 @@ export default function WishlistDetail() {
                                     setShowPurchaseModal(true);
                                   }
                                 }}
-                                disabled={item.isFulfilled}
+                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available}
                                 className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled 
+                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
-                                {item.isFulfilled ? 'Fulfilled' : 'View'}
+                                {item.isFulfilled ? 'Fulfilled' : 
+                                 !itemPricing[item.id]?.pricing?.target ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing?.target?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
 
@@ -757,11 +761,11 @@ export default function WishlistDetail() {
                               </div>
                               <button 
                                 onClick={() => {
-                                  if (!item.isFulfilled) {
+                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '99.00',
-                                      link: itemPricing[item.id]?.pricing?.walmart?.link || '#',
+                                      link: itemPricing[item.id]?.pricing?.walmart?.link,
                                       retailer: 'walmart',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -769,14 +773,16 @@ export default function WishlistDetail() {
                                     setShowPurchaseModal(true);
                                   }
                                 }}
-                                disabled={item.isFulfilled}
+                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available}
                                 className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled 
+                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
-                                {item.isFulfilled ? 'Fulfilled' : 'View'}
+                                {item.isFulfilled ? 'Fulfilled' : 
+                                 !itemPricing[item.id]?.pricing?.walmart ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
                           </div>
