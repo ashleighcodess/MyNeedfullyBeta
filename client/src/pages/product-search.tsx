@@ -321,23 +321,20 @@ export default function ProductSearch() {
 
   // Get display products with smart fallbacks
   const displayProducts = useMemo(() => {
-    console.log('Display products calculation:', {
-      debouncedQuery,
-      searchResults,
-      showFallbacks,
-      fallbackProducts: fallbackProducts?.length
-    });
-    
     if (!debouncedQuery || debouncedQuery.length < 3) {
       // Show fallback products when no search query
       return showFallbacks ? fallbackProducts : [];
     }
     
+    // If we're loading or don't have results yet, return empty array
+    if (isLoading || !searchResults) {
+      return [];
+    }
+    
     // Show search results or cached popular products
     const results = searchResults?.search_results || searchResults?.products || [];
-    console.log('Found search results:', results?.length);
     return results;
-  }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts]);
+  }, [debouncedQuery, searchResults, showFallbacks, fallbackProducts, isLoading]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
