@@ -36,6 +36,7 @@ import {
 export default function Profile() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+  const [notesFilter, setNotesFilter] = useState('all'); // 'all', 'sent', 'received'
 
   // Set document title and handle URL hash navigation
   useEffect(() => {
@@ -498,31 +499,67 @@ export default function Profile() {
                   <p className="text-gray-600">Messages of gratitude shared within our community</p>
                 </div>
 
-                {/* Summary Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-gradient-to-r from-coral/10 to-coral/5 rounded-xl p-6 border border-coral/20">
+                {/* Filter Tabs */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div 
+                    className={`cursor-pointer rounded-xl p-6 border-2 transition-all hover:shadow-lg ${
+                      notesFilter === 'all' 
+                        ? 'bg-navy text-white border-navy' 
+                        : 'bg-white border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => setNotesFilter('all')}
+                  >
                     <div className="flex items-center">
-                      <div className="p-3 bg-coral rounded-lg">
-                        <MessageCircle className="h-6 w-6 text-white" />
+                      <div className={`p-3 rounded-lg ${notesFilter === 'all' ? 'bg-white/20' : 'bg-gray-100'}`}>
+                        <MessageSquare className={`h-6 w-6 ${notesFilter === 'all' ? 'text-white' : 'text-gray-600'}`} />
                       </div>
                       <div className="ml-4">
-                        <div className="text-2xl font-bold text-navy">
-                          {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0}
+                        <div className="text-2xl font-bold">
+                          {thankYouNotes?.length || 0}
                         </div>
-                        <div className="text-sm text-gray-600">Notes Sent</div>
+                        <div className="text-sm opacity-80">All Notes</div>
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-r from-green-50 to-green-25 rounded-xl p-6 border border-green-200">
+                  
+                  <div 
+                    className={`cursor-pointer rounded-xl p-6 border-2 transition-all hover:shadow-lg ${
+                      notesFilter === 'sent' 
+                        ? 'bg-coral text-white border-coral' 
+                        : 'bg-gradient-to-r from-coral/10 to-coral/5 border-coral/20 hover:border-coral/30'
+                    }`}
+                    onClick={() => setNotesFilter('sent')}
+                  >
                     <div className="flex items-center">
-                      <div className="p-3 bg-green-500 rounded-lg">
-                        <Heart className="h-6 w-6 text-white" />
+                      <div className={`p-3 rounded-lg ${notesFilter === 'sent' ? 'bg-white/20' : 'bg-coral'}`}>
+                        <MessageCircle className={`h-6 w-6 ${notesFilter === 'sent' ? 'text-white' : 'text-white'}`} />
                       </div>
                       <div className="ml-4">
-                        <div className="text-2xl font-bold text-navy">
+                        <div className="text-2xl font-bold">
+                          {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0}
+                        </div>
+                        <div className="text-sm opacity-80">Notes Sent</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div 
+                    className={`cursor-pointer rounded-xl p-6 border-2 transition-all hover:shadow-lg ${
+                      notesFilter === 'received' 
+                        ? 'bg-green-500 text-white border-green-500' 
+                        : 'bg-gradient-to-r from-green-50 to-green-25 border-green-200 hover:border-green-300'
+                    }`}
+                    onClick={() => setNotesFilter('received')}
+                  >
+                    <div className="flex items-center">
+                      <div className={`p-3 rounded-lg ${notesFilter === 'received' ? 'bg-white/20' : 'bg-green-500'}`}>
+                        <Heart className={`h-6 w-6 ${notesFilter === 'received' ? 'text-white' : 'text-white'}`} />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-2xl font-bold">
                           {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0}
                         </div>
-                        <div className="text-sm text-gray-600">Notes Received</div>
+                        <div className="text-sm opacity-80">Notes Received</div>
                       </div>
                     </div>
                   </div>
@@ -530,11 +567,20 @@ export default function Profile() {
 
                 {/* Notes List */}
                 <div className="space-y-6">
-                  {thankYouNotes && thankYouNotes.length > 0 ? (
-                    <div className="space-y-4">
-                      {thankYouNotes.map((note: any) => {
-                        const isSent = note.fromUserId === user?.id;
-                        return (
+                  {(() => {
+                    let filteredNotes = thankYouNotes || [];
+                    
+                    if (notesFilter === 'sent') {
+                      filteredNotes = filteredNotes.filter((note: any) => note.fromUserId === user?.id);
+                    } else if (notesFilter === 'received') {
+                      filteredNotes = filteredNotes.filter((note: any) => note.toUserId === user?.id);
+                    }
+                    
+                    return filteredNotes.length > 0 ? (
+                      <div className="space-y-4">
+                        {filteredNotes.map((note: any) => {
+                          const isSent = note.fromUserId === user?.id;
+                          return (
                           <div 
                             key={note.id} 
                             className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
@@ -584,32 +630,48 @@ export default function Profile() {
                               </div>
                             )}
                           </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="text-center py-16">
-                      <div className="mb-6">
-                        <MessageCircle className="mx-auto h-16 w-16 text-gray-300" />
+                          );
+                        })}
                       </div>
-                      <h3 className="text-xl font-semibold text-navy mb-2">No Thank You Notes Yet</h3>
-                      <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                        Thank you notes will appear here when you send or receive messages of gratitude within our community.
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/browse">
-                          <Button className="bg-coral hover:bg-coral/90">
-                            Browse Needs Lists
-                          </Button>
-                        </Link>
-                        <Link href="/create">
-                          <Button variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white">
-                            Create Needs List
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  )}
+                    ) : (
+                        <div className="text-center py-16">
+                          <div className="mb-6">
+                            {notesFilter === 'sent' ? (
+                              <MessageCircle className="mx-auto h-16 w-16 text-gray-300" />
+                            ) : notesFilter === 'received' ? (
+                              <Heart className="mx-auto h-16 w-16 text-gray-300" />
+                            ) : (
+                              <MessageSquare className="mx-auto h-16 w-16 text-gray-300" />
+                            )}
+                          </div>
+                          <h3 className="text-xl font-semibold text-navy mb-2">
+                            {notesFilter === 'sent' ? 'No Notes Sent Yet' :
+                             notesFilter === 'received' ? 'No Notes Received Yet' :
+                             'No Thank You Notes Yet'}
+                          </h3>
+                          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                            {notesFilter === 'sent' ? 
+                              'You haven\'t sent any thank you notes yet. Make a purchase to send your first note of gratitude.' :
+                              notesFilter === 'received' ? 
+                              'You haven\'t received any thank you notes yet. Create a needs list to start receiving support.' :
+                              'Thank you notes will appear here when you send or receive messages of gratitude within our community.'
+                            }
+                          </p>
+                          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Link href="/browse">
+                              <Button className="bg-coral hover:bg-coral/90">
+                                Browse Needs Lists
+                              </Button>
+                            </Link>
+                            <Link href="/create">
+                              <Button variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white">
+                                Create Needs List
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      );
+                  })()}
                 </div>
               </div>
             )}
