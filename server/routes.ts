@@ -1354,6 +1354,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
             wishlistOwner?.firstName || 'the recipient'
           );
         }
+
+        // Check if wishlist is now 100% complete and auto-archive it
+        const updatedWishlist = await storage.getWishlist(item.wishlistId);
+        if (updatedWishlist && updatedWishlist.totalItems > 0) {
+          const completionPercentage = Math.round((updatedWishlist.fulfilledItems / updatedWishlist.totalItems) * 100);
+          
+          if (completionPercentage >= 100 && updatedWishlist.status === 'active') {
+            // Auto-mark as completed
+            await storage.updateWishlist(updatedWishlist.id, { status: 'completed' });
+            
+            // Create completion notification for wishlist owner
+            await storage.createNotification({
+              userId: updatedWishlist.userId,
+              type: "wishlist_completed",
+              title: "Needs List Completed! 🎉",
+              message: `Your needs list "${updatedWishlist.title}" has been 100% fulfilled by amazing supporters! It has been automatically archived.`,
+              data: { 
+                wishlistId: updatedWishlist.id,
+                completionPercentage: 100
+              },
+            });
+
+            // Send real-time completion notification
+            const ownerWs = wsConnections.get(updatedWishlist.userId);
+            if (ownerWs && ownerWs.readyState === WebSocket.OPEN) {
+              ownerWs.send(JSON.stringify({
+                type: "notification",
+                data: {
+                  type: "wishlist_completed",
+                  title: "Needs List Completed! 🎉",
+                  message: `Your needs list "${updatedWishlist.title}" has been 100% fulfilled and archived!`,
+                },
+              }));
+            }
+
+            // Record completion analytics event
+            await storage.recordEvent({
+              eventType: "wishlist_completed",
+              userId: updatedWishlist.userId,
+              data: { 
+                wishlistId: updatedWishlist.id,
+                wishlistTitle: updatedWishlist.title,
+                totalItems: updatedWishlist.totalItems,
+                action: "auto_archived_on_completion"
+              },
+              userAgent: req.get('User-Agent'),
+              ipAddress: req.ip,
+            });
+          }
+        }
       }
 
       // Record analytics event

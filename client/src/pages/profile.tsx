@@ -28,6 +28,9 @@ import {
   Search,
   Archive,
   LogOut,
+  X,
+  Pause,
+  EyeOff,
   Award,
   Edit,
   ShoppingCart
@@ -973,7 +976,194 @@ export default function Profile() {
               </div>
             )}
 
-            {activeTab !== 'profile' && activeTab !== 'lists' && activeTab !== 'thankyou' && activeTab !== 'purchases' && (
+            {/* Archive Section */}
+            {activeTab === 'archive' && (
+              <div className="space-y-4 sm:space-y-6">
+                {/* Archive Header */}
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-navy mb-2">Archive</h2>
+                  <p className="text-gray-600 text-sm sm:text-base">
+                    Completed, cancelled, or private needs lists are automatically archived here
+                  </p>
+                </div>
+
+                {(() => {
+                  // Calculate archived wishlists
+                  const archivedWishlists = userWishlists?.filter((w: any) => 
+                    w.status === 'completed' || 
+                    w.status === 'cancelled' || 
+                    w.status === 'paused' ||
+                    w.isPublic === false
+                  ) || [];
+
+                  if (archivedWishlists.length === 0) {
+                    return (
+                      <Card>
+                        <CardContent className="p-8 sm:p-12 text-center">
+                          <Archive className="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mb-4" />
+                          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No Archived Lists</h3>
+                          <p className="text-gray-600 text-sm sm:text-base mb-6 max-w-md mx-auto">
+                            When your needs lists are completed, cancelled, or made private, they'll appear here for easy access.
+                          </p>
+                          <Link href="/create">
+                            <Button className="bg-coral hover:bg-coral/90">
+                              <Plus className="mr-2 h-4 w-4" />
+                              Create Your First List
+                            </Button>
+                          </Link>
+                        </CardContent>
+                      </Card>
+                    );
+                  }
+
+                  return (
+                    <>
+                      {/* Archive Statistics */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                        <Card className="text-center p-4">
+                          <div className="text-2xl font-bold text-green-600">
+                            {archivedWishlists.filter((w: any) => w.status === 'completed').length}
+                          </div>
+                          <div className="text-sm text-gray-600">Completed</div>
+                        </Card>
+                        <Card className="text-center p-4">
+                          <div className="text-2xl font-bold text-red-600">
+                            {archivedWishlists.filter((w: any) => w.status === 'cancelled').length}
+                          </div>
+                          <div className="text-sm text-gray-600">Cancelled</div>
+                        </Card>
+                        <Card className="text-center p-4">
+                          <div className="text-2xl font-bold text-yellow-600">
+                            {archivedWishlists.filter((w: any) => w.status === 'paused').length}
+                          </div>
+                          <div className="text-sm text-gray-600">Paused</div>
+                        </Card>
+                        <Card className="text-center p-4">
+                          <div className="text-2xl font-bold text-gray-600">
+                            {archivedWishlists.filter((w: any) => w.isPublic === false).length}
+                          </div>
+                          <div className="text-sm text-gray-600">Private</div>
+                        </Card>
+                      </div>
+
+                      {/* Completed Lists */}
+                      {archivedWishlists.filter((w: any) => w.status === 'completed').length > 0 && (
+                        <Card>
+                          <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center text-lg sm:text-xl">
+                              <Check className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+                              Completed Lists ({archivedWishlists.filter((w: any) => w.status === 'completed').length})
+                            </CardTitle>
+                            <p className="text-sm text-gray-600">These needs lists have been 100% fulfilled by the community</p>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                              {archivedWishlists.filter((w: any) => w.status === 'completed').map((wishlist: any) => (
+                                <div key={wishlist.id} className="relative">
+                                  <WishlistCard wishlist={wishlist} isOwner={true} />
+                                  <div className="absolute top-2 right-2">
+                                    <Badge className="bg-green-500 text-white">
+                                      <Check className="mr-1 h-3 w-3" />
+                                      Complete
+                                    </Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Cancelled Lists */}
+                      {archivedWishlists.filter((w: any) => w.status === 'cancelled').length > 0 && (
+                        <Card>
+                          <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center text-lg sm:text-xl">
+                              <X className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
+                              Cancelled Lists ({archivedWishlists.filter((w: any) => w.status === 'cancelled').length})
+                            </CardTitle>
+                            <p className="text-sm text-gray-600">These needs lists were cancelled and removed from public view</p>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                              {archivedWishlists.filter((w: any) => w.status === 'cancelled').map((wishlist: any) => (
+                                <div key={wishlist.id} className="relative">
+                                  <WishlistCard wishlist={wishlist} isOwner={true} />
+                                  <div className="absolute top-2 right-2">
+                                    <Badge className="bg-red-500 text-white">
+                                      <X className="mr-1 h-3 w-3" />
+                                      Cancelled
+                                    </Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Paused Lists */}
+                      {archivedWishlists.filter((w: any) => w.status === 'paused').length > 0 && (
+                        <Card>
+                          <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center text-lg sm:text-xl">
+                              <Pause className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-yellow-600" />
+                              Paused Lists ({archivedWishlists.filter((w: any) => w.status === 'paused').length})
+                            </CardTitle>
+                            <p className="text-sm text-gray-600">These needs lists are temporarily paused and not accepting new support</p>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                              {archivedWishlists.filter((w: any) => w.status === 'paused').map((wishlist: any) => (
+                                <div key={wishlist.id} className="relative">
+                                  <WishlistCard wishlist={wishlist} isOwner={true} />
+                                  <div className="absolute top-2 right-2">
+                                    <Badge className="bg-yellow-500 text-white">
+                                      <Pause className="mr-1 h-3 w-3" />
+                                      Paused
+                                    </Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Private Lists */}
+                      {archivedWishlists.filter((w: any) => w.isPublic === false).length > 0 && (
+                        <Card>
+                          <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center text-lg sm:text-xl">
+                              <EyeOff className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+                              Private Lists ({archivedWishlists.filter((w: any) => w.isPublic === false).length})
+                            </CardTitle>
+                            <p className="text-sm text-gray-600">These needs lists are set to private and not visible to the public</p>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                              {archivedWishlists.filter((w: any) => w.isPublic === false).map((wishlist: any) => (
+                                <div key={wishlist.id} className="relative">
+                                  <WishlistCard wishlist={wishlist} isOwner={true} />
+                                  <div className="absolute top-2 right-2">
+                                    <Badge className="bg-gray-500 text-white">
+                                      <EyeOff className="mr-1 h-3 w-3" />
+                                      Private
+                                    </Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+
+            {activeTab !== 'profile' && activeTab !== 'lists' && activeTab !== 'thankyou' && activeTab !== 'purchases' && activeTab !== 'archive' && (
               <Card>
                 <CardContent className="p-12 text-center">
                   <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
