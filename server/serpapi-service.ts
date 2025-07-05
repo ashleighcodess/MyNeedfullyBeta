@@ -206,24 +206,41 @@ export class SerpAPIService {
             
             // Strategy 1: Rich snippet extensions
             if (richSnippet.top && richSnippet.top.detected_extensions) {
-              for (const ext of richSnippet.top.detected_extensions) {
-                const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
-                if (priceMatch) {
-                  extractedPrice = priceMatch[0];
-                  priceFound = true;
-                  break;
+              const topExtensions = richSnippet.top.detected_extensions;
+              if (Array.isArray(topExtensions)) {
+                for (const ext of topExtensions) {
+                  const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
+                  if (priceMatch) {
+                    extractedPrice = priceMatch[0];
+                    priceFound = true;
+                    break;
+                  }
                 }
+              } else {
+                console.log('⚠️ Target top extensions not iterable:', typeof topExtensions, topExtensions);
               }
             }
             
             // Strategy 2: Rich snippet bottom extensions
             if (!priceFound && richSnippet.bottom && richSnippet.bottom.detected_extensions) {
-              for (const ext of richSnippet.bottom.detected_extensions) {
-                const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
-                if (priceMatch) {
-                  extractedPrice = priceMatch[0];
+              const bottomExtensions = richSnippet.bottom.detected_extensions;
+              if (Array.isArray(bottomExtensions)) {
+                for (const ext of bottomExtensions) {
+                  const priceMatch = ext.match(/\$[\d,]+\.?\d*|\$[\d,]+/);
+                  if (priceMatch) {
+                    extractedPrice = priceMatch[0];
+                    priceFound = true;
+                    break;
+                  }
+                }
+              } else if (typeof bottomExtensions === 'object' && bottomExtensions !== null) {
+                // Handle Target's object-based price extensions
+                if (bottomExtensions.price) {
+                  extractedPrice = `$${bottomExtensions.price}`;
                   priceFound = true;
-                  break;
+                } else if (bottomExtensions.price_from) {
+                  extractedPrice = `$${bottomExtensions.price_from}`;
+                  priceFound = true;
                 }
               }
             }
@@ -247,7 +264,7 @@ export class SerpAPIService {
               }
               
               // Extract additional image sources from rich snippets if available
-              if (!imageUrl && result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.extensions) {
+              if (!imageUrl && result.rich_snippet && result.rich_snippet.top && result.rich_snippet.top.extensions && Array.isArray(result.rich_snippet.top.extensions)) {
                 const extensions = result.rich_snippet.top.extensions;
                 // Look for image URLs in extensions
                 for (const ext of extensions) {
