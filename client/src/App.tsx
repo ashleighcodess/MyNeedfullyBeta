@@ -42,6 +42,7 @@ function Router() {
           <Route path="/products" component={ProductSearchWorking} />
           <Route path="/product-search" component={ProductSearchWorking} />
           <Route path="/search" component={ProductSearchWorking} />
+          <Route path="/admin" component={AdminDashboard} />
           
           {isLoading ? (
             <Route path="/">
@@ -72,7 +73,6 @@ function Router() {
               <Route path="/community" component={CommunityImpact} />
               <Route path="/community-impact" component={CommunityImpact} />
               <Route path="/impact" component={CommunityImpact} />
-              <Route path="/admin" component={AdminDashboard} />
             </>
           )}
           <Route component={NotFound} />
