@@ -54,7 +54,9 @@ export class SerpAPIService {
       const walmartResults = results.slice(0, limit).map((product: any) => {
         // Format price properly - SerpAPI returns price as number in primary_offer
         const priceValue = product.primary_offer?.offer_price || product.price || 0;
-        const formattedPrice = typeof priceValue === 'number' ? `$${priceValue.toFixed(2)}` : priceValue;
+        const formattedPrice = typeof priceValue === 'number' && priceValue > 0 ? `$${priceValue.toFixed(2)}` : (priceValue?.toString() || 'Price varies');
+        
+        console.log(`Walmart product: ${product.title?.substring(0, 30)}... | Price: ${formattedPrice}`);
         
         return {
           // Match RainforestAPI structure
@@ -97,7 +99,7 @@ export class SerpAPIService {
       const params = {
         api_key: this.apiKey,
         engine: 'google',
-        q: `"${query}" site:target.com/p -inurl:"/c/" -inurl:"category"`,
+        q: `"${query}" site:target.com`,
         location: 'United States',
         device: 'desktop',
         hl: 'en',                 // English language
