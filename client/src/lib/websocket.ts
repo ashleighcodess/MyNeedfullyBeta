@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 import { useEffect } from "react";
 
 class WebSocketManager {
@@ -46,13 +47,18 @@ class WebSocketManager {
 
   private handleMessage(message: any) {
     if (message.type === "notification") {
-      // Handle real-time notifications
-      const { toast } = useToast();
-      toast({
-        title: message.data.title,
-        description: message.data.message,
-        duration: 5000,
-      });
+      // Invalidate notifications cache to trigger refetch
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      
+      // Show toast notification
+      // Note: We can't use useToast hook here, so we'll dispatch a custom event
+      window.dispatchEvent(new CustomEvent("showNotificationToast", {
+        detail: {
+          title: message.data.title,
+          description: message.data.message,
+          duration: 5000,
+        }
+      }));
       
       // Dispatch custom event for notification updates
       window.dispatchEvent(new CustomEvent("newNotification", {

@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import BrowseWishlists from "@/pages/browse-wishlists";
@@ -27,11 +29,36 @@ import Footer from "@/components/footer";
 import QuickTips from "@/components/quick-tips";
 import Navigation from "@/components/navigation";
 
+// Component to handle WebSocket toast notifications
+function NotificationHandler() {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const handleToastEvent = (event: CustomEvent) => {
+      const { title, description, duration } = event.detail;
+      toast({
+        title,
+        description,
+        duration,
+      });
+    };
+
+    window.addEventListener('showNotificationToast', handleToastEvent as EventListener);
+
+    return () => {
+      window.removeEventListener('showNotificationToast', handleToastEvent as EventListener);
+    };
+  }, [toast]);
+
+  return null;
+}
+
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col">
+      <NotificationHandler />
       <Navigation />
       <div className="flex-1">
         <Switch>

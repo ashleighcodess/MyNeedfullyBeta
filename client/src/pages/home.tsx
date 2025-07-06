@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useWebSocket } from "@/lib/websocket";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -13,6 +14,9 @@ import {
 
 export default function Home() {
   const { user } = useAuth();
+  
+  // Initialize WebSocket connection for real-time notifications
+  useWebSocket();
   
   // Check if user preference is supporter (default) or creator
   const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
