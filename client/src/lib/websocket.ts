@@ -1,3 +1,4 @@
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,13 +16,23 @@ class WebSocketManager {
 
     this.userId = userId;
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws?userId=${userId}`;
+    const host = window.location.hostname;
+    const port = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+    const wsUrl = `${protocol}//${host}:5000/ws`;
 
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
       console.log("WebSocket connected");
       this.reconnectAttempts = 0;
+      
+      // Send user identification
+      if (this.userId && this.ws) {
+        this.ws.send(JSON.stringify({
+          type: 'identify',
+          userId: this.userId
+        }));
+      }
     };
 
     this.ws.onmessage = (event) => {
