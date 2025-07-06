@@ -142,7 +142,7 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
-        image: "PLACEHOLDER_PAMPERS_DIAPERS_IMAGE",
+        image: "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp",
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
