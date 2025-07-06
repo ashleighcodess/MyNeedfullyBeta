@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { safeProp, safeUser } from "@/lib/api-helpers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -16,8 +15,7 @@ export default function Home() {
   const { user } = useAuth();
   
   // Check if user preference is supporter (default) or creator
-  const userPreference = safeProp(safeUser(user), 'userPreference', 'supporter');
-  const isSupporter = userPreference === 'supporter' || userPreference === '' || !userPreference;
+  const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
 
   return (
     <div className="min-h-screen bg-warm-bg">
@@ -26,7 +24,7 @@ export default function Home() {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-navy mb-2">
-            Welcome back, {safeProp(user, 'firstName', 'Friend')}!
+            Welcome back, {user?.firstName || 'Friend'}!
           </h1>
           <p className="text-gray-600">Ready to make a difference today?</p>
         </div>

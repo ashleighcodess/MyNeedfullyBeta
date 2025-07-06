@@ -4,11 +4,6 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  safeUser,
-  safeArray,
-  safeProp
-} from '@/lib/api-helpers';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -331,10 +326,9 @@ export default function ProductSearch() {
   }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists when no wishlistId is provided
-  const safeUserData = safeUser(user);
   const { data: userWishlists } = useQuery({
-    queryKey: [`/api/users/${safeProp(safeUserData, 'id', '')}/wishlists`],
-    enabled: !wishlistId && !!safeProp(safeUserData, 'id', ''), // Only fetch if no specific wishlist is provided and user is authenticated
+    queryKey: [`/api/users/${user?.id}/wishlists`],
+    enabled: !wishlistId && !!user?.id, // Only fetch if no specific wishlist is provided and user is authenticated
   });
 
 
@@ -487,8 +481,7 @@ export default function ProductSearch() {
         description: "The item has been added to your needs list.",
       });
       // Invalidate cache for the target wishlist
-      const safeWishlistsData = safeArray(userWishlists);
-      const targetWishlistId = wishlistId || (safeWishlistsData.length > 0 ? safeWishlistsData[0]?.id?.toString() : null);
+      const targetWishlistId = wishlistId || (userWishlists && userWishlists.length > 0 ? userWishlists[0].id.toString() : null);
       if (targetWishlistId) {
         queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });
       }

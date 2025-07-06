@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Home } from "lucide-react";
-import { safeProp, safeUser, safeArray } from '@/lib/api-helpers';
 import logoPath from "@assets/Logo_5_1751660244282.png";
 import NotificationCenter from "./notification-center";
 
@@ -28,7 +27,7 @@ export default function MobileNavigation() {
     enabled: !!user,
   });
 
-  const unreadCount = safeArray(notifications).filter((n: any) => !safeProp(n, 'isRead', false)).length;
+  const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;
 
   const handleLogout = () => {
     window.location.href = "/api/logout";
@@ -89,9 +88,9 @@ export default function MobileNavigation() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="p-1.5 h-9 w-9">
-                      {safeProp(safeUser(user), 'profileImageUrl', null) ? (
+                      {user?.profileImageUrl ? (
                         <img 
-                          src={safeProp(safeUser(user), 'profileImageUrl', '')} 
+                          src={user.profileImageUrl} 
                           alt="Profile" 
                           className="w-6 h-6 rounded-full object-cover"
                         />
@@ -104,8 +103,8 @@ export default function MobileNavigation() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <div className="px-2 py-1.5">
-                      <p className="text-sm font-medium truncate">{safeProp(safeUser(user), 'firstName', '')} {safeProp(safeUser(user), 'lastName', '')}</p>
-                      <p className="text-xs text-gray-500 truncate">{safeProp(safeUser(user), 'email', '')}</p>
+                      <p className="text-sm font-medium truncate">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
                     <Link href="/">
@@ -333,8 +332,8 @@ export default function MobileNavigation() {
       
       {/* Notification Center */}
       <NotificationCenter 
-        isOpen={notificationCenterOpen} 
-        onClose={() => setNotificationCenterOpen(false)} 
+        open={notificationCenterOpen} 
+        onOpenChange={setNotificationCenterOpen} 
       />
     </>
   );

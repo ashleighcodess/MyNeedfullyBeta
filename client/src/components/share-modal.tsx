@@ -193,7 +193,7 @@ export function ShareModal({
             <h5 className="font-medium text-navy mb-3">Other Options</h5>
             <div className="space-y-2">
               {/* Native Share (mobile) */}
-              {typeof navigator !== 'undefined' && 'share' in navigator && (
+              {navigator.share && (
                 <Button
                   variant="outline"
                   className="w-full justify-start"

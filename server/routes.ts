@@ -618,7 +618,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Format activity for display
       const formattedActivity = recentActivity.map(activity => {
-        const timeAgo = getTimeAgo(activity.createdAt || new Date());
+        const timeAgo = getTimeAgo(activity.createdAt);
         return {
           id: activity.id,
           type: activity.eventType,
@@ -785,8 +785,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Calculate completion percentage for each wishlist
       const wishlistsWithPercentage = featuredWishlists.map(wishlist => {
-        const completionPercentage = (wishlist.totalItems || 0) > 0 ? 
-          Math.round(((wishlist.fulfilledItems || 0) / (wishlist.totalItems || 1)) * 100) : 0;
+        const completionPercentage = wishlist.totalItems > 0 ? 
+          Math.round((wishlist.fulfilledItems / wishlist.totalItems) * 100) : 0;
         
         return {
           ...wishlist,
@@ -1182,7 +1182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           title: item.title,
           quantity: item.quantity,
           description: item.description,
-          fulfilled: item.fulfilledBy ? true : false,
+          fulfilled: item.fulfilled,
           wishlistTitle: item.wishlistTitle,
           createdAt: item.createdAt,
         })),
@@ -1431,8 +1431,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Check if wishlist is now 100% complete and auto-archive it
         const updatedWishlist = await storage.getWishlist(item.wishlistId);
-        if (updatedWishlist && (updatedWishlist.totalItems || 0) > 0) {
-          const completionPercentage = Math.round(((updatedWishlist.fulfilledItems || 0) / (updatedWishlist.totalItems || 1)) * 100);
+        if (updatedWishlist && updatedWishlist.totalItems > 0) {
+          const completionPercentage = Math.round((updatedWishlist.fulfilledItems / updatedWishlist.totalItems) * 100);
           
           if (completionPercentage >= 100 && updatedWishlist.status === 'active') {
             // Auto-mark as completed
@@ -1538,12 +1538,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let mergedCount = 0;
       
       // Merge duplicates
-      for (const [normalizedTitle, duplicateItems] of Array.from(duplicateGroups.entries())) {
+      for (const [normalizedTitle, duplicateItems] of duplicateGroups) {
         if (duplicateItems.length > 1) {
           // Keep the first item and merge quantities
           const keepItem = duplicateItems[0];
-          const totalQuantity = duplicateItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-          const totalFulfilled = duplicateItems.reduce((sum: number, item: any) => sum + (item.quantityFulfilled || 0), 0);
+          const totalQuantity = duplicateItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+          const totalFulfilled = duplicateItems.reduce((sum, item) => sum + (item.quantityFulfilled || 0), 0);
           
           // Update the kept item with merged quantities
           await storage.updateWishlistItem(keepItem.id, {
@@ -2096,7 +2096,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             pricing.walmart = {
               available: true,
               price: walmartProduct.price || item.price,
-              link: walmartProduct.product_url || null
+              link: walmartProduct.product_url
             };
           }
 
@@ -2106,7 +2106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             pricing.target = {
               available: true,
               price: targetProduct.price || item.price,
-              link: targetProduct.product_url ?? null
+              link: targetProduct.product_url
             };
           }
         } catch (error) {

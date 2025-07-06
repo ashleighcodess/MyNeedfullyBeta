@@ -9,13 +9,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "wouter";
 import { 
-  safeUser,
-  safeWishlistArray,
-  safeNotificationArray,
-  safeProp,
-  safeArray
-} from '@/lib/api-helpers';
-import { 
   User, 
   Heart, 
   Gift, 
@@ -82,34 +75,30 @@ export default function Profile() {
 
   const { data: thankYouNotes } = useQuery({
     queryKey: ['/api/thank-you-notes'],
-    enabled: !!safeProp(user, 'id', null),
+    enabled: !!user?.id,
   });
 
   // Calculate dynamic profile completion
   const calculateProfileCompletion = () => {
-    const safeUserData = safeUser(user);
-    if (!safeUserData) return 0;
+    if (!user) return 0;
     
     let completed = 0;
     const total = 10; // Total possible completion items
     
     // Basic profile fields (4 points)
-    if (safeProp(safeUserData, 'firstName', '')) completed += 1;
-    if (safeProp(safeUserData, 'lastName', '')) completed += 1;
-    if (safeProp(safeUserData, 'email', '')) completed += 1;
-    if (safeProp(safeUserData, 'profileImageUrl', '')) completed += 1;
+    if (user.firstName) completed += 1;
+    if (user.lastName) completed += 1;
+    if (user.email) completed += 1;
+    if (user.profileImageUrl) completed += 1;
     
     // Profile engagement (3 points)
-    const safeWishlists = safeArray(userWishlists);
-    const safeDonations = safeArray(userDonations);
-    const safeNotes = safeArray(thankYouNotes);
-    if (safeWishlists.length > 0) completed += 1;
-    if (safeDonations.length > 0) completed += 1;
-    if (safeNotes.length > 0) completed += 1;
+    if (userWishlists && userWishlists.length > 0) completed += 1;
+    if (userDonations && userDonations.length > 0) completed += 1;
+    if (thankYouNotes && thankYouNotes.length > 0) completed += 1;
     
     // Additional profile elements (3 points)
-    if (safeProp(safeUserData, 'createdAt', null)) completed += 1; // Account age
-    if (safeProp(safeUserData, 'id', null)) completed += 1; // Member ID exists
+    if (user.createdAt) completed += 1; // Account age
+    if (user.id) completed += 1; // Member ID exists
     completed += 1; // Default supporter status
     
     return Math.round((completed / total) * 100);
@@ -129,8 +118,7 @@ export default function Profile() {
     });
     
     // Show "In Need" badge if user has created any needs lists
-    const safeWishlists = safeArray(userWishlists);
-    if (safeWishlists.length > 0) {
+    if (userWishlists && userWishlists.length > 0) {
       badges.push({
         label: "In Need",
         color: "bg-blue-50 text-blue-600 border-blue-200",
@@ -142,13 +130,12 @@ export default function Profile() {
   };
   
   const userBadges = getUserBadges();
-  const memberSince = new Date(safeProp(safeUser(user), 'createdAt', Date.now())).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const memberSince = new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   
-  const safeWishlistsData = safeArray(userWishlists);
-  const activeWishlists = safeWishlistsData.filter((w: any) => w.status === 'active') || [];
-  const completedWishlists = safeWishlistsData.filter((w: any) => w.status === 'completed') || [];
-  const totalItemsReceived = safeWishlistsData.reduce((sum: number, w: any) => sum + (w.fulfilledItems || 0), 0) || 0;
-  const totalViews = safeWishlistsData.reduce((sum: number, w: any) => sum + (w.viewCount || 0), 0) || 0;
+  const activeWishlists = userWishlists?.filter((w: any) => w.status === 'active') || [];
+  const completedWishlists = userWishlists?.filter((w: any) => w.status === 'completed') || [];
+  const totalItemsReceived = userWishlists?.reduce((sum: number, w: any) => sum + w.fulfilledItems, 0) || 0;
+  const totalViews = userWishlists?.reduce((sum: number, w: any) => sum + w.viewCount, 0) || 0;
 
   const sidebarItems = [
     { id: 'profile', label: 'My Profile', icon: User, active: activeTab === 'profile' },
@@ -164,7 +151,7 @@ export default function Profile() {
   const getCompletionTasks = () => {
     const tasks = [];
     
-    if (!safeProp(safeUser(user), 'profileImageUrl', '')) {
+    if (!user?.profileImageUrl) {
       tasks.push({
         title: "Add Profile Photo",
         description: "Help the community connect with you",
@@ -172,7 +159,7 @@ export default function Profile() {
       });
     }
     
-    if (!safeArray(userWishlists).length) {
+    if (!userWishlists || userWishlists.length === 0) {
       tasks.push({
         title: "Create Your First Needs List",
         description: "Share what you need with the community",
@@ -180,7 +167,7 @@ export default function Profile() {
       });
     }
     
-    if (!safeProp(safeUser(user), 'lastName', '')) {
+    if (!user?.lastName) {
       tasks.push({
         title: "Complete Your Name",
         description: "Add your last name for better trust",
@@ -220,13 +207,13 @@ export default function Profile() {
             <Card className="mb-4 lg:mb-6">
               <CardContent className="p-4 sm:p-6 text-center">
                 <Avatar className="h-16 sm:h-20 w-16 sm:w-20 mx-auto mb-3 sm:mb-4">
-                  <AvatarImage src={safeProp(safeUser(user), 'profileImageUrl', '')} alt={safeProp(safeUser(user), 'firstName', 'User')} />
+                  <AvatarImage src={user.profileImageUrl} alt={user.firstName || 'User'} />
                   <AvatarFallback className="text-lg sm:text-xl bg-coral text-white">
-                    {safeProp(safeUser(user), 'firstName', 'U').charAt(0)}
+                    {user.firstName?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold text-navy mb-1 text-lg">
-                  Hi, {safeProp(safeUser(user), 'firstName', 'User')}!
+                  Hi, {user.firstName}!
                 </h3>
                 <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4 justify-center">
                   {userBadges.map((badge, index) => {
@@ -336,7 +323,7 @@ export default function Profile() {
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
                         <h1 className="text-2xl sm:text-3xl font-bold text-navy">
-                          {safeProp(safeUser(user), 'firstName', '')} {safeProp(safeUser(user), 'lastName', '')}
+                          {user.firstName} {user.lastName || ''}
                         </h1>
                         <Badge className="bg-coral text-white w-fit mt-2 sm:mt-0">
                           <Shield className="mr-1 h-3 w-3" />
@@ -344,13 +331,13 @@ export default function Profile() {
                         </Badge>
                       </div>
                       <p className="text-gray-600 mb-4 text-sm sm:text-base">
-                        I'm {safeProp(safeUser(user), 'firstName', 'User')} who loves to help people. My name is {safeProp(safeUser(user), 'firstName', 'User')}.
+                        I'm {user.firstName} who loves to help people. My name is {user.firstName}.
                       </p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                         <div className="flex items-center space-x-2 text-gray-600">
                           <Mail className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate">{safeProp(safeUser(user), 'email', '')}</span>
+                          <span className="truncate">{user.email}</span>
                         </div>
 
                         <div className="flex items-center space-x-2 text-gray-600">
@@ -390,17 +377,17 @@ export default function Profile() {
                       <div>
                         <div className="text-lg font-semibold text-navy">Account Type</div>
                         <div className="text-xl font-semibold text-gray-700">
-                          {safeArray(userWishlists).length > 0 ? "Supporter & Creator" : "Supporter"}
+                          {userWishlists && userWishlists.length > 0 ? "Supporter & Creator" : "Supporter"}
                         </div>
                       </div>
                       <div>
                         <div className="text-lg font-semibold text-navy">Member ID</div>
-                        <div className="text-xl font-semibold text-gray-700">#{String(safeProp(safeUser(user), 'id', '000000')).slice(-6)}</div>
+                        <div className="text-xl font-semibold text-gray-700">#{user.id?.slice(-6) || '000000'}</div>
                       </div>
                       <div>
                         <div className="text-lg font-semibold text-navy">Account Status</div>
-                        <div className={`text-xl font-semibold ${safeProp(safeUser(user), 'isVerified', false) ? 'text-green-600' : 'text-orange-500'}`}>
-                          {safeProp(safeUser(user), 'isVerified', false) ? 'Verified' : 'Unverified'}
+                        <div className={`text-xl font-semibold ${user?.isVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                          {user?.isVerified ? 'Verified' : 'Unverified'}
                         </div>
                       </div>
                     </div>
@@ -446,7 +433,7 @@ export default function Profile() {
                     <CardContent className="p-6 text-center">
                       <Heart className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
-                        {safeArray(userDonations).length}
+                        {userDonations?.length || 0}
                       </div>
                       <div className="text-sm text-gray-600">Items Supported</div>
                     </CardContent>
@@ -456,7 +443,7 @@ export default function Profile() {
                     <CardContent className="p-6 text-center">
                       <Gift className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
-                        {safeArray(userWishlists).length}
+                        {userWishlists?.length || 0}
                       </div>
                       <div className="text-sm text-gray-600">Needs Lists Created</div>
                     </CardContent>
@@ -469,7 +456,7 @@ export default function Profile() {
                     <CardContent className="p-6 text-center">
                       <Award className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
-                        {safeArray(thankYouNotes).length}
+                        {thankYouNotes?.length || 0}
                       </div>
                       <div className="text-sm text-gray-600">Thank You Notes</div>
                     </CardContent>
@@ -562,7 +549,7 @@ export default function Profile() {
                       </div>
                       <div className="ml-3 sm:ml-4">
                         <div className="text-xl sm:text-2xl font-bold">
-                          {safeArray(thankYouNotes).length}
+                          {thankYouNotes?.length || 0}
                         </div>
                         <div className="text-xs sm:text-sm opacity-80">All Notes</div>
                       </div>
@@ -583,7 +570,7 @@ export default function Profile() {
                       </div>
                       <div className="ml-3 sm:ml-4">
                         <div className="text-xl sm:text-2xl font-bold">
-                          {safeArray(thankYouNotes).filter((note: any) => safeProp(note, 'fromUserId', null) === safeProp(safeUser(user), 'id', null)).length}
+                          {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0}
                         </div>
                         <div className="text-xs sm:text-sm opacity-80">Notes Sent</div>
                       </div>
@@ -604,7 +591,7 @@ export default function Profile() {
                       </div>
                       <div className="ml-3 sm:ml-4">
                         <div className="text-xl sm:text-2xl font-bold">
-                          {safeArray(thankYouNotes).filter((note: any) => safeProp(note, 'toUserId', null) === safeProp(safeUser(user), 'id', null)).length}
+                          {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0}
                         </div>
                         <div className="text-xs sm:text-sm opacity-80">Notes Received</div>
                       </div>
