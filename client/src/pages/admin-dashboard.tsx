@@ -35,6 +35,7 @@ import {
   Calendar,
   Download
 } from "lucide-react";
+import { safeProp, safeUser } from '@/lib/api-helpers';
 
 const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', '#FF9FF3'];
 
@@ -44,7 +45,7 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Redirect if not admin
-  if (user?.userType !== 'admin') {
+  if (safeProp(safeUser(user), 'userType', null) !== 'admin') {
     return (
       <div className="min-h-screen bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -145,7 +146,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-3xl font-bold text-navy">{adminStats?.totalUsers || 0}</p>
+                  <p className="text-3xl font-bold text-navy">{safeProp(adminStats, 'totalUsers', 0)}</p>
                   <p className="text-sm text-green-600">+12% from last month</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -160,7 +161,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Wishlists</p>
-                  <p className="text-3xl font-bold text-navy">{adminStats?.totalWishlists || 0}</p>
+                  <p className="text-3xl font-bold text-navy">{safeProp(adminStats, 'totalWishlists', 0)}</p>
                   <p className="text-sm text-green-600">+8% from last month</p>
                 </div>
                 <div className="w-12 h-12 bg-coral/10 rounded-full flex items-center justify-center">
@@ -175,7 +176,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Support Items</p>
-                  <p className="text-3xl font-bold text-navy">{adminStats?.totalDonations || 0}</p>
+                  <p className="text-3xl font-bold text-navy">{safeProp(adminStats, 'totalDonations', 0)}</p>
                   <p className="text-sm text-green-600">+15% from last month</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -190,7 +191,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Value</p>
-                  <p className="text-3xl font-bold text-navy">${(adminStats?.totalDonationAmount || 0).toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-navy">${safeProp(adminStats, 'totalDonationAmount', 0).toLocaleString()}</p>
                   <p className="text-sm text-green-600">+22% from last month</p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">

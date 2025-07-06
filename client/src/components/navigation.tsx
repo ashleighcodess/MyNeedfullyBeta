@@ -181,7 +181,7 @@ export default function Navigation() {
                         );
                       })}
                       <DropdownMenuSeparator />
-                      {safeProp(safeUser(user), 'userType', '') === 'admin' && (
+                      {safeProp(safeUser(user), 'userType', null) === 'admin' && (
                         <Link href="/admin">
                           <DropdownMenuItem className="cursor-pointer">
                             <ShieldCheck className="mr-2 h-4 w-4" />
@@ -277,7 +277,7 @@ export default function Navigation() {
                             })}
                           </div>
 
-                          {safeProp(safeUser(user), 'userType', '') === 'admin' && (
+                          {safeProp(safeUser(user), 'userType', null) === 'admin' && (
                             <Link href="/admin">
                               <Button
                                 variant="ghost"
