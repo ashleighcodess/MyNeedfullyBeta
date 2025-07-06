@@ -446,7 +446,7 @@ export default function Profile() {
                     <CardContent className="p-6 text-center">
                       <Heart className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
-                        {userDonations?.length || 0}
+                        {safeArray(userDonations).length}
                       </div>
                       <div className="text-sm text-gray-600">Items Supported</div>
                     </CardContent>
@@ -456,7 +456,7 @@ export default function Profile() {
                     <CardContent className="p-6 text-center">
                       <Gift className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
-                        {userWishlists?.length || 0}
+                        {safeArray(userWishlists).length}
                       </div>
                       <div className="text-sm text-gray-600">Needs Lists Created</div>
                     </CardContent>
@@ -469,7 +469,7 @@ export default function Profile() {
                     <CardContent className="p-6 text-center">
                       <Award className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
-                        {thankYouNotes?.length || 0}
+                        {safeArray(thankYouNotes).length}
                       </div>
                       <div className="text-sm text-gray-600">Thank You Notes</div>
                     </CardContent>
@@ -562,7 +562,7 @@ export default function Profile() {
                       </div>
                       <div className="ml-3 sm:ml-4">
                         <div className="text-xl sm:text-2xl font-bold">
-                          {thankYouNotes?.length || 0}
+                          {safeArray(thankYouNotes).length}
                         </div>
                         <div className="text-xs sm:text-sm opacity-80">All Notes</div>
                       </div>
@@ -583,7 +583,7 @@ export default function Profile() {
                       </div>
                       <div className="ml-3 sm:ml-4">
                         <div className="text-xl sm:text-2xl font-bold">
-                          {thankYouNotes?.filter((note: any) => note.fromUserId === user?.id).length || 0}
+                          {safeArray(thankYouNotes).filter((note: any) => safeProp(note, 'fromUserId', null) === safeProp(safeUser(user), 'id', null)).length}
                         </div>
                         <div className="text-xs sm:text-sm opacity-80">Notes Sent</div>
                       </div>
@@ -604,7 +604,7 @@ export default function Profile() {
                       </div>
                       <div className="ml-3 sm:ml-4">
                         <div className="text-xl sm:text-2xl font-bold">
-                          {thankYouNotes?.filter((note: any) => note.toUserId === user?.id).length || 0}
+                          {safeArray(thankYouNotes).filter((note: any) => safeProp(note, 'toUserId', null) === safeProp(safeUser(user), 'id', null)).length}
                         </div>
                         <div className="text-xs sm:text-sm opacity-80">Notes Received</div>
                       </div>
