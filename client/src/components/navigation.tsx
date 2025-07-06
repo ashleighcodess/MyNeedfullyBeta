@@ -243,16 +243,38 @@ export default function Navigation() {
                       </div>
                     ) : (
                       <div className="border-t pt-4">
+                        <div className="text-center mb-4">
+                          <p className="text-sm text-gray-600 mb-2">
+                            Ready to connect hearts and fulfill needs?
+                          </p>
+                          <p className="text-xs text-gray-500 mb-4">
+                            Join thousands using MyNeedfully to help families recover from disasters, hardships, and life's unexpected challenges.
+                          </p>
+                        </div>
                         <Button 
                           variant="default" 
-                          className="w-full"
+                          className="w-full bg-coral text-white hover:bg-coral/90 py-3 text-base font-semibold"
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            window.location.href = "/login";
+                            window.location.href = "/api/login";
                           }}
                         >
-                          Sign In
+                          Get Started Today
                         </Button>
+                        <div className="text-center mt-3">
+                          <p className="text-xs text-gray-500">
+                            Already have an account?{" "}
+                            <button 
+                              className="text-coral hover:text-coral/80 font-medium"
+                              onClick={() => {
+                                setMobileMenuOpen(false);
+                                window.location.href = "/api/login";
+                              }}
+                            >
+                              Sign In
+                            </button>
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
