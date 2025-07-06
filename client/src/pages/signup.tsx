@@ -94,7 +94,7 @@ export default function Signup() {
                     </div>
                     {selectedOption === option.id && (
                       <div className="flex-shrink-0 mx-auto sm:mx-0">
-                        <div className="w-5 h-5 md:w-6 md:h-6 bg-coral rounded-full flex items-center justify-center transition-all duration-300 ease-out animate-pulse">
+                        <div className="w-5 h-5 md:w-6 md:h-6 bg-coral rounded-full flex items-center justify-center transition-all duration-300 ease-out">
                           <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full transform scale-110"></div>
                         </div>
                       </div>
