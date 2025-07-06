@@ -172,7 +172,7 @@ export default function ProductSearch() {
       // Walmart Products - placeholder images to be replaced with exact URLs
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
-        image: "PLACEHOLDER_WALMART_TOILET_PAPER_IMAGE",
+        image: "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg",
         price: "$11.98",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
         product_id: "10315001",
