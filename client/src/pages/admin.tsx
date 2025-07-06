@@ -56,7 +56,7 @@ export default function AdminDashboard() {
 
   // Redirect non-admin users
   useEffect(() => {
-    if (user && user.userType !== 'admin') {
+    if (user && safeProp(safeUser(user), 'userType', '') !== 'admin') {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
@@ -69,31 +69,31 @@ export default function AdminDashboard() {
   // Admin stats query
   const { data: adminStats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/admin/stats'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && safeProp(safeUser(user), 'userType', '') === 'admin',
   });
 
   // Recent activity query
   const { data: recentActivity, isLoading: activityLoading } = useQuery({
     queryKey: ['/api/admin/activity'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && safeProp(safeUser(user), 'userType', '') === 'admin',
   });
 
   // User management query
   const { data: usersList, isLoading: usersLoading } = useQuery({
     queryKey: ['/api/admin/users'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && safeProp(safeUser(user), 'userType', '') === 'admin',
   });
 
   // Wishlists management query
   const { data: wishlistsData, isLoading: wishlistsLoading } = useQuery({
     queryKey: ['/api/admin/wishlists'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && safeProp(safeUser(user), 'userType', '') === 'admin',
   });
 
   // System health query
   const { data: systemHealth, isLoading: healthLoading } = useQuery({
     queryKey: ['/api/admin/health'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && safeProp(safeUser(user), 'userType', '') === 'admin',
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
     },
     onSuccess: (data) => {
       toast({
-        title: data.message,
+        title: safeProp(data, 'message', 'Success'),
         description: "Featured status updated successfully",
         duration: 3000,
       });
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
   };
 
   // Don't render if not admin
-  if (!user || user.userType !== 'admin') {
+  if (!user || safeProp(safeUser(user), 'userType', '') !== 'admin') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

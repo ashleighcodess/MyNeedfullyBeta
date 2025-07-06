@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { safeProp } from "@/lib/api-helpers";
+import { safeProp, safeUser } from "@/lib/api-helpers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -16,7 +16,7 @@ export default function Home() {
   const { user } = useAuth();
   
   // Check if user preference is supporter (default) or creator
-  const userPreference = safeProp(user, 'userPreference', '');
+  const userPreference = safeProp(safeUser(user), 'userPreference', '');
   const isSupporter = userPreference === 'supporter' || userPreference === '' || !userPreference;
 
   return (

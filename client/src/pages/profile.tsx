@@ -129,7 +129,8 @@ export default function Profile() {
     });
     
     // Show "In Need" badge if user has created any needs lists
-    if (userWishlists && userWishlists.length > 0) {
+    const safeWishlists = safeArray(userWishlists);
+    if (safeWishlists.length > 0) {
       badges.push({
         label: "In Need",
         color: "bg-blue-50 text-blue-600 border-blue-200",
@@ -141,12 +142,13 @@ export default function Profile() {
   };
   
   const userBadges = getUserBadges();
-  const memberSince = new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const memberSince = new Date(safeProp(safeUser(user), 'createdAt', Date.now())).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   
-  const activeWishlists = userWishlists?.filter((w: any) => w.status === 'active') || [];
-  const completedWishlists = userWishlists?.filter((w: any) => w.status === 'completed') || [];
-  const totalItemsReceived = userWishlists?.reduce((sum: number, w: any) => sum + w.fulfilledItems, 0) || 0;
-  const totalViews = userWishlists?.reduce((sum: number, w: any) => sum + w.viewCount, 0) || 0;
+  const safeWishlistsData = safeArray(userWishlists);
+  const activeWishlists = safeWishlistsData.filter((w: any) => w.status === 'active') || [];
+  const completedWishlists = safeWishlistsData.filter((w: any) => w.status === 'completed') || [];
+  const totalItemsReceived = safeWishlistsData.reduce((sum: number, w: any) => sum + (w.fulfilledItems || 0), 0) || 0;
+  const totalViews = safeWishlistsData.reduce((sum: number, w: any) => sum + (w.viewCount || 0), 0) || 0;
 
   const sidebarItems = [
     { id: 'profile', label: 'My Profile', icon: User, active: activeTab === 'profile' },
@@ -162,7 +164,7 @@ export default function Profile() {
   const getCompletionTasks = () => {
     const tasks = [];
     
-    if (!user?.profileImageUrl) {
+    if (!safeProp(safeUser(user), 'profileImageUrl', '')) {
       tasks.push({
         title: "Add Profile Photo",
         description: "Help the community connect with you",
@@ -170,7 +172,7 @@ export default function Profile() {
       });
     }
     
-    if (!userWishlists || userWishlists.length === 0) {
+    if (!safeArray(userWishlists).length) {
       tasks.push({
         title: "Create Your First Needs List",
         description: "Share what you need with the community",
@@ -178,7 +180,7 @@ export default function Profile() {
       });
     }
     
-    if (!user?.lastName) {
+    if (!safeProp(safeUser(user), 'lastName', '')) {
       tasks.push({
         title: "Complete Your Name",
         description: "Add your last name for better trust",
@@ -218,13 +220,13 @@ export default function Profile() {
             <Card className="mb-4 lg:mb-6">
               <CardContent className="p-4 sm:p-6 text-center">
                 <Avatar className="h-16 sm:h-20 w-16 sm:w-20 mx-auto mb-3 sm:mb-4">
-                  <AvatarImage src={user.profileImageUrl} alt={user.firstName || 'User'} />
+                  <AvatarImage src={safeProp(safeUser(user), 'profileImageUrl', '')} alt={safeProp(safeUser(user), 'firstName', 'User')} />
                   <AvatarFallback className="text-lg sm:text-xl bg-coral text-white">
-                    {user.firstName?.charAt(0) || 'U'}
+                    {safeProp(safeUser(user), 'firstName', 'U').charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold text-navy mb-1 text-lg">
-                  Hi, {user.firstName}!
+                  Hi, {safeProp(safeUser(user), 'firstName', 'User')}!
                 </h3>
                 <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4 justify-center">
                   {userBadges.map((badge, index) => {
@@ -334,7 +336,7 @@ export default function Profile() {
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
                         <h1 className="text-2xl sm:text-3xl font-bold text-navy">
-                          {user.firstName} {user.lastName || ''}
+                          {safeProp(safeUser(user), 'firstName', '')} {safeProp(safeUser(user), 'lastName', '')}
                         </h1>
                         <Badge className="bg-coral text-white w-fit mt-2 sm:mt-0">
                           <Shield className="mr-1 h-3 w-3" />
@@ -342,13 +344,13 @@ export default function Profile() {
                         </Badge>
                       </div>
                       <p className="text-gray-600 mb-4 text-sm sm:text-base">
-                        I'm {user.firstName} who loves to help people. My name is {user.firstName}.
+                        I'm {safeProp(safeUser(user), 'firstName', 'User')} who loves to help people. My name is {safeProp(safeUser(user), 'firstName', 'User')}.
                       </p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                         <div className="flex items-center space-x-2 text-gray-600">
                           <Mail className="h-4 w-4 flex-shrink-0" />
-                          <span className="truncate">{user.email}</span>
+                          <span className="truncate">{safeProp(safeUser(user), 'email', '')}</span>
                         </div>
 
                         <div className="flex items-center space-x-2 text-gray-600">
@@ -388,17 +390,17 @@ export default function Profile() {
                       <div>
                         <div className="text-lg font-semibold text-navy">Account Type</div>
                         <div className="text-xl font-semibold text-gray-700">
-                          {userWishlists && userWishlists.length > 0 ? "Supporter & Creator" : "Supporter"}
+                          {safeArray(userWishlists).length > 0 ? "Supporter & Creator" : "Supporter"}
                         </div>
                       </div>
                       <div>
                         <div className="text-lg font-semibold text-navy">Member ID</div>
-                        <div className="text-xl font-semibold text-gray-700">#{user.id?.slice(-6) || '000000'}</div>
+                        <div className="text-xl font-semibold text-gray-700">#{String(safeProp(safeUser(user), 'id', '000000')).slice(-6)}</div>
                       </div>
                       <div>
                         <div className="text-lg font-semibold text-navy">Account Status</div>
-                        <div className={`text-xl font-semibold ${user?.isVerified ? 'text-green-600' : 'text-orange-500'}`}>
-                          {user?.isVerified ? 'Verified' : 'Unverified'}
+                        <div className={`text-xl font-semibold ${safeProp(safeUser(user), 'isVerified', false) ? 'text-green-600' : 'text-orange-500'}`}>
+                          {safeProp(safeUser(user), 'isVerified', false) ? 'Verified' : 'Unverified'}
                         </div>
                       </div>
                     </div>

@@ -2106,7 +2106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             pricing.target = {
               available: true,
               price: targetProduct.price || item.price,
-              link: targetProduct.product_url || ''
+              link: targetProduct.product_url || null
             };
           }
         } catch (error) {
