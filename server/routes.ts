@@ -2096,7 +2096,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             pricing.walmart = {
               available: true,
               price: walmartProduct.price || item.price,
-              link: walmartProduct.product_url || ''
+              link: walmartProduct.product_url || null
             };
           }
 
@@ -2106,7 +2106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             pricing.target = {
               available: true,
               price: targetProduct.price || item.price,
-              link: targetProduct.product_url || null
+              link: targetProduct.product_url ?? null
             };
           }
         } catch (error) {
