@@ -49,10 +49,10 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8 md:py-16">
+      <div className="container mx-auto px-4 py-4 md:py-16">
         <div className="max-w-4xl mx-auto">
           {/* Header with Logo */}
-          <div className="text-center mb-8 md:mb-12">
+          <div className="text-center mb-4 md:mb-12">
             <div className="flex flex-col sm:flex-row justify-center items-center mb-4 md:mb-6">
               <img 
                 src={logoIcon} 
@@ -68,8 +68,8 @@ export default function Signup() {
             </p>
           </div>
 
-          {/* Cards - Vertically Stacked */}
-          <div className="space-y-4 md:space-y-6 max-w-2xl mx-auto">
+          {/* Cards - Vertically Stacked with Compact Mobile Layout */}
+          <div className="space-y-2 md:space-y-6 max-w-2xl mx-auto">
             {options.map((option) => (
               <Card
                 key={option.id}
@@ -80,29 +80,29 @@ export default function Signup() {
                 }`}
                 onClick={() => setSelectedOption(option.id)}
               >
-                <CardContent className="p-4 md:p-8">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                    <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${option.bgColor} flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0`}>
+                <CardContent className="p-3 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6">
+                    <div className={`w-12 h-12 md:w-20 md:h-20 rounded-full ${option.bgColor} flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0`}>
                       <img 
                         src={option.iconSrc} 
                         alt={option.title}
-                        className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                        className="w-6 h-6 md:w-10 md:h-10 object-contain"
                       />
                     </div>
                     <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2 md:mb-3">
+                      <h3 className="text-lg md:text-2xl font-semibold text-gray-900 mb-1 md:mb-3">
                         {option.title}
                       </h3>
                       {option.description && (
-                        <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                        <p className="text-gray-600 text-sm md:text-lg leading-relaxed">
                           {option.description}
                         </p>
                       )}
                     </div>
                     {selectedOption === option.id && (
                       <div className="flex-shrink-0 mx-auto sm:mx-0">
-                        <div className="w-6 h-6 bg-coral rounded-full flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <div className="w-5 h-5 md:w-6 md:h-6 bg-coral rounded-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
                         </div>
                       </div>
                     )}
@@ -113,19 +113,19 @@ export default function Signup() {
           </div>
 
           {/* Continue Button */}
-          <div className="text-center mt-8 md:mt-12 px-4">
+          <div className="text-center mt-4 md:mt-12 px-4">
             <Button
               onClick={handleContinue}
               disabled={!selectedOption}
-              className="bg-coral hover:bg-coral/90 text-white px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="bg-coral hover:bg-coral/90 text-white px-6 md:px-12 py-2.5 md:py-4 text-sm md:text-lg font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               Continue
             </Button>
           </div>
 
           {/* Footer */}
-          <div className="text-center mt-6 md:mt-8 px-4">
-            <p className="text-gray-500 text-sm md:text-base">
+          <div className="text-center mt-3 md:mt-8 px-4">
+            <p className="text-gray-500 text-xs md:text-base">
               Already have an account?{" "}
               <Link href="/login" className="text-coral hover:underline font-medium">
                 Login
