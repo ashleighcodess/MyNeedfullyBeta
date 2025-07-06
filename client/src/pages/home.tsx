@@ -16,7 +16,7 @@ export default function Home() {
   const { user } = useAuth();
   
   // Check if user preference is supporter (default) or creator
-  const userPreference = safeProp(safeUser(user), 'userPreference', '');
+  const userPreference = safeProp(safeUser(user), 'userPreference', 'supporter');
   const isSupporter = userPreference === 'supporter' || userPreference === '' || !userPreference;
 
   return (

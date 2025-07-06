@@ -30,7 +30,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import NotificationCenter from './notification-center';
 import logoImage from '@assets/Logo_5_1751660244282.png';
-import { safeProp, safeArray } from '@/lib/api-helpers';
+import { safeProp, safeArray, safeUser } from '@/lib/api-helpers';
 
 export default function Navigation() {
   const [location, setLocation] = useLocation();
@@ -181,7 +181,7 @@ export default function Navigation() {
                         );
                       })}
                       <DropdownMenuSeparator />
-                      {safeProp(user, 'userType', '') === 'admin' && (
+                      {safeProp(safeUser(user), 'userType', '') === 'admin' && (
                         <Link href="/admin">
                           <DropdownMenuItem className="cursor-pointer">
                             <ShieldCheck className="mr-2 h-4 w-4" />
@@ -277,7 +277,7 @@ export default function Navigation() {
                             })}
                           </div>
 
-                          {safeProp(user, 'userType', '') === 'admin' && (
+                          {safeProp(safeUser(user), 'userType', '') === 'admin' && (
                             <Link href="/admin">
                               <Button
                                 variant="ghost"
