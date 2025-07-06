@@ -19,6 +19,14 @@ import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
+
+// Product images
+import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
+import charminToiletPaperImage from "@assets/81Ml0P+qqnL._AC__1751759916227.jpg";
+import pampersDiapersImage from "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp";
+import tideDetergentImage from "@assets/tide_1751760058768.webp";
+import bountyPaperTowelsImage from "@assets/81+BZP2zUHL._AC__1751760103041.jpg";
+import walmartToiletPaperImage from "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg";
 import { 
   Search, 
   Filter, 
@@ -122,7 +130,7 @@ export default function ProductSearch() {
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "@assets/71oOkIoaqXL._AC__1751759839615.jpg",
+        image: pampersWipesImage,
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
@@ -132,7 +140,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H", 
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "@assets/81Ml0P+qqnL._AC__1751759916227.jpg",
+        image: charminToiletPaperImage,
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -142,7 +150,7 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
-        image: "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp",
+        image: pampersDiapersImage,
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
@@ -152,7 +160,7 @@ export default function ProductSearch() {
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: "@assets/tide_1751760058768.webp",
+        image: tideDetergentImage,
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
         ratings_total: 18745,
@@ -162,7 +170,7 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: "@assets/81+BZP2zUHL._AC__1751760103041.jpg",
+        image: bountyPaperTowelsImage,
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
@@ -172,7 +180,7 @@ export default function ProductSearch() {
       // Walmart Products - placeholder images to be replaced with exact URLs
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
-        image: "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg",
+        image: walmartToiletPaperImage,
         price: "$11.98",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
         product_id: "10315001",
