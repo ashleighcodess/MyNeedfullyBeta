@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight } from "lucide-react";
+import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight, Flame, Droplets, Stethoscope, ShoppingCart, Baby, GraduationCap, Shirt, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -1078,7 +1078,7 @@ export default function Landing() {
               {/* Fire Disaster Relief */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Zap className="h-6 w-6 text-navy group-hover:text-white" />
+                  <Flame className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Fire Disaster Relief</h3>
@@ -1089,7 +1089,7 @@ export default function Landing() {
               {/* Emergency Flood Relief */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Shield className="h-6 w-6 text-navy group-hover:text-white" />
+                  <Droplets className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Emergency Flood Relief</h3>
@@ -1100,7 +1100,7 @@ export default function Landing() {
               {/* Medical Necessity */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Heart className="h-6 w-6 text-navy group-hover:text-white" />
+                  <Stethoscope className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Medical Necessity</h3>
@@ -1122,7 +1122,7 @@ export default function Landing() {
               {/* Groceries and Food */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Users className="h-6 w-6 text-navy group-hover:text-white" />
+                  <ShoppingCart className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Groceries and Food</h3>
@@ -1133,7 +1133,7 @@ export default function Landing() {
               {/* Baby Items */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Heart className="h-6 w-6 text-navy group-hover:text-white" />
+                  <Baby className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Baby Items</h3>
@@ -1144,7 +1144,7 @@ export default function Landing() {
               {/* School Supplies */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Users className="h-6 w-6 text-navy group-hover:text-white" />
+                  <GraduationCap className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">School Supplies</h3>
@@ -1155,7 +1155,7 @@ export default function Landing() {
               {/* Clothing */}
               <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Shield className="h-6 w-6 text-navy group-hover:text-white" />
+                  <Shirt className="h-6 w-6 text-navy group-hover:text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Clothing</h3>
