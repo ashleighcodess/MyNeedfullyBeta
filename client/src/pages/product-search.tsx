@@ -162,7 +162,7 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: "PLACEHOLDER_BOUNTY_PAPER_TOWELS_IMAGE",
+        image: "@assets/81+BZP2zUHL._AC__1751760103041.jpg",
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
