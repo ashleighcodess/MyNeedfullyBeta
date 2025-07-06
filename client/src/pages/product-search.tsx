@@ -152,7 +152,7 @@ export default function ProductSearch() {
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: "PLACEHOLDER_TIDE_DETERGENT_IMAGE",
+        image: "@assets/tide_1751760058768.webp",
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
         ratings_total: 18745,
