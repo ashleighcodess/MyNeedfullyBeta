@@ -186,52 +186,6 @@ export default function ProductSearch() {
         product_id: "10315001",
         retailer: "walmart",
         retailer_name: "Walmart"
-      },
-      {
-        title: "Great Value Dish Soap, Original Scent, 75 fl oz",
-        image: "PLACEHOLDER_WALMART_DISH_SOAP_IMAGE",
-        price: "$2.97", 
-        product_url: "https://www.walmart.com/ip/Great-Value-Dish-Soap/10315002",
-        product_id: "10315002",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      },
-      {
-        title: "Great Value All Purpose Cleaner, 32 fl oz",
-        image: "PLACEHOLDER_WALMART_CLEANER_IMAGE",
-        price: "$1.78",
-        product_url: "https://www.walmart.com/ip/Great-Value-All-Purpose-Cleaner/10315003",
-        product_id: "10315003",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      },
-      // Target Products - placeholder images to be replaced with exact URLs
-      {
-        title: "Up & Up Baby Wipes, Sensitive, 8 Packs",
-        image: "PLACEHOLDER_TARGET_BABY_WIPES_IMAGE",
-        price: "$12.99",
-        product_url: "https://www.target.com/p/up-up-baby-wipes-sensitive/-/A-54191097",
-        product_id: "54191097",
-        retailer: "target",
-        retailer_name: "Target"
-      },
-      {
-        title: "Up & Up Hand Soap Refill, Fresh Scent, 56 fl oz", 
-        image: "PLACEHOLDER_TARGET_HAND_SOAP_IMAGE",
-        price: "$4.99",
-        product_url: "https://www.target.com/p/up-up-hand-soap-refill/-/A-13217789",
-        product_id: "13217789",
-        retailer: "target",
-        retailer_name: "Target"
-      },
-      {
-        title: "Up & Up Fabric Softener Sheets, Fresh Scent, 240 Count",
-        image: "PLACEHOLDER_TARGET_FABRIC_SOFTENER_IMAGE",
-        price: "$3.79",
-        product_url: "https://www.target.com/p/up-up-fabric-softener-sheets/-/A-14851456",
-        product_id: "14851456",
-        retailer: "target",
-        retailer_name: "Target"
       }
     ],
     "baby wipes": [
@@ -785,18 +739,8 @@ export default function ProductSearch() {
                       {!debouncedQuery || debouncedQuery === activeSearch && popularProducts[activeSearch as keyof typeof popularProducts] ? (
                         <div>
                           <h3 className="text-lg font-semibold text-navy">
-                            Featured {activeSearch || "Basic Essentials"} Products
+                            {activeSearch || "Basic Essentials"} Products
                           </h3>
-                          <p className="text-sm text-gray-600">
-                            Curated selection of essential items from trusted retailers
-                          </p>
-                          {displayProducts && displayProducts.length > 0 && (
-                            <p className="text-xs text-gray-500">
-                              Available from: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
-                              Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
-                              Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
-                            </p>
-                          )}
                         </div>
                       ) : (
                         <div>
