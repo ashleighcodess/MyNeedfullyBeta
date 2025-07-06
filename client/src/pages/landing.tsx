@@ -112,7 +112,7 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   
   // Fetch featured wishlists from database
-  const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery({
+  const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
     queryKey: ['/api/featured-wishlists'],
   });
   
@@ -223,7 +223,7 @@ export default function Landing() {
       ];
 
   // Real-time activity data from platform
-  const { data: recentActivity = [] } = useQuery({
+  const { data: recentActivity = [] } = useQuery<any[]>({
     queryKey: ['/api/recent-activity'],
     refetchInterval: 15000, // Refresh every 15 seconds for live updates
   });

@@ -22,7 +22,7 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
 
-  const { data: notifications } = useQuery({
+  const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
   });

@@ -35,7 +35,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
   const { toast } = useToast();
   const [showThankYouNote, setShowThankYouNote] = useState<{ supporterId: string; donationId: number } | null>(null);
 
-  const { data: notifications = [], isLoading } = useQuery({
+  const { data: notifications = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
     refetchInterval: 30000, // Refresh every 30 seconds
   });

@@ -44,7 +44,8 @@ import {
 } from "lucide-react";
 
 export default function WishlistDetail() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string;
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();

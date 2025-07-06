@@ -481,7 +481,7 @@ export default function ProductSearch() {
         description: "The item has been added to your needs list.",
       });
       // Invalidate cache for the target wishlist
-      const targetWishlistId = wishlistId || (userWishlists && userWishlists.length > 0 ? userWishlists[0].id.toString() : null);
+      const targetWishlistId = wishlistId || (userWishlists && (userWishlists as any[])?.length > 0 ? (userWishlists as any[])[0].id.toString() : null);
       if (targetWishlistId) {
         queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });
       }
