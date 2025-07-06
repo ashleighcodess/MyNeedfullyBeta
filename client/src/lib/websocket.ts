@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 class WebSocketManager {
   private ws: WebSocket | null = null;
@@ -89,7 +90,7 @@ export const wsManager = new WebSocketManager();
 export function useWebSocket() {
   const { user, isAuthenticated } = useAuth();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated && user?.id) {
       wsManager.connect(user.id);
     } else {
