@@ -115,7 +115,7 @@ export default function WishlistDetail() {
   });
 
   // Format activities data for display with proper time formatting
-  const recentActivities = (recentActivitiesData || []).map((activity: any, index: number) => ({
+  const recentActivities = (Array.isArray(recentActivitiesData) ? recentActivitiesData : []).map((activity: any, index: number) => ({
     id: activity.id,
     type: activity.type,
     message: activity.message,
@@ -131,14 +131,15 @@ export default function WishlistDetail() {
 
   // Fetch pricing data for each item when wishlist loads
   useEffect(() => {
-    if (wishlist?.items && Array.isArray(wishlist.items)) {
-      wishlist.items.forEach((item: any) => {
+    const items = wishlist?.items || [];
+    if (Array.isArray(items)) {
+      items.forEach((item: any) => {
         if (item.id && !itemPricing[item.id]) {
           fetchItemPricing(item.id);
         }
       });
     }
-  }, [wishlist?.items]);
+  }, [wishlist]);
 
 
 
@@ -291,11 +292,11 @@ export default function WishlistDetail() {
     }
   };
 
-  const completionPercentage = wishlist?.totalItems > 0 
-    ? Math.round((wishlist.fulfilledItems / wishlist.totalItems) * 100) 
+  const completionPercentage = (wishlist as any)?.totalItems > 0 
+    ? Math.round(((wishlist as any)?.fulfilledItems / (wishlist as any)?.totalItems) * 100) 
     : 0;
 
-  const isOwner = user?.id?.toString() === wishlist?.userId?.toString();
+  const isOwner = (user as any)?.id?.toString() === (wishlist as any)?.userId?.toString();
 
   // Image carousel functions
   const openCarousel = (index: number) => {
