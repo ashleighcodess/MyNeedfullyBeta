@@ -49,27 +49,27 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 md:py-16">
         <div className="max-w-4xl mx-auto">
           {/* Header with Logo */}
-          <div className="text-center mb-12">
-            <div className="flex justify-center items-center mb-6">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="flex flex-col sm:flex-row justify-center items-center mb-4 md:mb-6">
               <img 
                 src={logoIcon} 
                 alt="MyNeedfully Logo" 
-                className="w-16 h-16 mr-4"
+                className="w-12 h-12 md:w-16 md:h-16 mb-2 sm:mb-0 sm:mr-4"
               />
-              <h1 className="text-4xl font-bold text-gray-900">
+              <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
                 MyNeedfully
               </h1>
             </div>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-2">
               Choose Your Path Below
             </p>
           </div>
 
           {/* Cards - Vertically Stacked */}
-          <div className="space-y-6 max-w-2xl mx-auto">
+          <div className="space-y-4 md:space-y-6 max-w-2xl mx-auto">
             {options.map((option) => (
               <Card
                 key={option.id}
@@ -80,27 +80,27 @@ export default function Signup() {
                 }`}
                 onClick={() => setSelectedOption(option.id)}
               >
-                <CardContent className="p-8">
-                  <div className="flex items-center space-x-6">
-                    <div className={`w-20 h-20 rounded-full ${option.bgColor} flex items-center justify-center flex-shrink-0`}>
+                <CardContent className="p-4 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${option.bgColor} flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0`}>
                       <img 
                         src={option.iconSrc} 
                         alt={option.title}
-                        className="w-10 h-10 object-contain"
+                        className="w-8 h-8 md:w-10 md:h-10 object-contain"
                       />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2 md:mb-3">
                         {option.title}
                       </h3>
                       {option.description && (
-                        <p className="text-gray-600 text-lg leading-relaxed">
+                        <p className="text-gray-600 text-base md:text-lg leading-relaxed">
                           {option.description}
                         </p>
                       )}
                     </div>
                     {selectedOption === option.id && (
-                      <div className="flex-shrink-0">
+                      <div className="flex-shrink-0 mx-auto sm:mx-0">
                         <div className="w-6 h-6 bg-coral rounded-full flex items-center justify-center">
                           <div className="w-2 h-2 bg-white rounded-full"></div>
                         </div>
@@ -113,19 +113,19 @@ export default function Signup() {
           </div>
 
           {/* Continue Button */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-8 md:mt-12 px-4">
             <Button
               onClick={handleContinue}
               disabled={!selectedOption}
-              className="bg-coral hover:bg-coral/90 text-white px-12 py-4 text-lg font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-coral hover:bg-coral/90 text-white px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               Continue
             </Button>
           </div>
 
           {/* Footer */}
-          <div className="text-center mt-8">
-            <p className="text-gray-500">
+          <div className="text-center mt-6 md:mt-8 px-4">
+            <p className="text-gray-500 text-sm md:text-base">
               Already have an account?{" "}
               <Link href="/login" className="text-coral hover:underline font-medium">
                 Login
