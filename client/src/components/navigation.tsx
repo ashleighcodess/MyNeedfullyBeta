@@ -256,7 +256,7 @@ export default function Navigation() {
                           className="w-full bg-coral text-white hover:bg-coral/90 py-3 text-base font-semibold"
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            window.location.href = "/api/login";
+                            window.location.href = "/signup";
                           }}
                         >
                           Get Started Today
