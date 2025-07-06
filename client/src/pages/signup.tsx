@@ -51,18 +51,11 @@ export default function Signup() {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-4 md:py-16">
         <div className="max-w-4xl mx-auto">
-          {/* Header with Logo */}
+          {/* Header */}
           <div className="text-center mb-4 md:mb-12">
-            <div className="flex flex-col sm:flex-row justify-center items-center mb-4 md:mb-6">
-              <img 
-                src={logoIcon} 
-                alt="MyNeedfully Logo" 
-                className="w-12 h-12 md:w-16 md:h-16 mb-2 sm:mb-0 sm:mr-4"
-              />
-              <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
-                MyNeedfully
-              </h1>
-            </div>
+            <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 font-just-sans">
+              MyNeedfully
+            </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-2">
               Choose Your Path Below
             </p>
@@ -73,10 +66,10 @@ export default function Signup() {
             {options.map((option) => (
               <Card
                 key={option.id}
-                className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-2 ${
+                className={`cursor-pointer transition-all duration-300 ease-out transform hover:scale-105 hover:shadow-xl border-2 ${
                   selectedOption === option.id
-                    ? "border-coral shadow-lg"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-coral shadow-xl scale-105 bg-coral/5"
+                    : "border-gray-200 hover:border-coral/50"
                 }`}
                 onClick={() => setSelectedOption(option.id)}
               >
@@ -101,8 +94,8 @@ export default function Signup() {
                     </div>
                     {selectedOption === option.id && (
                       <div className="flex-shrink-0 mx-auto sm:mx-0">
-                        <div className="w-5 h-5 md:w-6 md:h-6 bg-coral rounded-full flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"></div>
+                        <div className="w-5 h-5 md:w-6 md:h-6 bg-coral rounded-full flex items-center justify-center transition-all duration-300 ease-out animate-pulse">
+                          <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full transform scale-110"></div>
                         </div>
                       </div>
                     )}
@@ -117,7 +110,7 @@ export default function Signup() {
             <Button
               onClick={handleContinue}
               disabled={!selectedOption}
-              className="bg-coral hover:bg-coral/90 text-white px-6 md:px-12 py-2.5 md:py-4 text-sm md:text-lg font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="bg-coral hover:bg-coral/90 text-white px-6 md:px-12 py-2.5 md:py-4 text-sm md:text-lg font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto transition-all duration-300 ease-out transform hover:scale-105 hover:shadow-lg active:scale-95 font-just-sans"
             >
               Continue
             </Button>
