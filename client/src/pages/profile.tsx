@@ -9,6 +9,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "wouter";
 import { 
+  safeUser,
+  safeWishlistArray,
+  safeNotificationArray,
+  safeProp,
+  safeArray
+} from '@/lib/api-helpers';
+import { 
   User, 
   Heart, 
   Gift, 
@@ -75,30 +82,34 @@ export default function Profile() {
 
   const { data: thankYouNotes } = useQuery({
     queryKey: ['/api/thank-you-notes'],
-    enabled: !!user?.id,
+    enabled: !!safeProp(user, 'id', null),
   });
 
   // Calculate dynamic profile completion
   const calculateProfileCompletion = () => {
-    if (!user) return 0;
+    const safeUserData = safeUser(user);
+    if (!safeUserData) return 0;
     
     let completed = 0;
     const total = 10; // Total possible completion items
     
     // Basic profile fields (4 points)
-    if (user.firstName) completed += 1;
-    if (user.lastName) completed += 1;
-    if (user.email) completed += 1;
-    if (user.profileImageUrl) completed += 1;
+    if (safeProp(safeUserData, 'firstName', '')) completed += 1;
+    if (safeProp(safeUserData, 'lastName', '')) completed += 1;
+    if (safeProp(safeUserData, 'email', '')) completed += 1;
+    if (safeProp(safeUserData, 'profileImageUrl', '')) completed += 1;
     
     // Profile engagement (3 points)
-    if (userWishlists && userWishlists.length > 0) completed += 1;
-    if (userDonations && userDonations.length > 0) completed += 1;
-    if (thankYouNotes && thankYouNotes.length > 0) completed += 1;
+    const safeWishlists = safeArray(userWishlists);
+    const safeDonations = safeArray(userDonations);
+    const safeNotes = safeArray(thankYouNotes);
+    if (safeWishlists.length > 0) completed += 1;
+    if (safeDonations.length > 0) completed += 1;
+    if (safeNotes.length > 0) completed += 1;
     
     // Additional profile elements (3 points)
-    if (user.createdAt) completed += 1; // Account age
-    if (user.id) completed += 1; // Member ID exists
+    if (safeProp(safeUserData, 'createdAt', null)) completed += 1; // Account age
+    if (safeProp(safeUserData, 'id', null)) completed += 1; // Member ID exists
     completed += 1; // Default supporter status
     
     return Math.round((completed / total) * 100);

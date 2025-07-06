@@ -59,3 +59,8 @@ export function safeProp<T>(obj: unknown, prop: string, defaultValue: T): T {
   }
   return defaultValue;
 }
+
+// Helper for safe array access
+export function safeArray(data: unknown): any[] {
+  return Array.isArray(data) ? data : [];
+}
