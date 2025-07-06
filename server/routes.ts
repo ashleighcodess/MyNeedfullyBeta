@@ -11,6 +11,30 @@ import { setupMultiAuth, isAuthenticated } from "./auth/multiAuth";
 import { z } from "zod";
 import { getSerpAPIService, SerpProduct } from "./serpapi-service";
 import { emailService } from "./email-service";
+
+// Import security and performance middleware
+import { 
+  generalLimiter, 
+  authLimiter, 
+  searchLimiter, 
+  createUserLimiter, 
+  uploadLimiter 
+} from "./middleware/rateLimiter";
+import { 
+  corsOptions, 
+  securityHeaders, 
+  sanitizeInput, 
+  securityLogger, 
+  validateFileUpload 
+} from "./middleware/security";
+import { 
+  compressionMiddleware, 
+  requestTimeout, 
+  responseTimeTracker, 
+  memoryMonitor, 
+  staticCacheHeaders 
+} from "./middleware/performance";
+import cors from "cors";
 import {
   insertWishlistSchema,
   insertWishlistItemSchema,
@@ -297,6 +321,21 @@ const isAdmin: RequestHandler = async (req: any, res, next) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Security middleware
+  app.use(cors(corsOptions));
+  app.use(securityHeaders);
+  app.use(sanitizeInput);
+  app.use(securityLogger);
+  
+  // Performance middleware
+  app.use(compressionMiddleware);
+  app.use(requestTimeout(30000)); // 30 second timeout
+  // app.use(responseTimeTracker); // DISABLED: Causes 5+ second delays
+  // app.use(memoryMonitor); // DISABLED: Causes performance issues
+  app.use(staticCacheHeaders);
+  
+  // Rate limiting will be applied to specific routes below
+
   // Auth middleware
   await setupMultiAuth(app);
 
@@ -311,7 +350,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ULTRA FAST Multi-Retailer Search Endpoint (Amazon + Walmart + Target)
-  app.get('/api/search', async (req, res) => {
+  app.get('/api/search', searchLimiter, async (req, res) => {
     try {
       const { query, page = '1' } = req.query;
       
@@ -943,7 +982,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/wishlists', isAuthenticated, upload.array('storyImage', 5), async (req: any, res) => {
+  app.post('/api/wishlists', isAuthenticated, uploadLimiter, upload.array('storyImage', 5), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       
@@ -987,7 +1026,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/wishlists/:id', isAuthenticated, upload.array('storyImages', 5), async (req: any, res) => {
+  app.put('/api/wishlists/:id', isAuthenticated, uploadLimiter, upload.array('storyImages', 5), async (req: any, res) => {
     try {
       const wishlistId = parseInt(req.params.id);
       const userId = req.user.claims.sub;

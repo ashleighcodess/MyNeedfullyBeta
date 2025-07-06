@@ -11,6 +11,7 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "../storage";
 import bcrypt from "bcryptjs";
+import { authLimiter, createUserLimiter } from "../middleware/rateLimiter";
 
 // Types for OAuth providers
 interface OAuthUser {
@@ -216,28 +217,28 @@ export async function setupMultiAuth(app: Express) {
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
-  // Replit Auth Routes
-  app.get("/api/login/replit", (req, res, next) => {
+  // Replit Auth Routes with rate limiting
+  app.get("/api/login/replit", authLimiter, (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
     })(req, res, next);
   });
 
-  app.get("/api/callback/replit", (req, res, next) => {
+  app.get("/api/callback/replit", authLimiter, (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {
       successReturnToOrRedirect: "/",
       failureRedirect: "/api/login/replit",
     })(req, res, next);
   });
 
-  // Google Auth Routes
+  // Google Auth Routes with rate limiting
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    app.get("/api/login/google",
+    app.get("/api/login/google", authLimiter,
       passport.authenticate("google", { scope: ["profile", "email"] })
     );
 
-    app.get("/api/callback/google",
+    app.get("/api/callback/google", authLimiter,
       passport.authenticate("google", { failureRedirect: "/login" }),
       (req, res) => {
         // Store user preference if it exists in localStorage
@@ -246,13 +247,13 @@ export async function setupMultiAuth(app: Express) {
     );
   }
 
-  // Facebook Auth Routes
+  // Facebook Auth Routes with rate limiting
   if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
-    app.get("/api/login/facebook",
+    app.get("/api/login/facebook", authLimiter,
       passport.authenticate("facebook", { scope: ["email"] })
     );
 
-    app.get("/api/callback/facebook",
+    app.get("/api/callback/facebook", authLimiter,
       passport.authenticate("facebook", { failureRedirect: "/login" }),
       (req, res) => {
         // Store user preference if it exists in localStorage
@@ -261,8 +262,8 @@ export async function setupMultiAuth(app: Express) {
     );
   }
 
-  // Email/Password Auth Routes
-  app.post("/api/auth/signup", async (req, res) => {
+  // Email/Password Auth Routes with rate limiting
+  app.post("/api/auth/signup", createUserLimiter, async (req, res) => {
     try {
       const { email, password, firstName, lastName } = req.body;
       
@@ -297,7 +298,7 @@ export async function setupMultiAuth(app: Express) {
     }
   });
 
-  app.post("/api/auth/login", (req, res, next) => {
+  app.post("/api/auth/login", authLimiter, (req, res, next) => {
     passport.authenticate("local", (err: any, user: any, info: any) => {
       if (err) {
         return res.status(500).json({ message: "Authentication error" });
