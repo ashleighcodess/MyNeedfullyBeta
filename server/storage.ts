@@ -801,7 +801,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .update(wishlists)
       .set({ status: 'active' })
-      .where(eq(wishlists.status, 'pending'))
+      .where(sql`${wishlists.status} = 'pending'`)
       .returning();
     
     return result.length;

@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { safeNotificationArray, safeProp } from "@/lib/api-helpers";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +28,7 @@ export default function Navigation() {
     enabled: !!user,
   });
 
-  const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;
+  const unreadCount = safeNotificationArray(notifications).filter((n: any) => !n.isRead).length;
 
   const handleLogout = () => {
     window.location.href = "/api/logout";
@@ -104,9 +105,9 @@ export default function Navigation() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="p-1">
-                      {user?.profileImageUrl ? (
+                      {safeProp(user, 'profileImageUrl', '') ? (
                         <img 
-                          src={user.profileImageUrl} 
+                          src={safeProp(user, 'profileImageUrl', '')} 
                           alt="Profile" 
                           className="w-7 h-7 rounded-full object-cover"
                         />

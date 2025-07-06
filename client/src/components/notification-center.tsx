@@ -92,7 +92,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
     setShowThankYouNote({ supporterId, donationId });
   };
 
-  const unreadCount = notifications.filter((n: Notification) => !n.isRead).length;
+  const unreadCount = Array.isArray(notifications) ? notifications.filter((n: Notification) => !n.isRead).length : 0;
 
   return (
     <>
@@ -127,7 +127,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral"></div>
               </div>
-            ) : notifications.length === 0 ? (
+            ) : !Array.isArray(notifications) || notifications.length === 0 ? (
               <div className="text-center py-8">
                 <Bell className="mx-auto h-12 w-12 text-gray-300 mb-4" />
                 <p className="text-gray-500">No notifications yet</p>
@@ -137,7 +137,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
               </div>
             ) : (
               <div className="space-y-1">
-                {notifications.map((notification: Notification) => (
+                {Array.isArray(notifications) && notifications.map((notification: Notification) => (
                   <div
                     key={notification.id}
                     className={getNotificationStyle(notification.type, notification.isRead)}
@@ -168,7 +168,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleSendThankYou(notification.data.supporterId!, notification.data.donationId!)}
+                            onClick={() => handleSendThankYou(notification.data?.supporterId!, notification.data?.donationId!)}
                             className="text-coral border-coral hover:bg-coral hover:text-white"
                           >
                             <Heart className="h-4 w-4 mr-1" />

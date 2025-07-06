@@ -332,8 +332,8 @@ export default function MobileNavigation() {
       
       {/* Notification Center */}
       <NotificationCenter 
-        open={notificationCenterOpen} 
-        onOpenChange={setNotificationCenterOpen} 
+        isOpen={notificationCenterOpen} 
+        onClose={() => setNotificationCenterOpen(false)} 
       />
     </>
   );
