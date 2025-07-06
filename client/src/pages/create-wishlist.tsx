@@ -25,6 +25,10 @@ const createNeedsListSchema = z.object({
   category: z.string().min(1, "Please select a category"),
   urgencyLevel: z.enum(["low", "medium", "high", "urgent"]),
   location: z.string().min(3, "Please enter your location"),
+  isForSelf: z.boolean().default(true),
+  beneficiaryName: z.string().optional(),
+  relationshipToBeneficiary: z.string().optional(),
+  beneficiaryContext: z.string().optional(),
   shippingAddress: z.object({
     fullName: z.string().min(1, "Full name is required"),
     addressLine1: z.string().min(1, "Address is required"),
@@ -34,6 +38,14 @@ const createNeedsListSchema = z.object({
     zipCode: z.string().min(5, "Valid ZIP code required"),
     country: z.string().default("US"),
   }),
+}).refine((data) => {
+  if (!data.isForSelf) {
+    return data.beneficiaryName && data.relationshipToBeneficiary && data.beneficiaryContext;
+  }
+  return true;
+}, {
+  message: "When creating a list for someone else, please provide their name, your relationship, and context.",
+  path: ["beneficiaryName"],
 });
 
 type CreateNeedsListForm = z.infer<typeof createNeedsListSchema>;
@@ -55,6 +67,10 @@ export default function CreateNeedsList() {
       category: "",
       urgencyLevel: "medium",
       location: "",
+      isForSelf: true,
+      beneficiaryName: "",
+      relationshipToBeneficiary: "",
+      beneficiaryContext: "",
       shippingAddress: {
         fullName: user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : "",
         addressLine1: "",
@@ -232,6 +248,105 @@ export default function CreateNeedsList() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Who is this for? */}
+                  <FormField
+                    control={form.control}
+                    name="isForSelf"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Who is this needs list for? *</FormLabel>
+                        <FormControl>
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <input
+                                type="radio"
+                                id="for-self"
+                                checked={field.value === true}
+                                onChange={() => field.onChange(true)}
+                                className="text-coral focus:ring-coral"
+                              />
+                              <label htmlFor="for-self" className="text-sm font-medium">
+                                For myself
+                              </label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <input
+                                type="radio"
+                                id="for-other"
+                                checked={field.value === false}
+                                onChange={() => field.onChange(false)}
+                                className="text-coral focus:ring-coral"
+                              />
+                              <label htmlFor="for-other" className="text-sm font-medium">
+                                For someone else
+                              </label>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Beneficiary Details - Show only when "for someone else" is selected */}
+                  {!form.watch("isForSelf") && (
+                    <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="font-medium text-blue-900">Tell us about who you're helping</h4>
+                      
+                      <FormField
+                        control={form.control}
+                        name="beneficiaryName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Their name *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder="e.g., Jennifer Smith"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="relationshipToBeneficiary"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Your relationship to them *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                placeholder="e.g., Sister, Friend, Neighbor, Coworker"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="beneficiaryContext"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Why are you creating this list for them? *</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="e.g., Her house burned down last week and she lost everything. She's staying with family but needs basic essentials to get back on her feet."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+
                   {/* Title */}
                   <FormField
                     control={form.control}

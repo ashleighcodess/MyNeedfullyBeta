@@ -88,6 +88,11 @@ export const wishlists = pgTable("wishlists", {
   viewCount: integer("view_count").default(0),
   shareCount: integer("share_count").default(0),
   featuredUntil: timestamp("featured_until"),
+  // Beneficiary fields
+  isForSelf: boolean("is_for_self").default(true),
+  beneficiaryName: varchar("beneficiary_name"),
+  relationshipToBeneficiary: varchar("relationship_to_beneficiary"),
+  beneficiaryContext: text("beneficiary_context"), // Brief explanation of situation
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
