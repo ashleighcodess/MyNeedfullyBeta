@@ -535,12 +535,30 @@ export class DatabaseStorage implements IStorage {
     return note;
   }
 
-  async getUserThankYouNotes(userId: string): Promise<ThankYouNote[]> {
-    return await db
-      .select()
+  async getUserThankYouNotes(userId: string): Promise<any[]> {
+    // Get notes where user is either sender or receiver, with user names included
+    const notes = await db
+      .select({
+        id: thankYouNotes.id,
+        fromUserId: thankYouNotes.fromUserId,
+        toUserId: thankYouNotes.toUserId,
+        subject: thankYouNotes.subject,
+        message: thankYouNotes.message,
+        donationId: thankYouNotes.donationId,
+        isRead: thankYouNotes.isRead,
+        createdAt: thankYouNotes.createdAt,
+        fromUserFirstName: sql<string>`from_user.first_name`,
+        fromUserLastName: sql<string>`from_user.last_name`,
+        toUserFirstName: sql<string>`to_user.first_name`,
+        toUserLastName: sql<string>`to_user.last_name`,
+      })
       .from(thankYouNotes)
-      .where(eq(thankYouNotes.toUserId, userId))
+      .leftJoin(sql`users as from_user`, sql`from_user.id = ${thankYouNotes.fromUserId}`)
+      .leftJoin(sql`users as to_user`, sql`to_user.id = ${thankYouNotes.toUserId}`)
+      .where(or(eq(thankYouNotes.toUserId, userId), eq(thankYouNotes.fromUserId, userId)))
       .orderBy(desc(thankYouNotes.createdAt));
+
+    return notes;
   }
 
   async markThankYouNoteAsRead(id: number): Promise<void> {
