@@ -206,13 +206,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async authenticateUser(email: string, password: string): Promise<User | null> {
+    console.log(`Authentication attempt for email: ${email}`);
     const user = await this.getUserByEmail(email);
     
-    if (!user || !user.password) {
+    if (!user) {
+      console.log(`No user found for email: ${email}`);
       return null;
     }
     
+    if (!user.password) {
+      console.log(`User ${email} has no password (OAuth user?)`);
+      return null;
+    }
+    
+    console.log(`Comparing password for user: ${email}`);
     const isValidPassword = await bcrypt.compare(password, user.password);
+    console.log(`Password valid: ${isValidPassword}`);
+    
     if (!isValidPassword) {
       return null;
     }
