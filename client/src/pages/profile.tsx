@@ -636,7 +636,7 @@ export default function Profile() {
                                             <MessageCircle className="h-3 w-3 text-white" />
                                           </div>
                                           <div>
-                                            <div className="font-medium text-navy">To: {note.toUserFirstName && note.toUserLastName ? `${note.toUserFirstName} ${note.toUserLastName}` : note.toUserFirstName || 'Anonymous'}</div>
+                                            <div className="font-medium text-navy">To: {note.touserfirstname && note.touserlastname ? `${note.touserfirstname} ${note.touserlastname}` : note.touserfirstname || 'Anonymous'}</div>
                                             <div className="text-xs text-gray-500">
                                               {new Date(note.createdAt).toLocaleDateString('en-US', { 
                                                 year: 'numeric', 
@@ -684,7 +684,7 @@ export default function Profile() {
                                             <Heart className="h-3 w-3 text-white" />
                                           </div>
                                           <div>
-                                            <div className="font-medium text-navy">From: {note.fromUserFirstName && note.fromUserLastName ? `${note.fromUserFirstName} ${note.fromUserLastName}` : note.fromUserFirstName || 'Anonymous'}</div>
+                                            <div className="font-medium text-navy">From: {note.fromuserfirstname && note.fromuserlastname ? `${note.fromuserfirstname} ${note.fromuserlastname}` : note.fromuserfirstname || 'Anonymous'}</div>
                                             <div className="text-xs text-gray-500">
                                               {new Date(note.createdAt).toLocaleDateString('en-US', { 
                                                 year: 'numeric', 
@@ -737,8 +737,8 @@ export default function Profile() {
                                       <div>
                                         <div className="font-semibold text-navy">
                                           {isSent 
-                                            ? `To: ${note.toUserFirstName && note.toUserLastName ? `${note.toUserFirstName} ${note.toUserLastName}` : note.toUserFirstName || 'Anonymous'}` 
-                                            : `From: ${note.fromUserFirstName && note.fromUserLastName ? `${note.fromUserFirstName} ${note.fromUserLastName}` : note.fromUserFirstName || 'Anonymous'}`}
+                                            ? `To: ${note.touserfirstname && note.touserlastname ? `${note.touserfirstname} ${note.touserlastname}` : note.touserfirstname || 'Anonymous'}` 
+                                            : `From: ${note.fromuserfirstname && note.fromuserlastname ? `${note.fromuserfirstname} ${note.fromuserlastname}` : note.fromuserfirstname || 'Anonymous'}`}
                                         </div>
                                         <div className="text-sm text-gray-500">
                                           {new Date(note.createdAt).toLocaleDateString('en-US', { 

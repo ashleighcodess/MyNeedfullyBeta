@@ -1,4 +1,5 @@
-export const CATEGORIES = [
+// NEEDS LIST CATEGORIES (for crisis-related needs lists)
+export const NEEDS_LIST_CATEGORIES = [
   { value: "disaster_recovery", label: "Disaster Recovery", icon: "fas fa-home" },
   { value: "medical_emergency", label: "Medical Emergency", icon: "fas fa-heartbeat" },
   { value: "family_crisis", label: "Family Crisis", icon: "fas fa-users" },
@@ -11,6 +12,24 @@ export const CATEGORIES = [
   { value: "refugee_immigrant", label: "Refugee/Immigrant Support", icon: "fas fa-globe" },
   { value: "other", label: "Other Crisis", icon: "fas fa-ellipsis-h" },
 ];
+
+// PRODUCT SEARCH CATEGORIES (for shopping/retailers)
+export const PRODUCT_CATEGORIES = [
+  { value: "baby_kids", label: "Baby & Kids", icon: "fas fa-baby" },
+  { value: "household", label: "Household", icon: "fas fa-home" },
+  { value: "electronics", label: "Electronics", icon: "fas fa-tv" },
+  { value: "clothing", label: "Clothing", icon: "fas fa-tshirt" },
+  { value: "food_grocery", label: "Food & Grocery", icon: "fas fa-shopping-cart" },
+  { value: "health_beauty", label: "Health & Beauty", icon: "fas fa-heart" },
+  { value: "sports_outdoors", label: "Sports & Outdoors", icon: "fas fa-bicycle" },
+  { value: "toys_games", label: "Toys & Games", icon: "fas fa-gamepad" },
+  { value: "automotive", label: "Automotive", icon: "fas fa-car" },
+  { value: "books", label: "Books", icon: "fas fa-book" },
+  { value: "all", label: "All Categories", icon: "fas fa-th" },
+];
+
+// Keep CATEGORIES for backward compatibility (pointing to needs list categories)
+export const CATEGORIES = NEEDS_LIST_CATEGORIES;
 
 export const URGENCY_LEVELS = [
   { value: "low", label: "Low", color: "green" },

@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-import { CATEGORIES } from "@/lib/constants";
+import { PRODUCT_CATEGORIES } from "@/lib/constants";
 import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
@@ -582,7 +582,7 @@ export default function ProductSearch() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="all">All Categories</SelectItem>
-                              {CATEGORIES.map((cat) => (
+                              {PRODUCT_CATEGORIES.map((cat) => (
                                 <SelectItem key={cat.value} value={cat.value}>
                                   <div className="flex items-center space-x-2">
                                     <i className={`${cat.icon} text-coral`}></i>
@@ -666,7 +666,7 @@ export default function ProductSearch() {
             <h3 className="text-sm font-medium text-navy md:hidden">Quick Search Categories</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4">
-            {CATEGORIES.slice(0, 6).map((category) => (
+            {PRODUCT_CATEGORIES.slice(0, 6).map((category) => (
               <div
                 key={category.value}
                 className="p-2 md:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer text-center bg-white hover:bg-gray-50 active:scale-95"
