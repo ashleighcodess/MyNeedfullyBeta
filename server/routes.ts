@@ -2236,6 +2236,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Thank You Notes endpoints
+  app.get('/api/thank-you-notes', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const thankYouNotes = await storage.getUserThankYouNotes(userId);
+      
+      res.json(thankYouNotes);
+    } catch (error) {
+      console.error("Error fetching thank you notes:", error);
+      res.status(500).json({ message: "Failed to fetch thank you notes" });
+    }
+  });
+
+  app.post('/api/thank-you-notes', isAuthenticated, async (req: any, res) => {
+    try {
+      const fromUserId = req.user.claims.sub;
+      const { toUserId, subject, message, donationId } = req.body;
+      
+      // Validate required fields
+      if (!toUserId || !subject || !message) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      const noteData = insertThankYouNoteSchema.parse({
+        fromUserId,
+        toUserId,
+        subject,
+        message,
+        donationId,
+        isRead: false
+      });
+      
+      const thankYouNote = await storage.createThankYouNote(noteData);
+      
+      // Record analytics event
+      await storage.recordEvent({
+        eventType: 'thank_you_sent',
+        userId: fromUserId,
+        data: { 
+          recipientUserId: toUserId,
+          subject,
+          donationId 
+        },
+        userAgent: req.get('User-Agent'),
+        ipAddress: req.ip,
+      });
+      
+      // Send email notification to recipient if they have email notifications enabled
+      try {
+        const recipient = await storage.getUser(toUserId);
+        if (recipient && recipient.emailNotifications) {
+          const sender = await storage.getUser(fromUserId);
+          const senderName = sender ? `${sender.firstName} ${sender.lastName}`.trim() || 'A supporter' : 'A supporter';
+          
+          await emailService.sendThankYouNoteEmail(
+            recipient.email,
+            `${recipient.firstName} ${recipient.lastName}`.trim() || recipient.email,
+            senderName,
+            subject,
+            message
+          );
+          console.log(`Thank you note email sent to ${recipient.email}`);
+        }
+      } catch (emailError) {
+        console.error('Failed to send thank you note email:', emailError);
+        // Continue without failing - the note was still created
+      }
+      
+      res.status(201).json(thankYouNote);
+    } catch (error) {
+      console.error("Error creating thank you note:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create thank you note" });
+    }
+  });
+
   // Password reset endpoints
   app.post('/api/auth/forgot-password', async (req, res) => {
     try {
