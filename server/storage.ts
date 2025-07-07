@@ -298,13 +298,15 @@ export class DatabaseStorage implements IStorage {
     limit?: number;
     offset?: number;
   }): Promise<{ wishlists: Wishlist[]; total: number }> {
+
     const conditions = [eq(wishlists.isPublic, true)];
     
     if (params.query) {
       conditions.push(
         or(
           like(wishlists.title, `%${params.query}%`),
-          like(wishlists.description, `%${params.query}%`)
+          like(wishlists.description, `%${params.query}%`),
+          like(wishlists.location, `%${params.query}%`)
         )!
       );
     }

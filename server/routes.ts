@@ -959,6 +959,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { query, category, urgencyLevel, location, status, page = 1, limit = 20 } = req.query;
       const offset = (Number(page) - 1) * Number(limit);
       
+
+      
       const result = await storage.searchWishlists({
         query: query as string,
         category: category as string,
