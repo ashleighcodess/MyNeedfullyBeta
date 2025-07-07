@@ -188,18 +188,18 @@ export class DatabaseStorage implements IStorage {
 
   // Email/Password authentication methods
   async createUser(userData: UpsertUser): Promise<User> {
-    // Hash password if provided
-    if (userData.password) {
-      userData.password = await bcrypt.hash(userData.password, 10);
-    }
+    // Password should already be hashed by the caller
+    // Do not hash again to avoid double hashing
     
     // Generate unique ID for email users
     if (!userData.id) {
       userData.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
     }
     
-    // Set auth provider
-    userData.authProvider = 'email';
+    // Set auth provider if not already set
+    if (!userData.authProvider) {
+      userData.authProvider = 'email';
+    }
     
     const [user] = await db.insert(users).values(userData).returning();
     return user;
