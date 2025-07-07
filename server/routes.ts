@@ -998,10 +998,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/wishlists', isAuthenticated, uploadLimiter, upload.array('storyImage', 5), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      console.log('Creating wishlist for user:', userId);
       
       // Parse the form data
+      console.log('Raw body data:', req.body);
       const needsListData = JSON.parse(req.body.needsListData);
+      console.log('Parsed needs list data:', needsListData);
+      
       const wishlistData = insertWishlistSchema.parse({ ...needsListData, userId });
+      console.log('Validated wishlist data:', wishlistData);
       
       // Handle uploaded images
       const storyImages: string[] = [];
@@ -1011,6 +1016,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           storyImages.push(`/uploads/${file.filename}`);
         });
       }
+      console.log('Story images:', storyImages);
       
       // Add story images to wishlist data
       const wishlistWithImages = {
@@ -1018,7 +1024,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storyImages: storyImages.length > 0 ? storyImages : undefined
       };
       
+      console.log('Final wishlist data before creation:', wishlistWithImages);
       const wishlist = await storage.createWishlist(wishlistWithImages);
+      console.log('Created wishlist:', wishlist);
       
       // Record analytics event
       await storage.recordEvent({
@@ -1032,7 +1040,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(wishlist);
     } catch (error) {
       console.error("Error creating wishlist:", error);
+      console.error("Error stack:", error.stack);
       if (error instanceof z.ZodError) {
+        console.error("Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create wishlist" });

@@ -258,71 +258,25 @@ export const priceTrackingRelations = relations(priceTracking, ({ one }) => ({
 }));
 
 // Insert Schemas
-export const insertUserSchema = createInsertSchema(users).omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertUserSchema = createInsertSchema(users).partial();
 
-export const insertWishlistSchema = createInsertSchema(wishlists).omit({
-  id: true,
-  totalItems: true,
-  fulfilledItems: true,
-  viewCount: true,
-  shareCount: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertWishlistSchema = createInsertSchema(wishlists).partial();
 
-export const insertWishlistItemSchema = createInsertSchema(wishlistItems).omit({
-  id: true,
-  quantityFulfilled: true,
-  isFulfilled: true,
-  fulfilledBy: true,
-  fulfilledAt: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertWishlistItemSchema = createInsertSchema(wishlistItems).partial();
 
-export const insertDonationSchema = createInsertSchema(donations).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertDonationSchema = createInsertSchema(donations).partial();
 
-export const insertThankYouNoteSchema = createInsertSchema(thankYouNotes).omit({
-  id: true,
-  isRead: true,
-  createdAt: true,
-});
+export const insertThankYouNoteSchema = createInsertSchema(thankYouNotes).partial();
 
-export const insertNotificationSchema = createInsertSchema(notifications).omit({
-  id: true,
-  isRead: true,
-  createdAt: true,
-});
+export const insertNotificationSchema = createInsertSchema(notifications).partial();
 
-export const insertPriceTrackingSchema = createInsertSchema(priceTracking).omit({
-  id: true,
-  lastChecked: true,
-  createdAt: true,
-});
+export const insertPriceTrackingSchema = createInsertSchema(priceTracking).partial();
 
-export const insertAnalyticsEventSchema = createInsertSchema(analyticsEvents).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertAnalyticsEventSchema = createInsertSchema(analyticsEvents).partial();
 
-export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTokens).omit({
-  id: true,
-  isUsed: true,
-  createdAt: true,
-});
+export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTokens).partial();
 
-export const insertEmailVerificationTokenSchema = createInsertSchema(emailVerificationTokens).omit({
-  id: true,
-  isUsed: true,
-  createdAt: true,
-});
+export const insertEmailVerificationTokenSchema = createInsertSchema(emailVerificationTokens).partial();
 
 // Types
 export type UpsertUser = z.infer<typeof insertUserSchema>;
