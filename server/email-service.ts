@@ -255,7 +255,11 @@ class EmailService {
     userName: string,
     resetToken: string
   ): Promise<boolean> {
-    const resetLink = `${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/reset-password?token=${resetToken}`;
+    // Use localhost for development, production domain for production
+    const baseUrl = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:5000' 
+      : (process.env.REPLIT_DOMAIN || 'https://myneedfully.com');
+    const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
     const subject = `Reset Your MyNeedfully Password`;
     
     const html = `
