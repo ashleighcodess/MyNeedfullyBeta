@@ -2263,8 +2263,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expiresAt
       });
       
-      // Send reset email (implement email service separately)
-      console.log(`Password reset token for ${email}: ${token}`);
+      // Send reset email using SendGrid
+      try {
+        const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${token}`;
+        await emailService.sendPasswordResetEmail(
+          user.email,
+          `${user.firstName} ${user.lastName}`.trim() || user.email,
+          resetLink
+        );
+        console.log(`Password reset email sent to ${email}`);
+      } catch (emailError) {
+        console.error('Failed to send password reset email:', emailError);
+        // Continue without failing - don't reveal if email exists
+      }
       
       res.json({ message: "If that email exists, we've sent a reset link" });
     } catch (error) {

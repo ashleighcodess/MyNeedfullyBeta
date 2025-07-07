@@ -30,7 +30,7 @@ export const sessions = pgTable(
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
   email: varchar("email").unique(),
-  password: varchar("password"), // For email/password auth
+  password: varchar("password", { length: 255 }), // For email/password auth (bcrypt needs 60+ chars)
   authProvider: varchar("auth_provider").default("replit"), // 'replit', 'email', 'google', 'facebook'
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
