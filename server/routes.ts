@@ -2174,7 +2174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: notification.message,
         isRead: notification.isRead,
         createdAt: notification.createdAt,
-        data: notification.data ? JSON.parse(notification.data) : null
+        data: notification.data || null
       }));
       
       res.json(transformedNotifications);
