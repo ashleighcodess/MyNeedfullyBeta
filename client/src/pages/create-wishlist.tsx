@@ -93,10 +93,10 @@ export default function CreateNeedsList() {
     const filesToAdd = files.slice(0, remainingSlots);
     
     filesToAdd.forEach((file) => {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      if (file.size > 25 * 1024 * 1024) { // 25MB limit to match server
         toast({
           title: "File too large",
-          description: "Please select images smaller than 10MB",
+          description: "Please select images smaller than 25MB",
           variant: "destructive",
         });
         return;

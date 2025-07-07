@@ -290,7 +290,8 @@ const upload = multer({
     }
   }),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 25 * 1024 * 1024, // Increased to 25MB limit
+    files: 5, // Maximum 5 files
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
@@ -995,7 +996,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/wishlists', isAuthenticated, uploadLimiter, upload.array('storyImage', 5), async (req: any, res) => {
+  app.post('/api/wishlists', isAuthenticated, uploadLimiter, (req: any, res: any, next: any) => {
+    upload.array('storyImage', 5)(req, res, (error: any) => {
+      if (error) {
+        console.error('Multer upload error:', error);
+        if (error.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ 
+            message: "File too large. Please upload images smaller than 25MB each." 
+          });
+        }
+        if (error.code === 'LIMIT_FILE_COUNT') {
+          return res.status(400).json({ 
+            message: "Too many files. Maximum 5 images allowed." 
+          });
+        }
+        return res.status(400).json({ 
+          message: `Upload error: ${error.message}` 
+        });
+      }
+      next();
+    });
+  }, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       console.log('Creating wishlist for user:', userId);
