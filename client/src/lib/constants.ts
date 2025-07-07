@@ -1,13 +1,15 @@
 export const CATEGORIES = [
-  { value: "baby_kids", label: "Baby & Kids", icon: "fas fa-baby" },
-  { value: "household", label: "Household", icon: "fas fa-home" },
-  { value: "electronics", label: "Electronics", icon: "fas fa-laptop" },
-  { value: "clothing", label: "Clothing", icon: "fas fa-tshirt" },
-  { value: "health_personal_care", label: "Health & Personal Care", icon: "fas fa-heartbeat" },
-  { value: "food_groceries", label: "Food & Groceries", icon: "fas fa-utensils" },
-  { value: "education_school", label: "Education & School", icon: "fas fa-graduation-cap" },
-  { value: "medical_supplies", label: "Medical Supplies", icon: "fas fa-plus-square" },
-  { value: "other", label: "Other", icon: "fas fa-ellipsis-h" },
+  { value: "disaster_recovery", label: "Disaster Recovery", icon: "fas fa-home" },
+  { value: "medical_emergency", label: "Medical Emergency", icon: "fas fa-heartbeat" },
+  { value: "family_crisis", label: "Family Crisis", icon: "fas fa-users" },
+  { value: "fire_flood_damage", label: "Fire/Flood Damage", icon: "fas fa-fire" },
+  { value: "job_loss_financial", label: "Job Loss/Financial Crisis", icon: "fas fa-dollar-sign" },
+  { value: "domestic_violence", label: "Domestic Violence Support", icon: "fas fa-shield-alt" },
+  { value: "homeless_housing", label: "Homeless/Housing Crisis", icon: "fas fa-home" },
+  { value: "elderly_care", label: "Elderly Care Crisis", icon: "fas fa-user-circle" },
+  { value: "mental_health", label: "Mental Health Crisis", icon: "fas fa-brain" },
+  { value: "refugee_immigrant", label: "Refugee/Immigrant Support", icon: "fas fa-globe" },
+  { value: "other", label: "Other Crisis", icon: "fas fa-ellipsis-h" },
 ];
 
 export const URGENCY_LEVELS = [

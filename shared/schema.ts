@@ -57,14 +57,16 @@ export const users = pgTable("users", {
 export const wishlistStatusEnum = pgEnum("wishlist_status", ["active", "completed", "paused"]);
 export const urgencyLevelEnum = pgEnum("urgency_level", ["low", "medium", "high", "urgent"]);
 export const categoryEnum = pgEnum("category", [
-  "baby_kids",
-  "household",
-  "electronics",
-  "clothing",
-  "health_personal_care",
-  "food_groceries",
-  "education_school",
-  "medical_supplies",
+  "disaster_recovery",
+  "medical_emergency", 
+  "family_crisis",
+  "fire_flood_damage",
+  "job_loss_financial",
+  "domestic_violence",
+  "homeless_housing",
+  "elderly_care",
+  "mental_health",
+  "refugee_immigrant",
   "other"
 ]);
 
