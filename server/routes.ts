@@ -6,6 +6,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import { storage } from "./storage";
 import { setupMultiAuth, isAuthenticated } from "./auth/multiAuth";
 import { z } from "zod";
@@ -552,7 +553,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // Handle different authentication providers
+      let userId;
+      if (req.user.claims && req.user.claims.sub) {
+        // Replit OAuth format
+        userId = req.user.claims.sub;
+      } else if (req.user.profile && req.user.profile.id) {
+        // Email/password or other OAuth format
+        userId = req.user.profile.id;
+      } else {
+        console.error('No user ID found in session:', req.user);
+        return res.status(401).json({ message: "Invalid user session" });
+      }
+
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -2163,7 +2176,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Notifications API endpoints
   app.get('/api/notifications', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      console.log('Notifications request - user object:', JSON.stringify(req.user, null, 2));
+      
+      // Handle different authentication providers
+      let userId;
+      if (req.user.claims && req.user.claims.sub) {
+        // Replit OAuth format
+        userId = req.user.claims.sub;
+      } else if (req.user.profile && req.user.profile.id) {
+        // Email/password or other OAuth format
+        userId = req.user.profile.id;
+      } else {
+        console.error('No user ID found in session:', req.user);
+        return res.status(401).json({ message: "Invalid user session" });
+      }
+      
+      console.log('Using userId:', userId);
       const notifications = await storage.getUserNotifications(userId);
       
       // Transform notifications to match frontend expected format
@@ -2198,12 +2226,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/notifications/mark-all-read', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // Handle different authentication providers
+      const userId = req.user.claims?.sub || req.user.profile?.id;
       await storage.markAllNotificationsAsRead(userId);
       res.json({ success: true });
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
       res.status(500).json({ message: "Failed to mark all notifications as read" });
+    }
+  });
+
+  // Password reset endpoints
+  app.post('/api/auth/forgot-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Check if user exists
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return res.json({ message: "If that email exists, we've sent a reset link" });
+      }
+      
+      // Generate reset token
+      const token = generateSecureToken();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      
+      // Save reset token
+      await storage.createPasswordResetToken({
+        userId: user.id,
+        token,
+        expiresAt
+      });
+      
+      // Send reset email (implement email service separately)
+      console.log(`Password reset token for ${email}: ${token}`);
+      
+      res.json({ message: "If that email exists, we've sent a reset link" });
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ message: "Password reset failed" });
+    }
+  });
+
+  app.post('/api/auth/reset-password', async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ message: "Token and new password are required" });
+      }
+      
+      // Verify token
+      const resetToken = await storage.getPasswordResetToken(token);
+      if (!resetToken || resetToken.expiresAt < new Date()) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      
+      // Update password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await storage.updateUser(resetToken.userId, { password: hashedPassword });
+      
+      // Delete used token
+      await storage.deletePasswordResetToken(token);
+      
+      res.json({ message: "Password reset successful" });
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ message: "Password reset failed" });
     }
   });
 

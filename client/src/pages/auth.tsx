@@ -269,7 +269,7 @@ export default function AuthPage() {
 
                     <Button 
                       type="submit" 
-                      className="w-full bg-coral-500 hover:bg-coral-600"
+                      className="w-full bg-coral hover:bg-coral text-white hover:text-white"
                       disabled={loginMutation.isPending}
                     >
                       {loginMutation.isPending ? "Signing in..." : "Sign In"}
@@ -443,7 +443,7 @@ export default function AuthPage() {
 
                     <Button 
                       type="submit" 
-                      className="w-full bg-coral-500 hover:bg-coral-600"
+                      className="w-full bg-coral hover:bg-coral text-white hover:text-white"
                       disabled={signupMutation.isPending}
                     >
                       {signupMutation.isPending ? "Creating account..." : "Create Account"}
@@ -541,7 +541,7 @@ export default function AuthPage() {
 
                     <Button 
                       type="submit" 
-                      className="w-full bg-coral-500 hover:bg-coral-600"
+                      className="w-full bg-coral hover:bg-coral text-white hover:text-white"
                       disabled={forgotPasswordMutation.isPending}
                     >
                       {forgotPasswordMutation.isPending ? "Sending..." : "Send Reset Email"}
