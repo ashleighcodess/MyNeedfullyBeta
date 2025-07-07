@@ -51,7 +51,7 @@ import {
   notifications,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql, and, gt } from "drizzle-orm";
+import { eq, desc, sql, and, gt, or } from "drizzle-orm";
 
 // Helper function to generate secure tokens
 function generateSecureToken(): string {
@@ -480,69 +480,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Recent Activity for Homepage
   app.get('/api/recent-activity', async (req, res) => {
     try {
-      // Return representative community activity that reflects real platform usage
-      const recentActivity = [
-        {
-          id: "activity-1",
-          supporter: "Sarah M.",
-          action: "supported",
-          item: "Baby formula and diapers for newborn twins",
-          timeAgo: "2 hours ago",
-          location: "Austin, TX",
-          impact: "2 babies helped",
-          type: "donation"
-        },
-        {
-          id: "activity-2",
-          supporter: "Michael D.",
-          action: "fulfilled",
-          item: "School backpacks and supplies for three children",
-          timeAgo: "4 hours ago",
-          location: "Denver, CO",
-          impact: "3 children helped",
-          type: "donation"
-        },
-        {
-          id: "activity-3",
-          supporter: "Local Church",
-          action: "completed",
-          item: "Emergency food package for hurricane recovery",
-          timeAgo: "6 hours ago",
-          location: "Miami, FL",
-          impact: "12 families helped",
-          type: "donation"
-        },
-        {
-          id: "activity-4",
-          supporter: "Jennifer K.",
-          action: "donated",
-          item: "Winter coats and blankets for homeless shelter",
-          timeAgo: "8 hours ago",
-          location: "Chicago, IL",
-          impact: "25 people helped",
-          type: "donation"
-        },
-        {
-          id: "activity-5",
-          supporter: "Anonymous",
-          action: "sent thanks",
-          item: "heartfelt gratitude message to supporters",
-          timeAgo: "10 hours ago",
-          location: "Community",
-          impact: "1 heart touched",
-          type: "gratitude"
-        },
-        {
-          id: "activity-6",
-          supporter: "Tech Team Inc.",
-          action: "sponsored",
-          item: "Laptops and school supplies for remote learning",
-          timeAgo: "12 hours ago",
-          location: "San Francisco, CA",
-          impact: "30 students helped",
-          type: "donation"
+      // Get real analytics events from database
+      const recentAnalytics = await db.select({
+        id: analyticsEvents.id,
+        eventType: analyticsEvents.eventType,
+        userId: analyticsEvents.userId,
+        data: analyticsEvents.data,
+        createdAt: analyticsEvents.createdAt
+      })
+      .from(analyticsEvents)
+      .where(or(
+        eq(analyticsEvents.eventType, 'item_fulfilled'),
+        eq(analyticsEvents.eventType, 'wishlist_created'),
+        eq(analyticsEvents.eventType, 'thank_you_sent'),
+        eq(analyticsEvents.eventType, 'wishlist_completed')
+      ))
+      .orderBy(desc(analyticsEvents.createdAt))
+      .limit(10);
+
+      console.log(`Found ${recentAnalytics.length} recent analytics events`);
+
+      // Get user details for each activity
+      const recentActivity = [];
+      for (const analytics of recentAnalytics) {
+        try {
+          const user = await storage.getUser(analytics.userId);
+          const timeAgo = getTimeAgo(analytics.createdAt);
+          
+          let activityItem;
+          if (analytics.eventType === 'item_fulfilled') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Anonymous Supporter',
+              action: "fulfilled",
+              item: analytics.data?.itemTitle || 'an item',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "1 person helped",
+              type: "donation"
+            };
+          } else if (analytics.eventType === 'wishlist_created') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
+              action: "created",
+              item: analytics.data?.wishlistTitle || 'a needs list',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "New request posted",
+              type: "request"
+            };
+          } else if (analytics.eventType === 'thank_you_sent') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
+              action: "sent thanks",
+              item: "to their supporter",
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "Gratitude shared",
+              type: "thanks"
+            };
+          } else if (analytics.eventType === 'wishlist_completed') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: "Community",
+              action: "completed",
+              item: analytics.data?.wishlistTitle || 'a needs list',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: `${analytics.data?.totalItems || 0} items fulfilled`,
+              type: "completion"
+            };
+          }
+          
+          if (activityItem) {
+            recentActivity.push(activityItem);
+          }
+        } catch (userError) {
+          console.error('Error fetching user for analytics event:', userError);
+          // Add anonymous entry if user lookup fails
+          const timeAgo = getTimeAgo(analytics.createdAt);
+          recentActivity.push({
+            id: `activity-${analytics.id}`,
+            supporter: "Anonymous Supporter",
+            action: analytics.eventType === 'item_fulfilled' ? "fulfilled" : "helped",
+            item: analytics.data?.itemTitle || analytics.data?.wishlistTitle || 'someone in need',
+            timeAgo,
+            location: "Community",
+            impact: "1 person helped",
+            type: "donation"
+          });
         }
-      ];
+      }
+
+      console.log(`Returning ${recentActivity.length} formatted activities`);
+
+      // If no real activity, show encouragement message
+      if (recentActivity.length === 0) {
+        const fallbackActivity = [
+          {
+            id: "placeholder-1",
+            supporter: "Be the first!",
+            action: "support",
+            item: "Create the first donation on MyNeedfully",
+            timeAgo: "Start now",
+            location: "Your community",
+            impact: "Make the first impact",
+            type: "invitation"
+          }
+        ];
+        return res.json(fallbackActivity);
+      }
 
       res.json(recentActivity);
     } catch (error) {
