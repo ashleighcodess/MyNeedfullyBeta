@@ -109,6 +109,7 @@ export default function Landing() {
   const [progressSteps, setProgressSteps] = useState([false, false, false]);
   const [startTickerAnimation, setStartTickerAnimation] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchPlaceholder, setSearchPlaceholder] = useState("Search needs lists by keywords, location, or needs...");
   const [, setLocation] = useLocation();
   
   // Fetch featured wishlists from database
@@ -122,6 +123,22 @@ export default function Landing() {
   const smilesSpread = useAnimatedCounter(2847, 3000, startTickerAnimation);
   const productsDelivered = useAnimatedCounter(1293, 2800, startTickerAnimation);
   
+  // Handle responsive placeholder text
+  useEffect(() => {
+    const updatePlaceholder = () => {
+      if (window.innerWidth < 768) {
+        setSearchPlaceholder("Search needs lists...");
+      } else {
+        setSearchPlaceholder("Search needs lists by keywords, location, or needs...");
+      }
+    };
+    
+    updatePlaceholder();
+    window.addEventListener('resize', updatePlaceholder);
+    
+    return () => window.removeEventListener('resize', updatePlaceholder);
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       // Handle journey map animations
@@ -364,7 +381,7 @@ export default function Landing() {
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input 
-                    placeholder="Search needs lists by keywords, location, or needs..." 
+                    placeholder={searchPlaceholder}
                     className="pl-12 py-4 text-lg border-0 focus:ring-2 focus:ring-coral/50"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
