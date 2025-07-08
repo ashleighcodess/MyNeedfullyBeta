@@ -15,18 +15,17 @@ export default function Footer() {
     { href: "/contact", label: "Contact Us" },
   ];
 
-  const products = [
-    { href: "/browse", label: "Cart" },
-    { href: "/products", label: "Items" },
-    { href: "/gift-card", label: "Gift Card" },
-    { href: "/browse", label: "View All", external: true },
+  const features = [
+    { href: "/browse", label: "Browse Needs Lists" },
+    { href: "/products", label: "Search Products" },
+    { href: "/create", label: "Create Needs List" },
+    { href: "/dashboard", label: "My Dashboard" },
   ];
 
   const getHelp = [
-    { href: isAuthenticated ? "/create" : "/signup", label: "Create A Needslist" },
     { href: "/resources", label: "Find Resources" },
     { href: "/community", label: "Community Impact" },
-    { href: "/support", label: "Support" },
+    { href: "/browse", label: "Support a Needs List" },
     { href: "/faq", label: "FAQ" },
   ];
 
@@ -68,21 +67,16 @@ export default function Footer() {
 
           {/* Products */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Products</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Features</h3>
             <ul className="space-y-3">
-              {products.map((link, index) => (
-                <li key={index} className="flex items-center">
+              {features.map((link, index) => (
+                <li key={index}>
                   <Link
                     href={link.href}
                     className="text-sm text-gray-600 hover:text-coral transition-colors"
                   >
                     {link.label}
                   </Link>
-                  {link.external && (
-                    <svg className="h-3 w-3 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  )}
                 </li>
               ))}
             </ul>
