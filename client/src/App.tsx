@@ -181,22 +181,41 @@ function App() {
       event.preventDefault(); // Prevent the unhandled rejection from causing issues
     };
 
+    const handleError = (event: ErrorEvent) => {
+      console.warn('Error caught:', event.error);
+      event.preventDefault();
+    };
+
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener('error', handleError);
     
     return () => {
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener('error', handleError);
     };
   }, []);
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-        <QuickTips />
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
+  try {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+          <QuickTips />
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  } catch (error) {
+    console.error('App component error:', error);
+    return (
+      <div className="min-h-screen bg-white p-8 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
+          <p className="text-gray-600">Loading application...</p>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
