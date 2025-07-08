@@ -2447,6 +2447,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createEmailVerificationToken({
         userId: user.id,
         token,
+        email: user.email,
         expiresAt
       });
       
