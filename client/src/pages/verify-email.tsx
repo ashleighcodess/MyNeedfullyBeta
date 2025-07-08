@@ -12,8 +12,12 @@ export default function VerifyEmail() {
   const [message, setMessage] = useState('');
 
   // Extract token from URL
-  const urlParams = new URLSearchParams(location.split('?')[1]);
+  const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
+  
+  console.log('Current URL:', window.location.href);
+  console.log('Search params:', window.location.search);
+  console.log('Extracted token:', token);
 
   useEffect(() => {
     const verifyEmail = async () => {
