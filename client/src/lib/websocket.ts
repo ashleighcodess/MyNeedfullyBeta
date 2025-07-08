@@ -16,10 +16,17 @@ class WebSocketManager {
     }
 
     this.userId = userId;
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws?userId=${userId}`;
-
-    this.ws = new WebSocket(wsUrl);
+    
+    try {
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const wsUrl = `${protocol}//${window.location.host}/ws?userId=${userId}`;
+      
+      console.log(`Attempting WebSocket connection to: ${wsUrl}`);
+      this.ws = new WebSocket(wsUrl);
+    } catch (error) {
+      console.error("Failed to create WebSocket:", error);
+      return;
+    }
 
     this.ws.onopen = () => {
       console.log("WebSocket connected");
@@ -35,13 +42,16 @@ class WebSocketManager {
       }
     };
 
-    this.ws.onclose = () => {
-      console.log("WebSocket disconnected");
-      this.reconnect();
+    this.ws.onclose = (event) => {
+      console.log("WebSocket disconnected", event.code, event.reason);
+      if (event.code !== 1000) { // Only reconnect if not a normal closure
+        this.reconnect();
+      }
     };
 
     this.ws.onerror = (error) => {
       console.error("WebSocket error:", error);
+      // Don't throw the error, just log it to prevent unhandled rejections
     };
   }
 
@@ -97,6 +107,11 @@ export function useWebSocket() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    // Temporarily disable WebSocket to prevent DOMException issues
+    // TODO: Re-enable once the main app is stable
+    console.log("WebSocket disabled temporarily to prevent loading issues");
+    
+    /*
     if (isAuthenticated && user?.id) {
       wsManager.connect(user.id);
     } else {
@@ -106,5 +121,6 @@ export function useWebSocket() {
     return () => {
       wsManager.disconnect();
     };
+    */
   }, [isAuthenticated, user?.id]);
 }

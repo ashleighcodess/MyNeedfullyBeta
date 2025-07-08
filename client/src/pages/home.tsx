@@ -16,8 +16,8 @@ import {
 export default function Home() {
   const { user } = useAuth();
   
-  // Initialize WebSocket connection for real-time notifications
-  useWebSocket();
+  // Temporarily disable WebSocket to prevent DOMException
+  // useWebSocket();
   
   // Check if user preference is supporter (default) or creator
   const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
