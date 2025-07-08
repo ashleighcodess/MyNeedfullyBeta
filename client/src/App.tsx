@@ -79,80 +79,18 @@ function NotificationHandler() {
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <ScrollToTop />
-      <NotificationHandler />
-      
-      <Switch>
-        {/* Admin route with no header/footer */}
-        <Route path="/admin">
-          <AdminDashboard />
-        </Route>
-        
-        {/* All other routes with header and footer */}
-        <Route>
-          <Navigation />
-          <div className="flex-1">
-            <Switch>
-              {/* Public routes available to everyone */}
-              <Route path="/about-us" component={AboutUs} />
-              <Route path="/about" component={AboutUs} />
-              <Route path="/resources" component={Resources} />
-              <Route path="/faq" component={FAQ} />
-              <Route path="/fire-disaster-relief" component={FireDisasterRelief} />
-              <Route path="/medical-necessity" component={MedicalNecessity} />
-              <Route path="/emergency-flood-relief" component={EmergencyFloodRelief} />
-              <Route path="/essential-items" component={EssentialItems} />
-              <Route path="/groceries-food" component={GroceriesFood} />
-              <Route path="/baby-items" component={BabyItems} />
-              <Route path="/school-supplies" component={SchoolSupplies} />
-              <Route path="/clothing" component={Clothing} />
-              <Route path="/community-help" component={CommunityHelp} />
-              <Route path="/crisis-relief-support" component={CrisisReliefSupport} />
-              <Route path="/personal-care-supplies" component={PersonalCareSupplies} />
-              <Route path="/signup" component={Signup} />
-              <Route path="/sign-up" component={Signup} />
-              <Route path="/login" component={AuthPage} />
-              <Route path="/auth" component={AuthPage} />
-              <Route path="/reset-password" component={ResetPasswordPage} />
-              <Route path="/verify-email" component={VerifyEmail} />
-              <Route path="/browse" component={BrowseWishlists} />
-              <Route path="/find" component={BrowseWishlists} />
-              <Route path="/products" component={ProductSearch} />
-              <Route path="/product-search" component={ProductSearch} />
-              <Route path="/search" component={ProductSearch} />
-              
-              {/* Authenticated routes */}
-              <Route path="/my-needs-lists" component={MyNeedsLists} />
-              <Route path="/my-lists" component={MyNeedsLists} />
-              <Route path="/create" component={CreateNeedsList} />
-              <Route path="/edit-wishlist/:id" component={EditWishlist} />
-              <Route path="/needslist/:id" component={WishlistDetail} />
-              <Route path="/wishlist/:id" component={WishlistDetail} />
-              <Route path="/wishlists/:id" component={WishlistDetail} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/profile/edit" component={EditProfile} />
-              <Route path="/profile/privacy" component={PrivacySettings} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/community" component={CommunityImpact} />
-              <Route path="/community-impact" component={CommunityImpact} />
-              <Route path="/impact" component={CommunityImpact} />
-              
-              {/* Home route - landing for unauthenticated, dashboard for authenticated */}
-              <Route path="/" component={isLoading ? () => <div className="min-h-screen bg-warm-bg flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div></div> : (isAuthenticated ? Home : Landing)} />
-              
-              {/* Dashboard route for authenticated users */}
-              <Route path="/dashboard" component={Home} />
-              
-              <Route component={NotFound} />
-            </Switch>
-          </div>
-          <Footer />
-        </Route>
-      </Switch>
+    <div className="min-h-screen bg-white p-8">
+      <h1 className="text-2xl font-bold text-black">MyNeedfully Test</h1>
+      <p className="text-gray-600 mt-4">Application is loading...</p>
+      <div className="mt-8">
+        <Switch>
+          <Route path="/emergency-flood-relief" component={EmergencyFloodRelief} />
+          <Route path="/essential-items" component={EssentialItems} />
+          <Route path="/groceries-food" component={GroceriesFood} />
+          <Route path="/" component={Landing} />
+        </Switch>
+      </div>
     </div>
   );
 }

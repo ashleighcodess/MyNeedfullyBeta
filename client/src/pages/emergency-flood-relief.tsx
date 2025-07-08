@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { 
-  Droplets, 
+  Waves, 
   Home, 
-  Shirt, 
-  Package, 
-  Heart,
+  Heart, 
+  Shield, 
   Plus,
   Search
 } from "lucide-react";
@@ -17,10 +16,10 @@ export default function EmergencyFloodRelief() {
   const { isAuthenticated } = useAuth();
 
   const essentialItems = [
-    { icon: Home, name: "Water Damage Cleanup", description: "Dehumidifiers, fans, pumps, cleaning supplies" },
-    { icon: Shirt, name: "Emergency Clothing", description: "Dry clothing, shoes, personal items" },
-    { icon: Package, name: "Emergency Supplies", description: "Non-perishable food, water, batteries" },
-    { icon: Heart, name: "Recovery Support", description: "Temporary shelter items, comfort supplies" }
+    { icon: Shield, name: "Immediate Safety", description: "Emergency shelter, dry clothing, safe drinking water" },
+    { icon: Home, name: "Home Recovery", description: "Cleaning supplies, dehumidifiers, repair materials" },
+    { icon: Heart, name: "Health & Wellness", description: "First aid, medications, hygiene supplies" },
+    { icon: Waves, name: "Water Damage", description: "Pumps, fans, waterproof storage, replacement items" }
   ];
 
   return (
@@ -30,15 +29,15 @@ export default function EmergencyFloodRelief() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
             <div className="bg-blue-100 p-4 rounded-full">
-              <Droplets className="h-12 w-12 text-blue-600" />
+              <Waves className="h-12 w-12 text-blue-600" />
             </div>
           </div>
           <h1 className="text-4xl font-bold text-navy mb-4">
             Emergency Flood Relief
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            When flooding strikes, families face devastating water damage and urgent needs. MyNeedfully connects 
-            flood victims with community supporters who can help with cleanup supplies, emergency items, and recovery essentials.
+            When floods strike, immediate action saves lives and livelihoods. MyNeedfully connects 
+            flood victims with community supporters who provide essential relief supplies and recovery assistance.
           </p>
         </div>
 
@@ -46,20 +45,20 @@ export default function EmergencyFloodRelief() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="text-center border-blue-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-blue-600 mb-2">38,000+</div>
-              <div className="text-gray-600">Flood disasters annually in US</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">40M+</div>
+              <div className="text-gray-600">Americans at risk of flooding</div>
+            </CardContent>
+          </Card>
+          <Card className="text-center border-red-200">
+            <CardContent className="py-6">
+              <div className="text-3xl font-bold text-red-600 mb-2">$54B+</div>
+              <div className="text-gray-600">Annual flood damage costs</div>
             </CardContent>
           </Card>
           <Card className="text-center border-green-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-green-600 mb-2">5M+</div>
-              <div className="text-gray-600">People affected by floods yearly</div>
-            </CardContent>
-          </Card>
-          <Card className="text-center border-purple-200">
-            <CardContent className="py-6">
-              <div className="text-3xl font-bold text-purple-600 mb-2">$15B+</div>
-              <div className="text-gray-600">Annual flood damage costs</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">72 hrs</div>
+              <div className="text-gray-600">Critical recovery window</div>
             </CardContent>
           </Card>
         </div>
@@ -67,7 +66,7 @@ export default function EmergencyFloodRelief() {
         {/* Essential Items */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-navy text-center mb-8">
-            Essential Flood Recovery Items
+            Essential Flood Relief Items
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {essentialItems.map((item, index) => {
@@ -98,22 +97,22 @@ export default function EmergencyFloodRelief() {
                 <div className="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   1
                 </div>
-                <h3 className="font-semibold text-navy mb-2">Share Your Flood Story</h3>
-                <p className="text-sm text-gray-600">Document your flood damage and immediate needs for recovery</p>
+                <h3 className="font-semibold text-navy mb-2">Report Flood Damage</h3>
+                <p className="text-sm text-gray-600">Share your immediate needs and flood damage situation</p>
               </div>
               <div className="text-center">
                 <div className="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   2
                 </div>
-                <h3 className="font-semibold text-navy mb-2">List Priority Items</h3>
-                <p className="text-sm text-gray-600">Add cleanup supplies, emergency items, and recovery essentials</p>
+                <h3 className="font-semibold text-navy mb-2">Emergency Response</h3>
+                <p className="text-sm text-gray-600">Community provides immediate relief supplies and assistance</p>
               </div>
               <div className="text-center">
                 <div className="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   3
                 </div>
-                <h3 className="font-semibold text-navy mb-2">Receive Community Help</h3>
-                <p className="text-sm text-gray-600">Local supporters provide supplies to help you recover</p>
+                <h3 className="font-semibold text-navy mb-2">Rebuild & Recovery</h3>
+                <p className="text-sm text-gray-600">Ongoing support for home repair and life restoration</p>
               </div>
             </div>
           </CardContent>
@@ -122,10 +121,10 @@ export default function EmergencyFloodRelief() {
         {/* Call to Action */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-navy mb-6">
-            Get Flood Recovery Support Today
+            Get Flood Relief Support Today
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Don't face flood recovery alone. Connect with a caring community ready to help.
+            Don't face flood recovery alone. Your community is here to help rebuild your life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={isAuthenticated ? "/create" : "/signup"}>

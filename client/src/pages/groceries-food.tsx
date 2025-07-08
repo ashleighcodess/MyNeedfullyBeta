@@ -6,9 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { 
   ShoppingCart, 
   Apple, 
+  Beef, 
   Milk, 
-  Bread, 
-  Heart,
   Plus,
   Search
 } from "lucide-react";
@@ -17,10 +16,10 @@ export default function GroceriesFood() {
   const { isAuthenticated } = useAuth();
 
   const essentialItems = [
-    { icon: Apple, name: "Fresh Produce", description: "Fruits, vegetables, fresh ingredients for healthy meals" },
-    { icon: Milk, name: "Dairy & Protein", description: "Milk, eggs, cheese, meat, protein sources" },
-    { icon: Bread, name: "Pantry Staples", description: "Bread, rice, pasta, canned goods, dry goods" },
-    { icon: Heart, name: "Baby & Special Diet", description: "Baby formula, dietary supplements, special needs food" }
+    { icon: Apple, name: "Fresh Produce", description: "Fruits, vegetables, healthy fresh food options" },
+    { icon: Beef, name: "Proteins", description: "Meat, fish, eggs, beans, protein-rich foods" },
+    { icon: Milk, name: "Dairy & Staples", description: "Milk, cheese, bread, rice, pasta, cooking basics" },
+    { icon: ShoppingCart, name: "Pantry Essentials", description: "Canned goods, spices, oils, non-perishable items" }
   ];
 
   return (
@@ -37,8 +36,8 @@ export default function GroceriesFood() {
             Groceries & Food Support
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            No one should go hungry. MyNeedfully connects families facing food insecurity 
-            with community members who can provide groceries and essential food items.
+            Nutritious food is essential for health and well-being. MyNeedfully connects 
+            families in need with community supporters who provide groceries and food supplies.
           </p>
         </div>
 
@@ -46,20 +45,20 @@ export default function GroceriesFood() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="text-center border-green-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-green-600 mb-2">38M+</div>
-              <div className="text-gray-600">Americans face food insecurity</div>
-            </CardContent>
-          </Card>
-          <Card className="text-center border-blue-200">
-            <CardContent className="py-6">
-              <div className="text-3xl font-bold text-blue-600 mb-2">12M+</div>
-              <div className="text-gray-600">Children experience hunger</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">42M+</div>
+              <div className="text-gray-600">Americans experience food insecurity</div>
             </CardContent>
           </Card>
           <Card className="text-center border-orange-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-orange-600 mb-2">$300+</div>
-              <div className="text-gray-600">Monthly grocery costs per family</div>
+              <div className="text-3xl font-bold text-orange-600 mb-2">$1,200+</div>
+              <div className="text-gray-600">Monthly grocery costs for families</div>
+            </CardContent>
+          </Card>
+          <Card className="text-center border-red-200">
+            <CardContent className="py-6">
+              <div className="text-3xl font-bold text-red-600 mb-2">13M+</div>
+              <div className="text-gray-600">Children face hunger daily</div>
             </CardContent>
           </Card>
         </div>
@@ -67,7 +66,7 @@ export default function GroceriesFood() {
         {/* Essential Items */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-navy text-center mb-8">
-            Most Needed Food Items
+            Most Needed Food Categories
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {essentialItems.map((item, index) => {
@@ -98,7 +97,7 @@ export default function GroceriesFood() {
                 <div className="bg-green-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   1
                 </div>
-                <h3 className="font-semibold text-navy mb-2">Share Your Food Needs</h3>
+                <h3 className="font-semibold text-navy mb-2">Share Food Needs</h3>
                 <p className="text-sm text-gray-600">List the groceries and food items your family needs</p>
               </div>
               <div className="text-center">
@@ -106,14 +105,14 @@ export default function GroceriesFood() {
                   2
                 </div>
                 <h3 className="font-semibold text-navy mb-2">Community Provides</h3>
-                <p className="text-sm text-gray-600">Local supporters purchase groceries and food items</p>
+                <p className="text-sm text-gray-600">Local supporters purchase groceries and deliver food</p>
               </div>
               <div className="text-center">
                 <div className="bg-green-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                   3
                 </div>
-                <h3 className="font-semibold text-navy mb-2">Feed Your Family</h3>
-                <p className="text-sm text-gray-600">Receive nutritious food to keep your family healthy</p>
+                <h3 className="font-semibold text-navy mb-2">Nourish & Thrive</h3>
+                <p className="text-sm text-gray-600">Nutritious food helps your family stay healthy and strong</p>
               </div>
             </div>
           </CardContent>
@@ -125,7 +124,7 @@ export default function GroceriesFood() {
             Get Food Support Today
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Every family deserves nutritious food. Connect with caring community members.
+            No one should go hungry. Connect with caring community members who want to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={isAuthenticated ? "/create" : "/signup"}>
