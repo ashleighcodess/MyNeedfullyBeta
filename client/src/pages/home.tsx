@@ -43,14 +43,14 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {isSupporter ? (
                 <Link href="/browse">
-                  <Button className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
+                  <Button data-tip="browse-needs" className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
                     <Search className="h-6 w-6" />
                     <span>Find Needs Lists</span>
                   </Button>
                 </Link>
               ) : (
                 <Link href={isAuthenticated ? "/create" : "/signup"}>
-                  <Button className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
+                  <Button data-tip="create-list" className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
                     <Plus className="h-6 w-6" />
                     <span>Create Needs List</span>
                   </Button>
@@ -58,14 +58,14 @@ export default function Home() {
               )}
               
               <Link href={isSupporter ? (isAuthenticated ? "/create" : "/signup") : "/browse"}>
-                <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
+                <Button data-tip={isSupporter ? "create-list" : "browse-needs"} variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
                   {isSupporter ? <Plus className="h-6 w-6" /> : <Search className="h-6 w-6" />}
                   <span>{isSupporter ? "Create Needs List" : "Browse Needs Lists"}</span>
                 </Button>
               </Link>
               
               <Link href="/products">
-                <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
+                <Button data-tip="product-search" variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
                   <Gift className="h-6 w-6" />
                   <span>Search Products</span>
                 </Button>

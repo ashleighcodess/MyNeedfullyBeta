@@ -25,19 +25,19 @@ const tips: Tip[] = [
   },
   {
     id: 'create-list',
-    title: 'Create Your Needs List',
-    description: 'Share what you need with our caring community.',
+    title: 'Create Needs List',
+    description: 'Share what you need with our caring community by creating your own needs list.',
     target: '[data-tip="create-list"]',
     position: 'bottom',
-    icon: '📝'
+    icon: '✏️'
   },
   {
-    id: 'dashboard',
-    title: 'Your Dashboard',
-    description: 'Manage your profile and view your activity from here.',
-    target: '[data-tip="dashboard"]',
+    id: 'product-search',
+    title: 'Search Products',
+    description: 'Find specific items from Amazon, Walmart, and Target to add to your needs lists.',
+    target: '[data-tip="product-search"]',
     position: 'bottom',
-    icon: '🏠'
+    icon: '🎁'
   },
   {
     id: 'notifications',
@@ -280,18 +280,65 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
           </div>
 
           {/* Highlight target element */}
-          {currentTip.target !== 'body' && (
-            <div
-              className="fixed z-30 pointer-events-none transition-opacity duration-300"
-              style={{
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: `radial-gradient(circle at 50% 50%, transparent 100px, rgba(0,0,0,0.7) 100px)`
-              }}
-            />
-          )}
+          {currentTip.target !== 'body' && (() => {
+            const targetElement = document.querySelector(currentTip.target);
+            if (!targetElement) return null;
+            
+            const rect = targetElement.getBoundingClientRect();
+            const padding = 8;
+            
+            return (
+              <>
+                {/* Dark overlay with cutout for highlighted element */}
+                <div
+                  className="fixed inset-0 z-30 pointer-events-none"
+                  style={{
+                    background: `
+                      linear-gradient(transparent, transparent),
+                      radial-gradient(
+                        ellipse ${rect.width + padding * 2}px ${rect.height + padding * 2}px at 
+                        ${rect.left + rect.width / 2}px ${rect.top + rect.height / 2}px,
+                        transparent 0%,
+                        transparent 50%,
+                        rgba(0, 0, 0, 0.7) 50%
+                      )
+                    `
+                  }}
+                />
+                
+                {/* Highlight ring around target element */}
+                <div
+                  className="fixed z-40 pointer-events-none"
+                  style={{
+                    top: rect.top - padding,
+                    left: rect.left - padding,
+                    width: rect.width + padding * 2,
+                    height: rect.height + padding * 2,
+                    border: '3px solid #FF6B6B',
+                    borderRadius: '8px',
+                    boxShadow: '0 0 20px rgba(255, 107, 107, 0.5)',
+                    animation: 'pulse 2s infinite'
+                  }}
+                />
+                
+                {/* Pulse animation styles */}
+                <style>
+                  {`
+                    @keyframes pulse {
+                      0%, 100% { 
+                        opacity: 1; 
+                        transform: scale(1);
+                      }
+                      50% { 
+                        opacity: 0.7; 
+                        transform: scale(1.02);
+                      }
+                    }
+                  `}
+                </style>
+              </>
+            );
+          })()}
         </>
       )}
     </>
