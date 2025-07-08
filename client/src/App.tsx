@@ -44,6 +44,7 @@ const PersonalCareSupplies = lazy(() => import("@/pages/personal-care-supplies")
 const Footer = lazy(() => import("@/components/footer").catch(() => ({ default: () => <div></div> })));
 const QuickTips = lazy(() => import("@/components/quick-tips").catch(() => ({ default: () => <div></div> })));
 const Navigation = lazy(() => import("@/components/navigation").catch(() => ({ default: () => <div></div> })));
+const QuickActions = lazy(() => import("@/pages/quick-actions").catch(() => ({ default: () => <div>Error loading Quick Actions page</div> })));
 
 // Component to handle scroll-to-top on route changes
 function ScrollToTop() {
@@ -168,7 +169,7 @@ function Router() {
                 <Route path="/" component={isAuthenticated ? Home : Landing} />
                 
                 {/* Dashboard route for authenticated users */}
-                <Route path="/dashboard" component={isAuthenticated ? Profile : Landing} />
+                <Route path="/dashboard" component={isAuthenticated ? QuickActions : Landing} />
                 
                 <Route component={NotFound} />
               </Switch>
