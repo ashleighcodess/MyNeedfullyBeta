@@ -18,8 +18,8 @@ export default function Footer() {
   const features = [
     { href: "/browse", label: "Browse Needs Lists" },
     { href: "/products", label: "Search Products" },
-    { href: "/create", label: "Create Needs List" },
-    { href: "/dashboard", label: "My Dashboard" },
+    { href: isAuthenticated ? "/create" : "/signup", label: "Create Needs List" },
+    { href: isAuthenticated ? "/dashboard" : "/signup", label: "My Dashboard" },
   ];
 
   const getHelp = [
