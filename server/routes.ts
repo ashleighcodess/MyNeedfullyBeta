@@ -1175,6 +1175,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple PATCH route for updating wishlist status
+  app.patch('/api/wishlists/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const wishlistId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      
+      // Verify user owns the wishlist
+      const existingWishlist = await storage.getWishlist(wishlistId);
+      if (!existingWishlist || existingWishlist.userId.toString() !== userId.toString()) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      // Only allow updating specific fields for archiving
+      const { status } = req.body;
+      if (!status) {
+        return res.status(400).json({ message: "Status is required" });
+      }
+      
+      const updatedWishlist = await storage.updateWishlist(wishlistId, { status });
+      
+      res.json(updatedWishlist);
+    } catch (error) {
+      console.error("Error updating wishlist status:", error);
+      res.status(500).json({ message: "Failed to update wishlist status" });
+    }
+  });
+
   app.get('/api/users/:userId/wishlists', isAuthenticated, async (req: any, res) => {
     try {
       const { userId } = req.params;

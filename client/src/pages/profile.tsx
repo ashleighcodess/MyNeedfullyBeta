@@ -45,6 +45,13 @@ export default function Profile() {
   useEffect(() => {
     document.title = 'Dashboard - MyNeedfully';
     
+    // Check for URL parameters to navigate to specific tab
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam === 'archive') {
+      setActiveTab('archive');
+    }
+    
     // Check for hash fragment in URL and navigate to appropriate section
     const hash = window.location.hash;
     if (hash === '#my-lists') {

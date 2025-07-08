@@ -239,6 +239,26 @@ export default function WishlistDetail() {
     },
   });
 
+  // Archive wishlist mutation (sets status to 'cancelled')
+  const deleteWishlistMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('PATCH', `/api/wishlists/${id}`, { status: 'cancelled' }),
+    onSuccess: () => {
+      toast({
+        title: "Needs List Archived",
+        description: "Your needs list has been moved to the archive. You can find it in your profile's Archive section.",
+      });
+      navigate('/profile?tab=archive');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to archive needs list. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const copyAddress = async () => {
     if (!wishlist?.shippingAddress) return;
     
@@ -393,10 +413,28 @@ export default function WishlistDetail() {
               </Badge>
               <div className="flex items-center space-x-2">
                 {isOwner && (
-                  <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
-                    <Edit className="mr-1 sm:mr-2 h-4 w-4" />
-                    <span className="hidden sm:inline">Edit</span>
-                  </Button>
+                  <>
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
+                      <Edit className="mr-1 sm:mr-2 h-4 w-4" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        if (confirm('Are you sure you want to archive this needs list? It will be moved to your Archive section and removed from public view.')) {
+                          deleteWishlistMutation.mutate();
+                        }
+                      }}
+                      disabled={deleteWishlistMutation.isPending}
+                      className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
+                    >
+                      <Trash2 className="mr-1 sm:mr-2 h-4 w-4" />
+                      <span className="hidden sm:inline">
+                        {deleteWishlistMutation.isPending ? 'Archiving...' : 'Archive'}
+                      </span>
+                    </Button>
+                  </>
                 )}
                 <Button variant="outline" size="sm" onClick={shareWishlist}>
                   <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
