@@ -508,13 +508,13 @@ export default function AdminDashboard() {
           </TabsContent>
 
           {/* Wishlists Tab */}
-          <TabsContent value="wishlists" className="space-y-6">
+          <TabsContent value="wishlists" className="space-y-4 sm:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Needs Lists Management</CardTitle>
-                <CardDescription>Monitor and manage active needs lists</CardDescription>
+              <CardHeader className="pb-3 sm:pb-6">
+                <CardTitle className="text-lg sm:text-xl">Needs Lists Management</CardTitle>
+                <CardDescription className="text-sm">Monitor and manage active needs lists</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 sm:px-6">
                 {wishlistsLoading ? (
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
@@ -527,37 +527,37 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="space-y-4">
                     {wishlistsData?.wishlists?.slice(0, 10).map((wishlist: any) => (
-                      <div key={wishlist.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex-1">
-                          <h3 className="font-medium">{wishlist.title}</h3>
-                          <p className="text-sm text-gray-500">{wishlist.description}</p>
-                          <div className="flex items-center space-x-4 mt-2">
-                            <span className="text-xs text-gray-400">
+                      <div key={wishlist.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-0">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm sm:text-base truncate">{wishlist.title}</h3>
+                          <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 mt-1">{wishlist.description}</p>
+                          <div className="flex flex-wrap items-center gap-2 mt-2">
+                            <span className="text-xs text-gray-400 whitespace-nowrap">
                               Created {new Date(wishlist.createdAt).toLocaleDateString()}
                             </span>
-                            <Badge variant="outline">{wishlist.urgencyLevel}</Badge>
-                            <Badge variant="secondary">{wishlist.category}</Badge>
+                            <Badge variant="outline" className="text-xs">{wishlist.urgencyLevel}</Badge>
+                            <Badge variant="secondary" className="text-xs">{wishlist.category}</Badge>
                           </div>
                         </div>
-                        <div className="flex flex-col items-end space-y-2">
-                          <div className="flex items-center space-x-2">
-                            <Badge variant={wishlist.status === 'active' ? 'default' : 'secondary'}>
+                        <div className="flex flex-col sm:items-end space-y-2 sm:ml-4">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge variant={wishlist.status === 'active' ? 'default' : 'secondary'} className="text-xs">
                               {wishlist.status}
                             </Badge>
                             {wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date() && (
-                              <Badge variant="outline" className="text-coral border-coral">
+                              <Badge variant="outline" className="text-coral border-coral text-xs">
                                 Featured
                               </Badge>
                             )}
+                            <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
+                              {wishlist.totalItems} items
+                            </span>
                           </div>
-                          <span className="text-sm text-gray-500">
-                            {wishlist.totalItems} items
-                          </span>
                           <Button
                             size="sm"
                             variant={wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date() ? "destructive" : "outline"}
                             onClick={() => handleFeatureWishlist(wishlist.id, !(wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date()))}
-                            className="text-xs"
+                            className="text-xs w-full sm:w-auto"
                           >
                             {wishlist.featuredUntil && new Date(wishlist.featuredUntil) > new Date() ? 'Unfeature' : 'Feature'}
                           </Button>
