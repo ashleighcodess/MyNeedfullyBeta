@@ -27,14 +27,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-warm-bg relative overflow-hidden">
       {/* Background Logo with Opacity */}
-      <div 
-        className="absolute inset-0 opacity-5 bg-no-repeat bg-center bg-contain pointer-events-none"
-        style={{
-          backgroundImage: `url(${logoImage})`,
-          backgroundSize: '400px 400px',
-          backgroundPosition: 'center center'
-        }}
-      />
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <img 
+          src={logoImage} 
+          alt="MyNeedfully Logo Background" 
+          className="opacity-10 w-80 h-80 object-contain"
+          style={{ filter: 'brightness(0.7)' }}
+        />
+      </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Welcome Header */}
