@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight, Flame, Droplets, Stethoscope, ShoppingCart, Baby, GraduationCap, Shirt, Sparkles } from "lucide-react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -69,7 +69,6 @@ const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
 import logoPath from "@assets/Logo_1_1751586675899.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
-import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
 
 // Custom hook for animated counters
@@ -1102,125 +1101,147 @@ export default function Landing() {
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-8">
               {/* Fire Disaster Relief */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Flame className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/fire-disaster-relief">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Flame className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Fire Disaster Relief</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Fire Disaster Relief</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Emergency Flood Relief */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Droplets className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/emergency-flood-relief">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Droplets className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Emergency Flood Relief</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Emergency Flood Relief</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Medical Necessity */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Stethoscope className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/medical-necessity">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Stethoscope className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Medical Necessity</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Medical Necessity</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Essential Items */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Gift className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/essential-items">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Gift className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Essential Items</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Essential Items</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Groceries and Food */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <ShoppingCart className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/groceries-food">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <ShoppingCart className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Groceries and Food</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Groceries and Food</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Baby Items */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Baby className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/baby-items">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Baby className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Baby Items</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Baby Items</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* School Supplies */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <GraduationCap className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/school-supplies">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <GraduationCap className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">School Supplies</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">School Supplies</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Clothing */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Shirt className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/clothing">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Shirt className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Clothing</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Clothing</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Community Help */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Users className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/community-help">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Users className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Community Help</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Community Help</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Personal Care Supplies */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Heart className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/personal-care-supplies">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Heart className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Personal Care Supplies</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Personal Care Supplies</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
 
               {/* Crisis Relief Support */}
-              <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
-                  <Shield className="h-6 w-6 text-navy group-hover:text-white" />
+              <Link href="/crisis-relief-support">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <Shield className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Crisis Relief Support</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Crisis Relief Support</h3>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
-              </div>
+              </Link>
             </div>
           </div>
 
