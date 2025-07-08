@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "wouter";
 import { Heart } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import logoPath from "@assets/Logo_1_1751586675899.png";
 
 export default function Footer() {
+  const { isAuthenticated } = useAuth();
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
@@ -21,7 +23,7 @@ export default function Footer() {
   ];
 
   const getHelp = [
-    { href: "/create", label: "Create A Needslist" },
+    { href: isAuthenticated ? "/create" : "/signup", label: "Create A Needslist" },
     { href: "/resources", label: "Find Resources" },
     { href: "/community", label: "Community Impact" },
     { href: "/support", label: "Support" },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -51,9 +51,22 @@ const createNeedsListSchema = z.object({
 type CreateNeedsListForm = z.infer<typeof createNeedsListSchema>;
 
 export default function CreateNeedsList() {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const [, navigate] = useLocation();
+
+  // Redirect to signup if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast({
+        title: "Sign up required",
+        description: "Please sign up to create a needs list",
+        variant: "default",
+      });
+      navigate("/signup");
+      return;
+    }
+  }, [isAuthenticated, isLoading, navigate, toast]);
   const [step, setStep] = useState(1);
   const [storyImages, setStoryImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
@@ -207,6 +220,23 @@ export default function CreateNeedsList() {
       default: return "text-green-600 bg-green-50 border-green-200";
     }
   };
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authenticated (useEffect will handle redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-warm-bg">
