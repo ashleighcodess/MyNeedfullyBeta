@@ -46,6 +46,26 @@ export default function Profile() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Email verification mutation
+  const resendVerificationMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest('POST', '/api/auth/resend-verification');
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification Email Sent",
+        description: "Please check your email for verification instructions.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send verification email",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Set document title and handle URL hash navigation
   useEffect(() => {
     document.title = 'Dashboard - MyNeedfully';
@@ -222,7 +242,11 @@ export default function Profile() {
         description: "Confirm your email address",
         points: 25,
         completed: !!user?.emailVerified,
-        action: () => setActiveTab('privacy'),
+        action: () => {
+          if (!user?.emailVerified) {
+            resendVerificationMutation.mutate();
+          }
+        },
         icon: Mail,
         color: 'text-orange-500',
         bgColor: 'bg-orange-50'
