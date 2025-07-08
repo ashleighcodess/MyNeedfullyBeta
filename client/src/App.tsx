@@ -72,51 +72,61 @@ function Router() {
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
       <NotificationHandler />
-      <Navigation />
-      <div className="flex-1">
-        <Switch>
-          {/* Public routes available to everyone */}
-          <Route path="/about-us" component={AboutUs} />
-          <Route path="/about" component={AboutUs} />
-          <Route path="/resources" component={Resources} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/sign-up" component={Signup} />
-          <Route path="/login" component={AuthPage} />
-          <Route path="/auth" component={AuthPage} />
-          <Route path="/reset-password" component={ResetPasswordPage} />
-          <Route path="/browse" component={BrowseWishlists} />
-          <Route path="/find" component={BrowseWishlists} />
-          <Route path="/products" component={ProductSearch} />
-          <Route path="/product-search" component={ProductSearch} />
-          <Route path="/search" component={ProductSearch} />
-          <Route path="/admin" component={AdminDashboard} />
-          
-          {/* Authenticated routes */}
-          <Route path="/my-needs-lists" component={MyNeedsLists} />
-          <Route path="/my-lists" component={MyNeedsLists} />
-          <Route path="/create" component={CreateNeedsList} />
-          <Route path="/edit-wishlist/:id" component={EditWishlist} />
-          <Route path="/needslist/:id" component={WishlistDetail} />
-          <Route path="/wishlist/:id" component={WishlistDetail} />
-          <Route path="/wishlists/:id" component={WishlistDetail} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/profile/edit" component={EditProfile} />
-          <Route path="/profile/privacy" component={PrivacySettings} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/community" component={CommunityImpact} />
-          <Route path="/community-impact" component={CommunityImpact} />
-          <Route path="/impact" component={CommunityImpact} />
-          
-          {/* Home route - landing for unauthenticated, dashboard for authenticated */}
-          <Route path="/" component={isLoading ? () => <div className="min-h-screen bg-warm-bg flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div></div> : (isAuthenticated ? Home : Landing)} />
-          
-          {/* Dashboard route for authenticated users */}
-          <Route path="/dashboard" component={Home} />
-          
-          <Route component={NotFound} />
-        </Switch>
-      </div>
-      <Footer />
+      
+      <Switch>
+        {/* Admin route with no header/footer */}
+        <Route path="/admin">
+          <AdminDashboard />
+        </Route>
+        
+        {/* All other routes with header and footer */}
+        <Route>
+          <Navigation />
+          <div className="flex-1">
+            <Switch>
+              {/* Public routes available to everyone */}
+              <Route path="/about-us" component={AboutUs} />
+              <Route path="/about" component={AboutUs} />
+              <Route path="/resources" component={Resources} />
+              <Route path="/signup" component={Signup} />
+              <Route path="/sign-up" component={Signup} />
+              <Route path="/login" component={AuthPage} />
+              <Route path="/auth" component={AuthPage} />
+              <Route path="/reset-password" component={ResetPasswordPage} />
+              <Route path="/browse" component={BrowseWishlists} />
+              <Route path="/find" component={BrowseWishlists} />
+              <Route path="/products" component={ProductSearch} />
+              <Route path="/product-search" component={ProductSearch} />
+              <Route path="/search" component={ProductSearch} />
+              
+              {/* Authenticated routes */}
+              <Route path="/my-needs-lists" component={MyNeedsLists} />
+              <Route path="/my-lists" component={MyNeedsLists} />
+              <Route path="/create" component={CreateNeedsList} />
+              <Route path="/edit-wishlist/:id" component={EditWishlist} />
+              <Route path="/needslist/:id" component={WishlistDetail} />
+              <Route path="/wishlist/:id" component={WishlistDetail} />
+              <Route path="/wishlists/:id" component={WishlistDetail} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/profile/edit" component={EditProfile} />
+              <Route path="/profile/privacy" component={PrivacySettings} />
+              <Route path="/settings" component={Settings} />
+              <Route path="/community" component={CommunityImpact} />
+              <Route path="/community-impact" component={CommunityImpact} />
+              <Route path="/impact" component={CommunityImpact} />
+              
+              {/* Home route - landing for unauthenticated, dashboard for authenticated */}
+              <Route path="/" component={isLoading ? () => <div className="min-h-screen bg-warm-bg flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div></div> : (isAuthenticated ? Home : Landing)} />
+              
+              {/* Dashboard route for authenticated users */}
+              <Route path="/dashboard" component={Home} />
+              
+              <Route component={NotFound} />
+            </Switch>
+          </div>
+          <Footer />
+        </Route>
+      </Switch>
     </div>
   );
 }
