@@ -184,36 +184,24 @@ export default function EditProfile() {
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
-                      className="hidden"
-                      id="profile-image"
-                      ref={(input) => {
-                        if (input) {
-                          (window as any).profileImageInput = input;
-                        }
-                      }}
+                      className="sr-only"
+                      id="profile-image-upload"
+                      disabled={uploadingImage}
                     />
-                    <Button 
-                      type="button" 
-                      disabled={uploadingImage} 
-                      className="w-full"
-                      onClick={() => {
-                        try {
-                          console.log('Upload button clicked');
-                          const input = document.getElementById('profile-image') as HTMLInputElement;
-                          console.log('Input element:', input);
-                          if (input) {
-                            input.click();
-                          } else {
-                            console.error('Profile image input not found');
-                          }
-                        } catch (error) {
-                          console.error('Error clicking input:', error);
-                        }
-                      }}
+                    <label 
+                      htmlFor="profile-image-upload"
+                      className={`
+                        w-full inline-flex items-center justify-center px-4 py-2 
+                        border border-input bg-background hover:bg-accent hover:text-accent-foreground 
+                        rounded-md text-sm font-medium transition-colors focus-visible:outline-none 
+                        focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
+                        cursor-pointer
+                        ${uploadingImage ? 'opacity-50 pointer-events-none' : ''}
+                      `}
                     >
                       <Upload className="mr-2 h-4 w-4" />
                       {uploadingImage ? "Uploading..." : "Upload Photo"}
-                    </Button>
+                    </label>
                     
                     <p className="text-sm text-gray-500">
                       JPG, PNG or GIF. Max size 5MB.
