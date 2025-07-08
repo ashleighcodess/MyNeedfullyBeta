@@ -28,6 +28,7 @@ import VerifyEmail from "@/pages/verify-email";
 import NotFound from "@/pages/not-found";
 import CommunityImpact from "@/pages/community-impact";
 import FAQ from "@/pages/faq";
+import FireDisasterRelief from "@/pages/fire-disaster-relief";
 import Footer from "@/components/footer";
 import QuickTips from "@/components/quick-tips";
 import Navigation from "@/components/navigation";
@@ -91,6 +92,7 @@ function Router() {
               <Route path="/about" component={AboutUs} />
               <Route path="/resources" component={Resources} />
               <Route path="/faq" component={FAQ} />
+              <Route path="/fire-disaster-relief" component={FireDisasterRelief} />
               <Route path="/signup" component={Signup} />
               <Route path="/sign-up" component={Signup} />
               <Route path="/login" component={AuthPage} />
