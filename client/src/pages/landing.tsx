@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight, Flame, Droplets, Stethoscope, ShoppingCart, Baby, GraduationCap, Shirt, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -111,6 +112,7 @@ export default function Landing() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchPlaceholder, setSearchPlaceholder] = useState("Search needs lists by keywords, location, or needs...");
   const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
   
   // Fetch featured wishlists from database
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
@@ -178,8 +180,12 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [startTickerAnimation]);
 
-  const handleLogin = () => {
-    setLocation("/signup");
+  const handleCreateList = () => {
+    if (isAuthenticated) {
+      setLocation("/create");
+    } else {
+      setLocation("/signup");
+    }
   };
 
   const handleNeedsListSearch = (e: React.FormEvent) => {
@@ -407,10 +413,10 @@ export default function Landing() {
             </Button>
             <Button 
               className="bg-navy text-white hover:bg-navy/90 rounded-full px-8 py-4 text-lg shadow-lg"
-              onClick={handleLogin}
+              onClick={handleCreateList}
             >
               <Plus className="mr-2 h-5 w-5" />
-              Create Needs List
+              {isAuthenticated ? "Create Needs List" : "Get Started"}
             </Button>
           </div>
         </div>
@@ -1073,9 +1079,9 @@ export default function Landing() {
             <p className="text-lg text-gray-700 mb-6">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
             <Button 
               className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-full text-lg font-semibold"
-              onClick={handleLogin}
+              onClick={handleCreateList}
             >
-              Get Started Now
+              {isAuthenticated ? "Create Needs List" : "Get Started Now"}
             </Button>
           </div>
         </div>
@@ -1223,9 +1229,9 @@ export default function Landing() {
             <p className="text-lg text-gray-700 mb-6">Ready to create a needs list for yourself or someone in need?</p>
             <Button 
               className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-full text-lg font-semibold"
-              onClick={handleLogin}
+              onClick={handleCreateList}
             >
-              Get Started Now
+              {isAuthenticated ? "Create Needs List" : "Get Started Now"}
             </Button>
           </div>
         </div>
@@ -1250,10 +1256,10 @@ export default function Landing() {
             <Button 
               variant="outline" 
               className="bg-white text-navy hover:bg-gray-100 px-8 py-4 text-lg rounded-full border-white"
-              onClick={handleLogin}
+              onClick={handleCreateList}
             >
               <Plus className="mr-2 h-5 w-5" />
-              Create Your Wishlist
+              {isAuthenticated ? "Create Your Needs List" : "Create Your Wishlist"}
             </Button>
           </div>
         </div>
