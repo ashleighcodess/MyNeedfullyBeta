@@ -206,14 +206,7 @@ export default function QuickActions() {
                           <action.icon className={`h-6 w-6 ${action.color}`} />
                         </div>
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-gray-900">{action.title}</h3>
-                            {action.completed && (
-                              <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
-                                ✓ Done
-                              </Badge>
-                            )}
-                          </div>
+                          <h3 className="font-semibold text-gray-900 mb-1">{action.title}</h3>
                           <p className="text-sm text-gray-600">{action.description}</p>
                         </div>
                       </div>
@@ -226,14 +219,7 @@ export default function QuickActions() {
                         <action.icon className={`h-6 w-6 ${action.color}`} />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-gray-900">{action.title}</h3>
-                          {action.completed && (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
-                              ✓ Done
-                            </Badge>
-                          )}
-                        </div>
+                        <h3 className="font-semibold text-gray-900 mb-1">{action.title}</h3>
                         <p className="text-sm text-gray-600">{action.description}</p>
                       </div>
                     </div>
