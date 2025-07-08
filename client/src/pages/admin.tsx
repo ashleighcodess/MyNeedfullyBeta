@@ -416,13 +416,13 @@ export default function AdminDashboard() {
           </TabsContent>
 
           {/* Users Tab */}
-          <TabsContent value="users" className="space-y-6">
+          <TabsContent value="users" className="space-y-4 sm:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>User Management</CardTitle>
-                <CardDescription>Manage registered users and their permissions</CardDescription>
+              <CardHeader className="pb-3 sm:pb-6">
+                <CardTitle className="text-lg sm:text-xl">User Management</CardTitle>
+                <CardDescription className="text-sm">Manage registered users and their permissions</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 sm:px-6">
                 {usersLoading ? (
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
@@ -438,28 +438,28 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="space-y-4">
                     {usersList?.slice(0, 10).map((user: any) => (
-                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center">
+                      <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 transition-colors space-y-3 sm:space-y-0">
+                        <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-coral/10 flex items-center justify-center flex-shrink-0">
                             {user.profileImageUrl ? (
-                              <img src={user.profileImageUrl} alt="" className="w-10 h-10 rounded-full object-cover" />
+                              <img src={user.profileImageUrl} alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
                             ) : (
-                              <Users className="h-5 w-5 text-coral" />
+                              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-coral" />
                             )}
                           </div>
-                          <div>
-                            <p className="font-medium">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm sm:text-base truncate">
                               {user.firstName} {user.lastName}
-                              <span className="text-xs text-gray-400 ml-2">#{user.id.slice(-4)}</span>
+                              <span className="text-xs text-gray-400 ml-1 sm:ml-2">#{user.id.slice(-4)}</span>
                             </p>
-                            <p className="text-sm text-gray-500">{user.email}</p>
+                            <p className="text-xs sm:text-sm text-gray-500 truncate">{user.email}</p>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge variant={user.userType === 'admin' ? 'default' : 'secondary'}>
+                        <div className="flex flex-wrap items-center gap-2 sm:space-x-2 sm:ml-4">
+                          <Badge variant={user.userType === 'admin' ? 'default' : 'secondary'} className="text-xs">
                             {user.userType}
                           </Badge>
-                          <Badge variant={user.isVerified ? 'default' : 'outline'}>
+                          <Badge variant={user.isVerified ? 'default' : 'outline'} className="text-xs">
                             {user.isVerified ? 'Verified' : 'Unverified'}
                           </Badge>
                           {user.userType !== 'admin' && (
@@ -468,9 +468,9 @@ export default function AdminDashboard() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50 flex-shrink-0"
                                 >
-                                  <Trash2 className="h-4 w-4" />
+                                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
@@ -571,8 +571,8 @@ export default function AdminDashboard() {
           </TabsContent>
 
           {/* Activity Tab - Full Implementation */}
-          <TabsContent value="activity" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <TabsContent value="activity" className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Activity Timeline */}
               <div className="lg:col-span-2">
                 <Card>
@@ -695,18 +695,18 @@ export default function AdminDashboard() {
           </TabsContent>
 
           {/* System Tab - Full Implementation */}
-          <TabsContent value="system" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="system" className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* System Health */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Zap className="h-5 w-5 mr-2" />
+                <CardHeader className="pb-3 sm:pb-6">
+                  <CardTitle className="flex items-center text-lg sm:text-xl">
+                    <Zap className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     System Health
                   </CardTitle>
-                  <CardDescription>Real-time system monitoring and performance</CardDescription>
+                  <CardDescription className="text-sm">Real-time system monitoring and performance</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6">
                   {healthLoading ? (
                     <div className="space-y-3">
                       {[...Array(6)].map((_, i) => (
@@ -728,16 +728,16 @@ export default function AdminDashboard() {
                         <Badge className="bg-green-100 text-green-800">Healthy</Badge>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                          <p className="text-sm font-medium text-blue-900">API Response</p>
-                          <p className="text-2xl font-bold text-blue-600">
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div className="p-2 sm:p-3 bg-blue-50 rounded-lg">
+                          <p className="text-xs sm:text-sm font-medium text-blue-900">API Response</p>
+                          <p className="text-lg sm:text-2xl font-bold text-blue-600">
                             {systemHealth?.responseTime || "150ms"}
                           </p>
                         </div>
-                        <div className="p-3 bg-purple-50 rounded-lg">
-                          <p className="text-sm font-medium text-purple-900">Uptime</p>
-                          <p className="text-2xl font-bold text-purple-600">99.9%</p>
+                        <div className="p-2 sm:p-3 bg-purple-50 rounded-lg">
+                          <p className="text-xs sm:text-sm font-medium text-purple-900">Uptime</p>
+                          <p className="text-lg sm:text-2xl font-bold text-purple-600">99.9%</p>
                         </div>
                       </div>
 
@@ -802,28 +802,28 @@ export default function AdminDashboard() {
                       
                       {/* Demo Analytics Data */}
                       <div className="space-y-3 pt-3 border-t">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="text-center p-2 bg-gray-50 rounded">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                          <div className="text-center p-1.5 sm:p-2 bg-gray-50 rounded">
                             <p className="text-xs text-gray-500">Sessions (24h)</p>
-                            <p className="text-lg font-bold text-gray-900">1,247</p>
+                            <p className="text-sm sm:text-lg font-bold text-gray-900">1,247</p>
                             <p className="text-xs text-green-600">+12.3%</p>
                           </div>
-                          <div className="text-center p-2 bg-gray-50 rounded">
+                          <div className="text-center p-1.5 sm:p-2 bg-gray-50 rounded">
                             <p className="text-xs text-gray-500">Page Views</p>
-                            <p className="text-lg font-bold text-gray-900">3,891</p>
+                            <p className="text-sm sm:text-lg font-bold text-gray-900">3,891</p>
                             <p className="text-xs text-green-600">+8.7%</p>
                           </div>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="text-center p-2 bg-gray-50 rounded">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                          <div className="text-center p-1.5 sm:p-2 bg-gray-50 rounded">
                             <p className="text-xs text-gray-500">Bounce Rate</p>
-                            <p className="text-lg font-bold text-gray-900">34.2%</p>
+                            <p className="text-sm sm:text-lg font-bold text-gray-900">34.2%</p>
                             <p className="text-xs text-red-600">+2.1%</p>
                           </div>
-                          <div className="text-center p-2 bg-gray-50 rounded">
+                          <div className="text-center p-1.5 sm:p-2 bg-gray-50 rounded">
                             <p className="text-xs text-gray-500">Avg. Session</p>
-                            <p className="text-lg font-bold text-gray-900">4:32</p>
+                            <p className="text-sm sm:text-lg font-bold text-gray-900">4:32</p>
                             <p className="text-xs text-green-600">+15.8%</p>
                           </div>
                         </div>
@@ -935,19 +935,19 @@ export default function AdminDashboard() {
 
             {/* System Actions */}
             <Card>
-              <CardHeader>
-                <CardTitle>Administrative Actions</CardTitle>
-                <CardDescription>System maintenance and user management tools</CardDescription>
+              <CardHeader className="pb-3 sm:pb-6">
+                <CardTitle className="text-lg sm:text-xl">Administrative Actions</CardTitle>
+                <CardDescription className="text-sm">System maintenance and user management tools</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
+              <CardContent className="px-3 sm:px-6">
+                <div className="space-y-4 sm:space-y-6">
                   {/* User Management Actions */}
                   <div>
                     <h4 className="font-medium mb-3 text-sm">User Management</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-12 sm:h-16 flex flex-col text-xs"
                         onClick={() => {
                           // Export user data
                           window.open('/api/admin/export/users', '_blank');
@@ -1021,7 +1021,7 @@ export default function AdminDashboard() {
                   {/* Content Moderation */}
                   <div>
                     <h4 className="font-medium mb-3 text-sm">Content Moderation</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                       <Button 
                         variant="outline" 
                         className="h-16 flex flex-col text-xs"
@@ -1094,7 +1094,7 @@ export default function AdminDashboard() {
                   {/* System Maintenance */}
                   <div>
                     <h4 className="font-medium mb-3 text-sm">System Maintenance</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                       <Button 
                         variant="outline" 
                         className="h-16 flex flex-col text-xs"
