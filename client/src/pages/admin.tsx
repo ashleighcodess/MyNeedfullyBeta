@@ -947,7 +947,7 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                       <Button 
                         variant="outline" 
-                        className="h-12 sm:h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={() => {
                           // Export user data
                           window.open('/api/admin/export/users', '_blank');
@@ -960,7 +960,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           const email = window.prompt('Enter user email to promote to admin:');
                           if (email) {
@@ -981,7 +981,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           if (confirm('Send welcome email to all new users from this week?')) {
                             try {
@@ -1000,7 +1000,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           try {
                             await apiRequest('POST', '/api/admin/cleanup-inactive');
@@ -1024,7 +1024,7 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           try {
                             const response = await apiRequest('GET', '/api/admin/flagged-content');
@@ -1042,7 +1042,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           if (confirm('Approve all pending needs lists?')) {
                             try {
@@ -1062,7 +1062,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={() => {
                           window.open('/api/admin/export/content-report', '_blank');
                         }}
@@ -1074,7 +1074,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           try {
                             await apiRequest('POST', '/api/admin/update-search-index');
@@ -1097,7 +1097,7 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={() => {
                           const startDate = window.prompt('Enter start date (YYYY-MM-DD):');
                           const endDate = window.prompt('Enter end date (YYYY-MM-DD):');
@@ -1113,7 +1113,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           try {
                             const response = await apiRequest('POST', '/api/admin/backup-database');
@@ -1131,7 +1131,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="outline" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           if (confirm('Clear all cached data? This may slow down the site temporarily.')) {
                             try {
@@ -1150,7 +1150,7 @@ export default function AdminDashboard() {
                       
                       <Button 
                         variant="destructive" 
-                        className="h-16 flex flex-col text-xs"
+                        className="h-16 sm:h-20 flex flex-col text-xs sm:text-sm p-3 sm:p-4"
                         onClick={async () => {
                           const confirmation = window.prompt('Type "EMERGENCY SHUTDOWN" to confirm:');
                           if (confirmation === 'EMERGENCY SHUTDOWN') {
