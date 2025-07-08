@@ -178,8 +178,8 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
     };
   };
 
-  // Don't render anything if not authenticated
-  if (!isAuthenticated) return null;
+  // Don't render anything if not authenticated or on admin pages
+  if (!isAuthenticated || location.startsWith('/admin')) return null;
 
   return (
     <>
