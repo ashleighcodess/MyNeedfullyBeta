@@ -24,6 +24,7 @@ import Resources from "@/pages/resources";
 import Signup from "@/pages/signup";
 import AuthPage from "@/pages/auth";
 import ResetPasswordPage from "@/pages/reset-password";
+import VerifyEmail from "@/pages/verify-email";
 import NotFound from "@/pages/not-found";
 import CommunityImpact from "@/pages/community-impact";
 import Footer from "@/components/footer";
@@ -93,6 +94,7 @@ function Router() {
               <Route path="/login" component={AuthPage} />
               <Route path="/auth" component={AuthPage} />
               <Route path="/reset-password" component={ResetPasswordPage} />
+              <Route path="/verify-email" component={VerifyEmail} />
               <Route path="/browse" component={BrowseWishlists} />
               <Route path="/find" component={BrowseWishlists} />
               <Route path="/products" component={ProductSearch} />

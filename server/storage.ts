@@ -262,6 +262,13 @@ export class DatabaseStorage implements IStorage {
       .where(eq(emailVerificationTokens.id, id));
   }
 
+  async updateUserVerificationStatus(userId: string, isVerified: boolean): Promise<void> {
+    await db
+      .update(users)
+      .set({ isVerified, updatedAt: new Date() })
+      .where(eq(users.id, userId));
+  }
+
   // Wishlist operations
   async createWishlist(wishlistData: InsertWishlist): Promise<Wishlist> {
     const [wishlist] = await db.insert(wishlists).values(wishlistData).returning();

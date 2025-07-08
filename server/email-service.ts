@@ -321,7 +321,8 @@ class EmailService {
     userName: string,
     verificationToken: string
   ): Promise<boolean> {
-    const verificationLink = `${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/verify-email?token=${verificationToken}`;
+    const baseUrl = process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'https://myneedfully.com';
+    const verificationLink = `${baseUrl}/verify-email?token=${verificationToken}`;
     const subject = `Verify Your Email Address - MyNeedfully`;
     
     const html = `

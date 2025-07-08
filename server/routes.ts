@@ -2553,6 +2553,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email verification endpoint
+  app.post('/api/auth/verify-email', async (req, res) => {
+    try {
+      const { token } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+      
+      // Get the verification token
+      const verificationToken = await storage.getEmailVerificationToken(token);
+      
+      if (!verificationToken) {
+        return res.status(404).json({ message: "Invalid verification token" });
+      }
+      
+      // Check if token is expired
+      if (new Date() > verificationToken.expiresAt) {
+        return res.status(400).json({ message: "Verification token has expired" });
+      }
+      
+      // Check if token is already used
+      if (verificationToken.isUsed) {
+        return res.status(400).json({ message: "Verification token has already been used" });
+      }
+      
+      // Get the user
+      const user = await storage.getUser(verificationToken.userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if user is already verified
+      if (user.isVerified) {
+        // Mark token as used
+        await storage.markEmailVerificationTokenAsUsed(verificationToken.id);
+        return res.json({ message: "Email is already verified" });
+      }
+      
+      // Mark user as verified
+      await storage.updateUserVerificationStatus(verificationToken.userId, true);
+      
+      // Mark token as used
+      await storage.markEmailVerificationTokenAsUsed(verificationToken.id);
+      
+      console.log(`✅ Email verified successfully for user: ${verificationToken.email}`);
+      
+      res.json({ message: "Email verified successfully" });
+    } catch (error) {
+      console.error("Email verification error:", error);
+      res.status(500).json({ message: "Email verification failed" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time features
