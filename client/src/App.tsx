@@ -107,8 +107,8 @@ function Router() {
           <Route path="/community-impact" component={CommunityImpact} />
           <Route path="/impact" component={CommunityImpact} />
           
-          {/* Home route - always shows landing page */}
-          <Route path="/" component={Landing} />
+          {/* Home route - landing for unauthenticated, dashboard for authenticated */}
+          <Route path="/" component={isLoading ? () => <div className="min-h-screen bg-warm-bg flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div></div> : (isAuthenticated ? Home : Landing)} />
           
           {/* Dashboard route for authenticated users */}
           <Route path="/dashboard" component={Home} />
