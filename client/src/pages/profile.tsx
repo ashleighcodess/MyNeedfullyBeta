@@ -461,7 +461,10 @@ export default function Profile() {
 
                 {/* Activity Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card>
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-coral/30"
+                    onClick={() => setActiveTab('purchases')}
+                  >
                     <CardContent className="p-6 text-center">
                       <Heart className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
@@ -471,7 +474,10 @@ export default function Profile() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-coral/30"
+                    onClick={() => setActiveTab('lists')}
+                  >
                     <CardContent className="p-6 text-center">
                       <Gift className="mx-auto h-8 w-8 text-coral mb-3" />
                       <div className="text-2xl font-bold text-navy mb-1">
