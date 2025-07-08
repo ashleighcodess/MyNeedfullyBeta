@@ -652,7 +652,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get recent analytics events for community activity
       const recentEvents = await db.select()
         .from(analyticsEvents)
-        .orderBy(desc(analyticsEvents.timestamp))
+        .orderBy(desc(analyticsEvents.createdAt))
         .limit(10);
 
       const formattedActivity = recentEvents.map(event => {
@@ -664,7 +664,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             supporter: data.supporterName || 'Anonymous Supporter',
             action: 'purchased',
             item: data.itemName || 'an item',
-            timeAgo: formatTimeAgo(new Date(event.timestamp)),
+            timeAgo: formatTimeAgo(new Date(event.createdAt)),
             location: data.location || 'Unknown',
             impact: `Helped someone in ${data.location || 'need'}`,
             type: 'purchase'
@@ -675,7 +675,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             supporter: data.recipientName || 'Community Member',
             action: 'sent gratitude',
             item: 'a thank you note',
-            timeAgo: formatTimeAgo(new Date(event.timestamp)),
+            timeAgo: formatTimeAgo(new Date(event.createdAt)),
             location: data.location || 'Community',
             impact: 'Spread kindness and appreciation',
             type: 'gratitude'
@@ -686,7 +686,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             supporter: data.userName || 'Community Member',
             action: 'created',
             item: data.wishlistTitle || 'a needs list',
-            timeAgo: formatTimeAgo(new Date(event.timestamp)),
+            timeAgo: formatTimeAgo(new Date(event.createdAt)),
             location: data.location || 'Community',
             impact: 'Shared their story with the community',
             type: 'creation'
@@ -1066,7 +1066,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(user);
     } catch (error) {
       console.error("Error updating user:", error);
-      res.status(500).json({ message: "Failed to update user" });
+      console.error("User data attempted:", req.body);
+      console.error("User ID:", userId);
+      res.status(500).json({ 
+        message: "Failed to update user", 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
     }
   });
 
