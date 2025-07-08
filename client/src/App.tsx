@@ -1,188 +1,72 @@
-import { Switch, Route, useLocation } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { useEffect, Suspense, lazy } from "react";
+import { useEffect } from "react";
 
-// Lazy load pages to prevent import errors from breaking the app
-const Landing = lazy(() => import("@/pages/landing"));
-const Home = lazy(() => import("@/pages/home"));
-const BrowseWishlists = lazy(() => import("@/pages/browse-wishlists"));
-const MyNeedsLists = lazy(() => import("@/pages/my-needs-lists"));
-const CreateNeedsList = lazy(() => import("@/pages/create-wishlist"));
-const EditWishlist = lazy(() => import("@/pages/edit-wishlist"));
-const WishlistDetail = lazy(() => import("@/pages/wishlist-detail"));
-const ProductSearch = lazy(() => import("@/pages/product-search"));
-const Profile = lazy(() => import("@/pages/profile"));
-const EditProfile = lazy(() => import("@/pages/edit-profile"));
-const PrivacySettings = lazy(() => import("@/pages/privacy-settings"));
-const Settings = lazy(() => import("@/pages/settings"));
-const AdminDashboard = lazy(() => import("@/pages/admin"));
-const AboutUs = lazy(() => import("@/pages/about-us"));
-const Resources = lazy(() => import("@/pages/resources"));
-const Signup = lazy(() => import("@/pages/signup"));
-const AuthPage = lazy(() => import("@/pages/auth"));
-const ResetPasswordPage = lazy(() => import("@/pages/reset-password"));
-const VerifyEmail = lazy(() => import("@/pages/verify-email"));
-const NotFound = lazy(() => import("@/pages/not-found"));
-const CommunityImpact = lazy(() => import("@/pages/community-impact"));
-const FAQ = lazy(() => import("@/pages/faq"));
-const FireDisasterRelief = lazy(() => import("@/pages/fire-disaster-relief"));
-const MedicalNecessity = lazy(() => import("@/pages/medical-necessity"));
-const EmergencyFloodRelief = lazy(() => import("@/pages/emergency-flood-relief"));
-const EssentialItems = lazy(() => import("@/pages/essential-items"));
-const GroceriesFood = lazy(() => import("@/pages/groceries-food"));
-const BabyItems = lazy(() => import("@/pages/baby-items"));
-const SchoolSupplies = lazy(() => import("@/pages/school-supplies"));
-const Clothing = lazy(() => import("@/pages/clothing"));
-const CommunityHelp = lazy(() => import("@/pages/community-help"));
-const CrisisReliefSupport = lazy(() => import("@/pages/crisis-relief-support"));
-const PersonalCareSupplies = lazy(() => import("@/pages/personal-care-supplies"));
-const Footer = lazy(() => import("@/components/footer"));
-const QuickTips = lazy(() => import("@/components/quick-tips"));
-const Navigation = lazy(() => import("@/components/navigation"));
-
-// Component to handle scroll-to-top on route changes
-function ScrollToTop() {
-  const [location] = useLocation();
-  
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location]);
-  
-  return null;
-}
-
-// Component to handle WebSocket toast notifications
-function NotificationHandler() {
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const handleToastEvent = (event: CustomEvent) => {
-      const { title, description, duration } = event.detail;
-      toast({
-        title,
-        description,
-        duration,
-      });
-    };
-
-    window.addEventListener('showNotificationToast', handleToastEvent as EventListener);
-
-    return () => {
-      window.removeEventListener('showNotificationToast', handleToastEvent as EventListener);
-    };
-  }, [toast]);
-
-  return null;
-}
-
-function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
-      </div>
-    );
-  }
-
+// Simple test component to isolate the issue
+function TestApp() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <ScrollToTop />
-      <NotificationHandler />
-      
-      <Suspense fallback={
-        <div className="min-h-screen bg-warm-bg flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+    <div className="min-h-screen bg-white p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-coral mb-6">MyNeedfully</h1>
+        <p className="text-lg text-gray-700 mb-8">Humanitarian Crisis Support Platform - Testing Mode</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+            <h3 className="font-semibold text-blue-800 mb-2">Emergency Flood Relief</h3>
+            <p className="text-sm text-blue-600">Support flood victims with essential supplies</p>
+          </div>
+          <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+            <h3 className="font-semibold text-green-800 mb-2">Essential Items</h3>
+            <p className="text-sm text-green-600">Basic necessities for survival</p>
+          </div>
+          <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
+            <h3 className="font-semibold text-orange-800 mb-2">Groceries & Food</h3>
+            <p className="text-sm text-orange-600">Nutritious food for families in need</p>
+          </div>
+          <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
+            <h3 className="font-semibold text-purple-800 mb-2">Medical Necessity</h3>
+            <p className="text-sm text-purple-600">Healthcare supplies and medications</p>
+          </div>
+          <div className="bg-red-50 p-6 rounded-lg border border-red-200">
+            <h3 className="font-semibold text-red-800 mb-2">Fire Disaster Relief</h3>
+            <p className="text-sm text-red-600">Recovery from fire emergencies</p>
+          </div>
+          <div className="bg-pink-50 p-6 rounded-lg border border-pink-200">
+            <h3 className="font-semibold text-pink-800 mb-2">Baby Items</h3>
+            <p className="text-sm text-pink-600">Essential supplies for infants and toddlers</p>
+          </div>
         </div>
-      }>
-        <Switch>
-          {/* Admin route with no header/footer */}
-          <Route path="/admin">
-            <AdminDashboard />
-          </Route>
-          
-          {/* All other routes with header and footer */}
-          <Route>
-            <Navigation />
-            <div className="flex-1">
-              <Switch>
-                {/* Public routes available to everyone */}
-                <Route path="/about-us" component={AboutUs} />
-                <Route path="/about" component={AboutUs} />
-                <Route path="/resources" component={Resources} />
-                <Route path="/faq" component={FAQ} />
-                <Route path="/fire-disaster-relief" component={FireDisasterRelief} />
-                <Route path="/medical-necessity" component={MedicalNecessity} />
-                <Route path="/emergency-flood-relief" component={EmergencyFloodRelief} />
-                <Route path="/essential-items" component={EssentialItems} />
-                <Route path="/groceries-food" component={GroceriesFood} />
-                <Route path="/baby-items" component={BabyItems} />
-                <Route path="/school-supplies" component={SchoolSupplies} />
-                <Route path="/clothing" component={Clothing} />
-                <Route path="/community-help" component={CommunityHelp} />
-                <Route path="/crisis-relief-support" component={CrisisReliefSupport} />
-                <Route path="/personal-care-supplies" component={PersonalCareSupplies} />
-                <Route path="/signup" component={Signup} />
-                <Route path="/sign-up" component={Signup} />
-                <Route path="/login" component={AuthPage} />
-                <Route path="/auth" component={AuthPage} />
-                <Route path="/reset-password" component={ResetPasswordPage} />
-                <Route path="/verify-email" component={VerifyEmail} />
-                <Route path="/browse" component={BrowseWishlists} />
-                <Route path="/find" component={BrowseWishlists} />
-                <Route path="/products" component={ProductSearch} />
-                <Route path="/product-search" component={ProductSearch} />
-                <Route path="/search" component={ProductSearch} />
-                
-                {/* Authenticated routes */}
-                <Route path="/my-needs-lists" component={MyNeedsLists} />
-                <Route path="/my-lists" component={MyNeedsLists} />
-                <Route path="/create" component={CreateNeedsList} />
-                <Route path="/edit-wishlist/:id" component={EditWishlist} />
-                <Route path="/needslist/:id" component={WishlistDetail} />
-                <Route path="/wishlist/:id" component={WishlistDetail} />
-                <Route path="/wishlists/:id" component={WishlistDetail} />
-                <Route path="/profile" component={Profile} />
-                <Route path="/profile/edit" component={EditProfile} />
-                <Route path="/profile/privacy" component={PrivacySettings} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/community" component={CommunityImpact} />
-                <Route path="/community-impact" component={CommunityImpact} />
-                <Route path="/impact" component={CommunityImpact} />
-                
-                {/* Home route - show Landing for unauthenticated, Home for authenticated */}
-                <Route path="/" component={isAuthenticated ? Home : Landing} />
-                
-                {/* Dashboard route for authenticated users */}
-                <Route path="/dashboard" component={isAuthenticated ? Profile : Landing} />
-                
-                <Route component={NotFound} />
-              </Switch>
-            </div>
-            <Footer />
-          </Route>
-        </Switch>
-      </Suspense>
+        
+        <div className="mt-8 p-6 bg-gray-50 rounded-lg border">
+          <h4 className="font-semibold text-gray-800 mb-2">Platform Status</h4>
+          <div className="space-y-2">
+            <p className="text-green-600 font-medium">✓ React application loading successfully</p>
+            <p className="text-green-600 font-medium">✓ CSS styling working properly</p>
+            <p className="text-green-600 font-medium">✓ Component rendering functional</p>
+            <p className="text-blue-600">→ Testing simplified version to isolate DOMException</p>
+          </div>
+        </div>
+        
+        <div className="mt-6 p-4 bg-coral-50 rounded-lg border border-coral-200">
+          <p className="text-coral-700">This is a simplified test version to identify what's causing the DOMException. If you can see this page clearly, React is working and we can incrementally add back features.</p>
+        </div>
+      </div>
     </div>
   );
 }
 
 function App() {
-  // Handle unhandled promise rejections to prevent blank page
+  // Comprehensive error handling
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.warn('Unhandled promise rejection (handled):', event.reason);
-      event.preventDefault(); // Prevent the unhandled rejection from causing issues
+      console.error('CAUGHT Unhandled promise rejection:', event.reason);
+      console.error('Stack:', event.reason?.stack);
+      event.preventDefault();
     };
 
     const handleError = (event: ErrorEvent) => {
-      console.warn('Error caught:', event.error);
+      console.error('CAUGHT Global error:', event.error);
+      console.error('Message:', event.message);
+      console.error('Filename:', event.filename);
+      console.error('Line:', event.lineno);
       event.preventDefault();
     };
 
@@ -195,27 +79,7 @@ function App() {
     };
   }, []);
 
-  try {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-          <QuickTips />
-        </TooltipProvider>
-      </QueryClientProvider>
-    );
-  } catch (error) {
-    console.error('App component error:', error);
-    return (
-      <div className="min-h-screen bg-white p-8 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
-          <p className="text-gray-600">Loading application...</p>
-        </div>
-      </div>
-    );
-  }
+  return <TestApp />;
 }
 
 export default App;
