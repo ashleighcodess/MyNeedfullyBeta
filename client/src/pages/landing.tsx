@@ -660,10 +660,10 @@ export default function Landing() {
             <div className="flex justify-center lg:justify-end">
               <div 
                 ref={wobbleRef}
-                className={`relative transition-all duration-1000 ease-out ${
+                className={`relative ${
                   isWobbleVisible 
-                    ? 'animate-wobble-in-right opacity-100' 
-                    : 'translate-x-full opacity-0'
+                    ? 'animate-wobble-in-right' 
+                    : 'transform translate-x-20 opacity-60'
                 }`}
               >
                 <img 
