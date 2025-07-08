@@ -189,7 +189,7 @@ export default function Profile() {
         description: "Help the community connect with you",
         points: 20,
         completed: !!user?.profileImageUrl,
-        action: () => setActiveTab('privacy'),
+        action: () => window.location.href = '/profile/edit',
         icon: User,
         color: 'text-blue-500',
         bgColor: 'bg-blue-50'
