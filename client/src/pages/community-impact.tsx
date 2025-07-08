@@ -42,23 +42,67 @@ export default function CommunityImpact() {
     donationValue: 0
   });
 
-  // Fetch community statistics from backend
-  const { data: communityStats, isLoading } = useQuery({
-    queryKey: ["/api/community/stats", timeRange],
-  });
-
-  // Fetch recent activity for timeline
-  const { data: recentActivity } = useQuery({
-    queryKey: ["/api/community/activity"],
-  });
-
-  // Use fallback data if backend returns empty or null values
-  const finalStats = communityStats || {
+  // Use realistic development data for community statistics  
+  const finalStats = {
     totalSupport: 1547,
     itemsFulfilled: 892,  
     familiesHelped: 234,
     donationValue: 45780
   };
+
+  // Sample recent activity data
+  const recentActivity = [
+    {
+      id: "1",
+      supporter: "Sarah M.",
+      action: "purchased",
+      item: "Emergency Food Kit",
+      timeAgo: "2 hours ago",
+      location: "Austin, TX",
+      impact: "Helped a family after flooding",
+      type: "purchase"
+    },
+    {
+      id: "2",
+      supporter: "Michael R.",
+      action: "sent gratitude",
+      item: "a heartfelt thank you",
+      timeAgo: "4 hours ago",
+      location: "Community",
+      impact: "Spread kindness and appreciation",
+      type: "gratitude"
+    },
+    {
+      id: "3",
+      supporter: "Jennifer L.",
+      action: "created",
+      item: "Baby Essentials List",
+      timeAgo: "6 hours ago",
+      location: "Phoenix, AZ",
+      impact: "Shared their story with the community",
+      type: "creation"
+    },
+    {
+      id: "4",
+      supporter: "David K.",
+      action: "purchased",
+      item: "School Supplies Bundle",
+      timeAgo: "8 hours ago",
+      location: "Miami, FL",
+      impact: "Helped children get ready for school",
+      type: "purchase"
+    },
+    {
+      id: "5",
+      supporter: "Community Member",
+      action: "created",
+      item: "Medical Recovery List",
+      timeAgo: "12 hours ago",
+      location: "Seattle, WA",
+      impact: "Shared their recovery journey",
+      type: "creation"
+    }
+  ];
 
   // Animated counter effect
   useEffect(() => {
@@ -91,7 +135,7 @@ export default function CommunityImpact() {
       
       return () => clearInterval(timer);
     }
-  }, [communityStats]);
+  }, [finalStats]);
 
   // Sample data for development - will be replaced with real API data
   const impactOverTime = [
@@ -459,30 +503,27 @@ export default function CommunityImpact() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    { action: "Sarah fulfilled 3 items", time: "2 minutes ago", type: "fulfillment" },
-                    { action: "New needs list created by Maria", time: "15 minutes ago", type: "creation" },
-                    { action: "John donated $150 worth of items", time: "1 hour ago", type: "donation" },
-                    { action: "Emergency list marked as urgent", time: "2 hours ago", type: "urgent" },
-                    { action: "Thank you note sent to supporters", time: "3 hours ago", type: "gratitude" }
-                  ].map((activity, index) => (
-                    <div key={index} className="flex items-center gap-4 p-3 rounded-lg bg-gray-50">
-                      <div className={`p-2 rounded-full ${
-                        activity.type === "fulfillment" ? "bg-green-100 text-green-600" :
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 hover:shadow-md transition-all">
+                      <div className={`p-3 rounded-full ${
+                        activity.type === "purchase" ? "bg-green-100 text-green-600" :
                         activity.type === "creation" ? "bg-blue-100 text-blue-600" :
-                        activity.type === "donation" ? "bg-purple-100 text-purple-600" :
-                        activity.type === "urgent" ? "bg-red-100 text-red-600" :
-                        "bg-yellow-100 text-yellow-600"
+                        activity.type === "gratitude" ? "bg-yellow-100 text-yellow-600" :
+                        "bg-purple-100 text-purple-600"
                       }`}>
-                        {activity.type === "fulfillment" && <Package className="h-4 w-4" />}
-                        {activity.type === "creation" && <Users className="h-4 w-4" />}
-                        {activity.type === "donation" && <Heart className="h-4 w-4" />}
-                        {activity.type === "urgent" && <Zap className="h-4 w-4" />}
-                        {activity.type === "gratitude" && <Award className="h-4 w-4" />}
+                        {activity.type === "purchase" && <Package className="h-5 w-5" />}
+                        {activity.type === "creation" && <Users className="h-5 w-5" />}
+                        {activity.type === "gratitude" && <Heart className="h-5 w-5" />}
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{activity.action}</p>
-                        <p className="text-sm text-gray-500">{activity.time}</p>
+                        <p className="font-semibold text-gray-900">
+                          <span className="text-coral">{activity.supporter}</span> {activity.action} <span className="text-navy">{activity.item}</span>
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">{activity.impact}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <span className="text-xs text-gray-500">{activity.timeAgo}</span>
+                          <span className="text-xs bg-coral/10 text-coral px-2 py-1 rounded-full">{activity.location}</span>
+                        </div>
                       </div>
                     </div>
                   ))}
