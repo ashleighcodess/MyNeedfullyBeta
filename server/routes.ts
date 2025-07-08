@@ -2426,7 +2426,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Email verification resend endpoint
   app.post('/api/auth/resend-verification', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.claims.sub;
+      console.log(`🔍 Resend verification attempt for user ID: ${userId}`);
       const user = await storage.getUser(userId);
       
       if (!user) {
