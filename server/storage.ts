@@ -154,11 +154,14 @@ export class DatabaseStorage implements IStorage {
     
     // Send welcome email for new users
     if (isNewUser && user.email && user.firstName) {
+      console.log(`📧 Attempting to send welcome email to ${user.email} (OAuth user)`);
       const { emailService } = await import('./email-service');
       // Fire and forget - don't block user creation if email fails
       emailService.sendWelcomeEmail(user.email, user.firstName).catch(error => {
-        console.error('Failed to send welcome email:', error);
+        console.error('❌ Failed to send welcome email to OAuth user:', error);
       });
+    } else if (isNewUser) {
+      console.log('⚠️ No welcome email sent - missing email or firstName for OAuth user');
     }
     
     return user;

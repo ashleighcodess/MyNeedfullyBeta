@@ -285,6 +285,22 @@ export async function setupMultiAuth(app: Express) {
         isVerified: false
       });
       
+      // Send welcome email for new email/password users
+      if (newUser.email && newUser.firstName) {
+        try {
+          console.log(`📧 Attempting to send welcome email to ${newUser.email}`);
+          const { emailService } = await import('../email-service');
+          // Fire and forget - don't block signup if email fails
+          emailService.sendWelcomeEmail(newUser.email, newUser.firstName).catch(error => {
+            console.error('❌ Failed to send welcome email:', error);
+          });
+        } catch (error) {
+          console.error('❌ Error loading email service:', error);
+        }
+      } else {
+        console.log('⚠️ No email or firstName provided for welcome email');
+      }
+      
       // Auto-login after signup
       req.login({ provider: 'email', profile: newUser }, (err) => {
         if (err) {

@@ -15,8 +15,9 @@ class EmailService {
     if (process.env.SENDGRID_API_KEY) {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       this.isInitialized = true;
+      console.log('✓ Email service initialized successfully');
     } else {
-      console.warn('SendGrid API key not found. Email notifications will be disabled.');
+      console.warn('⚠️ SendGrid API key not found. Email notifications will be disabled.');
     }
   }
 
