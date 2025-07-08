@@ -598,7 +598,10 @@ export default function Landing() {
                 </div>
               </div>
               
-              <Button className="bg-transparent border-2 border-navy text-navy hover:bg-navy hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300">
+              <Button 
+                className="bg-transparent border-2 border-navy text-navy hover:bg-navy hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300"
+                onClick={() => setLocation('/about')}
+              >
                 Discover More
               </Button>
             </div>
