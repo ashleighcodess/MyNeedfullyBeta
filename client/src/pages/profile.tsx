@@ -329,8 +329,8 @@ export default function Profile() {
               <CardContent className="p-4 sm:p-6 text-center">
                 <Avatar className="h-16 sm:h-20 w-16 sm:w-20 mx-auto mb-3 sm:mb-4">
                   <AvatarImage src={user.profileImageUrl} alt={user.firstName || 'User'} />
-                  <AvatarFallback className="text-lg sm:text-xl bg-coral text-white">
-                    {user.firstName?.charAt(0) || 'U'}
+                  <AvatarFallback className="text-lg sm:text-xl bg-white">
+                    <img src="/attached_assets/Logo_6_1752017502495.png" alt="Profile" className="w-full h-full object-cover rounded-full" />
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold text-navy mb-1 text-lg">

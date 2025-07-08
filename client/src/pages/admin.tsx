@@ -444,7 +444,7 @@ export default function AdminDashboard() {
                             {user.profileImageUrl ? (
                               <img src={user.profileImageUrl} alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
                             ) : (
-                              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-coral" />
+                              <img src="/attached_assets/Logo_6_1752017502495.png" alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
                             )}
                           </div>
                           <div className="min-w-0 flex-1">

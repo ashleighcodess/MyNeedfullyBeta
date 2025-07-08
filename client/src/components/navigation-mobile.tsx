@@ -95,9 +95,11 @@ export default function MobileNavigation() {
                           className="w-6 h-6 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-6 h-6 bg-coral/10 rounded-full flex items-center justify-center">
-                          <User className="h-3 w-3 text-coral" />
-                        </div>
+                        <img 
+                          src="/attached_assets/Logo_6_1752017502495.png" 
+                          alt="Profile" 
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
                       )}
                     </Button>
                   </DropdownMenuTrigger>

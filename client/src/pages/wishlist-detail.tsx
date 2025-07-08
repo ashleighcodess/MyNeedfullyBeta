@@ -853,9 +853,11 @@ export default function WishlistDetail() {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 bg-coral/10 rounded-full flex items-center justify-center">
-                      <User className="h-6 w-6 text-coral" />
-                    </div>
+                    <img 
+                      src="/attached_assets/Logo_6_1752017502495.png" 
+                      alt="Profile" 
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
                   )}
                   <div>
                     <div className="font-semibold">

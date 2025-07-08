@@ -111,9 +111,11 @@ export default function Navigation() {
                           className="w-7 h-7 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-7 h-7 bg-coral/10 rounded-full flex items-center justify-center">
-                          <User className="h-4 w-4 text-coral" />
-                        </div>
+                        <img 
+                          src="/attached_assets/Logo_6_1752017502495.png" 
+                          alt="Profile" 
+                          className="w-7 h-7 rounded-full object-cover"
+                        />
                       )}
                     </Button>
                   </DropdownMenuTrigger>
@@ -318,9 +320,11 @@ export default function Navigation() {
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
-                          <User className="h-4 w-4 text-coral" />
-                        </div>
+                        <img 
+                          src="/attached_assets/Logo_6_1752017502495.png" 
+                          alt="Profile" 
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
                       )}
                       <span className="text-sm font-medium">
                         {user?.firstName || 'Menu'}
