@@ -20,6 +20,7 @@ export default function Home() {
   
   // Check if user preference is supporter (default) or creator
   const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen bg-warm-bg">
@@ -48,7 +49,7 @@ export default function Home() {
                   </Button>
                 </Link>
               ) : (
-                <Link href="/create">
+                <Link href={isAuthenticated ? "/create" : "/signup"}>
                   <Button className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
                     <Plus className="h-6 w-6" />
                     <span>Create Needs List</span>
@@ -56,7 +57,7 @@ export default function Home() {
                 </Link>
               )}
               
-              <Link href={isSupporter ? "/create" : "/browse"}>
+              <Link href={isSupporter ? (isAuthenticated ? "/create" : "/signup") : "/browse"}>
                 <Button variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
                   {isSupporter ? <Plus className="h-6 w-6" /> : <Search className="h-6 w-6" />}
                   <span>{isSupporter ? "Create Needs List" : "Browse Needs Lists"}</span>
@@ -80,7 +81,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="space-y-0">
-              <Link href="/create">
+              <Link href={isAuthenticated ? "/create" : "/signup"}>
                 <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Plus className="h-8 w-8 text-coral mt-0.5 icon-wiggle" strokeWidth={1.5} />
                   <div>

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 import submarkLogo from "@assets/Logo_5_1751594497665.png";
 import { 
   Home, 
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default function Resources() {
+  const { isAuthenticated } = useAuth();
   const resourceCategories = {
     housing: {
       title: "Housing",
@@ -289,7 +291,7 @@ export default function Resources() {
                   Browse Needs Lists
                 </Button>
               </Link>
-              <Link href="/create">
+              <Link href={isAuthenticated ? "/create" : "/signup"}>
                 <Button size="lg" variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white transition-all">
                   Create Your Needs List
                 </Button>
