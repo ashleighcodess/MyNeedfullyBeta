@@ -29,6 +29,16 @@ import NotFound from "@/pages/not-found";
 import CommunityImpact from "@/pages/community-impact";
 import FAQ from "@/pages/faq";
 import FireDisasterRelief from "@/pages/fire-disaster-relief";
+import MedicalNecessity from "@/pages/medical-necessity";
+import EmergencyFloodRelief from "@/pages/emergency-flood-relief";
+import EssentialItems from "@/pages/essential-items";
+import GroceriesFood from "@/pages/groceries-food";
+import BabyItems from "@/pages/baby-items";
+import SchoolSupplies from "@/pages/school-supplies";
+import Clothing from "@/pages/clothing";
+import CommunityHelp from "@/pages/community-help";
+import CrisisReliefSupport from "@/pages/crisis-relief-support";
+import PersonalCareSupplies from "@/pages/personal-care-supplies";
 import Footer from "@/components/footer";
 import QuickTips from "@/components/quick-tips";
 import Navigation from "@/components/navigation";
@@ -93,6 +103,16 @@ function Router() {
               <Route path="/resources" component={Resources} />
               <Route path="/faq" component={FAQ} />
               <Route path="/fire-disaster-relief" component={FireDisasterRelief} />
+              <Route path="/medical-necessity" component={MedicalNecessity} />
+              <Route path="/emergency-flood-relief" component={EmergencyFloodRelief} />
+              <Route path="/essential-items" component={EssentialItems} />
+              <Route path="/groceries-food" component={GroceriesFood} />
+              <Route path="/baby-items" component={BabyItems} />
+              <Route path="/school-supplies" component={SchoolSupplies} />
+              <Route path="/clothing" component={Clothing} />
+              <Route path="/community-help" component={CommunityHelp} />
+              <Route path="/crisis-relief-support" component={CrisisReliefSupport} />
+              <Route path="/personal-care-supplies" component={PersonalCareSupplies} />
               <Route path="/signup" component={Signup} />
               <Route path="/sign-up" component={Signup} />
               <Route path="/login" component={AuthPage} />

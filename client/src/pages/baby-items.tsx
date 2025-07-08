@@ -5,10 +5,10 @@ import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   Baby, 
-  Shirt, 
   Milk, 
-  Teddy, 
-  Stroller,
+  Shirt, 
+  Zap, 
+  Heart,
   Plus,
   Search
 } from "lucide-react";
@@ -16,11 +16,11 @@ import {
 export default function BabyItems() {
   const { isAuthenticated } = useAuth();
 
-  const babyCategories = [
-    { icon: Shirt, name: "Baby Clothing", description: "Onesies, sleepers, seasonal clothes, shoes" },
-    { icon: Milk, name: "Feeding Essentials", description: "Formula, bottles, baby food, bibs" },
-    { icon: Teddy, name: "Comfort & Play", description: "Toys, blankets, pacifiers, books" },
-    { icon: Stroller, name: "Baby Gear", description: "Strollers, car seats, high chairs, carriers" }
+  const essentialItems = [
+    { icon: Milk, name: "Feeding Essentials", description: "Formula, baby food, bottles, feeding supplies" },
+    { icon: Shirt, name: "Clothing & Diapers", description: "Baby clothes, diapers, wipes, comfort items" },
+    { icon: Zap, name: "Safety & Care", description: "Car seats, strollers, baby monitors, safety gear" },
+    { icon: Heart, name: "Development & Play", description: "Toys, books, developmental items, comfort blankets" }
   ];
 
   return (
@@ -37,9 +37,8 @@ export default function BabyItems() {
             Baby Items Support
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Every baby deserves a loving start in life. MyNeedfully helps new parents and 
-            families with young children get essential baby items, from diapers and formula 
-            to clothing and safety gear.
+            Every baby deserves the essentials for healthy development. MyNeedfully connects 
+            families with newborns and young children to community supporters who provide baby items.
           </p>
         </div>
 
@@ -47,94 +46,34 @@ export default function BabyItems() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="text-center border-pink-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-pink-600 mb-2">$15,000</div>
-              <div className="text-gray-600">Average cost of baby's first year</div>
+              <div className="text-3xl font-bold text-pink-600 mb-2">12M+</div>
+              <div className="text-gray-600">Children under 5 in poverty</div>
             </CardContent>
           </Card>
-          <Card className="text-center border-pink-200">
+          <Card className="text-center border-blue-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-pink-600 mb-2">300+</div>
-              <div className="text-gray-600">Diapers needed per month</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">$3,000+</div>
+              <div className="text-gray-600">Annual cost of baby essentials</div>
             </CardContent>
           </Card>
-          <Card className="text-center border-pink-200">
+          <Card className="text-center border-green-200">
             <CardContent className="py-6">
-              <div className="text-3xl font-bold text-pink-600 mb-2">Every child</div>
-              <div className="text-gray-600">Deserves love and care</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">40%</div>
+              <div className="text-gray-600">Families struggle with baby costs</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* How Baby Support Works */}
+        {/* Essential Items */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-navy text-center mb-8">
-            Supporting Babies and Families
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="border-pink-200">
-              <CardHeader>
-                <CardTitle className="text-pink-600">For New Parents</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    List specific baby items and sizes needed
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Share your baby's age and developmental needs
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Receive items delivered safely to your home
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Focus on bonding instead of financial stress
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-pink-200">
-              <CardHeader>
-                <CardTitle className="text-pink-600">For Baby Supporters</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Find families with babies in need
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Purchase from trusted baby retailers
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Send love and support to growing families
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    Help babies thrive in their early years
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Baby Item Categories */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-navy text-center mb-8">
-            Essential Baby Categories
+            Most Needed Baby Items
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {babyCategories.map((item, index) => {
+            {essentialItems.map((item, index) => {
               const IconComponent = item.icon;
               return (
-                <Card key={index} className="text-center border-pink-200 hover:border-pink-300 transition-colors">
+                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                   <CardContent className="py-6">
                     <div className="bg-pink-100 p-3 rounded-full w-fit mx-auto mb-4">
                       <IconComponent className="h-8 w-8 text-pink-600" />
@@ -148,89 +87,34 @@ export default function BabyItems() {
           </div>
         </div>
 
-        {/* Age-Based Needs */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-navy text-center mb-8">
-            Supporting Every Stage of Baby Development
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-pink-200">
-              <CardHeader>
-                <CardTitle className="text-pink-600">Newborn (0-3 months)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-gray-600">
-                  <li>• Newborn diapers and wipes</li>
-                  <li>• Onesies and sleepers</li>
-                  <li>• Swaddles and receiving blankets</li>
-                  <li>• Formula and bottles</li>
-                  <li>• Infant car seat</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-pink-200">
-              <CardHeader>
-                <CardTitle className="text-pink-600">Infant (3-12 months)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-gray-600">
-                  <li>• Growing size diapers</li>
-                  <li>• Baby food and snacks</li>
-                  <li>• Toys for development</li>
-                  <li>• High chair and feeding supplies</li>
-                  <li>• Baby-proofing items</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-pink-200">
-              <CardHeader>
-                <CardTitle className="text-pink-600">Toddler (1-3 years)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-gray-600">
-                  <li>• Pull-ups and potty training</li>
-                  <li>• Toddler clothing and shoes</li>
-                  <li>• Educational toys and books</li>
-                  <li>• Toddler car seat and stroller</li>
-                  <li>• Outdoor play equipment</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Safety First */}
-        <Card className="bg-yellow-50 border-yellow-200 mb-12">
-          <CardContent className="py-8">
-            <div className="text-center">
-              <Baby className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-navy mb-4">
-                Safety is Our Priority
-              </h3>
-              <p className="text-gray-600 max-w-3xl mx-auto mb-6">
-                All baby items shared through MyNeedfully are new and meet current safety standards. 
-                We encourage supporters to purchase from reputable retailers and check for recalls. 
-                Baby safety is always the top priority.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Success Story */}
+        {/* How to Get Help */}
         <Card className="bg-pink-50 border-pink-200 mb-12">
           <CardContent className="py-8">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-navy mb-4">
-                "My baby has everything she needs thanks to this community"
-              </h3>
-              <p className="text-gray-600 max-w-3xl mx-auto mb-6">
-                "As a single mom, I worried constantly about affording diapers and formula. 
-                The MyNeedfully community showed up for us with baby clothes, toys, and 
-                everything my daughter needed. I'm so grateful for their kindness."
-              </p>
-              <p className="text-pink-600 font-semibold">- Sarah M., New Mother</p>
+            <h2 className="text-2xl font-bold text-navy text-center mb-6">
+              How to Get Baby Items Support
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="bg-pink-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                  1
+                </div>
+                <h3 className="font-semibold text-navy mb-2">Share Your Baby's Needs</h3>
+                <p className="text-sm text-gray-600">List the essential items your baby needs for healthy development</p>
+              </div>
+              <div className="text-center">
+                <div className="bg-pink-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                  2
+                </div>
+                <h3 className="font-semibold text-navy mb-2">Community Provides</h3>
+                <p className="text-sm text-gray-600">Caring supporters purchase baby items and supplies</p>
+              </div>
+              <div className="text-center">
+                <div className="bg-pink-600 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                  3
+                </div>
+                <h3 className="font-semibold text-navy mb-2">Baby Thrives</h3>
+                <p className="text-sm text-gray-600">Your baby receives essential items for healthy growth</p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -238,22 +122,22 @@ export default function BabyItems() {
         {/* Call to Action */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-navy mb-6">
-            Help Babies Thrive from Day One
+            Get Baby Items Support Today
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Every baby deserves love, comfort, and everything they need to grow.
+            Every baby deserves the best start in life. Connect with caring community members.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={isAuthenticated ? "/create" : "/signup"}>
               <Button size="lg" className="bg-coral hover:bg-coral/90 text-white px-8 py-3">
                 <Plus className="h-5 w-5 mr-2" />
-                Request Baby Support
+                Request Baby Items
               </Button>
             </Link>
             <Link href="/browse">
               <Button size="lg" variant="outline" className="border-coral text-coral hover:bg-coral/5 px-8 py-3">
                 <Search className="h-5 w-5 mr-2" />
-                Support Growing Families
+                Support Baby Needs
               </Button>
             </Link>
           </div>
