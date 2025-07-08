@@ -218,7 +218,7 @@ export default function AdminDashboard() {
                   variant="outline" 
                   size="sm"
                   onClick={() => {
-                    window.location.href = '/';
+                    window.location.href = '/profile';
                   }}
                   className="border-gray-300 text-gray-700 hover:bg-gray-50 flex-1 sm:flex-none text-xs sm:text-sm"
                 >
