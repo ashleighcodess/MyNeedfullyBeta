@@ -1129,7 +1129,7 @@ export default function Profile() {
                                       Cancelled
                                     </Badge>
                                   </div>
-                                  <div className="absolute bottom-2 right-2">
+                                  <div className="absolute bottom-2 left-2 right-2">
                                     <Button
                                       size="sm"
                                       onClick={() => {
@@ -1138,7 +1138,7 @@ export default function Profile() {
                                         }
                                       }}
                                       disabled={restoreWishlistMutation.isPending}
-                                      className="bg-green-600 hover:bg-green-700 text-white"
+                                      className="w-full bg-green-600 hover:bg-green-700 text-white mt-2"
                                     >
                                       <RefreshCw className="mr-1 h-3 w-3" />
                                       Restore
