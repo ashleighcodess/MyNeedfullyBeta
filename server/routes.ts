@@ -2423,6 +2423,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email verification resend endpoint
+  app.post('/api/auth/resend-verification', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if user is already verified
+      if (user.emailVerified) {
+        return res.json({ message: "Email already verified" });
+      }
+      
+      // Generate verification token
+      const token = generateSecureToken();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      
+      // Save verification token
+      await storage.createEmailVerificationToken({
+        userId: user.id,
+        token,
+        expiresAt
+      });
+      
+      // Send verification email using SendGrid
+      try {
+        console.log(`📧 Attempting to send verification email to ${user.email}`);
+        const emailSent = await emailService.sendEmailVerificationEmail(
+          user.email,
+          `${user.firstName} ${user.lastName}`.trim() || user.email,
+          token
+        );
+        
+        if (emailSent) {
+          console.log(`✅ Verification email sent successfully to ${user.email}`);
+        } else {
+          console.error(`❌ Failed to send verification email to ${user.email}`);
+        }
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError);
+        return res.status(500).json({ message: "Failed to send verification email" });
+      }
+      
+      res.json({ message: "Verification email sent successfully" });
+    } catch (error) {
+      console.error("Resend verification error:", error);
+      res.status(500).json({ message: "Failed to resend verification email" });
+    }
+  });
+
   // Password reset endpoints
   app.post('/api/auth/forgot-password', async (req, res) => {
     try {
