@@ -123,16 +123,16 @@ export default function Navigation() {
                       <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/dashboard">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Zap className="mr-2 h-4 w-4" />
-                        Quick Actions
-                      </DropdownMenuItem>
-                    </Link>
                     <Link href="/profile">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Zap className="mr-2 h-4 w-4" />
+                        Quick Actions
                       </DropdownMenuItem>
                     </Link>
                     <Link href="/my-needs-lists">
@@ -192,16 +192,6 @@ export default function Navigation() {
                     
                     {user ? (
                       <div className="border-t pt-4">
-                        <Link href="/dashboard">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <Zap className="mr-2 h-4 w-4" />
-                            Quick Actions
-                          </Button>
-                        </Link>
                         <Link href="/profile">
                           <Button 
                             variant="ghost" 
@@ -210,6 +200,16 @@ export default function Navigation() {
                           >
                             <User className="mr-2 h-4 w-4" />
                             Dashboard
+                          </Button>
+                        </Link>
+                        <Link href="/dashboard">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <Zap className="mr-2 h-4 w-4" />
+                            Quick Actions
                           </Button>
                         </Link>
                         <Link href="/my-needs-lists">
@@ -333,16 +333,16 @@ export default function Navigation() {
                       <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/dashboard">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Zap className="mr-2 h-4 w-4" />
-                        Quick Actions
-                      </DropdownMenuItem>
-                    </Link>
                     <Link href="/profile">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Zap className="mr-2 h-4 w-4" />
+                        Quick Actions
                       </DropdownMenuItem>
                     </Link>
                     <Link href="/my-needs-lists">

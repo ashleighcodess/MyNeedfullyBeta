@@ -107,16 +107,16 @@ export default function MobileNavigation() {
                       <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Zap className="mr-2 h-4 w-4" />
-                        Quick Actions
-                      </DropdownMenuItem>
-                    </Link>
                     <Link href="/profile">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Zap className="mr-2 h-4 w-4" />
+                        Quick Actions
                       </DropdownMenuItem>
                     </Link>
                     <Link href="/my-needs-lists">
@@ -266,16 +266,16 @@ export default function MobileNavigation() {
                       <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Zap className="mr-2 h-4 w-4" />
-                        Quick Actions
-                      </DropdownMenuItem>
-                    </Link>
                     <Link href="/profile">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Zap className="mr-2 h-4 w-4" />
+                        Quick Actions
                       </DropdownMenuItem>
                     </Link>
                     <Link href="/my-needs-lists">
