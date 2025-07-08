@@ -600,6 +600,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Recent Activity for Dashboard and Components
+  app.get('/api/activity/recent', async (req, res) => {
+    try {
+      // Get real analytics events from database
+      const recentAnalytics = await db.select({
+        id: analyticsEvents.id,
+        eventType: analyticsEvents.eventType,
+        userId: analyticsEvents.userId,
+        data: analyticsEvents.data,
+        createdAt: analyticsEvents.createdAt
+      })
+      .from(analyticsEvents)
+      .where(or(
+        eq(analyticsEvents.eventType, 'item_fulfilled'),
+        eq(analyticsEvents.eventType, 'wishlist_created'),
+        eq(analyticsEvents.eventType, 'thank_you_sent'),
+        eq(analyticsEvents.eventType, 'wishlist_completed')
+      ))
+      .orderBy(desc(analyticsEvents.createdAt))
+      .limit(10);
+
+      console.log(`Found ${recentAnalytics.length} recent analytics events for activity/recent`);
+
+      // Get user details for each activity
+      const recentActivity = [];
+      for (const analytics of recentAnalytics) {
+        try {
+          const user = await storage.getUser(analytics.userId);
+          const timeAgo = getTimeAgo(analytics.createdAt);
+          
+          let activityItem;
+          if (analytics.eventType === 'item_fulfilled') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Anonymous Supporter',
+              action: "fulfilled",
+              item: analytics.data?.itemTitle || 'an item',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "1 person helped",
+              type: "donation"
+            };
+          } else if (analytics.eventType === 'wishlist_created') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
+              action: "created",
+              item: analytics.data?.wishlistTitle || 'a needs list',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "New request posted",
+              type: "request"
+            };
+          } else if (analytics.eventType === 'thank_you_sent') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
+              action: "sent thanks",
+              item: "to their supporter",
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "Gratitude shared",
+              type: "thanks"
+            };
+          } else if (analytics.eventType === 'wishlist_completed') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: "Community",
+              action: "completed",
+              item: analytics.data?.wishlistTitle || 'a needs list',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: `${analytics.data?.totalItems || 0} items fulfilled`,
+              type: "completion"
+            };
+          }
+          
+          if (activityItem) {
+            recentActivity.push(activityItem);
+          }
+        } catch (userError) {
+          console.error('Error fetching user for analytics event:', userError);
+          // Add anonymous entry if user lookup fails
+          const timeAgo = getTimeAgo(analytics.createdAt);
+          recentActivity.push({
+            id: `activity-${analytics.id}`,
+            supporter: "Anonymous Supporter",
+            action: analytics.eventType === 'item_fulfilled' ? "fulfilled" : "helped",
+            item: analytics.data?.itemTitle || analytics.data?.wishlistTitle || 'someone in need',
+            timeAgo,
+            location: 'Community',
+            impact: "Made a difference",
+            type: "anonymous"
+          });
+        }
+      }
+
+      console.log(`Returning ${recentActivity.length} formatted activities for activity/recent`);
+
+      // If no real activity, show encouragement message
+      if (recentActivity.length === 0) {
+        const fallbackActivity = [
+          {
+            id: "placeholder-1",
+            supporter: "Be the first!",
+            action: "support",
+            item: "Create the first donation on MyNeedfully",
+            timeAgo: "Start now",
+            location: "Your community",
+            impact: "Make the first impact",
+            type: "invitation"
+          }
+        ];
+        return res.json(fallbackActivity);
+      }
+
+      res.json(recentActivity);
+    } catch (error) {
+      console.error("Error fetching recent activity:", error);
+      res.status(500).json({ message: "Failed to fetch recent activity" });
+    }
+  });
+
   // Community Impact API routes
   app.get('/api/community/stats', async (req, res) => {
     try {

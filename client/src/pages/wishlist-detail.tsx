@@ -211,6 +211,7 @@ export default function WishlistDetail() {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
       queryClient.invalidateQueries({ queryKey: ['/api/activity/recent'] });
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/donations'] });
       toast({
         title: "Thank you!",
         description: "Item marked as purchased. The creator will be notified.",
