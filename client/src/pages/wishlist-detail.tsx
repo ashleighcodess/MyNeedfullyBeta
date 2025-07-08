@@ -3,7 +3,7 @@ import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import ProductCard from "@/components/product-card";
-import ThankYouNote from "@/components/thank-you-note";
+
 import PurchaseConfirmationModal from "@/components/purchase-confirmation-modal";
 import { ShareModal } from "@/components/share-modal";
 import { Button } from "@/components/ui/button";
@@ -21,13 +21,12 @@ import {
   Calendar, 
   Share2, 
   Heart, 
-  Gift, 
+  Gift,
   User, 
   Clock,
   Eye,
   Copy,
   Check,
-  MessageSquare,
   Plus,
   AlertCircle,
   List,
@@ -50,7 +49,7 @@ export default function WishlistDetail() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [copiedAddress, setCopiedAddress] = useState(false);
-  const [showThankYouNote, setShowThankYouNote] = useState(false);
+
   const [showImageCarousel, setShowImageCarousel] = useState(false);
   const [itemPricing, setItemPricing] = useState<Record<string, any>>({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -873,37 +872,7 @@ export default function WishlistDetail() {
               </Card>
             )}
 
-            {/* Action Buttons */}
-            {!isOwner && (
-              <div className="space-y-3">
-                <Button 
-                  className="w-full bg-coral hover:bg-coral/90" 
-                  size="lg"
-                  onClick={() => window.open('/products', '_blank')}
-                >
-                  <Gift className="mr-2 h-5 w-5" />
-                  Find Items to Support
-                </Button>
-                
-                <Dialog open={showThankYouNote} onOpenChange={setShowThankYouNote}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="w-full" size="lg">
-                      <MessageSquare className="mr-2 h-5 w-5" />
-                      Send Thank You Note
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>Send a Thank You Note</DialogTitle>
-                    </DialogHeader>
-                    <ThankYouNote 
-                      toUserId={wishlist.userId}
-                      onSent={() => setShowThankYouNote(false)}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </div>
-            )}
+            {/* Action Buttons - Removed per user request */}
 
             {/* Stats */}
             <Card>
