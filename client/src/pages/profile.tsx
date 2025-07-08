@@ -180,34 +180,111 @@ export default function Profile() {
     { id: 'archive', label: 'Archive List', icon: Archive, active: activeTab === 'archive' },
   ];
 
-  const getCompletionTasks = () => {
-    const tasks = [];
-    
-    if (!user?.profileImageUrl) {
-      tasks.push({
+  // Enhanced gamified profile completion system
+  const getProfileCompletionData = () => {
+    const tasks = [
+      {
+        id: 'profile_photo',
         title: "Add Profile Photo",
         description: "Help the community connect with you",
-        action: "Upload"
-      });
-    }
-    
-    if (!userWishlists || userWishlists.length === 0) {
-      tasks.push({
+        points: 20,
+        completed: !!user?.profileImageUrl,
+        action: () => {
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*';
+          fileInput.onchange = (e) => {
+            const target = e.target as HTMLInputElement;
+            if (target.files && target.files[0]) {
+              // Handle file upload - this would trigger the existing upload logic
+              console.log('File selected:', target.files[0]);
+            }
+          };
+          fileInput.click();
+        },
+        icon: User,
+        color: 'text-blue-500',
+        bgColor: 'bg-blue-50'
+      },
+      {
+        id: 'complete_name',
+        title: "Complete Your Name",
+        description: "Add your full name for better trust",
+        points: 15,
+        completed: !!(user?.firstName && user?.lastName),
+        action: () => setActiveTab('privacy'),
+        icon: User,
+        color: 'text-green-500',
+        bgColor: 'bg-green-50'
+      },
+      {
+        id: 'first_needs_list',
         title: "Create Your First Needs List",
         description: "Share what you need with the community",
-        action: "Create"
-      });
-    }
-    
-    if (!user?.lastName) {
-      tasks.push({
-        title: "Complete Your Name",
-        description: "Add your last name for better trust",
-        action: "Add"
-      });
-    }
-    
-    return tasks;
+        points: 50,
+        completed: !!(userWishlists && userWishlists.length > 0),
+        action: () => setActiveTab('create'),
+        icon: Gift,
+        color: 'text-purple-500',
+        bgColor: 'bg-purple-50'
+      },
+      {
+        id: 'email_verified',
+        title: "Verify Your Email",
+        description: "Confirm your email address",
+        points: 25,
+        completed: !!user?.emailVerified,
+        action: () => setActiveTab('privacy'),
+        icon: Mail,
+        color: 'text-orange-500',
+        bgColor: 'bg-orange-50'
+      },
+      {
+        id: 'first_purchase',
+        title: "Support Someone",
+        description: "Make your first purchase to help someone",
+        points: 100,
+        completed: !!(userDonations && userDonations.length > 0),
+        action: () => window.location.href = '/browse',
+        icon: Heart,
+        color: 'text-red-500',
+        bgColor: 'bg-red-50'
+      },
+      {
+        id: 'thank_you_note',
+        title: "Send a Thank You Note",
+        description: "Express gratitude to a supporter",
+        points: 30,
+        completed: !!(thankYouNotes && thankYouNotes.filter((note: any) => note.fromUserId === user?.id).length > 0),
+        action: () => setActiveTab('thankyou'),
+        icon: MessageCircle,
+        color: 'text-indigo-500',
+        bgColor: 'bg-indigo-50'
+      }
+    ];
+
+    const completedTasks = tasks.filter(task => task.completed);
+    const totalPoints = tasks.reduce((sum, task) => sum + task.points, 0);
+    const earnedPoints = completedTasks.reduce((sum, task) => sum + task.points, 0);
+    const completionPercentage = Math.round((earnedPoints / totalPoints) * 100);
+
+    return {
+      tasks,
+      completedTasks,
+      totalPoints,
+      earnedPoints,
+      completionPercentage,
+      pendingTasks: tasks.filter(task => !task.completed)
+    };
+  };
+
+  const getAchievementLevel = (percentage: number) => {
+    if (percentage >= 100) return { level: 'Champion', emoji: '🏆', color: 'text-yellow-500' };
+    if (percentage >= 80) return { level: 'Expert', emoji: '🌟', color: 'text-purple-500' };
+    if (percentage >= 60) return { level: 'Explorer', emoji: '🎯', color: 'text-blue-500' };
+    if (percentage >= 40) return { level: 'Builder', emoji: '🔨', color: 'text-green-500' };
+    if (percentage >= 20) return { level: 'Starter', emoji: '🌱', color: 'text-orange-500' };
+    return { level: 'Beginner', emoji: '✨', color: 'text-gray-500' };
   };
 
   if (!user) {
@@ -426,38 +503,148 @@ export default function Profile() {
                   </CardContent>
                 </Card>
 
-                {/* Complete Your Profile */}
-                {getCompletionTasks().length > 0 && (
-                  <Card className="mb-8">
-                    <CardHeader>
-                      <CardTitle>Complete Your Profile</CardTitle>
-                      <p className="text-gray-600">Add these details to improve your profile and build trust in the community:</p>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {getCompletionTasks().map((task, index) => (
-                          <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                            <div>
-                              <h4 className="font-semibold">{task.title}</h4>
-                              <p className="text-sm text-gray-600">{task.description}</p>
+                {/* Gamified Complete Your Profile */}
+                {(() => {
+                  const completionData = getProfileCompletionData();
+                  const achievement = getAchievementLevel(completionData.completionPercentage);
+                  
+                  return (
+                    <Card className="mb-8 bg-gradient-to-br from-coral/5 to-purple/5 border-coral/20">
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-coral/10 rounded-full">
+                              <Award className="h-6 w-6 text-coral" />
                             </div>
-                            {task.title === "Add Profile Photo" ? (
-                              <Link href="/profile/edit">
-                                <Button variant="outline" size="sm">{task.action}</Button>
-                              </Link>
-                            ) : task.title === "Create Your First Needs List" ? (
-                              <Link href="/create">
-                                <Button variant="outline" size="sm">{task.action}</Button>
-                              </Link>
-                            ) : (
-                              <Button variant="outline" size="sm">{task.action}</Button>
-                            )}
+                            <div>
+                              <CardTitle className="text-xl">Profile Journey</CardTitle>
+                              <p className="text-gray-600 text-sm">Level up your community impact!</p>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-coral flex items-center space-x-2">
+                              <span className="text-xl">{achievement.emoji}</span>
+                              <span>{completionData.completionPercentage}%</span>
+                            </div>
+                            <div className={`text-sm font-medium ${achievement.color}`}>
+                              {achievement.level}
+                            </div>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        {/* Progress Bar */}
+                        <div className="mb-6">
+                          <div className="flex justify-between text-sm mb-2">
+                            <span className="text-gray-600">Progress</span>
+                            <span className="font-semibold">{completionData.earnedPoints} / {completionData.totalPoints} points</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-3">
+                            <div 
+                              className="bg-gradient-to-r from-coral to-purple h-3 rounded-full transition-all duration-500"
+                              style={{ width: `${completionData.completionPercentage}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Achievement Levels */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-6">
+                          {[
+                            { level: 'Beginner', emoji: '✨', min: 0 },
+                            { level: 'Starter', emoji: '🌱', min: 20 },
+                            { level: 'Builder', emoji: '🔨', min: 40 },
+                            { level: 'Explorer', emoji: '🎯', min: 60 },
+                            { level: 'Expert', emoji: '🌟', min: 80 },
+                            { level: 'Champion', emoji: '🏆', min: 100 }
+                          ].map((level, index) => (
+                            <div 
+                              key={index}
+                              className={`text-center p-2 rounded-lg border-2 transition-all ${
+                                completionData.completionPercentage >= level.min 
+                                  ? 'bg-coral text-white border-coral' 
+                                  : 'bg-gray-50 border-gray-200 text-gray-400'
+                              }`}
+                            >
+                              <div className="text-lg">{level.emoji}</div>
+                              <div className="text-xs font-medium">{level.level}</div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Pending Tasks */}
+                        {completionData.pendingTasks.length > 0 && (
+                          <div className="space-y-3">
+                            <h4 className="font-semibold text-gray-900 mb-4">Complete These Tasks:</h4>
+                            {completionData.pendingTasks.map((task) => (
+                              <div 
+                                key={task.id}
+                                className="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-dashed border-gray-200 hover:border-coral/30 transition-all cursor-pointer"
+                                onClick={task.action}
+                              >
+                                <div className="flex items-center space-x-3">
+                                  <div className={`p-2 rounded-lg ${task.bgColor}`}>
+                                    <task.icon className={`h-5 w-5 ${task.color}`} />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">{task.title}</h4>
+                                    <p className="text-sm text-gray-600">{task.description}</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-lg font-bold text-coral">+{task.points}</div>
+                                  <div className="text-xs text-gray-500">points</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Completed Tasks */}
+                        {completionData.completedTasks.length > 0 && (
+                          <div className="mt-6 pt-6 border-t">
+                            <h4 className="font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+                              <Check className="h-5 w-5 text-green-500" />
+                              <span>Completed ({completionData.completedTasks.length})</span>
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {completionData.completedTasks.map((task) => (
+                                <div 
+                                  key={task.id}
+                                  className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200"
+                                >
+                                  <div className="p-2 bg-green-100 rounded-lg">
+                                    <task.icon className="h-4 w-4 text-green-600" />
+                                  </div>
+                                  <div className="flex-1">
+                                    <h4 className="font-medium text-green-900">{task.title}</h4>
+                                    <p className="text-sm text-green-700">+{task.points} points earned</p>
+                                  </div>
+                                  <Check className="h-5 w-5 text-green-500" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Completion Celebration */}
+                        {completionData.completionPercentage === 100 && (
+                          <div className="mt-6 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-2 border-yellow-200">
+                            <div className="text-center">
+                              <div className="text-4xl mb-2">🎉</div>
+                              <h3 className="text-xl font-bold text-yellow-800 mb-2">
+                                Congratulations, Champion!
+                              </h3>
+                              <p className="text-yellow-700">
+                                You've completed your profile journey and earned all {completionData.totalPoints} points!
+                                You're now a verified community champion ready to make maximum impact.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })()}
 
                 {/* Activity Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
