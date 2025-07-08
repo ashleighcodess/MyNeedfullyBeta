@@ -4,6 +4,7 @@ import { useWebSocket } from "@/lib/websocket";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import logoImage from "@assets/Logo_7_1752018484130.png";
 import { 
   Plus, 
   Heart, 
@@ -24,9 +25,18 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-warm-bg">
+    <div className="min-h-screen bg-warm-bg relative overflow-hidden">
+      {/* Background Logo with Opacity */}
+      <div 
+        className="absolute inset-0 opacity-5 bg-no-repeat bg-center bg-contain pointer-events-none"
+        style={{
+          backgroundImage: `url(${logoImage})`,
+          backgroundSize: '400px 400px',
+          backgroundPosition: 'center center'
+        }}
+      />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-navy mb-2">
