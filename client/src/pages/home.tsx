@@ -9,7 +9,8 @@ import {
   Heart, 
   Search, 
   Gift,
-  Settings
+  Settings,
+  User
 } from "lucide-react";
 
 export default function Home() {
@@ -40,7 +41,7 @@ export default function Home() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {isSupporter ? (
                 <Link href="/browse">
                   <Button data-tip="browse-needs" className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
@@ -68,6 +69,13 @@ export default function Home() {
                 <Button data-tip="product-search" variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
                   <Gift className="h-6 w-6" />
                   <span>Search Products</span>
+                </Button>
+              </Link>
+              
+              <Link href="/dashboard">
+                <Button data-tip="go-to-dashboard" variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
+                  <User className="h-6 w-6" />
+                  <span>Go to my Dashboard</span>
                 </Button>
               </Link>
             </div>
