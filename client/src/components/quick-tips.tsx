@@ -178,13 +178,14 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
 
   return (
     <>
-      {/* Show tips button if user has seen tips before */}
-      {hasSeenTips && !isActive && (
+      {/* Show tips button - always show for easy testing */}
+      {!isActive && (
         <Button
           onClick={showTipsAgain}
           variant="outline"
           size="sm"
           className="fixed bottom-4 right-4 z-40 bg-white shadow-lg hover:bg-coral/10 border-coral/20"
+          title="Start Quick Tour"
         >
           <Lightbulb className="h-5 w-5" />
         </Button>
@@ -289,26 +290,54 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
             
             return (
               <>
-                {/* Dark overlay with cutout for highlighted element */}
+                {/* Four overlay pieces to create cutout effect */}
+                {/* Top */}
                 <div
-                  className="fixed inset-0 z-30 pointer-events-none"
+                  className="fixed z-30 pointer-events-none bg-black/70"
                   style={{
-                    background: `
-                      linear-gradient(transparent, transparent),
-                      radial-gradient(
-                        ellipse ${rect.width + padding * 2}px ${rect.height + padding * 2}px at 
-                        ${rect.left + rect.width / 2}px ${rect.top + rect.height / 2}px,
-                        transparent 0%,
-                        transparent 50%,
-                        rgba(0, 0, 0, 0.7) 50%
-                      )
-                    `
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: rect.top - padding
+                  }}
+                />
+                
+                {/* Bottom */}
+                <div
+                  className="fixed z-30 pointer-events-none bg-black/70"
+                  style={{
+                    top: rect.bottom + padding,
+                    left: 0,
+                    right: 0,
+                    bottom: 0
+                  }}
+                />
+                
+                {/* Left */}
+                <div
+                  className="fixed z-30 pointer-events-none bg-black/70"
+                  style={{
+                    top: rect.top - padding,
+                    left: 0,
+                    width: rect.left - padding,
+                    height: rect.height + padding * 2
+                  }}
+                />
+                
+                {/* Right */}
+                <div
+                  className="fixed z-30 pointer-events-none bg-black/70"
+                  style={{
+                    top: rect.top - padding,
+                    left: rect.right + padding,
+                    right: 0,
+                    height: rect.height + padding * 2
                   }}
                 />
                 
                 {/* Highlight ring around target element */}
                 <div
-                  className="fixed z-40 pointer-events-none"
+                  className="fixed z-40 pointer-events-none animate-pulse"
                   style={{
                     top: rect.top - padding,
                     left: rect.left - padding,
@@ -316,26 +345,9 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
                     height: rect.height + padding * 2,
                     border: '3px solid #FF6B6B',
                     borderRadius: '8px',
-                    boxShadow: '0 0 20px rgba(255, 107, 107, 0.5)',
-                    animation: 'pulse 2s infinite'
+                    boxShadow: '0 0 20px rgba(255, 107, 107, 0.5), inset 0 0 20px rgba(255, 107, 107, 0.3)'
                   }}
                 />
-                
-                {/* Pulse animation styles */}
-                <style>
-                  {`
-                    @keyframes pulse {
-                      0%, 100% { 
-                        opacity: 1; 
-                        transform: scale(1);
-                      }
-                      50% { 
-                        opacity: 0.7; 
-                        transform: scale(1.02);
-                      }
-                    }
-                  `}
-                </style>
               </>
             );
           })()}
