@@ -249,6 +249,34 @@
     }
   }
 
+  /* Wobble In From Right Animation */
+  @keyframes wobble-in-right {
+    0% {
+      transform: translateX(100%) rotate(10deg);
+      opacity: 0;
+    }
+    25% {
+      transform: translateX(-10px) rotate(-5deg);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateX(5px) rotate(3deg);
+      opacity: 0.9;
+    }
+    75% {
+      transform: translateX(-2px) rotate(-1deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+  }
+
+  .animate-wobble-in-right {
+    animation: wobble-in-right 1.2s ease-out forwards;
+  }
+
   /* Recent Acts of Kindness Floating Animations */
   @keyframes float {
     0%, 100% {

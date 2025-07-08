@@ -71,6 +71,31 @@ import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_17515863
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
 
+// Custom hook for scroll-triggered wobble animation
+const useWobbleAnimation = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return { isVisible, elementRef };
+};
+
 // Custom hook for animated counters
 function useAnimatedCounter(targetValue: number, duration: number = 2000, startAnimation: boolean = false) {
   const [value, setValue] = useState(0);
@@ -112,6 +137,9 @@ export default function Landing() {
   const [searchPlaceholder, setSearchPlaceholder] = useState("Search needs lists by keywords, location, or needs...");
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
+  
+  // Initialize wobble animation hook
+  const { isVisible: isWobbleVisible, elementRef: wobbleRef } = useWobbleAnimation();
   
   // Fetch featured wishlists from database
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
@@ -628,9 +656,16 @@ export default function Landing() {
               </Button>
             </div>
             
-            {/* Right side - Heart Tree Image */}
+            {/* Right side - Heart Tree Image with Wobble Animation */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative">
+              <div 
+                ref={wobbleRef}
+                className={`relative transition-all duration-1000 ease-out ${
+                  isWobbleVisible 
+                    ? 'animate-wobble-in-right opacity-100' 
+                    : 'translate-x-full opacity-0'
+                }`}
+              >
                 <img 
                   src={heartTreeImage}
                   alt="Heart Tree representing community giving"
