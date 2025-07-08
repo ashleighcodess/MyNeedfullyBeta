@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,14 +10,16 @@ export default function VerifyEmail() {
   const [location, navigate] = useLocation();
   const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error' | 'expired'>('pending');
   const [message, setMessage] = useState('');
+  const queryClient = useQueryClient();
 
   // Extract token from URL
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
   
-  console.log('Current URL:', window.location.href);
-  console.log('Search params:', window.location.search);
-  console.log('Extracted token:', token);
+  // Debug token extraction
+  // console.log('Current URL:', window.location.href);
+  // console.log('Search params:', window.location.search);
+  // console.log('Extracted token:', token);
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -31,6 +33,9 @@ export default function VerifyEmail() {
         const response = await apiRequest('POST', '/api/auth/verify-email', { token });
         setVerificationStatus('success');
         setMessage('Your email has been successfully verified!');
+        
+        // Invalidate user data cache to refresh verification status
+        queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
       } catch (error: any) {
         console.error('Email verification error:', error);
         if (error.message.includes('expired')) {

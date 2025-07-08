@@ -2435,7 +2435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if user is already verified
-      if (user.emailVerified) {
+      if (user.isVerified) {
         return res.json({ message: "Email already verified" });
       }
       

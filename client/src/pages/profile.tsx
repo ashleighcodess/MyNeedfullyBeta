@@ -241,9 +241,9 @@ export default function Profile() {
         title: "Verify Your Email",
         description: "Confirm your email address",
         points: 25,
-        completed: !!user?.emailVerified,
+        completed: !!user?.isVerified,
         action: () => {
-          if (!user?.emailVerified) {
+          if (!user?.isVerified) {
             resendVerificationMutation.mutate();
           }
         },
