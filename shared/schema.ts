@@ -54,7 +54,7 @@ export const users = pgTable("users", {
 });
 
 // Enums
-export const wishlistStatusEnum = pgEnum("wishlist_status", ["active", "completed", "paused"]);
+export const wishlistStatusEnum = pgEnum("wishlist_status", ["active", "completed", "paused", "cancelled"]);
 export const urgencyLevelEnum = pgEnum("urgency_level", ["low", "medium", "high", "urgent"]);
 export const categoryEnum = pgEnum("category", [
   "disaster_recovery",

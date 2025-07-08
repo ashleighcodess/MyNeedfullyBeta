@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import WishlistCard from "@/components/wishlist-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,13 +35,16 @@ import {
   EyeOff,
   Award,
   Edit,
-  ShoppingCart
+  ShoppingCart,
+  RefreshCw
 } from "lucide-react";
 
 export default function Profile() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [notesFilter, setNotesFilter] = useState('all'); // 'all', 'sent', 'received'
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Set document title and handle URL hash navigation
   useEffect(() => {
@@ -83,6 +88,26 @@ export default function Profile() {
   const { data: thankYouNotes } = useQuery({
     queryKey: ['/api/thank-you-notes'],
     enabled: !!user?.id,
+  });
+
+  // Restore wishlist mutation
+  const restoreWishlistMutation = useMutation({
+    mutationFn: (wishlistId: number) =>
+      apiRequest('PATCH', `/api/wishlists/${wishlistId}`, { status: 'active' }),
+    onSuccess: () => {
+      toast({
+        title: "Needs List Restored",
+        description: "Your needs list has been restored and is now active.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/wishlists'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to restore needs list. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Calculate dynamic profile completion
@@ -1098,11 +1123,26 @@ export default function Profile() {
                               {archivedWishlists.filter((w: any) => w.status === 'cancelled').map((wishlist: any) => (
                                 <div key={wishlist.id} className="relative">
                                   <WishlistCard wishlist={wishlist} isOwner={true} />
-                                  <div className="absolute top-2 right-2">
+                                  <div className="absolute top-2 right-2 flex space-x-2">
                                     <Badge className="bg-red-500 text-white">
                                       <X className="mr-1 h-3 w-3" />
                                       Cancelled
                                     </Badge>
+                                  </div>
+                                  <div className="absolute bottom-2 right-2">
+                                    <Button
+                                      size="sm"
+                                      onClick={() => {
+                                        if (confirm('Are you sure you want to restore this needs list? It will become active and visible to the public again.')) {
+                                          restoreWishlistMutation.mutate(wishlist.id);
+                                        }
+                                      }}
+                                      disabled={restoreWishlistMutation.isPending}
+                                      className="bg-green-600 hover:bg-green-700 text-white"
+                                    >
+                                      <RefreshCw className="mr-1 h-3 w-3" />
+                                      Restore
+                                    </Button>
                                   </div>
                                 </div>
                               ))}
