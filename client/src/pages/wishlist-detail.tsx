@@ -366,50 +366,52 @@ export default function WishlistDetail() {
   return (
     <div className="min-h-screen bg-warm-bg">
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-4">
+        <div className="mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-4 sm:space-y-0">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-navy mb-2">{wishlist.title}</h1>
-              <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2 leading-tight pr-4">{wishlist.title}</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-600">
                 <div className="flex items-center">
-                  <MapPin className="mr-1 h-4 w-4" />
-                  {wishlist.location}
+                  <MapPin className="mr-1 h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">{wishlist.location}</span>
                 </div>
                 <div className="flex items-center">
-                  <Calendar className="mr-1 h-4 w-4" />
-                  Created {new Date(wishlist.createdAt).toLocaleDateString()}
+                  <Calendar className="mr-1 h-4 w-4 flex-shrink-0" />
+                  <span className="truncate">Created {new Date(wishlist.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center">
-                  <Eye className="mr-1 h-4 w-4" />
-                  {wishlist.viewCount} views
+                  <Eye className="mr-1 h-4 w-4 flex-shrink-0" />
+                  <span>{wishlist.viewCount} views</span>
                 </div>
               </div>
             </div>
             
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
               <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
                 {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
               </Badge>
-              {isOwner && (
-                <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
+              <div className="flex items-center space-x-2">
+                {isOwner && (
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
+                    <Edit className="mr-1 sm:mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Edit</span>
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={shareWishlist}>
+                  <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Share</span>
                 </Button>
-              )}
-              <Button variant="outline" size="sm" onClick={shareWishlist}>
-                <Share2 className="mr-2 h-4 w-4" />
-                Share
-              </Button>
+              </div>
             </div>
           </div>
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Featured Image */}
             {getStoryImages().length > 0 && (
               <div className="mb-8">
@@ -516,20 +518,20 @@ export default function WishlistDetail() {
                 {wishlist.items && wishlist.items.length > 0 ? (
                   <div className="space-y-4">
                     {wishlist.items.map((item: any) => (
-                      <div key={item.id} className={`flex bg-white rounded-lg border overflow-hidden min-h-[160px] ${
+                      <div key={item.id} className={`flex flex-col sm:flex-row bg-white rounded-lg border overflow-hidden ${
                         item.isFulfilled ? 'border-gray-300 opacity-60' : 'border-gray-200'
                       }`}>
                         {/* Product Image */}
-                        <div className="w-32 h-32 flex-shrink-0 relative m-4">
+                        <div className="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 relative sm:m-4">
                           <img
                             src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
                             alt={item.title}
-                            className={`w-full h-full object-cover rounded-lg ${
+                            className={`w-full h-full object-cover sm:rounded-lg ${
                               item.isFulfilled ? 'grayscale' : ''
                             }`}
                           />
                           {item.isFulfilled && (
-                            <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center rounded-lg">
+                            <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center sm:rounded-lg">
                               <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
                                 ✓ Fulfilled
                               </div>
@@ -538,18 +540,18 @@ export default function WishlistDetail() {
                         </div>
                         
                         {/* Product Info */}
-                        <div className="flex-1 flex flex-col justify-between p-4 pr-6">
+                        <div className="flex-1 flex flex-col justify-between p-4 sm:pr-6">
                           <div className="flex-1">
-                            <div className="flex justify-between items-start mb-3">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 space-y-2 sm:space-y-0">
                               <div className="flex-1">
-                                <h3 className={`font-semibold text-lg leading-snug mb-2 ${
+                                <h3 className={`font-semibold text-base sm:text-lg leading-snug mb-2 ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-500 line-through' : 'text-gray-900'
                                 }`}>
                                   {item.title.split(',')[0]}
                                 </h3>
                                 
                                 {/* Quantity Display */}
-                                <div className="flex items-center gap-3 mb-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
                                   <div className={`text-sm font-medium ${
                                     (item.quantityFulfilled >= item.quantity) ? 'text-gray-400' : 'text-gray-700'
                                   }`}>
@@ -561,7 +563,7 @@ export default function WishlistDetail() {
                                       <button
                                         onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: Math.max(1, (item.quantity || 1) - 1) })}
                                         disabled={updateQuantityMutation.isPending || (item.quantity || 1) <= (item.quantityFulfilled || 0)}
-                                        className="w-6 h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Decrease quantity by 1"
                                       >
                                         <Minus className="w-4 h-4" />
@@ -570,7 +572,7 @@ export default function WishlistDetail() {
                                       <button
                                         onClick={() => updateQuantityMutation.mutate({ id: item.id, quantity: (item.quantity || 1) + 1 })}
                                         disabled={updateQuantityMutation.isPending}
-                                        className="w-6 h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                                        className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
                                         title="Increase quantity by 1"
                                       >
                                         <Plus className="w-4 h-4" />
@@ -579,10 +581,10 @@ export default function WishlistDetail() {
                                   )}
                                 </div>
                                 
-                                <p className={`text-sm mb-3 ${
+                                <p className={`text-sm mb-3 line-clamp-3 ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400' : 'text-gray-600'
                                 }`}>{item.description || 'Essential item needed for daily living'}</p>
-                                <div className={`text-2xl font-bold ${
+                                <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
                                   ${item.price || '99.00'}
@@ -597,14 +599,14 @@ export default function WishlistDetail() {
                                     deleteItemMutation.mutate(item.id);
                                   }}
                                   disabled={deleteItemMutation.isPending}
-                                  className={`p-1 ml-4 transition-colors ${
+                                  className={`p-2 sm:p-1 sm:ml-4 transition-colors self-start ${
                                     deleteItemMutation.isPending 
                                       ? 'text-red-400 opacity-50 cursor-not-allowed' 
                                       : 'text-gray-400 hover:text-red-600'
                                   }`}
                                   title="Remove item completely"
                                 >
-                                  <Trash2 className="w-5 h-5" />
+                                  <Trash2 className="w-6 h-6 sm:w-5 sm:h-5" />
                                 </button>
                               )}
                             </div>
@@ -622,8 +624,8 @@ export default function WishlistDetail() {
                           )}
                         </div>
 
-                        {/* Buying Options - Back on the right side */}
-                        <div className={`px-4 py-3 flex flex-col justify-center w-[280px] flex-shrink-0 ${
+                        {/* Buying Options - Mobile responsive */}
+                        <div className={`px-4 py-3 flex flex-col justify-center w-full sm:w-[280px] sm:flex-shrink-0 ${
                           item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
                         }`}>
                           <h4 className={`font-medium text-sm mb-2 text-center ${

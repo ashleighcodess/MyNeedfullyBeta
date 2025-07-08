@@ -86,6 +86,7 @@ function Router() {
           <Route path="/edit-wishlist/:id" component={EditWishlist} />
           <Route path="/needslist/:id" component={WishlistDetail} />
           <Route path="/wishlist/:id" component={WishlistDetail} />
+          <Route path="/wishlists/:id" component={WishlistDetail} />
           <Route path="/profile" component={Profile} />
           <Route path="/profile/edit" component={EditProfile} />
           <Route path="/profile/privacy" component={PrivacySettings} />
