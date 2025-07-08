@@ -189,19 +189,7 @@ export default function Profile() {
         description: "Help the community connect with you",
         points: 20,
         completed: !!user?.profileImageUrl,
-        action: () => {
-          const fileInput = document.createElement('input');
-          fileInput.type = 'file';
-          fileInput.accept = 'image/*';
-          fileInput.onchange = (e) => {
-            const target = e.target as HTMLInputElement;
-            if (target.files && target.files[0]) {
-              // Handle file upload - this would trigger the existing upload logic
-              console.log('File selected:', target.files[0]);
-            }
-          };
-          fileInput.click();
-        },
+        action: () => setActiveTab('privacy'),
         icon: User,
         color: 'text-blue-500',
         bgColor: 'bg-blue-50'
@@ -223,7 +211,7 @@ export default function Profile() {
         description: "Share what you need with the community",
         points: 50,
         completed: !!(userWishlists && userWishlists.length > 0),
-        action: () => setActiveTab('create'),
+        action: () => window.location.href = '/create',
         icon: Gift,
         color: 'text-purple-500',
         bgColor: 'bg-purple-50'
