@@ -34,6 +34,14 @@ class EmailService {
         subject: params.subject,
         html: params.html,
         text: params.text,
+        trackingSettings: {
+          clickTracking: {
+            enable: false,
+          },
+          openTracking: {
+            enable: false,
+          },
+        },
       });
 
       console.log(`Email sent successfully to ${params.to}: ${params.subject}`);
