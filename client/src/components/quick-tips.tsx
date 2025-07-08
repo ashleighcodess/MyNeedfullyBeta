@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { X, Lightbulb, ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 
 interface Tip {
   id: string;
@@ -66,8 +67,12 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const [hasSeenTips, setHasSeenTips] = useState(false);
   const { isAuthenticated } = useAuth();
+  const [location] = useLocation();
 
   useEffect(() => {
+    // Don't show tips on admin pages
+    if (location.startsWith('/admin')) return;
+    
     // Only show tips for authenticated users
     if (!isAuthenticated) return;
     
@@ -82,7 +87,7 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
     } else {
       setHasSeenTips(true);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, location]);
 
   const currentTip = tips[currentTipIndex];
 
