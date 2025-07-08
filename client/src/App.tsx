@@ -99,7 +99,7 @@ function Router() {
           <Route path="/" component={Landing} />
           
           {/* Dashboard route for authenticated users */}
-          <Route path="/dashboard" component={Home} />
+          <Route path="/dashboard" component={Profile} />
           
           <Route component={NotFound} />
         </Switch>
