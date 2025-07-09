@@ -139,10 +139,14 @@ export async function setupMultiAuth(app: Express) {
 
   // Google OAuth Strategy
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    // Get the first domain from REPLIT_DOMAINS for Google OAuth callback
+    const primaryDomain = process.env.REPLIT_DOMAINS!.split(",")[0];
+    const callbackURL = `https://${primaryDomain}/api/callback/google`;
+    
     passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/callback/google",
+      callbackURL: callbackURL,
       scope: ['profile', 'email']
     },
     async (accessToken, refreshToken, profile, done) => {
