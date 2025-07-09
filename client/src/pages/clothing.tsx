@@ -5,7 +5,6 @@ import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   Shirt, 
-  ShirtIcon, 
   Footprints, 
   Coat, 
   Heart,
