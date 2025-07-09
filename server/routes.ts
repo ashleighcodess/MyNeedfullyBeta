@@ -1109,7 +1109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/security/alerts/:id/resolve', isAuthenticated, isAdmin, async (req: any, res) => {
     try {
       const alertId = parseInt(req.params.id);
-      const adminUserId = req.user.claims.sub;
+      const adminUserId = req.user.profile?.id || req.user.claims?.sub;
       
       await db.update(securityAlerts)
         .set({
@@ -1129,7 +1129,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/security/ips/:id/block', isAuthenticated, isAdmin, async (req: any, res) => {
     try {
       const ipId = parseInt(req.params.id);
-      const adminUserId = req.user.claims.sub;
+      const adminUserId = req.user.profile?.id || req.user.claims?.sub;
       
       await db.update(suspiciousIps)
         .set({
@@ -1222,7 +1222,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .where(eq(users.id, user.id))
         .returning();
 
-      console.log(`User ${email} promoted to admin by ${req.user.claims.sub}`);
+      const promotedBy = req.user.profile?.id || req.user.claims?.sub;
+      console.log(`User ${email} promoted to admin by ${promotedBy}`);
       
       res.json({ 
         message: `User ${email} promoted to admin successfully`,
@@ -1589,7 +1590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/wishlists/:id', isAuthenticated, uploadLimiter, upload.array('storyImages', 5), async (req: any, res) => {
     try {
       const wishlistId = parseInt(req.params.id);
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       // Verify user owns the wishlist
       const existingWishlist = await storage.getWishlist(wishlistId);
@@ -1644,7 +1645,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/wishlists/:id', isAuthenticated, async (req: any, res) => {
     try {
       const wishlistId = parseInt(req.params.id);
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       // Verify user owns the wishlist
       const existingWishlist = await storage.getWishlist(wishlistId);
@@ -1670,10 +1671,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/users/:userId/wishlists', isAuthenticated, async (req: any, res) => {
     try {
       const { userId } = req.params;
-      const currentUserId = req.user.claims.sub;
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       
       // Users can only see their own wishlists unless they're admin
-      if (userId !== currentUserId && req.user.claims.userType !== 'admin') {
+      if (userId !== currentUserId && req.user.claims?.userType !== 'admin') {
         return res.status(403).json({ message: "Forbidden" });
       }
       
@@ -1687,7 +1688,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/user/wishlists', isAuthenticated, async (req: any, res) => {
     try {
-      const currentUserId = req.user.claims.sub;
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       const wishlists = await storage.getUserWishlists(currentUserId);
       res.json(wishlists);
     } catch (error) {
@@ -1698,7 +1699,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/user/donations', isAuthenticated, async (req: any, res) => {
     try {
-      const currentUserId = req.user.claims.sub;
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       const donations = await storage.getUserDonations(currentUserId);
       res.json(donations);
     } catch (error) {
@@ -1710,7 +1711,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User Settings routes
   app.get('/api/user/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       const user = await storage.getUser(userId);
       
       if (!user) {
@@ -1807,7 +1808,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/user/export-data', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       // Get user data
       const user = await storage.getUser(userId);
@@ -1879,7 +1880,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/user/account', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       // Get user info before deletion for email notification
       const user = await storage.getUser(userId);
@@ -1909,7 +1910,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/wishlists/:id/items', isAuthenticated, async (req: any, res) => {
     try {
       const wishlistId = parseInt(req.params.id);
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       // Verify user owns the wishlist
       const wishlist = await storage.getWishlist(wishlistId);
@@ -2013,7 +2014,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/wishlist-items/:itemId/fulfill', isAuthenticated, async (req: any, res) => {
     try {
       const itemId = parseInt(req.params.itemId);
-      const fulfilledBy = req.user.claims.sub;
+      const fulfilledBy = req.user.profile?.id || req.user.claims?.sub;
       
       console.log('🔄 Fulfilling item:', { itemId, fulfilledBy });
       console.log('📦 Request body:', req.body);
@@ -2185,7 +2186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/wishlists/:id/merge-duplicates', isAuthenticated, async (req: any, res) => {
     try {
       const wishlistId = parseInt(req.params.id);
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       // Verify user owns the wishlist
       const wishlist = await storage.getWishlist(wishlistId);
@@ -2265,7 +2266,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const wishlist = await storage.getWishlist(item.wishlistId);
-      if (!wishlist || wishlist.userId !== req.user.claims.sub) {
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
+      if (!wishlist || wishlist.userId !== currentUserId) {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
@@ -2296,7 +2298,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const wishlist = await storage.getWishlist(item.wishlistId);
-      if (!wishlist || wishlist.userId !== req.user.claims.sub) {
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
+      if (!wishlist || wishlist.userId !== currentUserId) {
         return res.status(403).json({ message: "Unauthorized" });
       }
       
@@ -2867,7 +2870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Thank You Notes endpoints
   app.get('/api/thank-you-notes', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       const thankYouNotes = await storage.getUserThankYouNotes(userId);
       
       res.json(thankYouNotes);
@@ -2879,7 +2882,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/thank-you-notes', isAuthenticated, async (req: any, res) => {
     try {
-      const fromUserId = req.user.claims.sub;
+      const fromUserId = req.user.profile?.id || req.user.claims?.sub;
       const { toUserId, subject, message, donationId } = req.body;
       
       // Validate required fields
@@ -2945,7 +2948,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Email verification resend endpoint
   app.post('/api/auth/resend-verification', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       console.log(`🔍 Resend verification attempt for user ID: ${userId}`);
       const user = await storage.getUser(userId);
       
@@ -3011,7 +3014,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/security/alerts/:id/resolve', isAdmin, async (req, res) => {
     try {
       const alertId = parseInt(req.params.id);
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       await db.update(securityAlerts)
         .set({ 
@@ -3032,7 +3035,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const ipId = parseInt(req.params.id);
       const action = req.params.action;
-      const userId = req.user.claims.sub;
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       
       if (action === 'block') {
         await db.update(suspiciousIps)
