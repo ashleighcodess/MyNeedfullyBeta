@@ -1192,6 +1192,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Promote user to admin endpoint (Admin only)
+  app.post('/api/admin/promote-user', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find user by email
+      const [user] = await db.select().from(users).where(eq(users.email, email));
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (user.userType === 'admin') {
+        return res.status(400).json({ message: "User is already an admin" });
+      }
+      
+      // Promote user to admin
+      const [updatedUser] = await db
+        .update(users)
+        .set({ 
+          userType: 'admin',
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, user.id))
+        .returning();
+
+      console.log(`User ${email} promoted to admin by ${req.user.claims.sub}`);
+      
+      res.json({ 
+        message: `User ${email} promoted to admin successfully`,
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          userType: updatedUser.userType
+        }
+      });
+    } catch (error) {
+      console.error("Error promoting user to admin:", error);
+      res.status(500).json({ message: "Failed to promote user" });
+    }
+  });
+
   // Feature wishlist endpoint (Admin only)
   app.patch('/api/admin/wishlists/:id/feature', isAuthenticated, isAdmin, async (req: any, res) => {
     try {

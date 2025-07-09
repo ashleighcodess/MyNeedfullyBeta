@@ -38,6 +38,10 @@ fi
 echo "🗄️  Running database migrations..."
 npm run db:push
 
+# Setup admin access
+echo "🔐 Setting up admin access..."
+node deployment/setup-admin-access.js
+
 # Configure Nginx
 echo "🌐 Configuring Nginx..."
 sudo cp deployment/nginx.conf /etc/nginx/sites-available/myneedfully
