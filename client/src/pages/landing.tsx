@@ -1363,9 +1363,12 @@ export default function Landing() {
           <p className="text-xl mb-8 opacity-90">Join thousands of caring people who are helping families and communities rebuild, recover, and thrive.</p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full">
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full"
+              onClick={() => setLocation('/browse')}
+            >
               <Search className="mr-2 h-5 w-5" />
-              Find Wishlists to Support
+              Find Needs Lists to Support
             </Button>
             <Button 
               variant="outline" 
@@ -1373,7 +1376,7 @@ export default function Landing() {
               onClick={handleCreateList}
             >
               <Plus className="mr-2 h-5 w-5" />
-              {isAuthenticated ? "Create Your Needs List" : "Create Your Wishlist"}
+              Create Your Needs List
             </Button>
           </div>
         </div>
