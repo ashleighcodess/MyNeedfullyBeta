@@ -1321,7 +1321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/users/:userId', isAuthenticated, async (req: any, res) => {
     try {
       const { userId } = req.params;
-      const currentUserId = req.user.claims.sub;
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       
       // Users can only update their own profile
       if (userId !== currentUserId) {
@@ -1349,7 +1349,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/users/:userId/privacy', isAuthenticated, async (req: any, res) => {
     try {
       const { userId } = req.params;
-      const currentUserId = req.user.claims.sub;
+      const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       
       // Users can only update their own privacy settings
       if (userId !== currentUserId) {
@@ -1489,7 +1489,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('🔑 req.user:', req.user);
       console.log('📋 req.body:', req.body);
       
-      const userId = req.user?.claims?.sub;
+      // Fix: User ID is in req.user.profile.id for email auth, req.user.claims.sub for OAuth
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       console.log('🔄 Creating wishlist for user:', userId);
       
       if (!userId) {
@@ -1739,7 +1740,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('🔑 req.user:', req.user);
       console.log('📋 req.body:', req.body);
       
-      const userId = req.user?.claims?.sub;
+      // Fix: User ID is in req.user.profile.id for email auth, req.user.claims.sub for OAuth
+      const userId = req.user.profile?.id || req.user.claims?.sub;
       const updates = req.body;
 
       console.log('📝 IMMEDIATE DEBUG User settings update request:', { userId, updates });
