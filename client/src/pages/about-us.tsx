@@ -256,7 +256,7 @@ export default function AboutUs() {
                 <img 
                   src={aboutUsImage} 
                   alt="Family with needs list showing community support" 
-                  className={`w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl ${shouldWobble ? 'animate-wobble' : ''}`}
+                  className={`w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl ${shouldWobble ? 'animate-wobble-in-right' : ''}`}
                   style={{ animationDelay: shouldWobble ? '0s' : undefined }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-coral/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
