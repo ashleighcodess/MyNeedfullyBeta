@@ -168,15 +168,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUser(id: string, updates: Partial<User>): Promise<User> {
-    const [user] = await db
-      .update(users)
-      .set({
-        ...updates,
-        updatedAt: new Date(),
-      })
-      .where(eq(users.id, id))
-      .returning();
-    return user;
+    try {
+      console.log('🔄 Storage updateUser called:', { id, updates });
+      const [user] = await db
+        .update(users)
+        .set({
+          ...updates,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, id))
+        .returning();
+      console.log('✅ Storage updateUser success:', { id: user?.id, email: user?.email });
+      return user;
+    } catch (error) {
+      console.error('❌ Storage updateUser error:', error);
+      throw error;
+    }
   }
 
   async deleteUser(id: string): Promise<void> {
@@ -271,8 +278,15 @@ export class DatabaseStorage implements IStorage {
 
   // Wishlist operations
   async createWishlist(wishlistData: InsertWishlist): Promise<Wishlist> {
-    const [wishlist] = await db.insert(wishlists).values(wishlistData).returning();
-    return wishlist;
+    try {
+      console.log('🔄 Storage createWishlist called:', wishlistData);
+      const [wishlist] = await db.insert(wishlists).values(wishlistData).returning();
+      console.log('✅ Storage createWishlist success:', { id: wishlist?.id, title: wishlist?.title });
+      return wishlist;
+    } catch (error) {
+      console.error('❌ Storage createWishlist error:', error);
+      throw error;
+    }
   }
 
   async getWishlist(id: number): Promise<Wishlist | undefined> {
@@ -426,50 +440,79 @@ export class DatabaseStorage implements IStorage {
   }
 
   async fulfillWishlistItem(id: number, fulfilledBy: string): Promise<WishlistItem> {
-    // First get the current item to check quantity
-    const [currentItem] = await db
-      .select()
-      .from(wishlistItems)
-      .where(eq(wishlistItems.id, id));
-    
-    if (!currentItem) {
-      throw new Error('Item not found');
-    }
-    
-    // Check if item can be fulfilled (not already fully fulfilled)
-    const currentFulfilled = currentItem.quantityFulfilled || 0;
-    const totalQuantity = currentItem.quantity || 1;
-    
-    if (currentFulfilled >= totalQuantity) {
-      throw new Error('Item is already fully fulfilled');
-    }
-    
-    // Increment quantityFulfilled by 1
-    const newQuantityFulfilled = currentFulfilled + 1;
-    const isNowFullyFulfilled = newQuantityFulfilled >= totalQuantity;
-    
-    const [item] = await db
-      .update(wishlistItems)
-      .set({
-        quantityFulfilled: newQuantityFulfilled,
-        isFulfilled: isNowFullyFulfilled,
-        fulfilledBy: isNowFullyFulfilled ? fulfilledBy : currentItem.fulfilledBy,
-        fulfilledAt: isNowFullyFulfilled ? new Date() : currentItem.fulfilledAt,
-        updatedAt: new Date(),
-      })
-      .where(eq(wishlistItems.id, id))
-      .returning();
+    try {
+      console.log('🔄 Storage fulfillWishlistItem called:', { id, fulfilledBy });
+      
+      // First get the current item to check quantity
+      const [currentItem] = await db
+        .select()
+        .from(wishlistItems)
+        .where(eq(wishlistItems.id, id));
+      
+      if (!currentItem) {
+        console.error('❌ Item not found:', id);
+        throw new Error('Item not found');
+      }
+      
+      console.log('📦 Current item:', { 
+        id: currentItem.id, 
+        title: currentItem.title,
+        quantity: currentItem.quantity,
+        quantityFulfilled: currentItem.quantityFulfilled,
+        isFulfilled: currentItem.isFulfilled
+      });
+      
+      // Check if item can be fulfilled (not already fully fulfilled)
+      const currentFulfilled = currentItem.quantityFulfilled || 0;
+      const totalQuantity = currentItem.quantity || 1;
+      
+      if (currentFulfilled >= totalQuantity) {
+        console.error('❌ Item already fully fulfilled:', { currentFulfilled, totalQuantity });
+        throw new Error('Item is already fully fulfilled');
+      }
+      
+      // Increment quantityFulfilled by 1
+      const newQuantityFulfilled = currentFulfilled + 1;
+      const isNowFullyFulfilled = newQuantityFulfilled >= totalQuantity;
+      
+      console.log('📈 Fulfillment update:', { 
+        newQuantityFulfilled, 
+        isNowFullyFulfilled,
+        totalQuantity 
+      });
+      
+      const [item] = await db
+        .update(wishlistItems)
+        .set({
+          quantityFulfilled: newQuantityFulfilled,
+          isFulfilled: isNowFullyFulfilled,
+          fulfilledBy: isNowFullyFulfilled ? fulfilledBy : currentItem.fulfilledBy,
+          fulfilledAt: isNowFullyFulfilled ? new Date() : currentItem.fulfilledAt,
+          updatedAt: new Date(),
+        })
+        .where(eq(wishlistItems.id, id))
+        .returning();
 
-    // Only update wishlist fulfilled items count if item is now fully fulfilled
-    if (isNowFullyFulfilled && !currentItem.isFulfilled) {
-      const wishlistId = item.wishlistId;
-      await db
-        .update(wishlists)
-        .set({ fulfilledItems: sql`${wishlists.fulfilledItems} + 1` })
-        .where(eq(wishlists.id, wishlistId));
-    }
+      // Only update wishlist fulfilled items count if item is now fully fulfilled
+      if (isNowFullyFulfilled && !currentItem.isFulfilled) {
+        const wishlistId = item.wishlistId;
+        console.log('🎯 Updating wishlist fulfilled count for:', wishlistId);
+        await db
+          .update(wishlists)
+          .set({ fulfilledItems: sql`${wishlists.fulfilledItems} + 1` })
+          .where(eq(wishlists.id, wishlistId));
+      }
 
-    return item;
+      console.log('✅ Storage fulfillWishlistItem success:', { 
+        id: item.id, 
+        quantityFulfilled: item.quantityFulfilled,
+        isFulfilled: item.isFulfilled 
+      });
+      return item;
+    } catch (error) {
+      console.error('❌ Storage fulfillWishlistItem error:', error);
+      throw error;
+    }
   }
 
   async deleteWishlistItem(id: number): Promise<void> {

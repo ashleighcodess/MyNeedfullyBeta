@@ -1486,15 +1486,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      console.log('Creating wishlist for user:', userId);
+      console.log('🔄 Creating wishlist for user:', userId);
+      console.log('📋 Request headers:', req.headers);
+      console.log('📦 Raw body data:', req.body);
       
       // Parse the form data
-      console.log('Raw body data:', req.body);
-      const needsListData = JSON.parse(req.body.needsListData);
-      console.log('Parsed needs list data:', needsListData);
+      let needsListData;
+      try {
+        needsListData = JSON.parse(req.body.needsListData);
+        console.log('✅ Parsed needs list data:', needsListData);
+      } catch (parseError) {
+        console.error('❌ JSON Parse Error:', parseError);
+        return res.status(400).json({ 
+          message: "Invalid JSON in needsListData",
+          error: parseError.message 
+        });
+      }
       
-      const wishlistData = insertWishlistSchema.parse({ ...needsListData, userId });
-      console.log('Validated wishlist data:', wishlistData);
+      // Fix category mapping - convert frontend categories to backend enums
+      if (needsListData.category === 'essential_items') {
+        needsListData.category = 'other';
+      }
+      
+      let wishlistData;
+      try {
+        wishlistData = insertWishlistSchema.parse({ ...needsListData, userId });
+        console.log('✅ Validated wishlist data:', wishlistData);
+      } catch (validationError) {
+        console.error('❌ Validation Error:', validationError);
+        return res.status(400).json({ 
+          message: "Validation failed",
+          error: validationError.message,
+          details: validationError.errors
+        });
+      }
       
       // Handle uploaded images
       const storyImages: string[] = [];
@@ -1504,7 +1529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           storyImages.push(`/uploads/${file.filename}`);
         });
       }
-      console.log('Story images:', storyImages);
+      console.log('📸 Story images:', storyImages);
       
       // Add story images to wishlist data
       const wishlistWithImages = {
@@ -1512,9 +1537,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storyImages: storyImages.length > 0 ? storyImages : undefined
       };
       
-      console.log('Final wishlist data before creation:', wishlistWithImages);
+      console.log('🎯 Final wishlist data before creation:', wishlistWithImages);
       const wishlist = await storage.createWishlist(wishlistWithImages);
-      console.log('Created wishlist:', wishlist);
+      console.log('✅ Created wishlist:', wishlist);
       
       // Record analytics event
       await storage.recordEvent({
@@ -1527,13 +1552,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(wishlist);
     } catch (error) {
-      console.error("Error creating wishlist:", error);
-      console.error("Error stack:", error.stack);
+      console.error("❌ Error creating wishlist:", error);
+      console.error("❌ Error stack:", error.stack);
+      console.error("❌ Request body:", req.body);
+      console.error("❌ User ID:", userId);
       if (error instanceof z.ZodError) {
-        console.error("Validation errors:", error.errors);
+        console.error("❌ Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid data", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to create wishlist" });
+      res.status(500).json({ 
+        message: "Failed to create wishlist",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 
@@ -1718,15 +1748,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('👤 Found user:', { id: existingUser.id, email: existingUser.email });
 
+      console.log('💾 About to call storage.updateUser with:', { userId, filteredUpdates });
       const updatedUser = await storage.updateUser(userId, filteredUpdates);
       console.log('✅ User updated successfully:', { id: updatedUser.id, email: updatedUser.email });
       
       res.json({ success: true, user: updatedUser });
     } catch (error) {
-      console.error("❌ Error updating user settings:", error);
+      console.error("❌ CRITICAL ERROR updating user settings:", error);
+      console.error("❌ Error name:", error?.name);
+      console.error("❌ Error message:", error?.message);
+      console.error("❌ Error stack:", error?.stack);
+      console.error("❌ User ID:", userId);
+      console.error("❌ Updates attempted:", filteredUpdates);
       res.status(500).json({ 
         message: "Failed to update user settings",
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: userId,
+        errorDetails: {
+          name: error?.name,
+          message: error?.message
+        }
       });
     }
   });
@@ -1941,6 +1982,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const itemId = parseInt(req.params.itemId);
       const fulfilledBy = req.user.claims.sub;
       
+      console.log('🔄 Fulfilling item:', { itemId, fulfilledBy });
+      console.log('📦 Request body:', req.body);
+      
       const item = await storage.fulfillWishlistItem(itemId, fulfilledBy);
       
       // Get wishlist and supporter info
@@ -2089,10 +2133,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ipAddress: req.ip,
       });
       
+      console.log('✅ Fulfilled item successfully:', { id: item.id, title: item.title });
       res.json(item);
     } catch (error) {
-      console.error("Error fulfilling wishlist item:", error);
-      res.status(500).json({ message: "Failed to fulfill item" });
+      console.error("❌ Error fulfilling wishlist item:", error);
+      console.error("❌ Error stack:", error?.stack);
+      console.error("❌ Item ID:", itemId);
+      console.error("❌ User ID:", fulfilledBy);
+      res.status(500).json({ 
+        message: "Failed to fulfill item",
+        error: error instanceof Error ? error.message : 'Unknown error',
+        itemId: itemId
+      });
     }
   });
 

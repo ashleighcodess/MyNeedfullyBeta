@@ -1,0 +1,54 @@
+Loading failed for the <script> with source “https://replit.com/public/js/replit-dev-banner.js”. edit:13:92
+Content-Security-Policy: The page’s settings blocked a script (script-src-elem) at https://replit.com/public/js/replit-dev-banner.js from being executed because it violates the following directive: “script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.google.com” edit
+InstallTrigger is deprecated and will be removed in the future. commons.js:2:589607
+Attempting WebSocket connection to: wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw index-CRekGVg1.js:74:57384
+Firefox can’t establish a connection to the server at wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw. index-CRekGVg1.js:74:57440
+WebSocket error: 
+error { target: WebSocket, isTrusted: true, srcElement: WebSocket, eventPhase: 0, bubbles: false, cancelable: false, returnValue: true, defaultPrevented: false, composed: false, timeStamp: 1509, … }
+index-CRekGVg1.js:74:57904
+WebSocket disconnected 1006 <empty string> index-CRekGVg1.js:74:57767
+Reconnecting WebSocket (attempt 1) index-CRekGVg1.js:74:58901
+Attempting WebSocket connection to: wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw index-CRekGVg1.js:74:57384
+Firefox can’t establish a connection to the server at wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw. index-CRekGVg1.js:74:57440
+WebSocket error: 
+error { target: WebSocket, isTrusted: true, srcElement: WebSocket, eventPhase: 0, bubbles: false, cancelable: false, returnValue: true, defaultPrevented: false, composed: false, timeStamp: 5419, … }
+index-CRekGVg1.js:74:57904
+WebSocket disconnected 1006 <empty string> index-CRekGVg1.js:74:57767
+Reconnecting WebSocket (attempt 2) index-CRekGVg1.js:74:58901
+Attempting WebSocket connection to: wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw index-CRekGVg1.js:74:57384
+Upload function triggered 
+FileList [ File ]
+edit-profile-5_k3wjfN.js:1:1720
+Firefox can’t establish a connection to the server at wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw. index-CRekGVg1.js:74:57440
+WebSocket error: 
+error { target: WebSocket, isTrusted: true, srcElement: WebSocket, eventPhase: 0, bubbles: false, cancelable: false, returnValue: true, defaultPrevented: false, composed: false, timeStamp: 11289, … }
+index-CRekGVg1.js:74:57904
+WebSocket disconnected 1006 <empty string> index-CRekGVg1.js:74:57767
+Reconnecting WebSocket (attempt 3) index-CRekGVg1.js:74:58901
+Attempting WebSocket connection to: wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw index-CRekGVg1.js:74:57384
+Firefox can’t establish a connection to the server at wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw. index-CRekGVg1.js:74:57440
+WebSocket error: 
+error { target: WebSocket, isTrusted: true, srcElement: WebSocket, eventPhase: 0, bubbles: false, cancelable: false, returnValue: true, defaultPrevented: false, composed: false, timeStamp: 19748, … }
+index-CRekGVg1.js:74:57904
+WebSocket disconnected 1006 <empty string> index-CRekGVg1.js:74:57767
+Reconnecting WebSocket (attempt 4) index-CRekGVg1.js:74:58901
+Attempting WebSocket connection to: wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw index-CRekGVg1.js:74:57384
+Firefox can’t establish a connection to the server at wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw. index-CRekGVg1.js:74:57440
+WebSocket error: 
+error { target: WebSocket, isTrusted: true, srcElement: WebSocket, eventPhase: 0, bubbles: false, cancelable: false, returnValue: true, defaultPrevented: false, composed: false, timeStamp: 32870, … }
+index-CRekGVg1.js:74:57904
+WebSocket disconnected 1006 <empty string> index-CRekGVg1.js:74:57767
+Reconnecting WebSocket (attempt 5) index-CRekGVg1.js:74:58901
+Attempting WebSocket connection to: wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw index-CRekGVg1.js:74:57384
+Firefox can’t establish a connection to the server at wss://myneedfully.app/ws?userId=email_1752080353675_2q4ofw. index-CRekGVg1.js:74:57440
+WebSocket error: 
+error { target: WebSocket, isTrusted: true, srcElement: WebSocket, eventPhase: 0, bubbles: false, cancelable: false, returnValue: true, defaultPrevented: false, composed: false, timeStamp: 51054, … }
+index-CRekGVg1.js:74:57904
+WebSocket disconnected 1006 <empty string> index-CRekGVg1.js:74:57767
+Max reconnect attempts reached index-CRekGVg1.js:74:58765
+XHRGET
+https://myneedfully.app/api/notifications
+[HTTP/3 500  258ms]
+
+​
+

@@ -43,14 +43,25 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    console.error("Server error:", err);
+    console.error("🔥 CRITICAL ERROR:", {
+      url: req.url,
+      method: req.method,
+      error: err.message,
+      stack: err.stack,
+      user: (req as any).user?.claims?.sub
+    });
     
     if (!res.headersSent) {
-      res.status(status).json({ message });
+      res.status(status).json({ 
+        message,
+        error: err.message,
+        url: req.url,
+        timestamp: new Date().toISOString()
+      });
     }
   });
 
