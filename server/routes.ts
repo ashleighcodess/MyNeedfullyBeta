@@ -1444,6 +1444,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         offset,
       });
       
+      // Parse PostgreSQL array format to JavaScript array for story images
+      if (result.wishlists) {
+        result.wishlists = result.wishlists.map((wishlist: any) => {
+          if (wishlist.storyImages && typeof wishlist.storyImages === 'string') {
+            try {
+              // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
+              const arrayString = wishlist.storyImages;
+              if (arrayString.startsWith('{') && arrayString.endsWith('}')) {
+                const innerString = arrayString.slice(1, -1);
+                wishlist.storyImages = innerString ? innerString.split(',') : [];
+              } else {
+                wishlist.storyImages = [];
+              }
+            } catch (parseError) {
+              console.error('Error parsing story images:', parseError);
+              wishlist.storyImages = [];
+            }
+          }
+          return wishlist;
+        });
+      }
+      
       // Record analytics event
       await storage.recordEvent({
         eventType: "search",
@@ -1463,7 +1485,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/wishlists/featured', async (req, res) => {
     try {
       const featuredWishlists = await storage.getFeaturedWishlists();
-      res.json(featuredWishlists);
+      
+      // Parse PostgreSQL array format to JavaScript array for story images
+      const parsedWishlists = featuredWishlists.map((wishlist: any) => {
+        if (wishlist.storyImages && typeof wishlist.storyImages === 'string') {
+          try {
+            // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
+            const arrayString = wishlist.storyImages;
+            if (arrayString.startsWith('{') && arrayString.endsWith('}')) {
+              const innerString = arrayString.slice(1, -1);
+              wishlist.storyImages = innerString ? innerString.split(',') : [];
+            } else {
+              wishlist.storyImages = [];
+            }
+          } catch (parseError) {
+            console.error('Error parsing story images:', parseError);
+            wishlist.storyImages = [];
+          }
+        }
+        return wishlist;
+      });
+      
+      res.json(parsedWishlists);
     } catch (error) {
       console.error("Error fetching featured wishlists:", error);
       res.status(500).json({ message: "Failed to fetch featured wishlists" });
@@ -1477,6 +1520,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!wishlist) {
         return res.status(404).json({ message: "Wishlist not found" });
+      }
+      
+      // Parse PostgreSQL array format to JavaScript array for story images
+      if (wishlist.storyImages && typeof wishlist.storyImages === 'string') {
+        try {
+          // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
+          const arrayString = wishlist.storyImages;
+          if (arrayString.startsWith('{') && arrayString.endsWith('}')) {
+            const innerString = arrayString.slice(1, -1);
+            wishlist.storyImages = innerString ? innerString.split(',') : [];
+          } else {
+            wishlist.storyImages = [];
+          }
+        } catch (parseError) {
+          console.error('Error parsing story images:', parseError);
+          wishlist.storyImages = [];
+        }
       }
       
       // Increment view count
@@ -1746,7 +1806,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       const wishlists = await storage.getUserWishlists(currentUserId);
-      res.json(wishlists);
+      
+      // Parse PostgreSQL array format to JavaScript array for story images
+      const parsedWishlists = wishlists.map((wishlist: any) => {
+        if (wishlist.storyImages && typeof wishlist.storyImages === 'string') {
+          try {
+            // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
+            const arrayString = wishlist.storyImages;
+            if (arrayString.startsWith('{') && arrayString.endsWith('}')) {
+              const innerString = arrayString.slice(1, -1);
+              wishlist.storyImages = innerString ? innerString.split(',') : [];
+            } else {
+              wishlist.storyImages = [];
+            }
+          } catch (parseError) {
+            console.error('Error parsing story images:', parseError);
+            wishlist.storyImages = [];
+          }
+        }
+        return wishlist;
+      });
+      
+      res.json(parsedWishlists);
     } catch (error) {
       console.error("Error fetching user wishlists:", error);
       res.status(500).json({ message: "Failed to fetch wishlists" });
