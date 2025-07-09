@@ -919,18 +919,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Handle different authentication providers
       let userId;
+      console.log('🔍 Auth user request - user object:', JSON.stringify(req.user, null, 2));
+      
       if (req.user.claims && req.user.claims.sub) {
         // Replit OAuth format
         userId = req.user.claims.sub;
+        console.log('✅ Using Replit user ID:', userId);
       } else if (req.user.profile && req.user.profile.id) {
-        // Email/password or other OAuth format
+        // Email/password or Google OAuth format (when profile is stored)
         userId = req.user.profile.id;
+        console.log('✅ Using profile user ID:', userId);
+      } else if (req.user.profile && req.user.profile.emails && req.user.profile.emails[0]) {
+        // Google OAuth format - construct user ID from Google profile
+        userId = `google_${req.user.profile.id}`;
+        console.log('✅ Using Google OAuth user ID:', userId);
       } else {
-        console.error('No user ID found in session:', req.user);
+        console.error('❌ No user ID found in session:', req.user);
         return res.status(401).json({ message: "Invalid user session" });
       }
 
       const user = await storage.getUser(userId);
+      if (!user) {
+        console.error('❌ User not found in database:', userId);
+        return res.status(401).json({ message: "User not found" });
+      }
+      
+      console.log('✅ User found:', user.email);
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);

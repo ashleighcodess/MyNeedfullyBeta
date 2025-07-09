@@ -318,14 +318,14 @@ export async function setupMultiAuth(app: Express) {
         strategyName = 'google-2'; // development domain
       }
       
-      passport.authenticate(strategyName, { 
-        failureRedirect: "/login?error=auth_failed"
-      })(req, res, (err) => {
+      console.log(`🔄 Google OAuth callback - hostname: ${hostname}, strategy: ${strategyName}`);
+      
+      passport.authenticate(strategyName, (err, user, info) => {
         if (err) {
-          console.error('Google OAuth error:', err);
+          console.error('❌ Google OAuth error:', err);
           
           // Check if it's a cross-provider email conflict
-          if (err.message && err.message.includes('duplicate key value violates unique constraint')) {
+          if (err.message && err.message.includes('already registered with')) {
             console.error('Cross-provider email conflict detected');
             return res.redirect("/login?error=existing_account");
           }
@@ -333,12 +333,27 @@ export async function setupMultiAuth(app: Express) {
           return res.redirect("/login?error=auth_failed");
         }
         
-        // Log successful authentication
-        console.log('✅ Google authentication successful for user:', req.user);
+        if (!user) {
+          console.error('❌ Google OAuth failed - no user returned');
+          return res.redirect("/login?error=auth_failed");
+        }
         
-        // Redirect to dashboard for successful authentication
-        res.redirect("/dashboard");
-      });
+        // Manually log in the user
+        req.logIn(user, (loginErr) => {
+          if (loginErr) {
+            console.error('❌ Failed to log in user after Google OAuth:', loginErr);
+            return res.redirect("/login?error=auth_failed");
+          }
+          
+          console.log('✅ Google authentication successful - user logged in');
+          console.log('User object:', JSON.stringify(user, null, 2));
+          console.log('Session ID:', req.sessionID);
+          console.log('Authenticated?', req.isAuthenticated());
+          
+          // Redirect to dashboard
+          res.redirect("/dashboard");
+        });
+      })(req, res, next);
     });
   }
 
