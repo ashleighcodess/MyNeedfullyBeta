@@ -137,72 +137,72 @@ export async function setupMultiAuth(app: Express) {
     passport.use(strategy);
   }
 
-  // Google OAuth Strategy
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/callback/google",
-      scope: ['profile', 'email']
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const user = {
-          provider: 'google',
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          profile: profile
-        };
+  // Google OAuth Strategy - Temporarily disabled for deployment
+  // if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  //   passport.use(new GoogleStrategy({
+  //     clientID: process.env.GOOGLE_CLIENT_ID,
+  //     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  //     callbackURL: "/api/callback/google",
+  //     scope: ['profile', 'email']
+  //   },
+  //   async (accessToken, refreshToken, profile, done) => {
+  //     try {
+  //       const user = {
+  //         provider: 'google',
+  //         access_token: accessToken,
+  //         refresh_token: refreshToken,
+  //         profile: profile
+  //       };
 
-        await upsertUserFromProfile({
-          id: `google_${profile.id}`,
-          email: profile.emails?.[0]?.value,
-          firstName: profile.name?.givenName,
-          lastName: profile.name?.familyName,
-          profileImageUrl: profile.photos?.[0]?.value,
-          provider: 'google'
-        });
+  //       await upsertUserFromProfile({
+  //         id: `google_${profile.id}`,
+  //         email: profile.emails?.[0]?.value,
+  //         firstName: profile.name?.givenName,
+  //         lastName: profile.name?.familyName,
+  //         profileImageUrl: profile.photos?.[0]?.value,
+  //         provider: 'google'
+  //       });
 
-        return done(null, user);
-      } catch (error) {
-        return done(error as Error, false);
-      }
-    }));
-  }
+  //       return done(null, user);
+  //     } catch (error) {
+  //       return done(error as Error, false);
+  //     }
+  //   }));
+  // }
 
-  // Facebook OAuth Strategy
-  if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
-    passport.use(new FacebookStrategy({
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "/api/callback/facebook",
-      profileFields: ['id', 'displayName', 'name', 'photos', 'email'],
-      scope: ['email']
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const user = {
-          provider: 'facebook',
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          profile: profile
-        };
+  // Facebook OAuth Strategy - Temporarily disabled for deployment
+  // if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
+  //   passport.use(new FacebookStrategy({
+  //     clientID: process.env.FACEBOOK_APP_ID,
+  //     clientSecret: process.env.FACEBOOK_APP_SECRET,
+  //     callbackURL: "/api/callback/facebook",
+  //     profileFields: ['id', 'displayName', 'name', 'photos', 'email'],
+  //     scope: ['email']
+  //   },
+  //   async (accessToken, refreshToken, profile, done) => {
+  //     try {
+  //       const user = {
+  //         provider: 'facebook',
+  //         access_token: accessToken,
+  //         refresh_token: refreshToken,
+  //         profile: profile
+  //       };
 
-        await upsertUserFromProfile({
-          id: `facebook_${profile.id}`,
-          email: profile.emails?.[0]?.value,
-          firstName: profile.name?.givenName,
-          lastName: profile.name?.familyName,
-          profileImageUrl: profile.photos?.[0]?.value,
-          provider: 'facebook'
-        });
+  //       await upsertUserFromProfile({
+  //         id: `facebook_${profile.id}`,
+  //         email: profile.emails?.[0]?.value,
+  //         firstName: profile.name?.givenName,
+  //         lastName: profile.name?.familyName,
+  //         profileImageUrl: profile.photos?.[0]?.value,
+  //         provider: 'facebook'
+  //       });
 
-        return done(null, user);
-      } catch (error) {
-        return done(error as Error, false);
-      }
-    }));
-  }
+  //       return done(null, user);
+  //     } catch (error) {
+  //       return done(error as Error, false);
+  //     }
+  //   }));
+  // }
 
   // Local Strategy for Email/Password Authentication
   passport.use(new LocalStrategy({
@@ -245,35 +245,35 @@ export async function setupMultiAuth(app: Express) {
     })(req, res, next);
   });
 
-  // Google Auth Routes with rate limiting
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    app.get("/api/login/google", authLimiter,
-      passport.authenticate("google", { scope: ["profile", "email"] })
-    );
+  // Google Auth Routes - Temporarily disabled for deployment
+  // if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  //   app.get("/api/login/google", authLimiter,
+  //     passport.authenticate("google", { scope: ["profile", "email"] })
+  //   );
 
-    app.get("/api/callback/google", authLimiter,
-      passport.authenticate("google", { failureRedirect: "/login" }),
-      (req, res) => {
-        // Store user preference if it exists in localStorage
-        res.redirect("/?auth=success");
-      }
-    );
-  }
+  //   app.get("/api/callback/google", authLimiter,
+  //     passport.authenticate("google", { failureRedirect: "/login" }),
+  //     (req, res) => {
+  //       // Store user preference if it exists in localStorage
+  //       res.redirect("/?auth=success");
+  //     }
+  //   );
+  // }
 
-  // Facebook Auth Routes with rate limiting
-  if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
-    app.get("/api/login/facebook", authLimiter,
-      passport.authenticate("facebook", { scope: ["email"] })
-    );
+  // Facebook Auth Routes - Temporarily disabled for deployment
+  // if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
+  //   app.get("/api/login/facebook", authLimiter,
+  //     passport.authenticate("facebook", { scope: ["email"] })
+  //   );
 
-    app.get("/api/callback/facebook", authLimiter,
-      passport.authenticate("facebook", { failureRedirect: "/login" }),
-      (req, res) => {
-        // Store user preference if it exists in localStorage
-        res.redirect("/?auth=success");
-      }
-    );
-  }
+  //   app.get("/api/callback/facebook", authLimiter,
+  //     passport.authenticate("facebook", { failureRedirect: "/login" }),
+  //     (req, res) => {
+  //       // Store user preference if it exists in localStorage
+  //       res.redirect("/?auth=success");
+  //     }
+  //   );
+  // }
 
   // Email/Password Auth Routes with rate limiting
   app.post("/api/auth/signup", createUserLimiter, async (req, res) => {
