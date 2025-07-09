@@ -190,14 +190,29 @@ function App() {
   // Handle unhandled promise rejections to prevent blank page
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.warn('Unhandled promise rejection (handled):', event.reason);
-      if (event.reason?.name === 'DOMException') {
-        console.warn('DOMException caught and handled');
+      // Silently handle specific error types
+      if (event.reason?.name === 'DOMException' || 
+          event.reason?.name === 'AbortError' ||
+          event.reason?.message?.includes('WebSocket') ||
+          event.reason?.message?.includes('fetch')) {
+        // These are expected in our application, handle silently
+        event.preventDefault();
+        return;
       }
-      event.preventDefault(); // Prevent the unhandled rejection from causing issues
+      
+      console.warn('Unhandled promise rejection (handled):', event.reason);
+      event.preventDefault();
     };
 
     const handleError = (event: ErrorEvent) => {
+      // Silently handle specific error types
+      if (event.error?.name === 'DOMException' || 
+          event.error?.name === 'AbortError' ||
+          event.error?.message?.includes('WebSocket')) {
+        event.preventDefault();
+        return;
+      }
+      
       console.warn('Error caught:', event.error);
       event.preventDefault();
     };

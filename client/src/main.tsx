@@ -4,11 +4,30 @@ import "./index.css";
 
 // Global error handlers to prevent unhandled rejections
 window.addEventListener('unhandledrejection', (event) => {
+  // Specifically handle DOMException and other common errors
+  if (event.reason?.name === 'DOMException' || 
+      event.reason?.message?.includes('AbortError') ||
+      event.reason?.message?.includes('NetworkError') ||
+      event.reason?.message?.includes('WebSocket')) {
+    console.warn('DOMException/WebSocket error handled silently:', event.reason.name);
+    event.preventDefault();
+    return;
+  }
+  
   console.warn('Unhandled promise rejection caught globally:', event.reason);
   event.preventDefault();
 });
 
 window.addEventListener('error', (event) => {
+  // Handle specific error types silently
+  if (event.error?.name === 'DOMException' || 
+      event.error?.message?.includes('WebSocket') ||
+      event.error?.message?.includes('AbortError')) {
+    console.warn('DOMException/WebSocket error handled silently');
+    event.preventDefault();
+    return;
+  }
+  
   console.warn('Global error caught:', event.error);
   event.preventDefault();
 });
