@@ -1,21 +1,16 @@
 // Comprehensive error suppression for DOMExceptions and WebSocket errors
 // This file specifically targets the console errors you're seeing
 
-// Override console.error to filter out DOMExceptions
+// Override console.error to filter out DOMExceptions - BUT preserve critical errors
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
 console.error = (...args: any[]) => {
   const message = args.join(' ').toLowerCase();
   
-  // Suppress specific error types that are expected in our application
-  if (message.includes('domexception') ||
-      message.includes('aborterror') ||
-      message.includes('websocket') ||
-      message.includes('unhandledrejection') ||
-      message.includes('network error') ||
-      message.includes('fetch error')) {
-    return; // Silently ignore these errors
+  // Only suppress very specific DOMException errors, not all errors
+  if (message.includes('domexception') && message.includes('unhandledrejection')) {
+    return; // Silently ignore DOMException unhandled rejections
   }
   
   originalConsoleError.apply(console, args);
@@ -24,10 +19,8 @@ console.error = (...args: any[]) => {
 console.warn = (...args: any[]) => {
   const message = args.join(' ').toLowerCase();
   
-  // Suppress specific warning types
-  if (message.includes('domexception') ||
-      message.includes('websocket') ||
-      message.includes('unhandledrejection')) {
+  // Only suppress specific DOMException warnings
+  if (message.includes('domexception') && message.includes('unhandledrejection')) {
     return; // Silently ignore these warnings
   }
   
