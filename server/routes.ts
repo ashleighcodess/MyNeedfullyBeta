@@ -1485,8 +1485,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      console.log('🚀 POST /api/wishlists endpoint hit');
+      console.log('🔑 req.user:', req.user);
+      console.log('📋 req.body:', req.body);
+      
+      const userId = req.user?.claims?.sub;
       console.log('🔄 Creating wishlist for user:', userId);
+      
+      if (!userId) {
+        console.error('❌ No userId found in wishlist creation');
+        return res.status(401).json({ message: "No user ID found for wishlist creation" });
+      }
       console.log('📋 Request headers:', req.headers);
       console.log('📦 Raw body data:', req.body);
       
@@ -1726,10 +1735,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch('/api/user/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      console.log('🚀 PATCH /api/user/settings endpoint hit');
+      console.log('🔑 req.user:', req.user);
+      console.log('📋 req.body:', req.body);
+      
+      const userId = req.user?.claims?.sub;
       const updates = req.body;
 
       console.log('📝 IMMEDIATE DEBUG User settings update request:', { userId, updates });
+      
+      if (!userId) {
+        console.error('❌ No userId found in request');
+        return res.status(401).json({ message: "No user ID found" });
+      }
 
       // Validate that only allowed fields are being updated
       const allowedFields = [
@@ -1771,6 +1789,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("❌ Updates attempted:", filteredUpdates);
       console.error("❌ Request user object:", req.user);
       console.error("❌ Authentication status:", !!req.user);
+      console.error("❌ Full error object:", JSON.stringify(error, null, 2));
       res.status(500).json({ 
         message: "IMMEDIATE DEBUG: Failed to update user settings",
         error: error instanceof Error ? error.message : 'Unknown error',

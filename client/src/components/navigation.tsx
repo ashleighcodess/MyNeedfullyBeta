@@ -107,15 +107,13 @@ export default function Navigation() {
                       {user?.profileImageUrl ? (
                         <img 
                           src={user.profileImageUrl} 
-                          alt={user?.firstName || 'User'} 
+                          alt={`${user?.firstName || 'User'} profile`} 
                           className="w-7 h-7 rounded-full object-cover"
                         />
                       ) : (
-                        <img 
-                          src="/attached_assets/Logo_6_1752017502495.png" 
-                          alt={user?.firstName || 'User'} 
-                          className="w-7 h-7 rounded-full object-cover"
-                        />
+                        <div className="w-7 h-7 bg-coral/10 rounded-full flex items-center justify-center">
+                          <User className="h-3 w-3 text-coral" />
+                        </div>
                       )}
                     </Button>
                   </DropdownMenuTrigger>
@@ -316,15 +314,13 @@ export default function Navigation() {
                       {user?.profileImageUrl ? (
                         <img 
                           src={user.profileImageUrl} 
-                          alt={user?.firstName || 'User'} 
+                          alt={`${user?.firstName || 'User'} profile`} 
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
-                        <img 
-                          src="/attached_assets/Logo_6_1752017502495.png" 
-                          alt={user?.firstName || 'User'} 
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
+                        <div className="w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                          <User className="h-4 w-4 text-coral" />
+                        </div>
                       )}
                       <span className="text-sm font-medium">
                         {user?.firstName || 'Menu'}

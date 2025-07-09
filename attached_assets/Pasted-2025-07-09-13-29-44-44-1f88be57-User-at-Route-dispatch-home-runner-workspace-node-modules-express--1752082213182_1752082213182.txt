@@ -1,0 +1,195 @@
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+2025-07-09 13:29:44.44
+1f88be57
+User
+❌ Error name: TypeError
+2025-07-09 13:29:44.44
+1f88be57
+User
+❌ Error message: Cannot read properties of undefined (reading 'sub')
+2025-07-09 13:29:44.44
+1f88be57
+User
+❌ Error stack: TypeError: Cannot read properties of undefined (reading 'sub')
+2025-07-09 13:29:44.44
+1f88be57
+User
+at file:///home/runner/workspace/dist/index.js:4007:39
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at isAuthenticated (file:///home/runner/workspace/dist/index.js:2349:14)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+2025-07-09 13:29:44.44
+1f88be57
+User
+file:///home/runner/workspace/dist/index.js:4049
+2025-07-09 13:29:44.44
+1f88be57
+User
+console.error("\u274C User ID:", userId);
+2025-07-09 13:29:44.44
+1f88be57
+User
+^
+2025-07-09 13:29:44.44
+1f88be57
+User
+2025-07-09 13:29:44.44
+1f88be57
+User
+ReferenceError: userId is not defined
+2025-07-09 13:29:44.44
+1f88be57
+User
+at file:///home/runner/workspace/dist/index.js:4049:40
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at isAuthenticated (file:///home/runner/workspace/dist/index.js:2349:14)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at next (/home/runner/workspace/node_modules/express/lib/router/route.js:149:13)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Route.dispatch (/home/runner/workspace/node_modules/express/lib/router/route.js:119:3)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Layer.handle [as handle_request] (/home/runner/workspace/node_modules/express/lib/router/layer.js:95:5)
+2025-07-09 13:29:44.44
+1f88be57
+User
+at /home/runner/workspace/node_modules/express/lib/router/index.js:284:15
+2025-07-09 13:29:44.44
+1f88be57
+User
+at Function.process_params (/home/runner/workspace/node_modules/express/lib/router/index.js:346:12)
+2025-07-09 13:29:44.44
+1f88be57
+User
+2025-07-09 13:29:44.44
+1f88be57
+User
+Node.js v20.18.1
+2025-07-09 13:29:44.45
+1f88be57
+System
+error proxying request error=EOF
+2025-07-09 13:29:44.45
+1f88be57
+User
+npm notice
+2025-07-09 13:29:44.45
+1f88be57
+User
+npm notice New major version of npm available! 10.8.2 -> 11.4.2
+2025-07-09 13:29:44.45
+1f88be57
+User
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+2025-07-09 13:29:44.45
+1f88be57
+User
+npm notice To update run: npm install -g npm@11.4.2
+2025-07-09 13:29:44.45
+1f88be57
+User
+npm notice
+2025-07-09 13:29:44.46
+1f88be57
+System
+command finished with error [npm run start]: exit status 1
+2025-07-09 13:29:47.04
+1f88be57
+System
+error proxying request error=dial tcp 127.0.0.1:5000: connect: connection refused
+Wrap
+Colors
+Security Scanner
+Run a scan to check for potential security risks in your application. Scans are typically complete within minutes. Learn more
+1 potential vulnerability found.
+Last ran on 1:28 pm, Jul 09, 2025
+Detected potential vulnerability in client/src/pages/product-search.tsx
+User controlled data in methods like `innerHTML`, `outerHTML` or `document.write` is an anti-pattern that can lead to XSS vulnerabilities
+client/src/pages/product-search.tsx
+                                parent.innerHTML = `
+                                  <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
+                                    <img src="${getRetailerLogo(product.retailer)}" alt="${product.retailer}" class="w-12 h-12 mb-2 opacity-50" />
+                                    <span class="text-sm font-medium">Image not available</span>
+                                  </div>
+                                `;
+Detected potential vulnerability in client/src/pages/product-search.tsx
+User controlled data in a `parent.innerHTML` is an anti-pattern that can lead to XSS vulnerabilities
+client/src/pages/product-search.tsx
+                                parent.innerHTML = `
+                                  <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
+                                    <img src="${getRetailerLogo(product.retailer)}" alt="${product.retailer}" class="w-12 h-12 mb-2 opacity-50" />
+                                    <span class="text-sm font-medium">Image not available</span>
+                                  </div>
+                                `;
+Detected potential vulnerability in deployment/websocket-security-test.js
+Insecure WebSocket Detected. WebSocket Secure (wss) should be used for all WebSocket connections.
+deployment/websocket-security-test.js
+  const baseUrl = process.env.SERVER_URL?.replace('ws://', 'http://').replace('wss://', 'https://') || 'http://localhost:5000';
+This security scan is powered by Semgrep Community Edition.
