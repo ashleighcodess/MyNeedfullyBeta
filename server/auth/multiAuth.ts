@@ -77,14 +77,30 @@ function updateUserSession(
   user.expires_at = user.claims?.exp;
 }
 
-async function upsertUserFromProfile(profile: OAuthUser) {
-  await storage.upsertUser({
-    id: profile.id,
-    email: profile.email,
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    profileImageUrl: profile.profileImageUrl,
-  });
+async function upsertUserFromProfile(profileData: {
+  id: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
+  provider: string;
+}) {
+  try {
+    const userData = {
+      id: profileData.id,
+      email: profileData.email || null,
+      firstName: profileData.firstName || null,
+      lastName: profileData.lastName || null,
+      profileImageUrl: profileData.profileImageUrl || null,
+      authProvider: profileData.provider,
+      isVerified: true // OAuth users are considered verified
+    };
+
+    return await storage.upsertUser(userData);
+  } catch (error) {
+    console.error('Error upserting user from profile:', error);
+    throw error;
+  }
 }
 
 export async function setupMultiAuth(app: Express) {
@@ -162,6 +178,22 @@ export async function setupMultiAuth(app: Express) {
           refresh_token: refreshToken,
           profile: profile
         };
+
+        // Check if user already exists with this email but different provider
+        const email = profile.emails?.[0]?.value;
+        if (email) {
+          const existingUser = await storage.getUserByEmail(email);
+          if (existingUser && existingUser.authProvider !== 'google') {
+            const providerNames = {
+              'replit': 'Replit',
+              'facebook': 'Facebook',
+              'email': 'email/password'
+            };
+            const existingProvider = providerNames[existingUser.authProvider as keyof typeof providerNames] || existingUser.authProvider;
+            
+            return done(new Error(`This email is already registered with ${existingProvider} authentication. Please sign in using ${existingProvider} instead.`), false);
+          }
+        }
 
         await upsertUserFromProfile({
           id: `google_${profile.id}`,
@@ -286,10 +318,27 @@ export async function setupMultiAuth(app: Express) {
         strategyName = 'google-2'; // development domain
       }
       
-      passport.authenticate(strategyName, { failureRedirect: "/login" })(req, res, next);
-    }, (req, res) => {
-      // Store user preference if it exists in localStorage
-      res.redirect("/?auth=success");
+      passport.authenticate(strategyName, { 
+        failureRedirect: "/login?error=auth_failed"
+      })(req, res, (err) => {
+        if (err) {
+          console.error('Google OAuth error:', err);
+          
+          // Check if it's a cross-provider email conflict
+          if (err.message && err.message.includes('duplicate key value violates unique constraint')) {
+            console.error('Cross-provider email conflict detected');
+            return res.redirect("/login?error=existing_account");
+          }
+          
+          return res.redirect("/login?error=auth_failed");
+        }
+        
+        // Log successful authentication
+        console.log('✅ Google authentication successful for user:', req.user);
+        
+        // Redirect to dashboard for successful authentication
+        res.redirect("/dashboard");
+      });
     });
   }
 

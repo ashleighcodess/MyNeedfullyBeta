@@ -359,6 +359,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupMultiAuth(app);
 
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.profile?.id || req.user.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadsDir));
 

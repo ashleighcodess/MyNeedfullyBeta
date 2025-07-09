@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -41,6 +41,30 @@ export default function AuthPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("login");
+  
+  // Check for authentication error in URL and show toast
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authError = urlParams.get('error');
+    
+    if (authError === 'existing_account') {
+      toast({
+        title: "Account Already Exists",
+        description: "An account with this email already exists. Please sign in with your original method or try a different email.",
+        variant: "destructive",
+      });
+      // Clear error from URL
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (authError === 'auth_failed') {
+      toast({
+        title: "Authentication Failed",
+        description: "There was an issue signing you in. Please try again.",
+        variant: "destructive",
+      });
+      // Clear error from URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [toast]);
 
   // Login form
   const loginForm = useForm<LoginForm>({

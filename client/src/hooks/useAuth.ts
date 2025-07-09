@@ -4,7 +4,7 @@ import type { User } from "@shared/schema";
 import { useEffect, useState } from "react";
 
 export function useAuth() {
-  const [forceLoaded, setForceLoaded] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   
   try {
     const { data: user, isLoading, error, isError } = useQuery<User | null>({
@@ -13,27 +13,24 @@ export function useAuth() {
       retry: false,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      staleTime: 5000, // 5 seconds
-      gcTime: 5000, // Keep data for 5 seconds after component unmounts
+      staleTime: 1000, // 1 second
+      gcTime: 1000, // Keep data for 1 second after component unmounts
     });
 
-    // Force loading to complete after 3 seconds to prevent infinite loading
+    // Mark as initialized after first attempt
     useEffect(() => {
-      const timeout = setTimeout(() => {
-        setForceLoaded(true);
-      }, 3000);
-
-      return () => clearTimeout(timeout);
-    }, []);
+      if (!isLoading || isError || error) {
+        setIsInitialized(true);
+      }
+    }, [isLoading, isError, error]);
 
     // Log any errors for debugging but don't throw them
     if (error) {
       console.warn("Auth query error (non-critical):", error);
     }
 
-    // If we get a 401 or error, treat as not authenticated and not loading
-    // Only show loading if we're actually loading and haven't encountered an error
-    const actuallyLoading = isLoading && !isError && !error && !forceLoaded;
+    // Don't show loading if we've already initialized or if there's an error
+    const actuallyLoading = isLoading && !isInitialized && !isError && !error;
 
     return {
       user: user || null,
