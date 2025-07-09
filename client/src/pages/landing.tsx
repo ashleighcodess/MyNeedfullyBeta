@@ -479,7 +479,7 @@ export default function Landing() {
                          opacity: progressSteps[0] ? 1 : 0
                        }}></div>
                 </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Log In, Sign Up, Or Continue As A Guest To Fulfill A Need</h3>
+                <h3 className="text-lg font-semibold text-navy mb-2">Log In Or Sign Up To Fulfill A Need</h3>
                 <p className="text-gray-600 text-sm">Quick and easy registration to get started on your helping journey</p>
               </div>
 
