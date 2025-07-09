@@ -3116,14 +3116,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Send reset email using SendGrid
       try {
         const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${token}`;
-        await emailService.sendPasswordResetEmail(
+        console.log(`Attempting to send password reset email to ${email}`);
+        console.log(`Reset link: ${resetLink}`);
+        
+        const emailSent = await emailService.sendPasswordResetEmail(
           user.email,
           `${user.firstName} ${user.lastName}`.trim() || user.email,
           resetLink
         );
-        console.log(`Password reset email sent to ${email}`);
+        
+        if (emailSent) {
+          console.log(`✅ Password reset email successfully sent to ${email}`);
+        } else {
+          console.log(`❌ Password reset email failed to send to ${email}`);
+        }
       } catch (emailError) {
         console.error('Failed to send password reset email:', emailError);
+        console.error('SendGrid error details:', emailError);
         // Continue without failing - don't reveal if email exists
       }
       
