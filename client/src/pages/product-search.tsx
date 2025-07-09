@@ -788,12 +788,22 @@ export default function ProductSearch() {
                               const parent = target.parentElement;
                               if (parent && !target.dataset.fallbackApplied) {
                                 target.dataset.fallbackApplied = 'true';
-                                parent.innerHTML = `
-                                  <div class="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
-                                    <img src="${getRetailerLogo(product.retailer)}" alt="${product.retailer}" class="w-12 h-12 mb-2 opacity-50" />
-                                    <span class="text-sm font-medium">Image not available</span>
-                                  </div>
-                                `;
+                                // Safely create fallback content using DOM methods
+                                const fallbackDiv = document.createElement('div');
+                                fallbackDiv.className = 'w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500';
+                                
+                                const logoImg = document.createElement('img');
+                                logoImg.src = getRetailerLogo(product.retailer);
+                                logoImg.alt = product.retailer;
+                                logoImg.className = 'w-12 h-12 mb-2 opacity-50';
+                                
+                                const textSpan = document.createElement('span');
+                                textSpan.className = 'text-sm font-medium';
+                                textSpan.textContent = 'Image not available';
+                                
+                                fallbackDiv.appendChild(logoImg);
+                                fallbackDiv.appendChild(textSpan);
+                                parent.replaceChild(fallbackDiv, target);
                               }
                             }}
                           />
