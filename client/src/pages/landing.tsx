@@ -138,8 +138,9 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
   
-  // Initialize wobble animation hook
+  // Initialize wobble animation hooks
   const { isVisible: isWobbleVisible, elementRef: wobbleRef } = useWobbleAnimation();
+  const { isVisible: isSupportWobbleVisible, elementRef: supportWobbleRef } = useWobbleAnimation();
   
   // Fetch featured wishlists from database
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
@@ -926,9 +927,16 @@ export default function Landing() {
               </Button>
             </div>
             
-            {/* Right image */}
-            <div className="flex-1 animate-fade-in-right">
-              <div className="relative">
+            {/* Right image with Wobble Animation */}
+            <div className="flex-1">
+              <div 
+                ref={supportWobbleRef}
+                className={`relative ${
+                  isSupportWobbleVisible 
+                    ? 'animate-wobble-in-right' 
+                    : 'transform translate-x-20 opacity-60'
+                }`}
+              >
                 <img 
                   src={familyTreeImage}
                   alt="Family with support tree illustration"
