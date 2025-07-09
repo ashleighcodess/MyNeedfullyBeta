@@ -21,6 +21,7 @@ import {
   createUserLimiter, 
   uploadLimiter 
 } from "./middleware/rateLimiter";
+import SecurityMonitor from "./services/security-monitor";
 import { 
   corsOptions, 
   securityHeaders, 
@@ -49,6 +50,9 @@ import {
   analyticsEvents,
   thankYouNotes,
   notifications,
+  securityEvents,
+  securityAlerts,
+  suspiciousIps,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, and, gt, or } from "drizzle-orm";
@@ -328,6 +332,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(securityHeaders);
   app.use(sanitizeInput);
   app.use(securityLogger);
+  app.use(SecurityMonitor.securityMiddleware());
   
   // Performance middleware
   app.use(compressionMiddleware);
@@ -1087,6 +1092,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: 'Database connection failed',
         timestamp: new Date().toISOString()
       });
+    }
+  });
+
+  // Security monitoring endpoints (Admin only)
+  app.get('/api/admin/security/dashboard', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const securityData = await SecurityMonitor.getSecurityDashboard();
+      res.json(securityData);
+    } catch (error) {
+      console.error("Error fetching security dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch security data" });
+    }
+  });
+
+  app.post('/api/admin/security/alerts/:id/resolve', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const alertId = parseInt(req.params.id);
+      const adminUserId = req.user.claims.sub;
+      
+      await db.update(securityAlerts)
+        .set({
+          isResolved: true,
+          resolvedBy: adminUserId,
+          resolvedAt: new Date(),
+        })
+        .where(eq(securityAlerts.id, alertId));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error resolving security alert:", error);
+      res.status(500).json({ message: "Failed to resolve alert" });
+    }
+  });
+
+  app.post('/api/admin/security/ips/:id/block', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const ipId = parseInt(req.params.id);
+      const adminUserId = req.user.claims.sub;
+      
+      await db.update(suspiciousIps)
+        .set({
+          isBlocked: true,
+          blockedBy: adminUserId,
+          blockedAt: new Date(),
+        })
+        .where(eq(suspiciousIps.id, ipId));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error blocking IP:", error);
+      res.status(500).json({ message: "Failed to block IP" });
+    }
+  });
+
+  app.post('/api/admin/security/ips/:id/unblock', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const ipId = parseInt(req.params.id);
+      
+      await db.update(suspiciousIps)
+        .set({
+          isBlocked: false,
+          blockedBy: null,
+          blockedAt: null,
+        })
+        .where(eq(suspiciousIps.id, ipId));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error unblocking IP:", error);
+      res.status(500).json({ message: "Failed to unblock IP" });
+    }
+  });
+
+  app.get('/api/admin/security/events', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { page = 1, limit = 50, threatLevel, eventType } = req.query;
+      const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
+
+      let query = db.select().from(securityEvents);
+      
+      if (threatLevel) {
+        query = query.where(eq(securityEvents.threatLevel, threatLevel as any));
+      }
+      
+      if (eventType) {
+        query = query.where(eq(securityEvents.eventType, eventType as any));
+      }
+
+      const events = await query
+        .orderBy(desc(securityEvents.createdAt))
+        .limit(parseInt(limit as string))
+        .offset(offset);
+
+      res.json({ events, pagination: { page: parseInt(page as string), limit: parseInt(limit as string) } });
+    } catch (error) {
+      console.error("Error fetching security events:", error);
+      res.status(500).json({ message: "Failed to fetch security events" });
     }
   });
 
@@ -2746,6 +2848,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Password reset endpoints
+  // Security Monitoring API Endpoints
+  app.get('/api/admin/security/dashboard', isAdmin, async (req, res) => {
+    try {
+      const securityData = await SecurityMonitor.getSecurityDashboard();
+      res.json(securityData);
+    } catch (error) {
+      console.error("Error fetching security dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch security dashboard" });
+    }
+  });
+
+  app.post('/api/admin/security/alerts/:id/resolve', isAdmin, async (req, res) => {
+    try {
+      const alertId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      
+      await db.update(securityAlerts)
+        .set({ 
+          isResolved: true, 
+          resolvedBy: userId, 
+          resolvedAt: new Date() 
+        })
+        .where(eq(securityAlerts.id, alertId));
+      
+      res.json({ message: "Alert resolved successfully" });
+    } catch (error) {
+      console.error("Error resolving security alert:", error);
+      res.status(500).json({ message: "Failed to resolve alert" });
+    }
+  });
+
+  app.post('/api/admin/security/ips/:id/:action', isAdmin, async (req, res) => {
+    try {
+      const ipId = parseInt(req.params.id);
+      const action = req.params.action;
+      const userId = req.user.claims.sub;
+      
+      if (action === 'block') {
+        await db.update(suspiciousIps)
+          .set({ 
+            isBlocked: true, 
+            blockedBy: userId, 
+            blockedAt: new Date() 
+          })
+          .where(eq(suspiciousIps.id, ipId));
+      } else if (action === 'unblock') {
+        await db.update(suspiciousIps)
+          .set({ 
+            isBlocked: false, 
+            blockedBy: null, 
+            blockedAt: null 
+          })
+          .where(eq(suspiciousIps.id, ipId));
+      }
+      
+      res.json({ message: `IP ${action}ed successfully` });
+    } catch (error) {
+      console.error(`Error ${req.params.action}ing IP:`, error);
+      res.status(500).json({ message: `Failed to ${req.params.action} IP` });
+    }
+  });
+
+  app.get('/api/admin/security/export', isAdmin, async (req, res) => {
+    try {
+      const date = req.query.date as string || new Date().toISOString().split('T')[0];
+      const startDate = new Date(date);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 1);
+      
+      const events = await db.select()
+        .from(securityEvents)
+        .where(and(
+          gt(securityEvents.createdAt, startDate),
+          gt(endDate, securityEvents.createdAt)
+        ))
+        .orderBy(desc(securityEvents.createdAt));
+      
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="security-report-${date}.json"`);
+      res.json({
+        reportDate: date,
+        totalEvents: events.length,
+        events: events
+      });
+    } catch (error) {
+      console.error("Error exporting security report:", error);
+      res.status(500).json({ message: "Failed to export security report" });
+    }
+  });
+
   app.post('/api/auth/forgot-password', async (req, res) => {
     try {
       const { email } = req.body;

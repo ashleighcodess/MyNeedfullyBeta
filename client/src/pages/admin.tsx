@@ -91,6 +91,13 @@ export default function AdminDashboard() {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  // Security dashboard query
+  const { data: securityData, isLoading: securityLoading } = useQuery({
+    queryKey: ['/api/admin/security/dashboard'],
+    enabled: !!user && user.userType === 'admin',
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   // User removal mutation
   const removeUserMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -146,6 +153,48 @@ export default function AdminDashboard() {
   const handleFeatureWishlist = (wishlistId: number, featured: boolean) => {
     featureWishlistMutation.mutate({ wishlistId, featured });
   };
+
+  // Security alert resolution mutation
+  const resolveAlertMutation = useMutation({
+    mutationFn: async (alertId: number) => {
+      return await apiRequest('POST', `/api/admin/security/alerts/${alertId}/resolve`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Alert Resolved",
+        description: "Security alert has been marked as resolved",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/security/dashboard'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to resolve alert",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // IP blocking mutation
+  const blockIpMutation = useMutation({
+    mutationFn: async ({ ipId, action }: { ipId: number; action: 'block' | 'unblock' }) => {
+      return await apiRequest('POST', `/api/admin/security/ips/${ipId}/${action}`);
+    },
+    onSuccess: (data, variables) => {
+      toast({
+        title: variables.action === 'block' ? "IP Blocked" : "IP Unblocked",
+        description: `IP address has been ${variables.action}ed`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/security/dashboard'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update IP status",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Don't render if not admin
   if (!user || user.userType !== 'admin') {
@@ -298,7 +347,7 @@ export default function AdminDashboard() {
 
         {/* Main Dashboard Content */}
         <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-5 gap-1">
+          <TabsList className="grid w-full grid-cols-6 gap-1">
             <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
             <TabsTrigger value="users" className="text-xs sm:text-sm">Users</TabsTrigger>
             <TabsTrigger value="wishlists" className="text-xs sm:text-sm">
@@ -306,6 +355,7 @@ export default function AdminDashboard() {
               <span className="sm:hidden">Lists</span>
             </TabsTrigger>
             <TabsTrigger value="activity" className="text-xs sm:text-sm">Activity</TabsTrigger>
+            <TabsTrigger value="security" className="text-xs sm:text-sm">Security</TabsTrigger>
             <TabsTrigger value="system" className="text-xs sm:text-sm">System</TabsTrigger>
           </TabsList>
 
@@ -691,6 +741,237 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               </div>
+            </div>
+          </TabsContent>
+
+          {/* Security Tab - Comprehensive Security Monitoring */}
+          <TabsContent value="security" className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Security Overview */}
+              <Card className="lg:col-span-2">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-lg">
+                    <Shield className="h-4 w-4 mr-2" />
+                    Security Dashboard
+                  </CardTitle>
+                  <CardDescription>Real-time security monitoring and threat detection</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {securityLoading ? (
+                    <div className="space-y-3">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="animate-pulse">
+                          <div className="h-16 bg-gray-200 rounded"></div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Security Metrics */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="p-3 bg-green-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-green-900">Security Score</p>
+                              <p className="text-2xl font-bold text-green-600">8.5/10</p>
+                            </div>
+                            <CheckCircle className="h-8 w-8 text-green-500" />
+                          </div>
+                        </div>
+                        <div className="p-3 bg-blue-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-blue-900">Threats Blocked</p>
+                              <p className="text-2xl font-bold text-blue-600">
+                                {securityData?.threatsBlocked || 0}
+                              </p>
+                            </div>
+                            <Shield className="h-8 w-8 text-blue-500" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Active Alerts */}
+                      <div>
+                        <h4 className="font-medium mb-3">Active Security Alerts</h4>
+                        {securityData?.activeAlerts?.length > 0 ? (
+                          <div className="space-y-2">
+                            {securityData.activeAlerts.map((alert: any) => (
+                              <div key={alert.id} className="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <div className="flex items-center">
+                                  <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+                                  <div>
+                                    <p className="text-sm font-medium text-red-900">{alert.title}</p>
+                                    <p className="text-xs text-red-700">{alert.description}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Badge variant="destructive" className="text-xs">
+                                    {alert.threat_level}
+                                  </Badge>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => resolveAlertMutation.mutate(alert.id)}
+                                    disabled={resolveAlertMutation.isPending}
+                                  >
+                                    Resolve
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-6 text-gray-500">
+                            <Shield className="h-8 w-8 mx-auto mb-2 text-green-500" />
+                            <p className="text-sm">No active security alerts</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Recent Security Events */}
+                      <div>
+                        <h4 className="font-medium mb-3">Recent Security Events</h4>
+                        <div className="space-y-2 max-h-64 overflow-y-auto">
+                          {securityData?.recentEvents?.slice(0, 8).map((event: any, index: number) => (
+                            <div key={index} className="flex items-start space-x-3 p-2 rounded bg-gray-50 border-l-2 border-blue-200">
+                              <div className="flex-shrink-0 mt-0.5">
+                                {event.event_type === 'login_success' && <CheckCircle className="h-3 w-3 text-green-500" />}
+                                {event.event_type === 'login_failure' && <AlertCircle className="h-3 w-3 text-red-500" />}
+                                {event.event_type === 'suspicious_activity' && <AlertTriangle className="h-3 w-3 text-orange-500" />}
+                                {event.event_type === 'rate_limit_exceeded' && <Clock className="h-3 w-3 text-yellow-500" />}
+                                {!['login_success', 'login_failure', 'suspicious_activity', 'rate_limit_exceeded'].includes(event.event_type) && <Shield className="h-3 w-3 text-blue-500" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs text-gray-900 leading-tight">
+                                  <span className="font-medium text-blue-600">
+                                    {event.ip_address || 'System'}
+                                  </span>
+                                  {' '}
+                                  {event.event_type?.replace(/_/g, ' ')} - {event.endpoint || 'N/A'}
+                                </p>
+                                <p className="text-xs text-gray-400">{new Date(event.created_at).toLocaleString()}</p>
+                              </div>
+                              <Badge variant={event.threat_level === 'high' || event.threat_level === 'critical' ? 'destructive' : 'secondary'} className="text-xs">
+                                {event.threat_level}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Security Controls */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <Database className="h-4 w-4 mr-2" />
+                    Security Controls
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Suspicious IPs */}
+                  <div>
+                    <h4 className="font-medium mb-3">Suspicious IPs</h4>
+                    {securityData?.suspiciousIps?.length > 0 ? (
+                      <div className="space-y-2">
+                        {securityData.suspiciousIps.slice(0, 5).map((ip: any) => (
+                          <div key={ip.id} className="flex items-center justify-between p-2 bg-orange-50 border border-orange-200 rounded">
+                            <div>
+                              <p className="text-sm font-medium">{ip.ip_address}</p>
+                              <p className="text-xs text-gray-600">{ip.reason}</p>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <Badge variant={ip.threat_level === 'high' ? 'destructive' : 'secondary'} className="text-xs">
+                                {ip.threat_level}
+                              </Badge>
+                              <Button
+                                size="sm"
+                                variant={ip.is_blocked ? "secondary" : "destructive"}
+                                onClick={() => blockIpMutation.mutate({ 
+                                  ipId: ip.id, 
+                                  action: ip.is_blocked ? 'unblock' : 'block' 
+                                })}
+                                disabled={blockIpMutation.isPending}
+                                className="text-xs px-2 py-1"
+                              >
+                                {ip.is_blocked ? 'Unblock' : 'Block'}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 text-center py-4">No suspicious IPs detected</p>
+                    )}
+                  </div>
+
+                  {/* Security Stats */}
+                  <div>
+                    <h4 className="font-medium mb-3">Security Statistics</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Failed Login Attempts</span>
+                        <span className="text-sm font-medium text-red-600">
+                          {securityData?.failedLogins || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Blocked IPs</span>
+                        <span className="text-sm font-medium text-orange-600">
+                          {securityData?.blockedIps || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Security Events (24h)</span>
+                        <span className="text-sm font-medium text-blue-600">
+                          {securityData?.eventsToday || 0}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Active Sessions</span>
+                        <span className="text-sm font-medium text-green-600">
+                          {securityData?.activeSessions || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div>
+                    <h4 className="font-medium mb-3">Quick Actions</h4>
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          queryClient.invalidateQueries({ queryKey: ['/api/admin/security/dashboard'] });
+                          toast({ title: "Security data refreshed" });
+                        }}
+                        className="w-full text-sm"
+                      >
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Refresh Security Data
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const date = new Date().toISOString().split('T')[0];
+                          window.open(`/api/admin/security/export?date=${date}`, '_blank');
+                        }}
+                        className="w-full text-sm"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Export Security Report
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
