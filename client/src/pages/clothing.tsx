@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { 
   Shirt, 
   Footprints, 
-  Coat, 
+  ShirtIcon, 
   Heart,
   Plus,
   Search
@@ -18,7 +18,7 @@ export default function Clothing() {
   const essentialItems = [
     { icon: Shirt, name: "Everyday Clothing", description: "Shirts, pants, underwear, basic wardrobe items" },
     { icon: Footprints, name: "Footwear", description: "Shoes, boots, sandals, socks for all seasons" },
-    { icon: Coat, name: "Seasonal Wear", description: "Coats, jackets, sweaters, weather-appropriate clothing" },
+    { icon: ShirtIcon, name: "Seasonal Wear", description: "Coats, jackets, sweaters, weather-appropriate clothing" },
     { icon: Heart, name: "Special Occasions", description: "Work clothes, interview attire, formal wear" }
   ];
 
