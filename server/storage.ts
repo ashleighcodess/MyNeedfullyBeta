@@ -169,7 +169,18 @@ export class DatabaseStorage implements IStorage {
 
   async updateUser(id: string, updates: Partial<User>): Promise<User> {
     try {
-      console.log('🔄 Storage updateUser called:', { id, updates });
+      console.log('🔄 CRITICAL STORAGE updateUser called:', { id, updates });
+      console.log('🔄 User ID type:', typeof id, 'length:', id?.length);
+      console.log('🔄 Updates type:', typeof updates, 'keys:', Object.keys(updates));
+      
+      if (!id || typeof id !== 'string') {
+        throw new Error(`Invalid user ID: ${id}`);
+      }
+      
+      if (!updates || typeof updates !== 'object') {
+        throw new Error(`Invalid updates object: ${updates}`);
+      }
+      
       const [user] = await db
         .update(users)
         .set({
@@ -178,10 +189,22 @@ export class DatabaseStorage implements IStorage {
         })
         .where(eq(users.id, id))
         .returning();
-      console.log('✅ Storage updateUser success:', { id: user?.id, email: user?.email });
+        
+      console.log('✅ CRITICAL Storage updateUser success:', { id: user?.id, email: user?.email });
+      
+      if (!user) {
+        throw new Error(`No user found with ID: ${id}`);
+      }
+      
       return user;
     } catch (error) {
-      console.error('❌ Storage updateUser error:', error);
+      console.error('❌ CRITICAL Storage updateUser ERROR:', error);
+      console.error('❌ Error type:', typeof error);
+      console.error('❌ Error name:', error?.name);
+      console.error('❌ Error message:', error?.message);
+      console.error('❌ Error stack:', error?.stack);
+      console.error('❌ Input ID:', id);
+      console.error('❌ Input updates:', updates);
       throw error;
     }
   }

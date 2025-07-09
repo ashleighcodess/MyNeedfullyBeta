@@ -1538,6 +1538,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       console.log('🎯 Final wishlist data before creation:', wishlistWithImages);
+      console.log('💾 About to call storage.createWishlist with:', wishlistWithImages);
       const wishlist = await storage.createWishlist(wishlistWithImages);
       console.log('✅ Created wishlist:', wishlist);
       
@@ -1552,17 +1553,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json(wishlist);
     } catch (error) {
-      console.error("❌ Error creating wishlist:", error);
-      console.error("❌ Error stack:", error.stack);
+      console.error("❌ CRITICAL ERROR creating wishlist:", error);
+      console.error("❌ Error name:", error?.name);
+      console.error("❌ Error message:", error?.message);
+      console.error("❌ Error stack:", error?.stack);
       console.error("❌ Request body:", req.body);
       console.error("❌ User ID:", userId);
+      console.error("❌ Wishlist data:", wishlistWithImages);
       if (error instanceof z.ZodError) {
         console.error("❌ Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid data", errors: error.errors });
       }
       res.status(500).json({ 
         message: "Failed to create wishlist",
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
+        errorDetails: {
+          name: error?.name,
+          message: error?.message,
+          userId: userId
+        }
       });
     }
   });

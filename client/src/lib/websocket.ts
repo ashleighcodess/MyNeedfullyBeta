@@ -146,6 +146,11 @@ export function useWebSocket() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    // TEMPORARILY DISABLE WebSocket due to connection issues
+    // Will re-enable after server configuration is fixed
+    console.log("WebSocket temporarily disabled for deployment stability");
+    return;
+    
     // Only connect WebSocket for authenticated users
     if (isAuthenticated && user?.id) {
       try {
