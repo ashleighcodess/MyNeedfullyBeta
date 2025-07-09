@@ -1729,7 +1729,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const updates = req.body;
 
-      console.log('📝 User settings update request:', { userId, updates });
+      console.log('📝 IMMEDIATE DEBUG User settings update request:', { userId, updates });
 
       // Validate that only allowed fields are being updated
       const allowedFields = [
@@ -1769,10 +1769,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("❌ Error stack:", error?.stack);
       console.error("❌ User ID:", userId);
       console.error("❌ Updates attempted:", filteredUpdates);
+      console.error("❌ Request user object:", req.user);
+      console.error("❌ Authentication status:", !!req.user);
       res.status(500).json({ 
-        message: "Failed to update user settings",
+        message: "IMMEDIATE DEBUG: Failed to update user settings",
         error: error instanceof Error ? error.message : 'Unknown error',
         userId: userId,
+        authStatus: !!req.user,
         errorDetails: {
           name: error?.name,
           message: error?.message
