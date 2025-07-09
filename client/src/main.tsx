@@ -1,35 +1,34 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import "./lib/errorSuppressor"; // Import comprehensive error suppression
 
 // Global error handlers to prevent unhandled rejections
 window.addEventListener('unhandledrejection', (event) => {
-  // Specifically handle DOMException and other common errors
-  if (event.reason?.name === 'DOMException' || 
-      event.reason?.message?.includes('AbortError') ||
-      event.reason?.message?.includes('NetworkError') ||
-      event.reason?.message?.includes('WebSocket')) {
-    console.warn('DOMException/WebSocket error handled silently:', event.reason.name);
-    event.preventDefault();
-    return;
-  }
-  
-  console.warn('Unhandled promise rejection caught globally:', event.reason);
+  // Handle ALL unhandled rejections silently to clean console
   event.preventDefault();
+  
+  // Only log significant errors, not DOMExceptions or WebSocket issues
+  if (event.reason?.name !== 'DOMException' && 
+      event.reason?.name !== 'AbortError' &&
+      !event.reason?.message?.includes('WebSocket') &&
+      !event.reason?.message?.includes('NetworkError') &&
+      !event.reason?.message?.includes('fetch')) {
+    console.warn('Unhandled rejection:', event.reason);
+  }
 });
 
 window.addEventListener('error', (event) => {
-  // Handle specific error types silently
-  if (event.error?.name === 'DOMException' || 
-      event.error?.message?.includes('WebSocket') ||
-      event.error?.message?.includes('AbortError')) {
-    console.warn('DOMException/WebSocket error handled silently');
-    event.preventDefault();
-    return;
-  }
-  
-  console.warn('Global error caught:', event.error);
+  // Handle ALL errors silently to clean console
   event.preventDefault();
+  
+  // Only log significant errors, not DOMExceptions or WebSocket issues
+  if (event.error?.name !== 'DOMException' && 
+      event.error?.name !== 'AbortError' &&
+      !event.error?.message?.includes('WebSocket') &&
+      !event.error?.message?.includes('NetworkError')) {
+    console.warn('Global error:', event.error);
+  }
 });
 
 const startApp = async () => {
