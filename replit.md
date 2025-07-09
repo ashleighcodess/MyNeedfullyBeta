@@ -103,6 +103,8 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 
 ```
 Changelog:
+- July 09, 2025: CLOTHING CATEGORY PAGE FIXED - resolved critical syntax error preventing Clothing category page from loading by replacing non-existent 'Coat' icon with 'ShirtIcon' from lucide-react library, page now loads properly when clicked from home page category section
+- July 09, 2025: ABOUT US WOBBLE ANIMATION FIXED - corrected CSS class name from 'animate-wobble' to 'animate-wobble-in-right' for proper family illustration animation matching home page wobble effects with 2.5s duration and 30% scroll visibility trigger
 - July 09, 2025: ABOUT US HOW IT WORKS ANIMATIONS COMPLETE - enhanced "How MyNeedfully Works" section with comprehensive scroll-triggered animations including fade-in header/subtitle with 200ms delay, staggered card animations with 400ms base delay plus 200ms per card, smooth JUST Sans font integration, hover effects with scale and shadow transitions, maintaining consistent animation timing with home page for unified user experience
 - July 09, 2025: ABOUT US WOBBLE ANIMATION APPLIED - added scroll-triggered wobble animation to About Us page family illustration matching home page animations, implemented 30% visibility threshold trigger with 2.5s duration for consistent visual experience across landing and About Us pages
 - July 09, 2025: USER JOURNEY ACCURACY UPDATE - corrected first step text from "Log In, Sign Up, Or Continue As A Guest To Fulfill A Need" to "Log In Or Sign Up To Fulfill A Need" since guest access is not permitted for supporting needs lists, users must create accounts for security and tracking purposes
