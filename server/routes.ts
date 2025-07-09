@@ -1690,6 +1690,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const updates = req.body;
 
+      console.log('📝 User settings update request:', { userId, updates });
+
       // Validate that only allowed fields are being updated
       const allowedFields = [
         'firstName', 'lastName', 'email', 'phone', 'location', 'bio',
@@ -1705,11 +1707,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      console.log('🔍 Filtered updates:', filteredUpdates);
+
+      // Check if user exists first
+      const existingUser = await storage.getUser(userId);
+      if (!existingUser) {
+        console.error('❌ User not found:', userId);
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      console.log('👤 Found user:', { id: existingUser.id, email: existingUser.email });
+
       const updatedUser = await storage.updateUser(userId, filteredUpdates);
+      console.log('✅ User updated successfully:', { id: updatedUser.id, email: updatedUser.email });
+      
       res.json({ success: true, user: updatedUser });
     } catch (error) {
-      console.error("Error updating user settings:", error);
-      res.status(500).json({ message: "Failed to update user settings" });
+      console.error("❌ Error updating user settings:", error);
+      res.status(500).json({ 
+        message: "Failed to update user settings",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 

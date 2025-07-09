@@ -1,0 +1,234 @@
+== Info: Host myneedfully.app:443 was resolved.
+== Info: IPv6: (none)
+== Info: IPv4: 34.111.179.208
+== Info:   Trying 34.111.179.208:443...
+== Info: ALPN: curl offers h2,http/1.1
+=> Send SSL data, 5 bytes (0x5)
+0000: .....
+== Info: TLSv1.3 (OUT), TLS handshake, Client hello (1):
+=> Send SSL data, 512 bytes (0x200)
+0000: ......z...J.....-..9...E...c...R=/J.Fh '....$4cA=.I_.S....."..!.
+0040: ........>.......,.0.........+./...$.(.k.#.'.g.....9.....3.....=.
+0080: <.5./.....u.........myneedfully.app.............................
+00c0: ............h2.http/1.1.........1.....0.........................
+0100: ........................+........-.....3.&.$... 8.{....:......G.
+0140: .-9..........k.(................................................
+0180: ................................................................
+01c0: ................................................................
+<= Recv SSL data, 5 bytes (0x5)
+0000: ....z
+== Info: TLSv1.3 (IN), TLS handshake, Server hello (2):
+<= Recv SSL data, 122 bytes (0x7a)
+0000: ...v..mbm...m.....)..'....'...o...?J.f '....$4cA=.I_.S....."..!.
+0040: .............3.$... T.>..3v.b.e2  ...g8.~..7..SC...C.+....
+<= Recv SSL data, 5 bytes (0x5)
+0000: .....
+<= Recv SSL data, 5 bytes (0x5)
+0000: .....
+<= Recv SSL data, 1 bytes (0x1)
+0000: .
+== Info: TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+<= Recv SSL data, 19 bytes (0x13)
+0000: .................h2
+== Info: TLSv1.3 (IN), TLS handshake, Certificate (11):
+<= Recv SSL data, 2044 bytes (0x7fc)
+0000: ...........0...0...........c......=d........0...*.H.=...021.0...
+0040: U....US1.0...U....Let's Encrypt1.0...U....E60...250709155218Z..2
+0080: 51007155217Z0.1.0...U....myneedfully.app0Y0...*.H.=....*.H.=....
+00c0: B.........C.r-.<A.j..*..E..@.....Ij@v.P.~V.3:..#.;..T5.}BlU.....
+0100: |.o....0...0...U...........0...U.%..0...+.........+.......0...U.
+0140: ......0.0...U......4....."Sv........{.i0...U.#..0....'F...Qh....
+0180: BH.#.X..02..+........&0$0"..+.....0...http://e6.i.lencr.org/0...
+01c0: U....0...myneedfully.app0...U. ..0.0...g.....0-..U...&0$0". ....
+0200: http://e6.c.lencr.org/22.crl0.....+.....y............v..B..I`aT.
+0240: .....z-&EM.../.EY.'O:.T.............G0E.!..[.b...z....B...V..x.R
+0280: .&M.<hs+... .".Og.!...:.i.`g.....7f..........v....j.q.e...S...|"
+02c0: ..\.....~T..L.........4.....G0E. 3.....3.[..MB&k+..|...{...D~=..
+0300: _.!...A@A....._...1..mO...;'...kV...0...*.H.=....h.0e.1......t..
+0340: q..O.....=0.8Ax.%B....t...."!&.i-5.......0r...8|..hH..2._.Z/....
+0380: lY.....wA.[g.....-..ss........[0..W0..?.........W>.s.'p....:E+80
+03c0: ...*.H........0O1.0...U....US1)0'..U... Internet Security Resear
+0400: ch Group1.0...U....ISRG Root X10...240313000000Z..270312235959Z0
+0440: 21.0...U....US1.0...U....Let's Encrypt1.0...U....E60v0...*.H.=..
+0480: ..+...".b.....F..!q`.&...........&.Q..a|u..".9.....F.-<J....@.U.
+04c0: .@7fu.2Nw.I.p{.....q...t....m.s.3..:..lb......0..0...U..........
+0500: .0...U.%..0...+.........+.......0...U.......0.......0...U.......
+0540: 'F...Qh....BH.#.X..0...U.#..0...y.Y.{....s.....X...n02..+.......
+0580: .&0$0"..+.....0...http://x1.i.lencr.org/0...U. ..0.0...g.....0'.
+05c0: .U... 0.0.......http://x1.c.lencr.org/0...*.H.............}.{J 5
+0600: .....n.N:.....\3...HM.........7.f.O.96.re?3.....c....h/.!'......
+0640: .6...m..........G.f....MG..K.......f.^u.H..if.ix7....a.......q..
+0680: ....H.R..N..`..........y....),G......p......Q.....c.CI.b>...R.Au
+06c0: F.....#.U....e{....ts........N.#..L/.....x^L......3.=..TP.......
+0700: .."aq.{......W....P&A...Vh.R.B. ...$_..[.j.Ur2.b[..kz......._.5.
+0740: .....Lw[>@.......<........kXv_.e...$j<K?.."....86RF..:a.R.2....o
+0780: ..}...Wg.7'...4/$....OMX<N:.........N.....rayI.}.....n$r.@....>.
+07c0: ......C..J...CW@.....{.3y)......p..............".:.......N..
+== Info: TLSv1.3 (IN), TLS handshake, CERT verify (15):
+<= Recv SSL data, 79 bytes (0x4f)
+0000: ...K...G0E. m....w...<..D..o....k....T....<{.!..P.\..2m......dS.
+0040: ..n...J>l..PV..
+== Info: TLSv1.3 (IN), TLS handshake, Finished (20):
+<= Recv SSL data, 52 bytes (0x34)
+0000: ...0.Jrn4.("M.m....U}....3...k.E........u.A...kA....
+=> Send SSL data, 5 bytes (0x5)
+0000: .....
+== Info: TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+=> Send SSL data, 1 bytes (0x1)
+0000: .
+=> Send SSL data, 5 bytes (0x5)
+0000: ....E
+=> Send SSL data, 1 bytes (0x1)
+0000: .
+== Info: TLSv1.3 (OUT), TLS handshake, Finished (20):
+=> Send SSL data, 52 bytes (0x34)
+0000: ...0u9.o...g.a .N.....0.]3...%.M....l!B.|......?y..g
+== Info: SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / x25519 / id-ecPublicKey
+== Info: ALPN: server accepted h2
+== Info: Server certificate:
+== Info:  subject: CN=myneedfully.app
+== Info:  start date: Jul  9 15:52:18 2025 GMT
+== Info:  expire date: Oct  7 15:52:17 2025 GMT
+== Info:  subjectAltName: host "myneedfully.app" matched cert's "myneedfully.app"
+== Info:  issuer: C=US; O=Let's Encrypt; CN=E6
+== Info:  SSL certificate verify ok.
+== Info:   Certificate level 0: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA384
+== Info:   Certificate level 1: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using sha256WithRSAEncryption
+== Info:   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+== Info: Connected to myneedfully.app (34.111.179.208) port 443
+== Info: using HTTP/2
+== Info: [HTTP/2] [1] OPENED stream for https://myneedfully.app/api/user/settings
+== Info: [HTTP/2] [1] [:method: PATCH]
+== Info: [HTTP/2] [1] [:scheme: https]
+== Info: [HTTP/2] [1] [:authority: myneedfully.app]
+== Info: [HTTP/2] [1] [:path: /api/user/settings]
+== Info: [HTTP/2] [1] [user-agent: curl/8.11.1]
+== Info: [HTTP/2] [1] [accept: */*]
+== Info: [HTTP/2] [1] [cookie: connect.sid=s%3A9EmoPIEbLsMcWKyZwNF12cXvipr18-y-.tH0zUzAikcjmVcV5c1V%2F6gXILYBeX0WjOe4%2FLAvOhxE]
+== Info: [HTTP/2] [1] [content-type: application/json]
+== Info: [HTTP/2] [1] [content-length: 54]
+=> Send SSL data, 5 bytes (0x5)
+0000: ....,
+=> Send SSL data, 1 bytes (0x1)
+0000: .
+=> Send header, 254 bytes (0xfe)
+0000: PATCH /api/user/settings HTTP/2
+0021: Host: myneedfully.app
+0038: User-Agent: curl/8.11.1
+0051: Accept: */*
+005e: Cookie: connect.sid=s%3A9EmoPIEbLsMcWKyZwNF12cXvipr18-y-.tH0zUzA
+009e: ikcjmVcV5c1V%2F6gXILYBeX0WjOe4%2FLAvOhxE
+00c8: Content-Type: application/json
+00e8: Content-Length: 54
+00fc: 
+=> Send data, 54 bytes (0x36)
+0000: {"firstName":"TestUpdated2","lastName":"UserUpdated2"}
+== Info: upload completely sent off: 54 bytes
+<= Recv SSL data, 5 bytes (0x5)
+0000: ....I
+<= Recv SSL data, 1 bytes (0x1)
+0000: .
+== Info: TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+<= Recv SSL data, 284 bytes (0x11c)
+0000: ..........[}........!P.. ;d.........C.wR '.p"J...nY..`"....<..]1
+0040: ....r..... .4.Ua..&......T.\.@.r...4....9.-..l_.L.~.Y.f>5.......
+0080: ...m....I..........7.9..UQ..6'.g.....Z...1.......Zv.X.@M..c..x_.
+00c0: ..D.{..P.........?.x. C-V........l..a5F......y....=.O....Jq[X.W.
+0100: >b...b.e..lCHS.......3......
+== Info: TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+<= Recv SSL data, 284 bytes (0x11c)
+0000: ........gZd.........!P.. ;d.......-D....N.AQgj.z.J....)P.nE.8...
+0040: x...x.Y..l.....(/n.|Fw.)V..y..u..u!*.NG..."....VT..L.PB...y...D4
+0080: ...DI.q..\.]...a.....~......\cG..(.DaaO.yk.%.n_.~..iii.z.Jd.."..
+00c0: ..|.s".f...^.c.A.T.\.G...h.Ka..N.......[.......%._#......_`..B.p
+0100: .._..B....zCHS..sy..>&......
+<= Recv SSL data, 5 bytes (0x5)
+0000: ....9
+<= Recv SSL data, 1 bytes (0x1)
+0000: .
+<= Recv SSL data, 5 bytes (0x5)
+0000: .....
+<= Recv SSL data, 1 bytes (0x1)
+0000: .
+=> Send SSL data, 5 bytes (0x5)
+0000: .....
+=> Send SSL data, 1 bytes (0x1)
+0000: .
+<= Recv SSL data, 5 bytes (0x5)
+0000: ....,
+<= Recv SSL data, 1 bytes (0x1)
+0000: .
+<= Recv header, 13 bytes (0xd)
+0000: HTTP/2 500 
+<= Recv header, 40 bytes (0x28)
+0000: access-control-allow-credentials: true
+<= Recv header, 52 bytes (0x34)
+0000: cache-control: no-cache, no-store, must-revalidate
+<= Recv header, 20 bytes (0x14)
+0000: content-length: 44
+<= Recv header, 623 bytes (0x26f)
+0000: content-security-policy: default-src 'self';script-src 'self' 'u
+0040: nsafe-inline' 'unsafe-eval' https://apis.google.com https://www.
+0080: google.com;style-src 'self' 'unsafe-inline' https://fonts.google
+00c0: apis.com;font-src 'self' https://fonts.gstatic.com data:;img-src
+0100:  'self' data: blob: https: https://m.media-amazon.com https://i5
+0140: .walmartimages.com https://target.scene7.com https://replit.com;
+0180: connect-src 'self' https://api.replit.com https://replit.com wss
+01c0: : https:;frame-src 'self' https://www.google.com;base-uri 'self'
+0200: ;form-action 'self';frame-ancestors 'self';object-src 'none';scr
+0240: ipt-src-attr 'none';upgrade-insecure-requests
+<= Recv header, 47 bytes (0x2f)
+0000: content-type: application/json; charset=utf-8
+<= Recv header, 41 bytes (0x29)
+0000: cross-origin-opener-policy: same-origin
+<= Recv header, 43 bytes (0x2b)
+0000: cross-origin-resource-policy: same-origin
+<= Recv header, 37 bytes (0x25)
+0000: date: Wed, 09 Jul 2025 17:12:22 GMT
+<= Recv header, 42 bytes (0x2a)
+0000: etag: W/"2c-WBQHhWNcbYW/dAQ9ALX3lD5aZDI"
+<= Recv header, 12 bytes (0xc)
+0000: expires: 0
+<= Recv header, 26 bytes (0x1a)
+0000: origin-agent-cluster: ?1
+<= Recv header, 18 bytes (0x12)
+0000: pragma: no-cache
+<= Recv header, 30 bytes (0x1e)
+0000: referrer-policy: no-referrer
+<= Recv header, 25 bytes (0x19)
+0000: server: Google Frontend
+<= Recv header, 64 bytes (0x40)
+0000: strict-transport-security: max-age=63072000; includeSubDomains
+<= Recv header, 73 bytes (0x49)
+0000: strict-transport-security: max-age=31536000; includeSubDomains; 
+0040: preload
+<= Recv header, 31 bytes (0x1f)
+0000: vary: Origin, Accept-Encoding
+<= Recv header, 57 bytes (0x39)
+0000: x-cloud-trace-context: b907e41fcbd39d911c557c11584246e1
+<= Recv header, 33 bytes (0x21)
+0000: x-content-type-options: nosniff
+<= Recv header, 29 bytes (0x1d)
+0000: x-dns-prefetch-control: off
+<= Recv header, 28 bytes (0x1c)
+0000: x-download-options: noopen
+<= Recv header, 29 bytes (0x1d)
+0000: x-frame-options: SAMEORIGIN
+<= Recv header, 41 bytes (0x29)
+0000: x-permitted-cross-domain-policies: none
+<= Recv header, 21 bytes (0x15)
+0000: x-xss-protection: 0
+<= Recv header, 17 bytes (0x11)
+0000: via: 1.1 google
+<= Recv header, 57 bytes (0x39)
+0000: alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+<= Recv header, 2 bytes (0x2)
+0000: 
+<= Recv SSL data, 5 bytes (0x5)
+0000: ....F
+<= Recv SSL data, 1 bytes (0x1)
+0000: .
+<= Recv data, 44 bytes (0x2c)
+0000: {"message":"Failed to update user settings"}
+<= Recv data, 0 bytes (0x0)
+== Info: Connection #0 to host myneedfully.app left intact

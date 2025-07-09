@@ -107,13 +107,13 @@ export default function Navigation() {
                       {user?.profileImageUrl ? (
                         <img 
                           src={user.profileImageUrl} 
-                          alt="Profile" 
+                          alt={user?.firstName || 'User'} 
                           className="w-7 h-7 rounded-full object-cover"
                         />
                       ) : (
                         <img 
                           src="/attached_assets/Logo_6_1752017502495.png" 
-                          alt="Profile" 
+                          alt={user?.firstName || 'User'} 
                           className="w-7 h-7 rounded-full object-cover"
                         />
                       )}
@@ -316,13 +316,13 @@ export default function Navigation() {
                       {user?.profileImageUrl ? (
                         <img 
                           src={user.profileImageUrl} 
-                          alt="Profile" 
+                          alt={user?.firstName || 'User'} 
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
                         <img 
                           src="/attached_assets/Logo_6_1752017502495.png" 
-                          alt="Profile" 
+                          alt={user?.firstName || 'User'} 
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       )}
