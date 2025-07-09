@@ -141,6 +141,7 @@ export default function Landing() {
   // Initialize wobble animation hooks
   const { isVisible: isWobbleVisible, elementRef: wobbleRef } = useWobbleAnimation();
   const { isVisible: isSupportWobbleVisible, elementRef: supportWobbleRef } = useWobbleAnimation();
+  const { isVisible: isHowWorksVisible, elementRef: howWorksRef } = useWobbleAnimation();
   
   // Fetch featured wishlists from database
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
@@ -1060,7 +1061,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How It Works - Stylized Version */}
+      {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
         className="py-20 relative bg-cover bg-center bg-no-repeat"
@@ -1073,54 +1074,103 @@ export default function Landing() {
         {/* Overlay to tone down brightness */}
         <div className="absolute inset-0 bg-white/40"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">How MyNeedfully Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
+          <div 
+            ref={howWorksRef}
+            className={`text-center mb-16 transition-all duration-1000 ease-out ${
+              isHowWorksVisible 
+                ? 'opacity-100 transform translate-y-0' 
+                : 'opacity-0 transform translate-y-8'
+            }`}
+          >
+            <h2 className="text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div 
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ease-out ${
+              isHowWorksVisible 
+                ? 'opacity-100 transform translate-y-0' 
+                : 'opacity-0 transform translate-y-12'
+            }`}
+            style={{ transitionDelay: isHowWorksVisible ? '200ms' : '0ms' }}
+          >
             {/* Step 1 - Create A Needs List */}
-            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Gift className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-semibold text-navy mb-4">Create A Needs List</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create A Needs List</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
             </div>
 
             {/* Step 2 - Share With Community */}
-            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Share2 className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '600ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-semibold text-navy mb-4">Share With Community</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share With Community</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
             </div>
 
             {/* Step 3 - Receive Support */}
-            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Heart className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-semibold text-navy mb-4">Receive Support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive Support</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
             </div>
 
             {/* Step 4 - Track Fulfillment */}
-            <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-              <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-6">
-                <Shield className="text-white h-8 w-8 stroke-2" strokeWidth={2} />
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '1000ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-semibold text-navy mb-4">Track Fulfillment</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track Fulfillment</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
             </div>
           </div>
 
           {/* Call to Action */}
-          <div className="text-center mt-16">
-            <p className="text-lg text-gray-700 mb-6">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
+          <div 
+            className={`text-center mt-16 transition-all duration-1000 ease-out ${
+              isHowWorksVisible 
+                ? 'opacity-100 transform translate-y-0' 
+                : 'opacity-0 transform translate-y-8'
+            }`}
+            style={{ transitionDelay: isHowWorksVisible ? '1200ms' : '0ms' }}
+          >
+            <p className="text-lg text-gray-700 mb-6 font-just-sans font-light">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
             <Button 
-              className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-full text-lg font-semibold"
+              className="bg-coral text-white hover:bg-coral/90 hover:scale-105 hover:shadow-lg px-8 py-3 rounded-full text-lg font-semibold font-just-sans transform transition-all duration-300"
               onClick={handleCreateList}
             >
               {isAuthenticated ? "Create Needs List" : "Get Started Now"}
