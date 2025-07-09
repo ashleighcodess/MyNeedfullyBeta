@@ -55,7 +55,7 @@ import {
   suspiciousIps,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, sql, and, gt, or } from "drizzle-orm";
+import { eq, desc, sql, and, gt, or, count, gte } from "drizzle-orm";
 
 // Helper function to generate secure tokens
 function generateSecureToken(): string {
@@ -3070,26 +3070,156 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   
-  // Set up WebSocket server for real-time features
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  // Set up WebSocket server with authentication
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws',
+    verifyClient: (info, callback) => {
+      // Extract session ID from cookie
+      const cookies = info.req.headers.cookie;
+      if (!cookies) {
+        console.log('[WEBSOCKET_SECURITY] Connection denied: No cookies provided');
+        callback(false, 401, 'Authentication required');
+        return;
+      }
+
+      // Parse session cookie
+      const sessionCookieMatch = cookies.match(/connect\.sid=([^;]+)/);
+      if (!sessionCookieMatch) {
+        console.log('[WEBSOCKET_SECURITY] Connection denied: No session cookie found');
+        callback(false, 401, 'Authentication required');
+        return;
+      }
+
+      const sessionId = decodeURIComponent(sessionCookieMatch[1]);
+      
+      // Validate session exists and is active
+      const sessionStore = app.get('sessionStore');
+      if (!sessionStore) {
+        console.log('[WEBSOCKET_SECURITY] Connection denied: Session store not available');
+        callback(false, 500, 'Server error');
+        return;
+      }
+      
+      sessionStore.get(sessionId, async (err: any, sessionData: any) => {
+        try {
+          if (err || !sessionData) {
+            console.log('[WEBSOCKET_SECURITY] Connection denied: Invalid or expired session');
+            await SecurityMonitor.logSecurityEvent({
+              eventType: 'unauthorized_access',
+              threatLevel: 'medium',
+              ipAddress: info.req.socket.remoteAddress || 'unknown',
+              userAgent: info.req.headers['user-agent'] || 'unknown',
+              endpoint: '/ws',
+              requestMethod: 'WEBSOCKET',
+              errorMessage: 'WebSocket connection attempt with invalid session',
+            });
+            callback(false, 401, 'Authentication required');
+            return;
+          }
+
+          // Store user info for connection
+          (info.req as any).user = sessionData;
+          console.log(`[WEBSOCKET_SECURITY] Authenticated WebSocket connection for user: ${sessionData.passport?.user?.claims?.sub || 'unknown'}`);
+          callback(true);
+        } catch (error) {
+          console.error('[WEBSOCKET_SECURITY] Session validation error:', error);
+          SecurityMonitor.logSecurityEvent({
+            eventType: 'system_error',
+            threatLevel: 'low',
+            ipAddress: info.req.socket.remoteAddress || 'unknown',
+            userAgent: info.req.headers['user-agent'] || 'unknown',
+            endpoint: '/ws',
+            requestMethod: 'WEBSOCKET',
+            errorMessage: 'WebSocket session validation failed',
+            metadata: { error: error.message },
+          }).catch(console.error);
+          callback(false, 500, 'Server error');
+        }
+      });
+    }
+  });
   
   wss.on('connection', (ws, req) => {
-    console.log('WebSocket client connected');
+    const user = (req as any).user;
+    const userId = user?.passport?.user?.claims?.sub;
+    
+    if (!userId) {
+      console.log('[WEBSOCKET_SECURITY] Closing unauthenticated connection');
+      ws.close(1008, 'Authentication required');
+      return;
+    }
+
+    // Store authenticated user info
+    (ws as any).userId = userId;
+    (ws as any).authenticated = true;
+    console.log(`[WEBSOCKET_SECURITY] Authenticated WebSocket connection established for user: ${userId}`);
+    
+    // Log successful connection
+    SecurityMonitor.logSecurityEvent({
+      eventType: 'user_login',
+      threatLevel: 'info',
+      ipAddress: req.socket.remoteAddress || 'unknown',
+      userAgent: req.headers['user-agent'] || 'unknown',
+      endpoint: '/ws',
+      requestMethod: 'WEBSOCKET',
+      userId,
+    });
     
     ws.on('message', (message) => {
       try {
-        const data = JSON.parse(message.toString());
-        if (data.type === 'identify' && data.userId) {
-          (ws as any).userId = data.userId;
-          console.log(`WebSocket client identified as user ${data.userId}`);
+        // Validate authentication on every message
+        if (!(ws as any).authenticated) {
+          console.log('[WEBSOCKET_SECURITY] Rejecting message from unauthenticated connection');
+          ws.close(1008, 'Authentication required');
+          return;
         }
+
+        const data = JSON.parse(message.toString());
+        
+        // Validate user ID matches session
+        if (data.type === 'identify' && data.userId !== userId) {
+          console.log(`[WEBSOCKET_SECURITY] User ID mismatch: session=${userId}, claimed=${data.userId}`);
+          SecurityMonitor.logSecurityEvent({
+            eventType: 'unauthorized_access',
+            threatLevel: 'high',
+            ipAddress: req.socket.remoteAddress || 'unknown',
+            userAgent: req.headers['user-agent'] || 'unknown',
+            endpoint: '/ws',
+            requestMethod: 'WEBSOCKET',
+            userId,
+            errorMessage: 'WebSocket user ID impersonation attempt',
+            metadata: { claimedUserId: data.userId },
+          }).catch(console.error);
+          ws.close(1008, 'Authentication violation');
+          return;
+        }
+
+        // Process authenticated message
+        console.log(`[WEBSOCKET_SECURITY] Processing authenticated message from user: ${userId}`);
+        
       } catch (error) {
-        console.error('WebSocket message parse error:', error);
+        console.error('[WEBSOCKET_SECURITY] Message processing error:', error);
+        SecurityMonitor.logSecurityEvent({
+          eventType: 'system_error',
+          threatLevel: 'low',
+          ipAddress: req.socket.remoteAddress || 'unknown',
+          userAgent: req.headers['user-agent'] || 'unknown',
+          endpoint: '/ws',
+          requestMethod: 'WEBSOCKET',
+          userId,
+          errorMessage: 'WebSocket message processing failed',
+          metadata: { error: error.message },
+        }).catch(console.error);
       }
     });
     
     ws.on('close', () => {
-      console.log('WebSocket client disconnected');
+      console.log(`[WEBSOCKET_SECURITY] Authenticated user ${userId} disconnected`);
+    });
+    
+    ws.on('error', (error) => {
+      console.error(`[WEBSOCKET_SECURITY] WebSocket error for user ${userId}:`, error);
     });
   });
 

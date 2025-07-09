@@ -107,13 +107,13 @@ export function useWebSocket() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // Temporarily disable WebSocket to prevent DOMException issues
-    // TODO: Re-enable once the main app is stable
-    console.log("WebSocket disabled temporarily to prevent loading issues");
-    
-    /*
+    // Only connect WebSocket for authenticated users
     if (isAuthenticated && user?.id) {
-      wsManager.connect(user.id);
+      try {
+        wsManager.connect(user.id);
+      } catch (error) {
+        console.warn("WebSocket connection failed, continuing without real-time notifications:", error);
+      }
     } else {
       wsManager.disconnect();
     }
@@ -121,6 +121,5 @@ export function useWebSocket() {
     return () => {
       wsManager.disconnect();
     };
-    */
   }, [isAuthenticated, user?.id]);
 }

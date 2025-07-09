@@ -12,6 +12,7 @@ import connectPg from "connect-pg-simple";
 import { storage } from "../storage";
 import bcrypt from "bcryptjs";
 import { authLimiter, createUserLimiter } from "../middleware/rateLimiter";
+import SecurityMonitor from "../services/security-monitor";
 
 // Types for OAuth providers
 interface OAuthUser {
@@ -47,7 +48,8 @@ export function getSession() {
     ttl: sessionTtl,
     tableName: "sessions",
   });
-  return session({
+  
+  const sessionMiddleware = session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
     resave: false,
@@ -58,6 +60,11 @@ export function getSession() {
       maxAge: sessionTtl,
     },
   });
+  
+  // Store reference for WebSocket authentication
+  (sessionMiddleware as any).store = sessionStore;
+  
+  return sessionMiddleware;
 }
 
 function updateUserSession(
@@ -82,7 +89,13 @@ async function upsertUserFromProfile(profile: OAuthUser) {
 
 export async function setupMultiAuth(app: Express) {
   app.set("trust proxy", 1);
-  app.use(getSession());
+  
+  const sessionMiddleware = getSession();
+  app.use(sessionMiddleware);
+  
+  // Store session store reference for WebSocket authentication
+  app.set('sessionStore', (sessionMiddleware as any).store);
+  
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -359,40 +372,170 @@ export async function setupMultiAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  const user = req.user as any;
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  // Handle different OAuth providers
-  if (user.provider === 'replit') {
-    if (!user.expires_at) {
+  const startTime = Date.now();
+  const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+  const userAgent = req.get('User-Agent') || 'unknown';
+  
+  try {
+    // CRITICAL SECURITY: Multiple bypass protection layers
+    const user = req.user as any;
+    
+    // Layer 1: Passport authentication check
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - Not authenticated - IP: ${ipAddress}`);
+      await SecurityMonitor.logSecurityEvent({
+        eventType: 'unauthorized_access',
+        threatLevel: 'medium',
+        ipAddress,
+        userAgent,
+        endpoint: req.path,
+        requestMethod: req.method,
+        errorMessage: 'Authentication bypass attempt - no passport session',
+      });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    // Layer 2: User object validation
+    if (!user || typeof user !== 'object') {
+      console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - Invalid user object - IP: ${ipAddress}`);
+      await SecurityMonitor.logSecurityEvent({
+        eventType: 'unauthorized_access',
+        threatLevel: 'high',
+        ipAddress,
+        userAgent,
+        endpoint: req.path,
+        requestMethod: req.method,
+        errorMessage: 'Authentication bypass attempt - invalid user object',
+      });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    // Layer 3: Session validation
+    if (!req.session || !req.sessionID) {
+      console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - No valid session - IP: ${ipAddress}`);
+      await SecurityMonitor.logSecurityEvent({
+        eventType: 'unauthorized_access',
+        threatLevel: 'high',
+        ipAddress,
+        userAgent,
+        endpoint: req.path,
+        requestMethod: req.method,
+        errorMessage: 'Authentication bypass attempt - no session',
+      });
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    // Layer 4: Provider-specific validation
+    if (!user.provider || !['replit', 'google', 'facebook', 'email'].includes(user.provider)) {
+      console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - Invalid provider: ${user.provider} - IP: ${ipAddress}`);
+      await SecurityMonitor.logSecurityEvent({
+        eventType: 'unauthorized_access',
+        threatLevel: 'high',
+        ipAddress,
+        userAgent,
+        endpoint: req.path,
+        requestMethod: req.method,
+        errorMessage: `Authentication bypass attempt - invalid provider: ${user.provider}`,
+      });
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const now = Math.floor(Date.now() / 1000);
-    if (now <= user.expires_at) {
+    // Handle different OAuth providers with provider-specific validation
+    if (user.provider === 'replit') {
+      // Layer 5: Replit token validation
+      if (!user.expires_at || !user.claims || !user.claims.sub) {
+        console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - Invalid Replit token data - IP: ${ipAddress}`);
+        await SecurityMonitor.logSecurityEvent({
+          eventType: 'unauthorized_access',
+          threatLevel: 'high',
+          ipAddress,
+          userAgent,
+          endpoint: req.path,
+          requestMethod: req.method,
+          userId: user.claims?.sub,
+          errorMessage: 'Replit authentication bypass attempt - invalid token structure',
+        });
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const now = Math.floor(Date.now() / 1000);
+      if (now <= user.expires_at) {
+        // Valid token, proceed
+        return next();
+      }
+
+      // Token expired, attempt refresh
+      const refreshToken = user.refresh_token;
+      if (!refreshToken) {
+        console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - No refresh token - IP: ${ipAddress}`);
+        await SecurityMonitor.logSecurityEvent({
+          eventType: 'unauthorized_access',
+          threatLevel: 'medium',
+          ipAddress,
+          userAgent,
+          endpoint: req.path,
+          requestMethod: req.method,
+          userId: user.claims?.sub,
+          errorMessage: 'Replit token expired, no refresh token available',
+        });
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      try {
+        const config = await getOidcConfig();
+        const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
+        updateUserSession(user, tokenResponse);
+        return next();
+      } catch (error) {
+        console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - Token refresh failed - IP: ${ipAddress}`);
+        await SecurityMonitor.logSecurityEvent({
+          eventType: 'unauthorized_access',
+          threatLevel: 'medium',
+          ipAddress,
+          userAgent,
+          endpoint: req.path,
+          requestMethod: req.method,
+          userId: user.claims?.sub,
+          errorMessage: 'Replit token refresh failed',
+          metadata: { error: error.message },
+        });
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+    } else {
+      // Layer 6: Other providers (Google/Facebook/Email) validation
+      if (!user.profile || !user.profile.id) {
+        console.log(`[AUTH_FAILURE] ${req.method} ${req.path} - Invalid profile data for ${user.provider} - IP: ${ipAddress}`);
+        await SecurityMonitor.logSecurityEvent({
+          eventType: 'unauthorized_access',
+          threatLevel: 'high',
+          ipAddress,
+          userAgent,
+          endpoint: req.path,
+          requestMethod: req.method,
+          errorMessage: `${user.provider} authentication bypass attempt - invalid profile`,
+        });
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      // For Google/Facebook/Email, session-based auth is sufficient
       return next();
     }
-
-    const refreshToken = user.refresh_token;
-    if (!refreshToken) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
-
-    try {
-      const config = await getOidcConfig();
-      const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
-      updateUserSession(user, tokenResponse);
-      return next();
-    } catch (error) {
-      res.status(401).json({ message: "Unauthorized" });
-      return;
-    }
-  } else {
-    // For Google/Facebook, session-based auth is sufficient
-    return next();
+  } catch (error) {
+    console.error(`[AUTH_ERROR] ${req.method} ${req.path} - Authentication error - IP: ${ipAddress}:`, error);
+    await SecurityMonitor.logSecurityEvent({
+      eventType: 'system_error',
+      threatLevel: 'medium',
+      ipAddress,
+      userAgent,
+      endpoint: req.path,
+      requestMethod: req.method,
+      errorMessage: 'Authentication middleware error',
+      metadata: { error: error.message },
+    });
+    return res.status(401).json({ message: "Unauthorized" });
+  } finally {
+    // Log authentication processing time for monitoring
+    const duration = Date.now() - startTime;
+    console.log(`[SECURITY] ${req.method} ${req.path} - ${res.statusCode || 'pending'} - ${duration}ms - IP: ${ipAddress}`);
   }
 };
