@@ -1,38 +1,23 @@
-# Environment files with secrets
+# Only ignore actual sensitive files that will be created during deployment
+# Allow all deployment scripts and templates to be committed
+
+# Actual environment files with real secrets (not templates)
 .env
-.env.production
 .env.local
-.env.staging
 
-# Logs
+# Runtime files created during deployment
 *.log
-logs/
-/var/log/
+pids/
+*.pid
 
-# SSL certificates
+# SSL certificates created during deployment
 *.pem
 *.key
 *.crt
 
-# Database backups
-*.sql
+# Database backups created during deployment
 backup_*.sql
-
-# PM2 files
-.pm2/
-pids/
-*.pid
-
-# Temporary files
-*.tmp
-*.temp
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
