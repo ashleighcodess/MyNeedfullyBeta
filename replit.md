@@ -103,6 +103,7 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 
 ```
 Changelog:
+- July 09, 2025: ABOUT US WOBBLE ANIMATION APPLIED - added scroll-triggered wobble animation to About Us page family illustration matching home page animations, implemented 30% visibility threshold trigger with 2.5s duration for consistent visual experience across landing and About Us pages
 - July 09, 2025: USER JOURNEY ACCURACY UPDATE - corrected first step text from "Log In, Sign Up, Or Continue As A Guest To Fulfill A Need" to "Log In Or Sign Up To Fulfill A Need" since guest access is not permitted for supporting needs lists, users must create accounts for security and tracking purposes
 - July 09, 2025: FOOTER TERMINOLOGY CONSISTENCY COMPLETE - updated footer call-to-action buttons from "Find Wishlists to Support" to "Find Needs Lists to Support" and "Create Your Wishlist" to "Create Your Needs List" for consistent platform terminology, added proper navigation to browse page for first button, maintained smooth microanimations and JUST Sans font styling throughout enhanced "How MyNeedfully Works" section with scroll-triggered animations, staggered card appearances, and interactive hover effects
 - July 08, 2025: QUICK ACTIONS PAGE CRASH FIXED - resolved missing Badge component import and corrected user verification field reference from emailVerified to isVerified to match database schema, Quick Actions dropdown menu now loads properly without crashing

@@ -96,6 +96,7 @@ import howItWorksBackground from "@assets/HowIcons_1751593054903.png";
 
 export default function AboutUs() {
   const [isVisible, setIsVisible] = useState(false);
+  const [shouldWobble, setShouldWobble] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,12 +108,27 @@ export default function AboutUs() {
           setIsVisible(true);
         }
       }
+
+      // Check for image wobble trigger
+      const imageSection = document.querySelector('[data-image-section]');
+      if (imageSection) {
+        const rect = imageSection.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const visibilityThreshold = 0.3; // 30% visible
+        const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
+        const elementHeight = rect.height;
+        const visibilityRatio = visibleHeight / elementHeight;
+        
+        if (visibilityRatio >= visibilityThreshold && !shouldWobble) {
+          setShouldWobble(true);
+        }
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Check on mount
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isVisible]);
+  }, [isVisible, shouldWobble]);
 
   // Animated counter values
   const needsListFulfilled = useAnimatedCounter(127, 2000, isVisible);
@@ -219,12 +235,13 @@ export default function AboutUs() {
               </div>
             </div>
             
-            <div className="flex justify-center lg:justify-end animate-slide-in-right mt-24">
+            <div className="flex justify-center lg:justify-end animate-slide-in-right mt-24" data-image-section>
               <div className="relative group w-full">
                 <img 
                   src={aboutUsImage} 
                   alt="Family with needs list showing community support" 
-                  className="w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
+                  className={`w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl ${shouldWobble ? 'animate-wobble' : ''}`}
+                  style={{ animationDelay: shouldWobble ? '0s' : undefined }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-coral/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
