@@ -1,0 +1,38 @@
+# Environment files with secrets
+.env
+.env.production
+.env.local
+.env.staging
+
+# Logs
+*.log
+logs/
+/var/log/
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+
+# Database backups
+*.sql
+backup_*.sql
+
+# PM2 files
+.pm2/
+pids/
+*.pid
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
