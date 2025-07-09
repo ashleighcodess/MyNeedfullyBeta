@@ -53,11 +53,13 @@ export function getSession() {
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Create session even if not authenticated
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Only secure in production
       maxAge: sessionTtl,
+      sameSite: 'lax', // Allow cross-origin cookies for OAuth
+      domain: undefined, // Don't set domain to avoid subdomain issues
     },
   });
   
@@ -486,6 +488,16 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   try {
     // CRITICAL SECURITY: Multiple bypass protection layers
     const user = req.user as any;
+    
+    // Debug session information
+    console.log(`[AUTH_DEBUG] ${req.method} ${req.path} - Session Info:`, {
+      sessionID: req.sessionID,
+      hasSession: !!req.session,
+      hasUser: !!req.user,
+      isAuthenticated: req.isAuthenticated ? req.isAuthenticated() : false,
+      userProvider: user?.provider,
+      cookies: req.headers.cookie ? 'present' : 'missing'
+    });
     
     // Layer 1: Passport authentication check
     if (!req.isAuthenticated || !req.isAuthenticated()) {
