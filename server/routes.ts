@@ -929,10 +929,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Email/password or Google OAuth format (when profile is stored)
         userId = req.user.profile.id;
         console.log('✅ Using profile user ID:', userId);
-      } else if (req.user.profile && req.user.profile.emails && req.user.profile.emails[0]) {
-        // Google OAuth format - construct user ID from Google profile
-        userId = `google_${req.user.profile.id}`;
-        console.log('✅ Using Google OAuth user ID:', userId);
       } else {
         console.error('❌ No user ID found in session:', req.user);
         return res.status(401).json({ message: "Invalid user session" });

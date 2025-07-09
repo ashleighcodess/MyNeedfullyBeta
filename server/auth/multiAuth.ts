@@ -172,13 +172,6 @@ export async function setupMultiAuth(app: Express) {
       },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const user = {
-          provider: 'google',
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          profile: profile
-        };
-
         // Check if user already exists with this email but different provider
         const email = profile.emails?.[0]?.value;
         if (email) {
@@ -195,6 +188,7 @@ export async function setupMultiAuth(app: Express) {
           }
         }
 
+        // Create or update user in database
         await upsertUserFromProfile({
           id: `google_${profile.id}`,
           email: profile.emails?.[0]?.value,
@@ -204,8 +198,24 @@ export async function setupMultiAuth(app: Express) {
           provider: 'google'
         });
 
-        return done(null, user);
+        // Create session user object matching email auth format
+        const sessionUser = {
+          provider: 'google',
+          profile: {
+            id: `google_${profile.id}`,
+            email: profile.emails?.[0]?.value,
+            firstName: profile.name?.givenName,
+            lastName: profile.name?.familyName,
+            profileImageUrl: profile.photos?.[0]?.value
+          },
+          access_token: accessToken,
+          refresh_token: refreshToken
+        };
+
+        console.log('✅ Google OAuth user created:', sessionUser.profile.email);
+        return done(null, sessionUser);
       } catch (error) {
+        console.error('❌ Google OAuth error:', error);
         return done(error as Error, false);
       }
     }));
