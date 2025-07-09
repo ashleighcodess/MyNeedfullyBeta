@@ -256,21 +256,34 @@ function generateSearchQuery(productTitle: string): string {
   return keyWords.join(' ').substring(0, 40); // Limit length for better search
 }
 
-function getTimeAgo(date: Date): string {
-  const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  const diffInDays = Math.floor(diffInHours / 24);
+function getTimeAgo(date: Date | string): string {
+  try {
+    const now = new Date();
+    const eventDate = new Date(date);
+    
+    // Check if date is valid
+    if (isNaN(eventDate.getTime())) {
+      console.warn('Invalid date provided to getTimeAgo:', date);
+      return 'Recently';
+    }
+    
+    const diffInMs = now.getTime() - eventDate.getTime();
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
 
-  if (diffInMinutes < 1) {
-    return 'Just now';
-  } else if (diffInMinutes < 60) {
-    return `${diffInMinutes}m ago`;
-  } else if (diffInHours < 24) {
-    return `${diffInHours}h ago`;
-  } else {
-    return `${diffInDays}d ago`;
+    if (diffInMinutes < 1) {
+      return 'Just now';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes}m ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`;
+    } else {
+      return `${diffInDays}d ago`;
+    }
+  } catch (error) {
+    console.error('Error in getTimeAgo:', error);
+    return 'Recently';
   }
 }
 
@@ -498,7 +511,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         eq(analyticsEvents.eventType, 'item_fulfilled'),
         eq(analyticsEvents.eventType, 'wishlist_created'),
         eq(analyticsEvents.eventType, 'thank_you_sent'),
-        eq(analyticsEvents.eventType, 'wishlist_completed')
+        eq(analyticsEvents.eventType, 'wishlist_completed'),
+        eq(analyticsEvents.eventType, 'wishlist_share')
       ))
       .orderBy(desc(analyticsEvents.createdAt))
       .limit(10);
@@ -621,7 +635,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         eq(analyticsEvents.eventType, 'item_fulfilled'),
         eq(analyticsEvents.eventType, 'wishlist_created'),
         eq(analyticsEvents.eventType, 'thank_you_sent'),
-        eq(analyticsEvents.eventType, 'wishlist_completed')
+        eq(analyticsEvents.eventType, 'wishlist_completed'),
+        eq(analyticsEvents.eventType, 'wishlist_share')
       ))
       .orderBy(desc(analyticsEvents.createdAt))
       .limit(10);
@@ -680,6 +695,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
               impact: `${analytics.data?.totalItems || 0} items fulfilled`,
               type: "completion"
             };
+          } else if (analytics.eventType === 'wishlist_share') {
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
+              action: "shared",
+              item: analytics.data?.wishlistTitle || 'a needs list',
+              timeAgo,
+              location: user?.location || 'Community',
+              impact: "Spread awareness",
+              type: "share"
+            };
           }
           
           if (activityItem) {
@@ -692,7 +718,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           recentActivity.push({
             id: `activity-${analytics.id}`,
             supporter: "Anonymous Supporter",
-            action: analytics.eventType === 'item_fulfilled' ? "fulfilled" : "helped",
+            action: analytics.eventType === 'item_fulfilled' ? "fulfilled" : analytics.eventType === 'wishlist_share' ? "shared" : "helped",
             item: analytics.data?.itemTitle || analytics.data?.wishlistTitle || 'someone in need',
             timeAgo,
             location: 'Community',
