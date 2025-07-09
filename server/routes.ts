@@ -1754,7 +1754,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate that only allowed fields are being updated
       const allowedFields = [
-        'firstName', 'lastName', 'email', 'phone', 'location', 'bio',
+        'firstName', 'lastName', 'email', 'phone', 'location', 'bio', 'profileImageUrl',
         'userPreference', 'showNeedsListsLive', 'hideNeedsListsFromPublic',
         'showProfileInSearch', 'allowDirectMessages', 'showDonationHistory',
         'emailNotifications', 'pushNotifications', 'emailMarketing'

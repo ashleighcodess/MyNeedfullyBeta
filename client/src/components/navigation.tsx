@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -21,11 +21,22 @@ export default function Navigation() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
+  const [userKey, setUserKey] = useState(0); // Force re-render key
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
   });
+
+  // Listen for user data updates to force re-render
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUserKey(prev => prev + 1);
+    };
+    
+    window.addEventListener('userDataUpdated', handleUserUpdate);
+    return () => window.removeEventListener('userDataUpdated', handleUserUpdate);
+  }, []);
 
   const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;
 
@@ -106,6 +117,7 @@ export default function Navigation() {
                     <Button variant="ghost" size="sm" className="p-1">
                       {user?.profileImageUrl ? (
                         <img 
+                          key={`user-avatar-mobile-${userKey}`}
                           src={user.profileImageUrl} 
                           alt={`${user?.firstName || 'User'} profile`} 
                           className="w-7 h-7 rounded-full object-cover"
@@ -313,6 +325,7 @@ export default function Navigation() {
                     <Button variant="ghost" className="flex items-center space-x-2" data-tip="profile-dashboard">
                       {user?.profileImageUrl ? (
                         <img 
+                          key={`user-avatar-desktop-${userKey}`}
                           src={user.profileImageUrl} 
                           alt={`${user?.firstName || 'User'} profile`} 
                           className="w-8 h-8 rounded-full object-cover"

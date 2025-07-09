@@ -43,6 +43,7 @@ export default function Profile() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [notesFilter, setNotesFilter] = useState('all'); // 'all', 'sent', 'received'
+  const [userKey, setUserKey] = useState(0); // Force re-render key
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -91,8 +92,17 @@ export default function Profile() {
       }
     };
     
+    // Listen for user data updates to force re-render
+    const handleUserUpdate = () => {
+      setUserKey(prev => prev + 1);
+    };
+    
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('userDataUpdated', handleUserUpdate);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+    };
   }, []);
 
   const { data: userWishlists } = useQuery({

@@ -10,8 +10,8 @@ export function useAuth() {
       retry: false,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      staleTime: 60000, // 1 minute
-      gcTime: 60000, // Keep data for 1 minute after component unmounts
+      staleTime: 10000, // 10 seconds
+      gcTime: 10000, // Keep data for 10 seconds after component unmounts
     });
 
     // Log any errors for debugging but don't throw them
@@ -19,9 +19,12 @@ export function useAuth() {
       console.warn("Auth query error (non-critical):", error);
     }
 
+    // If we get a 401 or error, treat as not authenticated but not loading
+    const isActuallyLoading = isLoading && !error;
+
     return {
       user: user || null,
-      isLoading: isLoading || false,
+      isLoading: isActuallyLoading || false,
       isAuthenticated: !!user,
     };
   } catch (error) {

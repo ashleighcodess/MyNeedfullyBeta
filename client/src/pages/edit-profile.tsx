@@ -55,7 +55,16 @@ export default function EditProfile() {
         title: "Profile Updated",
         description: "Your profile has been successfully updated.",
       });
+      // Invalidate multiple user-related queries to refresh all user data displays
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user/settings"] });
+      // Force immediate refetch to update navigation and all components
+      queryClient.refetchQueries({ queryKey: ["/api/auth/user"], type: 'active' });
+      
+      // Small delay to ensure cache is updated, then refresh the page components
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('userDataUpdated'));
+      }, 100);
     },
     onError: (error) => {
       toast({
