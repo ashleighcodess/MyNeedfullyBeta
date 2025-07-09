@@ -137,18 +137,23 @@ export async function setupMultiAuth(app: Express) {
     passport.use(strategy);
   }
 
-  // Google OAuth Strategy
+  // Google OAuth Strategy with multiple domain support
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    // Get the first domain from REPLIT_DOMAINS for Google OAuth callback
-    const primaryDomain = process.env.REPLIT_DOMAINS!.split(",")[0];
-    const callbackURL = `https://${primaryDomain}/api/callback/google`;
+    // Create separate strategies for different domains
+    const domains = [
+      'myneedfully.app',
+      'my-needfully.replit.app',
+      process.env.REPLIT_DOMAINS?.split(',')[0] || ''
+    ].filter(Boolean);
     
-    passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: callbackURL,
-      scope: ['profile', 'email']
-    },
+    domains.forEach((domain, index) => {
+      const strategyName = index === 0 ? 'google' : `google-${index}`;
+      passport.use(strategyName, new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        callbackURL: `https://${domain}/api/callback/google`,
+        scope: ['profile', 'email']
+      },
     async (accessToken, refreshToken, profile, done) => {
       try {
         const user = {
@@ -172,6 +177,7 @@ export async function setupMultiAuth(app: Express) {
         return done(error as Error, false);
       }
     }));
+    });
   }
 
   // Facebook OAuth Strategy - Temporarily disabled for deployment
@@ -249,19 +255,42 @@ export async function setupMultiAuth(app: Express) {
     })(req, res, next);
   });
 
-  // Google Auth Routes
+  // Google Auth Routes with domain-aware strategy selection
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    app.get("/api/login/google", authLimiter,
-      passport.authenticate("google", { scope: ["profile", "email"] })
-    );
-
-    app.get("/api/callback/google", authLimiter,
-      passport.authenticate("google", { failureRedirect: "/login" }),
-      (req, res) => {
-        // Store user preference if it exists in localStorage
-        res.redirect("/?auth=success");
+    app.get("/api/login/google", authLimiter, (req, res, next) => {
+      const hostname = req.hostname;
+      let strategyName = 'google';
+      
+      // Select the appropriate strategy based on hostname
+      if (hostname === 'myneedfully.app') {
+        strategyName = 'google';
+      } else if (hostname === 'my-needfully.replit.app') {
+        strategyName = 'google-1';
+      } else {
+        strategyName = 'google-2'; // development domain
       }
-    );
+      
+      passport.authenticate(strategyName, { scope: ["profile", "email"] })(req, res, next);
+    });
+
+    app.get("/api/callback/google", authLimiter, (req, res, next) => {
+      const hostname = req.hostname;
+      let strategyName = 'google';
+      
+      // Select the appropriate strategy based on hostname
+      if (hostname === 'myneedfully.app') {
+        strategyName = 'google';
+      } else if (hostname === 'my-needfully.replit.app') {
+        strategyName = 'google-1';
+      } else {
+        strategyName = 'google-2'; // development domain
+      }
+      
+      passport.authenticate(strategyName, { failureRedirect: "/login" })(req, res, next);
+    }, (req, res) => {
+      // Store user preference if it exists in localStorage
+      res.redirect("/?auth=success");
+    });
   }
 
   // Facebook Auth Routes - Temporarily disabled for deployment
