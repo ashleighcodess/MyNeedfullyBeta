@@ -71,15 +71,26 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
     }
   };
 
+  // Ensure storyImages is an array and not a string
+  const storyImages = Array.isArray(wishlist.storyImages) 
+    ? wishlist.storyImages 
+    : (typeof wishlist.storyImages === 'string' && wishlist.storyImages.startsWith('{'))
+      ? wishlist.storyImages.slice(1, -1).split(',').map(img => img.trim().replace(/"/g, ''))
+      : [];
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
       {/* Featured Image */}
-      {(wishlist as any).storyImages && (wishlist as any).storyImages.length > 0 && (
+      {storyImages && storyImages.length > 0 && (
         <div className="h-48 overflow-hidden">
           <img 
-            src={(wishlist as any).storyImages[0]}
+            src={storyImages[0]}
             alt={wishlist.title}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            onError={(e) => {
+              console.error('Image failed to load:', storyImages[0]);
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
           />
         </div>
       )}

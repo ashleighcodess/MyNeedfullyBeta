@@ -326,7 +326,21 @@ export default function WishlistDetail() {
   };
 
   const getStoryImages = () => {
-    return (wishlist as any)?.storyImages || [];
+    const storyImages = (wishlist as any)?.storyImages;
+    if (!storyImages) return [];
+    
+    // Ensure storyImages is an array and not a string
+    if (Array.isArray(storyImages)) {
+      return storyImages;
+    }
+    
+    // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
+    if (typeof storyImages === 'string' && storyImages.startsWith('{') && storyImages.endsWith('}')) {
+      const innerString = storyImages.slice(1, -1);
+      return innerString ? innerString.split(',').map(img => img.trim().replace(/"/g, '')) : [];
+    }
+    
+    return [];
   };
 
   const nextImage = () => {

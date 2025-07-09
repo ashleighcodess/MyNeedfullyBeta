@@ -71,7 +71,16 @@ export default function EditWishlist() {
           country: ''
         }
       });
-      setExistingImages(wishlist.storyImages || []);
+      // Parse storyImages properly
+      const storyImages = wishlist.storyImages;
+      if (Array.isArray(storyImages)) {
+        setExistingImages(storyImages);
+      } else if (typeof storyImages === 'string' && storyImages.startsWith('{') && storyImages.endsWith('}')) {
+        const innerString = storyImages.slice(1, -1);
+        setExistingImages(innerString ? innerString.split(',').map(img => img.trim().replace(/"/g, '')) : []);
+      } else {
+        setExistingImages([]);
+      }
     }
   }, [wishlist]);
 
