@@ -161,64 +161,7 @@ export default function SearchFilters({ filters, onFiltersChange }: SearchFilter
           </Select>
         </div>
 
-        <Separator />
 
-        {/* Quick Filters */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Quick Filters</Label>
-          <div className="space-y-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => updateFilter('urgencyLevel', 'urgent')}
-              className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
-            >
-              🚨 Urgent Needs
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                onFiltersChange({
-                  ...filters,
-                  category: 'baby_kids',
-                  urgencyLevel: '',
-                });
-              }}
-              className="w-full justify-start text-pink-600 hover:bg-pink-50 hover:text-pink-700"
-            >
-              👶 Baby & Kids
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                onFiltersChange({
-                  ...filters,
-                  category: 'food_groceries',
-                  urgencyLevel: '',
-                });
-              }}
-              className="w-full justify-start text-green-600 hover:bg-green-50 hover:text-green-700"
-            >
-              🍽️ Food & Groceries
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                onFiltersChange({
-                  ...filters,
-                  category: 'medical_supplies',
-                  urgencyLevel: '',
-                });
-              }}
-              className="w-full justify-start text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-            >
-              🏥 Medical Supplies
-            </Button>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );
