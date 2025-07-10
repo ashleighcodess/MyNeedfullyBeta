@@ -106,8 +106,18 @@ function useAnimatedCounter(targetValue: number, duration: number = 2000, startA
     
     const startTime = Date.now();
     const startValue = 0;
+    const isMobile = window.innerWidth < 768;
+    const frameDelay = isMobile ? 50 : 16; // Reduce frame rate on mobile
     
-    const animate = () => {
+    let lastFrame = 0;
+    const animate = (timestamp: number) => {
+      // Throttle animation on mobile devices
+      if (timestamp - lastFrame < frameDelay) {
+        requestAnimationFrame(animate);
+        return;
+      }
+      lastFrame = timestamp;
+      
       const currentTime = Date.now();
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
@@ -633,55 +643,55 @@ export default function Landing() {
               </p>
               
               {/* Animated Ticker Stats */}
-              <div className="grid grid-cols-2 gap-4 mb-8">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-8">
                 {/* Needs List Fulfilled */}
-                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
+                <div className="bg-coral text-white p-4 sm:p-6 rounded-2xl shadow-lg transform transition-all duration-300 md:hover:scale-105">
                   <div className="flex items-center mb-2">
-                    <div className="bg-white/20 p-2 rounded-lg mr-3">
-                      <FontAwesomeIcon icon={faHeart} className="h-6 w-6" />
+                    <div className="bg-white/20 p-2 rounded-lg mr-2 sm:mr-3">
+                      <FontAwesomeIcon icon={faHeart} className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold">{needsFulfilled.toLocaleString()}+</div>
-                      <div className="text-sm opacity-90">Needs List Fulfilled</div>
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{needsFulfilled.toLocaleString()}+</div>
+                      <div className="text-xs sm:text-sm opacity-90">Needs List Fulfilled</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Needs List Created */}
-                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
+                <div className="bg-white border-2 border-gray-200 p-4 sm:p-6 rounded-2xl shadow-lg transform transition-all duration-300 md:hover:scale-105">
                   <div className="flex items-center mb-2">
-                    <div className="bg-coral/10 p-2 rounded-lg mr-3">
-                      <Users className="h-6 w-6 text-coral" />
+                    <div className="bg-coral/10 p-2 rounded-lg mr-2 sm:mr-3">
+                      <Users className="h-5 w-5 sm:h-6 sm:w-6 text-coral" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold text-navy">{needsCreated.toLocaleString()}+</div>
-                      <div className="text-sm text-gray-600">Needs List Created</div>
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-navy">{needsCreated.toLocaleString()}+</div>
+                      <div className="text-xs sm:text-sm text-gray-600">Needs List Created</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Smiles Spread */}
-                <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
+                <div className="bg-white border-2 border-gray-200 p-4 sm:p-6 rounded-2xl shadow-lg transform transition-all duration-300 md:hover:scale-105">
                   <div className="flex items-center mb-2">
-                    <div className="bg-coral/10 p-2 rounded-lg mr-3">
-                      <FontAwesomeIcon icon={faSmile} className="h-6 w-6 text-coral" />
+                    <div className="bg-coral/10 p-2 rounded-lg mr-2 sm:mr-3">
+                      <FontAwesomeIcon icon={faSmile} className="h-5 w-5 sm:h-6 sm:w-6 text-coral" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold text-navy">{smilesSpread >= 1000 ? `${Math.floor(smilesSpread / 1000)}k` : smilesSpread.toLocaleString()}</div>
-                      <div className="text-sm text-gray-600">Smiles Spread</div>
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-navy">{smilesSpread >= 1000 ? `${Math.floor(smilesSpread / 1000)}k` : smilesSpread.toLocaleString()}</div>
+                      <div className="text-xs sm:text-sm text-gray-600">Smiles Spread</div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Products Delivered */}
-                <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
+                <div className="bg-coral text-white p-4 sm:p-6 rounded-2xl shadow-lg transform transition-all duration-300 md:hover:scale-105">
                   <div className="flex items-center mb-2">
-                    <div className="bg-white/20 p-2 rounded-lg mr-3">
-                      <PersonCarryBoxIcon className="h-6 w-6" />
+                    <div className="bg-white/20 p-2 rounded-lg mr-2 sm:mr-3">
+                      <PersonCarryBoxIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold">{productsDelivered >= 1000 ? `${Math.floor(productsDelivered / 1000)}k` : productsDelivered.toLocaleString()}</div>
-                      <div className="text-sm opacity-90">Products Delivered</div>
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold">{productsDelivered >= 1000 ? `${Math.floor(productsDelivered / 1000)}k` : productsDelivered.toLocaleString()}</div>
+                      <div className="text-xs sm:text-sm opacity-90">Products Delivered</div>
                     </div>
                   </div>
                 </div>
