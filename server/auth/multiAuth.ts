@@ -421,7 +421,7 @@ export async function setupMultiAuth(app: Express) {
         isVerified: false
       });
       
-      // Send welcome email for new email/password users
+      // Send welcome email AND verification email for new email/password users
       if (newUser.email && newUser.firstName) {
         try {
           console.log(`📧 Attempting to send welcome email to ${newUser.email}`);
@@ -430,6 +430,37 @@ export async function setupMultiAuth(app: Express) {
           emailService.sendWelcomeEmail(newUser.email, newUser.firstName).catch(error => {
             console.error('❌ Failed to send welcome email:', error);
           });
+
+          // Also send verification email for new users
+          try {
+            const crypto = await import('crypto');
+            const token = crypto.randomBytes(32).toString('hex');
+            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+            
+            // Save verification token
+            await storage.createEmailVerificationToken({
+              userId: newUser.id,
+              token,
+              email: newUser.email,
+              expiresAt
+            });
+            
+            // Send verification email
+            console.log(`📧 Attempting to send verification email to ${newUser.email}`);
+            const emailSent = await emailService.sendEmailVerificationEmail(
+              newUser.email,
+              `${newUser.firstName} ${newUser.lastName}`.trim() || newUser.email,
+              token
+            );
+            
+            if (emailSent) {
+              console.log(`✅ Verification email sent successfully to ${newUser.email}`);
+            } else {
+              console.error(`❌ Failed to send verification email to ${newUser.email}`);
+            }
+          } catch (verificationError) {
+            console.error('❌ Failed to send verification email during signup:', verificationError);
+          }
         } catch (error) {
           console.error('❌ Error loading email service:', error);
         }
