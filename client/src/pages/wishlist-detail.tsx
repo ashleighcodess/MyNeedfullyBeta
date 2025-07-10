@@ -111,7 +111,7 @@ export default function WishlistDetail() {
   // Fetch real recent activity data from API
   const { data: recentActivitiesData, isLoading: activitiesLoading } = useQuery({
     queryKey: ['/api/activity/recent'],
-    refetchInterval: 30000, // Refresh every 30 seconds for real-time feel
+    refetchInterval: 60000, // Refresh every minute for better performance
   });
 
   // Format activities data for display with proper time formatting

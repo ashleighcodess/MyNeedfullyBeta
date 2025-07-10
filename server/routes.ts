@@ -515,18 +515,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Recent Activity for Homepage
+  // Recent Activity for Homepage - Optimized version
   app.get('/api/recent-activity', async (req, res) => {
     try {
-      // Get real analytics events from database
+      // Single optimized query joining analytics with users
       const recentAnalytics = await db.select({
         id: analyticsEvents.id,
         eventType: analyticsEvents.eventType,
         userId: analyticsEvents.userId,
         data: analyticsEvents.data,
-        createdAt: analyticsEvents.createdAt
+        createdAt: analyticsEvents.createdAt,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        location: users.location
       })
       .from(analyticsEvents)
+      .leftJoin(users, eq(analyticsEvents.userId, users.id))
       .where(or(
         eq(analyticsEvents.eventType, 'item_fulfilled'),
         eq(analyticsEvents.eventType, 'wishlist_created'),
@@ -539,79 +543,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Found ${recentAnalytics.length} recent analytics events`);
 
-      // Get user details for each activity
-      const recentActivity = [];
-      for (const analytics of recentAnalytics) {
-        try {
-          const user = await storage.getUser(analytics.userId);
-          const timeAgo = getTimeAgo(analytics.createdAt);
-          
-          let activityItem;
-          if (analytics.eventType === 'item_fulfilled') {
-            activityItem = {
-              id: `activity-${analytics.id}`,
-              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Anonymous Supporter',
-              action: "fulfilled",
-              item: analytics.data?.itemTitle || 'an item',
-              timeAgo,
-              location: user?.location || 'Community',
-              impact: "1 person helped",
-              type: "donation"
-            };
-          } else if (analytics.eventType === 'wishlist_created') {
-            activityItem = {
-              id: `activity-${analytics.id}`,
-              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
-              action: "created",
-              item: analytics.data?.wishlistTitle || 'a needs list',
-              timeAgo,
-              location: user?.location || 'Community',
-              impact: "New request posted",
-              type: "request"
-            };
-          } else if (analytics.eventType === 'thank_you_sent') {
-            activityItem = {
-              id: `activity-${analytics.id}`,
-              supporter: user ? `${user.firstName || 'Anonymous'} ${(user.lastName || '').charAt(0)}.` : 'Someone',
-              action: "sent thanks",
-              item: "to their supporter",
-              timeAgo,
-              location: user?.location || 'Community',
-              impact: "Gratitude shared",
-              type: "thanks"
-            };
-          } else if (analytics.eventType === 'wishlist_completed') {
-            activityItem = {
-              id: `activity-${analytics.id}`,
-              supporter: "Community",
-              action: "completed",
-              item: analytics.data?.wishlistTitle || 'a needs list',
-              timeAgo,
-              location: user?.location || 'Community',
-              impact: `${analytics.data?.totalItems || 0} items fulfilled`,
-              type: "completion"
-            };
-          }
-          
-          if (activityItem) {
-            recentActivity.push(activityItem);
-          }
-        } catch (userError) {
-          console.error('Error fetching user for analytics event:', userError);
-          // Add anonymous entry if user lookup fails
-          const timeAgo = getTimeAgo(analytics.createdAt);
-          recentActivity.push({
+      // Format activities efficiently without additional database queries
+      const recentActivity = recentAnalytics.map(analytics => {
+        const timeAgo = getTimeAgo(analytics.createdAt);
+        
+        let activityItem;
+        const userName = analytics.firstName ? `${analytics.firstName} ${(analytics.lastName || '').charAt(0)}.` : 'Anonymous';
+        
+        if (analytics.eventType === 'item_fulfilled') {
+          activityItem = {
             id: `activity-${analytics.id}`,
-            supporter: "Anonymous Supporter",
-            action: analytics.eventType === 'item_fulfilled' ? "fulfilled" : "helped",
-            item: analytics.data?.itemTitle || analytics.data?.wishlistTitle || 'someone in need',
+            supporter: userName,
+            action: "fulfilled",
+            item: analytics.data?.itemTitle || 'an item',
             timeAgo,
-            location: "Community",
+            location: analytics.location || 'Community',
             impact: "1 person helped",
             type: "donation"
-          });
+          };
+        } else if (analytics.eventType === 'wishlist_created') {
+          activityItem = {
+            id: `activity-${analytics.id}`,
+            supporter: userName,
+            action: "created",
+            item: analytics.data?.wishlistTitle || 'a needs list',
+            timeAgo,
+            location: analytics.location || 'Community',
+            impact: "New request posted",
+            type: "request"
+          };
+        } else if (analytics.eventType === 'thank_you_sent') {
+          activityItem = {
+            id: `activity-${analytics.id}`,
+            supporter: userName,
+            action: "sent thanks",
+            item: "to their supporter",
+            timeAgo,
+            location: analytics.location || 'Community',
+            impact: "Gratitude shared",
+            type: "thanks"
+          };
+        } else if (analytics.eventType === 'wishlist_completed') {
+          activityItem = {
+            id: `activity-${analytics.id}`,
+            supporter: "Community",
+            action: "completed",
+            item: analytics.data?.wishlistTitle || 'a needs list',
+            timeAgo,
+            location: analytics.location || 'Community',
+            impact: `${analytics.data?.totalItems || 0} items fulfilled`,
+            type: "completion"
+          };
         }
-      }
+        
+        return activityItem;
+      }).filter(item => item !== undefined);
 
       console.log(`Returning ${recentActivity.length} formatted activities`);
 

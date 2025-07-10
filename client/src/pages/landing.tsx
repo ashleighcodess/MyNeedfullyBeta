@@ -274,11 +274,12 @@ export default function Landing() {
         }
       ];
 
-  // Real-time activity data from platform
-  const { data: recentActivity = [] } = useQuery<any[]>({
-    queryKey: ['/api/recent-activity'],
-    refetchInterval: 15000, // Refresh every 15 seconds for live updates
-  });
+  // Real-time activity data from platform - disabled for performance
+  // const { data: recentActivity = [] } = useQuery<any[]>({
+  //   queryKey: ['/api/recent-activity'],
+  //   refetchInterval: 15000, // Refresh every 15 seconds for live updates
+  // });
+  const recentActivity: any[] = [];
 
   // State for interactive features
   const [likedActivities, setLikedActivities] = useState(new Set());

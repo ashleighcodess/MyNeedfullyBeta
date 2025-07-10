@@ -25,6 +25,8 @@ export default function MobileNavigation() {
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
+    refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
+    retry: false,
   });
 
   const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;

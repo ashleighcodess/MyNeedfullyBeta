@@ -26,6 +26,8 @@ export default function Navigation() {
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
+    refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
+    retry: false,
   });
 
   // Listen for user data updates to force re-render

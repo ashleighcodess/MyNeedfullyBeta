@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import ThankYouNote from "./thank-you-note";
@@ -33,11 +34,14 @@ interface NotificationCenterProps {
 
 export default function NotificationCenter({ isOpen, onClose }: NotificationCenterProps) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [showThankYouNote, setShowThankYouNote] = useState<{ supporterId: string; donationId: number } | null>(null);
 
   const { data: notifications = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    enabled: !!user,
+    refetchInterval: 120000, // Refresh every 2 minutes for notification center
+    retry: false,
   });
 
   const markAsReadMutation = useMutation({

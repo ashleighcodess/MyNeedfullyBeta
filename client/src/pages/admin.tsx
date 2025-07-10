@@ -88,14 +88,14 @@ export default function AdminDashboard() {
   const { data: systemHealth, isLoading: healthLoading } = useQuery({
     queryKey: ['/api/admin/health'],
     enabled: !!user && user.userType === 'admin',
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 120000, // Refresh every 2 minutes for better performance
   });
 
   // Security dashboard query
   const { data: securityData, isLoading: securityLoading } = useQuery({
     queryKey: ['/api/admin/security/dashboard'],
     enabled: !!user && user.userType === 'admin',
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 120000, // Refresh every 2 minutes for better performance
   });
 
   // User removal mutation
