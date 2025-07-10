@@ -1,136 +1,197 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Star, ShoppingCart, ExternalLink } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Star, Search, Package, Heart, ChevronLeft } from "lucide-react";
+
+const PRODUCT_CATEGORIES = [
+  { value: "baby_kids", label: "Baby & Kids" },
+  { value: "household", label: "Household" },
+  { value: "food_grocery", label: "Food & Grocery" },
+  { value: "health_beauty", label: "Health & Beauty" },
+  { value: "clothing", label: "Clothing" },
+];
 
 export default function ProductSearchSimple() {
+  const [navigate] = useNavigate();
+  const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const { toast } = useToast();
+  const [category, setCategory] = useState("all");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Debounce search input
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  // Simple product search query
-  const { data: searchResults, isLoading } = useQuery({
-    queryKey: ['/api/products/search', debouncedQuery, page],
-    enabled: debouncedQuery.length > 2,
-    queryFn: async () => {
+  // Simple search function without React Query
+  const performSearch = async (searchTerm: string, searchCategory?: string) => {
+    if (!searchTerm || searchTerm.length < 3) return;
+    
+    setIsLoading(true);
+    setError(null);
+    console.log('Simple Search: Starting search for:', searchTerm);
+    
+    try {
       const params = new URLSearchParams();
-      params.append('query', debouncedQuery);
-      params.append('limit', '10');
-      if (page > 1) params.append('page', page.toString());
+      params.append('query', searchTerm);
+      if (searchCategory && searchCategory !== 'all') {
+        params.append('category', searchCategory);
+      }
       
-      const response = await fetch(`/api/products/search?${params}`);
-      if (!response.ok) throw new Error('Search failed');
-      return response.json();
-    },
-  });
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim().length > 2) {
-      setPage(1);
-      toast({
-        title: "Searching products...",
-        description: "This may take 5-10 seconds for real-time data.",
-      });
+      const searchUrl = `/api/search?${params.toString()}`;
+      const response = await fetch(searchUrl);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Search failed');
+      }
+      
+      const data = await response.json();
+      console.log('Simple Search: Success with', data?.data?.length || 0, 'products');
+      setSearchResults(data.data || []);
+    } catch (error) {
+      console.error('Simple Search: Error:', error);
+      setError(error instanceof Error ? error.message : 'Search failed');
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const loadMore = () => {
-    setPage(prev => prev + 1);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim() && searchQuery.trim().length > 2) {
+      performSearch(searchQuery.trim(), category);
+    }
   };
 
-  const products = searchResults?.products || [];
+  const handleCategoryClick = (categoryValue: string, categoryLabel: string) => {
+    setCategory(categoryValue);
+    setSearchQuery(categoryLabel);
+    performSearch(categoryLabel, categoryValue);
+  };
+
+  const formatPrice = (price: any) => {
+    if (!price) return 'Price not available';
+    
+    if (typeof price === 'object' && price.value !== undefined) {
+      return `$${price.value.toFixed(2)}`;
+    }
+    
+    if (typeof price === 'string') {
+      return price.startsWith('$') ? price : `$${price}`;
+    }
+    
+    return 'Price not available';
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
-      
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+    <div className="min-h-screen bg-warm-bg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="mb-4 md:mb-8">
+          <h1 className="text-xl md:text-3xl font-bold text-navy mb-1 md:mb-2">
             Product Search
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Search for products to add to your needs lists. We'll find real-time pricing and availability.
+          <p className="text-sm md:text-base text-gray-600">
+            Search for products from trusted retailers
           </p>
         </div>
 
-        {/* Search Form */}
-        <form onSubmit={handleSearch} className="mb-8">
-          <div className="flex gap-4 max-w-2xl mx-auto">
+        {/* Search Bar */}
+        <div className="mb-6">
+          <form onSubmit={handleSearch} className="flex gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
-                type="text"
-                placeholder="Search for products..."
+                placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12"
+                className="pl-10 py-3"
               />
             </div>
-            <Button type="submit" size="lg" disabled={isLoading}>
-              {isLoading ? "Searching..." : "Search"}
+            <Button type="submit" className="bg-coral hover:bg-coral/90 px-8">
+              Search
             </Button>
-          </div>
-        </form>
+          </form>
+        </div>
 
-        {/* Loading State */}
+        {/* Category Buttons */}
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-navy mb-4">Popular Categories</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {PRODUCT_CATEGORIES.map((cat) => (
+              <Button
+                key={cat.value}
+                variant="outline"
+                className="h-auto p-4 border-2 border-gray-200 hover:border-coral/60 hover:bg-coral/5"
+                onClick={() => handleCategoryClick(cat.value, cat.label)}
+              >
+                {cat.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Results */}
         {isLoading && (
           <div className="text-center py-12">
-            <div className="animate-spin h-8 w-8 border-4 border-coral-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-600">Searching for products...</p>
+            <div className="inline-flex items-center justify-center p-2 bg-white rounded-full shadow-lg mb-6">
+              <Package className="h-12 w-12 animate-spin text-coral" />
+            </div>
+            <p className="text-lg font-semibold text-gray-700 mb-2">Searching products...</p>
+            <p className="text-sm text-gray-600">This may take 7-14 seconds</p>
           </div>
         )}
 
-        {/* Search Results */}
-        {products.length > 0 && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">
-                Search Results ({searchResults?.total || products.length})
-              </h2>
-              <Badge variant="secondary">
-                Showing {products.length} results
-              </Badge>
-            </div>
+        {error && (
+          <Card className="p-12 text-center">
+            <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Search Error</h3>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={() => setError(null)} variant="outline">
+              Try Again
+            </Button>
+          </Card>
+        )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product: any, index: number) => (
-                <Card key={product.asin || index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    {product.image && (
-                      <img
-                        src={product.image}
+        {searchResults && searchResults.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold text-navy mb-4">
+              Found {searchResults.length} products
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {searchResults.map((product: any, index: number) => (
+                <Card key={`${product.asin || product.product_id || index}`} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative">
+                    {product.image || product.image_url ? (
+                      <img 
+                        src={product.image || product.image_url}
                         alt={product.title}
-                        className="w-full h-48 object-contain rounded-lg bg-gray-50"
+                        className="w-full h-48 object-contain bg-gray-50"
                       />
+                    ) : (
+                      <div className="w-full h-48 flex items-center justify-center bg-gray-50 text-gray-500">
+                        <Package className="w-12 h-12" />
+                      </div>
                     )}
-                  </CardHeader>
-                  <CardContent>
-                    <CardTitle className="text-lg mb-2 line-clamp-2">
+                    {product.retailer && (
+                      <Badge className="absolute top-2 right-2 bg-white text-navy">
+                        {product.retailer}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-navy mb-2 line-clamp-2 text-sm">
                       {product.title}
-                    </CardTitle>
+                    </h3>
                     
-                    <div className="space-y-2 mb-4">
+                    <div className="flex items-center justify-between mb-3">
                       {product.price && (
-                        <div className="text-2xl font-bold text-coral-600">
-                          ${typeof product.price === 'object' ? product.price.value : product.price}
+                        <div className="font-bold text-lg text-coral">
+                          {formatPrice(product.price)}
                         </div>
                       )}
-                      
                       {product.rating && (
                         <div className="flex items-center space-x-1">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -139,41 +200,37 @@ export default function ProductSearchSimple() {
                       )}
                     </div>
 
-                    <div className="flex gap-2">
-                      <Button size="sm" className="flex-1">
-                        <ShoppingCart className="h-4 w-4 mr-1" />
-                        Add to List
-                      </Button>
-                      {product.link && (
-                        <Button size="sm" variant="outline" asChild>
-                          <a href={product.link} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
+                    <Button 
+                      className="w-full bg-coral hover:bg-coral/90"
+                      size="sm"
+                    >
+                      <Heart className="mr-2 h-4 w-4" />
+                      Add to Needs List
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
-
-            {/* Load More Button */}
-            {searchResults?.hasMore && (
-              <div className="text-center mt-8">
-                <Button onClick={loadMore} size="lg" variant="outline">
-                  Show More Results
-                </Button>
-              </div>
-            )}
           </div>
         )}
 
-        {/* No Results */}
-        {debouncedQuery.length > 2 && !isLoading && products.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">No products found for "{debouncedQuery}"</p>
-            <p className="text-sm text-gray-500">Try searching with different keywords.</p>
-          </div>
+        {!isLoading && !error && searchResults.length === 0 && searchQuery && (
+          <Card className="p-12 text-center">
+            <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No Products Found</h3>
+            <p className="text-gray-600 mb-4">
+              Try adjusting your search terms.
+            </p>
+            <Button 
+              onClick={() => {
+                setSearchQuery("");
+                setSearchResults([]);
+              }}
+              variant="outline"
+            >
+              Clear Search
+            </Button>
+          </Card>
         )}
       </div>
     </div>

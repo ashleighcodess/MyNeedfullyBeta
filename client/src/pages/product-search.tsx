@@ -386,11 +386,8 @@ export default function ProductSearch() {
     return `/api/search?${params.toString()}`;
   }, [debouncedQuery, category, minPrice, maxPrice, page, activeSearch]);
 
-  // Fetch user's wishlists when no wishlistId is provided
-  const { data: userWishlists } = useQuery({
-    queryKey: [`/api/users/${user?.id}/wishlists`],
-    enabled: !wishlistId && !!user?.id, // Only fetch if no specific wishlist is provided and user is authenticated
-  });
+  // Completely disable React Query to fix infinite loops
+  const userWishlists = null;
 
 
 
@@ -399,90 +396,54 @@ export default function ProductSearch() {
   
   const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
-  // Debug the query enabling logic - use EITHER debouncedQuery OR activeSearch
-  const shouldEnableQuery = !!((debouncedQuery && debouncedQuery.length > 2) || 
-                               (activeSearch && activeSearch.length > 2));
-  console.log('Query Debug:', {
-    debouncedQuery,
-    activeSearch,
-    shouldEnableQuery,
-    searchUrl,
-    queryKey: [searchUrl]
-  });
+  // React Query completely removed to prevent infinite loops
 
-  // State to store live API results directly
-  const [liveSearchResults, setLiveSearchResults] = useState<any[]>([]);
+  // SIMPLE MANUAL SEARCH - No React Query to prevent infinite loops
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
-  // Fetch API interception to capture responses directly
-  useEffect(() => {
-    const originalFetch = window.fetch;
+  // Manual search function that worked yesterday
+  const performSearch = async (searchTerm: string, searchCategory?: string) => {
+    if (!searchTerm || searchTerm.length < 3) return;
     
-    window.fetch = async (...args) => {
-      const response = await originalFetch(...args);
-      
-      // Intercept search API responses
-      if (typeof args[0] === 'string' && args[0].includes('/api/search')) {
-        console.log('🎯 Intercepting API response for:', args[0]);
-        
-        try {
-          const clonedResponse = response.clone();
-          const data = await clonedResponse.json();
-          
-          if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-            console.log('🚀 Fetch Interception: Captured', data.data.length, 'products');
-            setLiveSearchResults(data.data);
-          }
-        } catch (error) {
-          console.error('Error intercepting response:', error);
-        }
+    setIsLoading(true);
+    setError(null);
+    console.log('🔍 Manual Search: Starting search for:', searchTerm);
+    
+    try {
+      const params = new URLSearchParams();
+      params.append('query', searchTerm);
+      if (searchCategory && searchCategory !== 'all') {
+        params.append('category', searchCategory);
       }
       
-      return response;
-    };
-    
-    return () => {
-      window.fetch = originalFetch;
-    };
-  }, []);
-
-  // React Query with proper cache key handling
-  const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: ['product-search', debouncedQuery, category],
-    enabled: !!debouncedQuery && debouncedQuery.length > 2,
-    staleTime: 60000,
-    gcTime: 300000,
-    retry: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    queryFn: async () => {
-      const searchUrl = buildSearchUrl();
-      console.log('🔍 React Query: Starting API call to:', searchUrl);
+      const searchUrl = `/api/search?${params.toString()}`;
       const response = await fetch(searchUrl);
+      
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Search API error:', response.status, errorData);
-        
-        if (response.status === 429) {
-          throw new Error(errorData.error || 'Too many requests, please wait');
-        }
         throw new Error(errorData.error || 'Search failed');
       }
+      
       const data = await response.json();
-      console.log('✅ React Query: Search API response received with', data?.data?.length || 0, 'products');
-      return data;
-    },
-    onSuccess: (data) => {
-      console.log('🎉 React Query: onSuccess called with', data?.data?.length || 0, 'products');
-      // Immediately update live results when React Query succeeds
-      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-        console.log('🚀 React Query: Immediately updating live results with', data.data.length, 'products');
-        setLiveSearchResults(data.data);
-      }
-    },
-    onError: (error) => {
-      console.error('❌ React Query: onError called with:', error);
+      console.log('✅ Manual Search: Success with', data?.data?.length || 0, 'products');
+      setSearchResults(data.data || []);
+    } catch (error) {
+      console.error('❌ Manual Search: Error:', error);
+      setError(error instanceof Error ? error.message : 'Search failed');
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
     }
-  });
+  };
+
+  // Auto-trigger search when debouncedQuery changes
+  useEffect(() => {
+    if (debouncedQuery && debouncedQuery.length > 2) {
+      performSearch(debouncedQuery, category);
+    }
+  }, [debouncedQuery, category]);
 
   // Update total results when search results change
   useEffect(() => {
@@ -512,24 +473,18 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products - prioritize live results from API interception
+  // Simple display logic - use search results or cached products
   const displayProducts = useMemo(() => {
-    // Priority 1: Use intercepted live API results if available
-    if (liveSearchResults && liveSearchResults.length > 0) {
-      console.log('✅ Using intercepted live results with', liveSearchResults.length, 'products');
-      return liveSearchResults;
+    // Priority 1: Use search results when available
+    if (searchResults && searchResults.length > 0) {
+      console.log('✅ Using search results with', searchResults.length, 'products');
+      return searchResults;
     }
     
-    // Priority 2: If we have search results from React Query, use them
-    if (searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0) {
-      console.log('Using React Query results with', (searchResults as any).data.length, 'items');
-      return (searchResults as any).data;
-    }
-    
-    // Priority 3: Show cached products for immediate display
+    // Priority 2: Show cached products for initial display
     console.log('Using cached products with', cachedProducts.length, 'items');
     return cachedProducts;
-  }, [liveSearchResults, searchResults, cachedProducts]);
+  }, [searchResults, cachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -833,11 +788,12 @@ export default function ProductSearch() {
                 onClick={() => {
                   console.log('Category clicked:', category.label);
                   setSearchQuery(category.label);
-                  setDebouncedQuery(category.label);
                   setActiveSearch(category.label);
                   setCategory(category.value);
                   setPage(1);
-                  setShowCategories(false); // Hide categories on mobile after selection
+                  setShowCategories(false);
+                  // Directly trigger search
+                  performSearch(category.label, category.value);
                 }}
               >
                 {/* Icon with pulse animation on hover */}
