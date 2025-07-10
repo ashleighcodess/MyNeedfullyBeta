@@ -843,33 +843,25 @@ export default function ProductSearch() {
                   <div className="flex justify-between items-center">
                     <div>
                       {/* Show different headers for cached products vs search results */}
-                      {!debouncedQuery || debouncedQuery === activeSearch && popularProducts[activeSearch as keyof typeof popularProducts] ? (
-                        <div>
-                          <h3 className="text-lg font-semibold text-navy">
-                            {activeSearch || "Basic Essentials"} Products
-                          </h3>
-                        </div>
-                      ) : (
-                        <div>
-                          <h3 className="text-lg font-semibold text-navy">
-                            Search Results for "{debouncedQuery}"
-                          </h3>
-                          {totalResults > 0 && (
-                            <div className="space-y-1">
-                              <p className="text-sm text-gray-600">
-                                Showing {displayProducts.length} of {totalResults} results
+                      <div>
+                        <h3 className="text-lg font-semibold text-navy">
+                          {activeSearch || debouncedQuery || "Basic Essentials"} Products
+                        </h3>
+                        {totalResults > 0 && (
+                          <div className="space-y-1">
+                            <p className="text-sm text-gray-600">
+                              Showing {displayProducts.length} of {totalResults} results
+                            </p>
+                            {displayProducts && displayProducts.length > 0 && (
+                              <p className="text-xs text-gray-500">
+                                Retailers: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
+                                Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
+                                Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
                               </p>
-                              {displayProducts && displayProducts.length > 0 && (
-                                <p className="text-xs text-gray-500">
-                                  Retailers: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
-                                  Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
-                                  Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     
                     {/* Show cached indicator */}
