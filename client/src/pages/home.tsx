@@ -82,7 +82,7 @@ export default function Home() {
                 </Button>
               </Link>
               
-              <Link href="/dashboard">
+              <Link href="/profile">
                 <Button data-tip="go-to-dashboard" variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
                   <User className="h-5 w-5 sm:h-6 sm:w-6" />
                   <span className="text-xs sm:text-sm font-medium text-center">Go to my Dashboard</span>

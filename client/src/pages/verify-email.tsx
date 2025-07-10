@@ -55,7 +55,7 @@ export default function VerifyEmail() {
   }, [token]);
 
   const handleGoToDashboard = () => {
-    navigate('/dashboard');
+    navigate('/profile');
   };
 
   const handleRequestNewLink = async () => {

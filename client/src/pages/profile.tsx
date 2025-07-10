@@ -379,7 +379,7 @@ export default function Profile() {
                         <Link key={item.id} href={
                           item.id === 'privacy' ? '/profile/privacy' :
                           item.id === 'create' ? '/create' :
-                          item.id === 'find' ? '/find' : '/profile'
+                          item.id === 'find' ? '/browse' : '/profile'
                         }>
                           <div className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors cursor-pointer ${
                             item.active 

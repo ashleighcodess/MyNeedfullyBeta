@@ -56,7 +56,7 @@ export default function MyNeedsLists() {
                   Create New Needs List
                 </Button>
               </Link>
-              <Link href="/dashboard">
+              <Link href="/profile">
                 <Button variant="outline" className="border-coral text-coral hover:bg-coral/10 w-full sm:w-auto">
                   <BarChart3 className="mr-2 h-4 w-4" />
                   View Dashboard
