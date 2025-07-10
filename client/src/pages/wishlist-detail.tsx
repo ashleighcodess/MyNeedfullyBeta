@@ -43,6 +43,11 @@ import {
 } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl, generateWishlistStructuredData, generateOgImage } from "@/lib/seo";
 
+// Retailer logos
+import amazonLogo from "@assets/amazon_1751644244382.png";
+import targetLogo from "@assets/target_1751644244383.png";
+import walmartLogo from "@assets/walmart_1751644244383.png";
+
 export default function WishlistDetail() {
   const params = useParams();
   const id = params?.id as string;
@@ -726,7 +731,7 @@ export default function WishlistDetail() {
                             {/* Amazon */}
                             <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
                               <div className="flex items-center space-x-2">
-                                <img src="/logos/amazon-logo.png" alt="Amazon" className="w-5 h-5 rounded-full" />
+                                <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Amazon</div>
                                   <div className="text-sm font-bold text-gray-900">
@@ -767,7 +772,7 @@ export default function WishlistDetail() {
                             {/* Target */}
                             <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
                               <div className="flex items-center space-x-2">
-                                <img src="/logos/target-logo.png" alt="Target" className="w-5 h-5 rounded-full" />
+                                <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Target</div>
                                   <div className="text-sm font-bold text-gray-900">
@@ -808,7 +813,7 @@ export default function WishlistDetail() {
                             {/* Walmart */}
                             <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
                               <div className="flex items-center space-x-2">
-                                <img src="/logos/walmart-logo.png" alt="Walmart" className="w-5 h-5 rounded-full" />
+                                <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Walmart</div>
                                   <div className="text-sm font-bold text-gray-900">
