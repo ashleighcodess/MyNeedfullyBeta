@@ -217,7 +217,7 @@ export default function Navigation() {
                     
                     {user ? (
                       <div className="border-t pt-4">
-                        <Link href="/quick-actions">
+                        <Link href="/profile">
                           <Button 
                             variant="ghost" 
                             className="w-full justify-start"
@@ -361,7 +361,7 @@ export default function Navigation() {
                       <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/quick-actions">
+                    <Link href="/profile">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
