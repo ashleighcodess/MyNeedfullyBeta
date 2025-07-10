@@ -233,7 +233,7 @@ export default function ProductSearch() {
     return getCachedResult(key);
   }, [category, getCacheKey, getCachedResult]);
 
-  // Build query URL with parameters
+  // Build query URL with parameters - Smart routing for speed
   const buildSearchUrl = useCallback(() => {
     const params = new URLSearchParams();
     if (debouncedQuery) params.append('query', debouncedQuery);
@@ -242,8 +242,15 @@ export default function ProductSearch() {
     if (maxPrice) params.append('max_price', maxPrice);
     if (page && page !== 1) params.append('page', page.toString());
     
+    // Smart decision: Use multi-retailer search only for user-typed queries
+    // Category clicks get fast Amazon-only search for instant results
+    const isUserTypedQuery = searchQuery.length > 0 && debouncedQuery === searchQuery;
+    if (isUserTypedQuery) {
+      params.append('multi_retailer', 'true');
+    }
+    
     return `/api/search?${params.toString()}`;
-  }, [debouncedQuery, category, minPrice, maxPrice, page]);
+  }, [debouncedQuery, category, minPrice, maxPrice, page, searchQuery]);
 
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
@@ -592,8 +599,8 @@ export default function ProductSearch() {
                 className="p-2 md:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer text-center bg-white hover:bg-gray-50 active:scale-95"
                 onClick={() => {
                   console.log('Category clicked:', category.label);
-                  setSearchQuery(category.label);
-                  setDebouncedQuery(category.label);
+                  setSearchQuery(""); // Clear search input for fast category search
+                  setDebouncedQuery(category.label); // Trigger fast Amazon-only search
                   setActiveSearch(category.label);
                   setCategory(category.value);
                   setPage(1);
