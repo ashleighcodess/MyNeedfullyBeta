@@ -8,10 +8,10 @@ export function useAuth() {
   const { data: user, isLoading, error } = useQuery<User>({
     queryKey: ['/api/auth/user'],
     retry: false, // Don't retry 401 errors
-    staleTime: 0, // Always fresh - never use cached auth data
-    cacheTime: 0, // Don't cache auth responses
-    refetchOnWindowFocus: true, // DO refetch when window gains focus to catch auth changes
-    refetchOnMount: true, // Always check auth on component mount
+    staleTime: 30 * 1000, // Consider fresh for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes (renamed from cacheTime)
+    refetchOnWindowFocus: false, // Don't refetch on focus to prevent constant requests
+    refetchOnMount: false, // Only fetch if not in cache
     queryFn: async () => {
       const response = await fetch('/api/auth/user', {
         credentials: 'include', // Ensure cookies are sent

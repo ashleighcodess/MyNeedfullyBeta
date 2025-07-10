@@ -117,45 +117,50 @@ export async function setupMultiAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Replit OAuth Strategy - TEMPORARILY DISABLED DUE TO BROWSER CRASHES
-  // CRITICAL: Replit OAuth is causing entire browser crashes, disabling until fixed
-  // TODO: Investigate and fix Replit OIDC configuration causing browser instability
-  
-  // const replitConfig = await getOidcConfig();
-  // const replitVerify: VerifyFunction = async (
-  //   tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
-  //   verified: passport.AuthenticateCallback
-  // ) => {
-  //   const user = { provider: 'replit' };
-  //   updateUserSession(user, tokens);
-  //   
-  //   const claims = tokens.claims();
-  //   if (claims) {
-  //     await upsertUserFromProfile({
-  //       id: String(claims["sub"] || ''),
-  //       email: String(claims["email"] || ''),
-  //       firstName: String(claims["first_name"] || ''),
-  //       lastName: String(claims["last_name"] || ''),
-  //       profileImageUrl: String(claims["profile_image_url"] || ''),
-  //       provider: 'replit'
-  //     });
-  //   }
-  //   
-  //   verified(null, user);
-  // };
+  // Replit OAuth Strategy - RE-ENABLED FOR PRODUCTION
+  const replitConfig = await getOidcConfig();
+  const replitVerify: VerifyFunction = async (
+    tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
+    verified: passport.AuthenticateCallback
+  ) => {
+    const user = { provider: 'replit' };
+    updateUserSession(user, tokens);
+    
+    const claims = tokens.claims();
+    if (claims) {
+      await upsertUserFromProfile({
+        id: String(claims["sub"] || ''),
+        email: String(claims["email"] || ''),
+        firstName: String(claims["first_name"] || ''),
+        lastName: String(claims["last_name"] || ''),
+        profileImageUrl: String(claims["profile_image_url"] || ''),
+        provider: 'replit'
+      });
+    }
+    
+    verified(null, user);
+  };
 
-  // for (const domain of process.env.REPLIT_DOMAINS!.split(",")) {
-  //   const strategy = new ReplitStrategy(
-  //     {
-  //       name: `replitauth:${domain}`,
-  //       config: replitConfig,
-  //       scope: "openid email profile offline_access",
-  //       callbackURL: `https://${domain}/api/callback/replit`,
-  //     },
-  //     replitVerify,
-  //   );
-  //   passport.use(strategy);
-  // }
+  // Configure Replit OAuth for both development and production domains
+  const replitDomains = [
+    ...process.env.REPLIT_DOMAINS!.split(","),
+    "myneedfully.app", // Add production domain
+    "my-needfully.replit.app" // Add alternate production domain
+  ];
+  
+  for (const domain of replitDomains) {
+    const strategy = new ReplitStrategy(
+      {
+        name: `replitauth:${domain}`,
+        config: replitConfig,
+        scope: "openid email profile offline_access",
+        callbackURL: `https://${domain}/api/callback/replit`,
+      },
+      replitVerify,
+    );
+    passport.use(strategy);
+    console.log(`✅ Registered Replit strategy: replitauth:${domain}`);
+  }
 
   // Google OAuth Strategy with multiple domain support
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
@@ -286,28 +291,103 @@ export async function setupMultiAuth(app: Express) {
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));
 
-  // Replit Auth Routes with rate limiting
+  // Replit Auth Routes with domain-aware strategy selection
   app.get("/api/login/replit", authLimiter, (req, res, next) => {
-    // Use the actual configured domain instead of req.hostname for strategy lookup
-    const configuredDomains = process.env.REPLIT_DOMAINS!.split(",");
-    const strategyDomain = configuredDomains[0]; // Use first configured domain
+    const hostname = req.hostname;
+    const headers = req.headers;
+    let strategyDomain;
     
-    console.log(`🔍 Login attempt - req.hostname: ${req.hostname}, using strategy: replitauth:${strategyDomain}`);
+    console.log(`🔍 DEBUG - Hostname: ${hostname}, Host header: ${headers.host}, X-Forwarded-Host: ${headers['x-forwarded-host']}`);
     
-    passport.authenticate(`replitauth:${strategyDomain}`, {
+    // Use production domain if accessing from myneedfully.app or related domains
+    if (hostname === 'myneedfully.app' || headers.host === 'myneedfully.app' || headers['x-forwarded-host'] === 'myneedfully.app') {
+      strategyDomain = 'myneedfully.app';
+    } else if (hostname === 'my-needfully.replit.app' || headers.host === 'my-needfully.replit.app' || headers['x-forwarded-host'] === 'my-needfully.replit.app') {
+      strategyDomain = 'my-needfully.replit.app';
+    } else {
+      // Use first configured development domain for other cases
+      const configuredDomains = process.env.REPLIT_DOMAINS!.split(",");
+      strategyDomain = configuredDomains[0];
+    }
+    
+    const strategyName = `replitauth:${strategyDomain}`;
+    console.log(`🔍 Replit login attempt - hostname: ${hostname}, using strategy: ${strategyName}`);
+    
+    // Verify strategy exists before attempting authentication
+    if (!passport._strategies || !passport._strategies[strategyName]) {
+      console.error(`🚨 CRITICAL: Strategy ${strategyName} not found!`);
+      console.log(`Available strategies:`, Object.keys(passport._strategies || {}));
+      
+      // Try fallback to any available Replit strategy
+      const availableStrategies = Object.keys(passport._strategies || {});
+      const replitStrategies = availableStrategies.filter(s => s.startsWith('replitauth:'));
+      
+      if (replitStrategies.length > 0) {
+        const fallbackStrategy = replitStrategies[0];
+        console.log(`🔄 Using fallback strategy: ${fallbackStrategy}`);
+        return passport.authenticate(fallbackStrategy, {
+          prompt: "login consent",
+          scope: ["openid", "email", "profile", "offline_access"],
+        })(req, res, next);
+      } else {
+        return res.status(500).json({ 
+          error: `No Replit authentication strategies available`,
+          requestedStrategy: strategyName,
+          availableStrategies: availableStrategies
+        });
+      }
+    }
+    
+    passport.authenticate(strategyName, {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
     })(req, res, next);
   });
 
   app.get("/api/callback/replit", authLimiter, (req, res, next) => {
-    // Use the actual configured domain instead of req.hostname for strategy lookup
-    const configuredDomains = process.env.REPLIT_DOMAINS!.split(",");
-    const strategyDomain = configuredDomains[0]; // Use first configured domain
+    const hostname = req.hostname;
+    const headers = req.headers;
+    let strategyDomain;
     
-    console.log(`🔍 Callback attempt - req.hostname: ${req.hostname}, using strategy: replitauth:${strategyDomain}`);
+    console.log(`🔍 DEBUG CALLBACK - Hostname: ${hostname}, Host header: ${headers.host}, X-Forwarded-Host: ${headers['x-forwarded-host']}`);
     
-    passport.authenticate(`replitauth:${strategyDomain}`, {
+    // Use production domain if accessing from myneedfully.app or related domains
+    if (hostname === 'myneedfully.app' || headers.host === 'myneedfully.app' || headers['x-forwarded-host'] === 'myneedfully.app' ||
+        hostname === 'my-needfully.replit.app' || headers.host === 'my-needfully.replit.app' || headers['x-forwarded-host'] === 'my-needfully.replit.app') {
+      strategyDomain = hostname === 'my-needfully.replit.app' || headers.host === 'my-needfully.replit.app' || headers['x-forwarded-host'] === 'my-needfully.replit.app' 
+        ? 'my-needfully.replit.app' 
+        : 'myneedfully.app';
+    } else {
+      // Use first configured development domain for other cases
+      const configuredDomains = process.env.REPLIT_DOMAINS!.split(",");
+      strategyDomain = configuredDomains[0];
+    }
+    
+    const strategyName = `replitauth:${strategyDomain}`;
+    console.log(`🔍 Replit callback attempt - hostname: ${hostname}, using strategy: ${strategyName}`);
+    
+    // Verify strategy exists before attempting authentication
+    if (!passport._strategies || !passport._strategies[strategyName]) {
+      console.error(`🚨 CRITICAL CALLBACK: Strategy ${strategyName} not found!`);
+      console.log(`Available strategies:`, Object.keys(passport._strategies || {}));
+      
+      // Try fallback to any available Replit strategy
+      const availableStrategies = Object.keys(passport._strategies || {});
+      const replitStrategies = availableStrategies.filter(s => s.startsWith('replitauth:'));
+      
+      if (replitStrategies.length > 0) {
+        const fallbackStrategy = replitStrategies[0];
+        console.log(`🔄 Using fallback callback strategy: ${fallbackStrategy}`);
+        return passport.authenticate(fallbackStrategy, {
+          successReturnToOrRedirect: "/profile",
+          failureRedirect: "/api/login/replit",
+        })(req, res, next);
+      } else {
+        return res.redirect("/login?error=auth_strategy_missing");
+      }
+    }
+    
+    passport.authenticate(strategyName, {
       successReturnToOrRedirect: "/profile",
       failureRedirect: "/api/login/replit",
     })(req, res, next);
@@ -500,21 +580,40 @@ export async function setupMultiAuth(app: Express) {
   });
 
   // Unified logout route
-  app.get("/api/logout", (req, res) => {
+  app.get("/api/logout", async (req, res) => {
     const user = req.user as any;
     
     req.logout(() => {
       if (user?.provider === 'replit') {
-        // Replit logout
-        res.redirect(
-          client.buildEndSessionUrl(replitConfig, {
-            client_id: process.env.REPL_ID!,
-            post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-          }).href
-        );
+        // Replit logout with dynamic config
+        getOidcConfig().then(config => {
+          res.redirect(
+            client.buildEndSessionUrl(config, {
+              client_id: process.env.REPL_ID!,
+              post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+            }).href
+          );
+        }).catch(error => {
+          console.error('Error getting OIDC config for logout:', error);
+          res.redirect("/");
+        });
       } else {
         // Google/Facebook logout - just redirect to home
         res.redirect("/");
+      }
+    });
+  });
+
+  // Debug route to check registered strategies (temporary)
+  app.get("/api/debug/strategies", (req, res) => {
+    const strategies = passport._strategies ? Object.keys(passport._strategies) : [];
+    res.json({ 
+      strategies,
+      replitDomains: process.env.REPLIT_DOMAINS?.split(",") || [],
+      hostname: req.hostname,
+      headers: {
+        host: req.headers.host,
+        'x-forwarded-host': req.headers['x-forwarded-host']
       }
     });
   });
