@@ -410,12 +410,47 @@ export default function ProductSearch() {
     queryKey: [searchUrl]
   });
 
-  // Controlled React Query - only execute once per search request
+  // State to store live API results directly
+  const [liveSearchResults, setLiveSearchResults] = useState<any[]>([]);
+  
+  // Fetch API interception to capture responses directly
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    
+    window.fetch = async (...args) => {
+      const response = await originalFetch(...args);
+      
+      // Intercept search API responses
+      if (typeof args[0] === 'string' && args[0].includes('/api/search')) {
+        console.log('🎯 Intercepting API response for:', args[0]);
+        
+        try {
+          const clonedResponse = response.clone();
+          const data = await clonedResponse.json();
+          
+          if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+            console.log('🚀 Fetch Interception: Captured', data.data.length, 'products');
+            setLiveSearchResults(data.data);
+          }
+        } catch (error) {
+          console.error('Error intercepting response:', error);
+        }
+      }
+      
+      return response;
+    };
+    
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, []);
+
+  // React Query with proper cache key handling
   const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: ['product-search', activeSearch, category],
-    enabled: !!activeSearch && activeSearch.length > 2,
-    staleTime: 60000, // Cache for 1 minute
-    gcTime: 300000, // Keep in cache for 5 minutes
+    queryKey: ['product-search', debouncedQuery, category],
+    enabled: !!debouncedQuery && debouncedQuery.length > 2,
+    staleTime: 60000,
+    gcTime: 300000,
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -438,6 +473,11 @@ export default function ProductSearch() {
     },
     onSuccess: (data) => {
       console.log('🎉 React Query: onSuccess called with', data?.data?.length || 0, 'products');
+      // Immediately update live results when React Query succeeds
+      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+        console.log('🚀 React Query: Immediately updating live results with', data.data.length, 'products');
+        setLiveSearchResults(data.data);
+      }
     },
     onError: (error) => {
       console.error('❌ React Query: onError called with:', error);
@@ -472,18 +512,24 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Simple display logic - use React Query results or cached products
+  // Get display products - prioritize live results from API interception
   const displayProducts = useMemo(() => {
-    // Priority 1: Use React Query search results when available
-    if (searchResults && searchResults.data && Array.isArray(searchResults.data) && searchResults.data.length > 0) {
-      console.log('✅ Using React Query results with', searchResults.data.length, 'products');
-      return searchResults.data;
+    // Priority 1: Use intercepted live API results if available
+    if (liveSearchResults && liveSearchResults.length > 0) {
+      console.log('✅ Using intercepted live results with', liveSearchResults.length, 'products');
+      return liveSearchResults;
     }
     
-    // Priority 2: Show cached products for initial display
+    // Priority 2: If we have search results from React Query, use them
+    if (searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0) {
+      console.log('Using React Query results with', (searchResults as any).data.length, 'items');
+      return (searchResults as any).data;
+    }
+    
+    // Priority 3: Show cached products for immediate display
     console.log('Using cached products with', cachedProducts.length, 'items');
     return cachedProducts;
-  }, [searchResults, cachedProducts]);
+  }, [liveSearchResults, searchResults, cachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
