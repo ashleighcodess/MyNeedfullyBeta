@@ -78,21 +78,23 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       ? wishlist.storyImages.slice(1, -1).split(',').map(img => img.trim().replace(/"/g, ''))
       : [];
 
-  // Simple preload for first image only - minimal overhead, maximum speed
+  // Aggressive immediate preload for story thumbnails
   useEffect(() => {
     if (storyImages.length > 0) {
       const firstImage = storyImages[0];
       
-      // Only preload the first image that will be visible
-      const img = new Image();
-      img.src = firstImage;
-      
-      // Single preload link for the card thumbnail
+      // Immediate priority preload
       const link = document.createElement('link');
       link.rel = 'preload';
       link.href = firstImage;
       link.as = 'image';
-      document.head.appendChild(link);
+      link.setAttribute('importance', 'high');
+      document.head.insertBefore(link, document.head.firstChild);
+      
+      // Force immediate browser fetch
+      const img = new Image();
+      img.decoding = 'sync';
+      img.src = firstImage;
       
       return () => {
         const existingLink = document.querySelector(`link[rel="preload"][href="${firstImage}"]`);
@@ -113,6 +115,8 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
             alt={wishlist.title}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             loading="eager"
+            decoding="sync"
+            style={{ willChange: 'auto' }}
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
