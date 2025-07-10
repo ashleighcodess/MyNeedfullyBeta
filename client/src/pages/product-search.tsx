@@ -400,7 +400,10 @@ export default function ProductSearch() {
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [searchUrl],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
-    staleTime: 0, // No caching - always fresh data
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to avoid rate limiting
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    retry: false, // Disable retries to prevent API spam
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
     placeholderData: () => {
       // Return cached popular products instantly while fetching fresh data  
       const cached = getCachedProducts(debouncedQuery);
@@ -415,6 +418,11 @@ export default function ProductSearch() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Search API error:', response.status, errorData);
+        
+        // If rate limited, wait before retrying
+        if (response.status === 429) {
+          throw new Error(errorData.error || 'Too many requests, please wait');
+        }
         throw new Error(errorData.error || 'Search failed');
       }
       const data = await response.json();
@@ -425,8 +433,9 @@ export default function ProductSearch() {
 
   // Update total results when search results change
   useEffect(() => {
-    if (searchResults?.data) {
-      setTotalResults(searchResults.data.length);
+    const results = Array.isArray(searchResults) ? searchResults : (searchResults?.data || []);
+    if (results.length > 0) {
+      setTotalResults(results.length);
     }
   }, [searchResults]);
 
@@ -463,9 +472,10 @@ export default function ProductSearch() {
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       // The API returns { data: [...] } format
       console.log('API response structure:', Object.keys(searchResults || {}));
-      console.log('Full searchResults:', searchResults);
+      console.log('Full searchResults:', JSON.stringify(searchResults).substring(0, 200));
       
-      const results = searchResults?.data || searchResults?.search_results || searchResults || [];
+      // The API returns an array directly, not wrapped in { data: [...] }
+      const results = Array.isArray(searchResults) ? searchResults : (searchResults?.data || searchResults?.search_results || []);
       console.log('Extracted results:', results.length, 'items');
       
       if (results.length > 0) {
