@@ -146,15 +146,11 @@ export default function BrowseWishlists() {
                 </Button>
               </Card>
             ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-                  {wishlistsData?.wishlists.map((wishlist: any) => (
-                    <WishlistCard key={wishlist.id} wishlist={wishlist} />
-                  ))}
-                </div>
-
-
-              </>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                {wishlistsData?.wishlists.map((wishlist: any) => (
+                  <WishlistCard key={wishlist.id} wishlist={wishlist} />
+                ))}
+              </div>
             )}
           </div>
         </div>
