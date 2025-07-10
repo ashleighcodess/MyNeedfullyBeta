@@ -117,7 +117,7 @@ export default function MobileNavigation() {
                         Dashboard
                       </DropdownMenuItem>
                     </Link>
-                    <Link href="/profile">
+                    <Link href="/quick-actions">
                       <DropdownMenuItem className="cursor-pointer">
                         <Zap className="mr-2 h-4 w-4" />
                         Quick Actions
@@ -270,13 +270,13 @@ export default function MobileNavigation() {
                       <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
                     <DropdownMenuSeparator />
-                    <Link href="/profile">
+                    <Link href="/quick-actions">
                       <DropdownMenuItem className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
                       </DropdownMenuItem>
                     </Link>
-                    <Link href="/profile">
+                    <Link href="/quick-actions">
                       <DropdownMenuItem className="cursor-pointer">
                         <Zap className="mr-2 h-4 w-4" />
                         Quick Actions
