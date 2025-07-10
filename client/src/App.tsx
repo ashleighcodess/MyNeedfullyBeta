@@ -174,10 +174,10 @@ function Router() {
                 <Route path="/impact" component={CommunityImpact} />
                 
                 {/* Home route - show Landing for unauthenticated, Home for authenticated */}
-                <Route path="/" component={isAuthenticated ? Home : Landing} />
+                <Route path="/" component={() => isAuthenticated ? <Home /> : <Landing />} />
                 
                 {/* Dashboard route for authenticated users */}
-                <Route path="/dashboard" component={isAuthenticated ? QuickActions : Landing} />
+                <Route path="/dashboard" component={() => isAuthenticated ? <QuickActions /> : <Landing />} />
                 
                 <Route component={NotFound} />
               </Switch>
