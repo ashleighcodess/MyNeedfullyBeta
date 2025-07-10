@@ -375,14 +375,16 @@ export default function ProductSearch() {
   // Build query URL with parameters
   const buildSearchUrl = useCallback(() => {
     const params = new URLSearchParams();
-    if (debouncedQuery) params.append('query', debouncedQuery);
+    // Use activeSearch if it's set (from category clicks), otherwise use debouncedQuery
+    const queryToUse = activeSearch || debouncedQuery;
+    if (queryToUse) params.append('query', queryToUse);
     if (category && category !== 'all') params.append('category', category);
     if (minPrice) params.append('min_price', minPrice);
     if (maxPrice) params.append('max_price', maxPrice);
     if (page && page !== 1) params.append('page', page.toString());
     
     return `/api/search?${params.toString()}`;
-  }, [debouncedQuery, category, minPrice, maxPrice, page]);
+  }, [debouncedQuery, category, minPrice, maxPrice, page, activeSearch]);
 
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
@@ -399,7 +401,7 @@ export default function ProductSearch() {
   
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [searchUrl],
-    enabled: !!debouncedQuery && debouncedQuery.length > 2,
+    enabled: (!!debouncedQuery && debouncedQuery.length > 2) || (!!activeSearch && activeSearch.length > 2),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes to avoid rate limiting
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
     retry: false, // Disable retries to prevent API spam
@@ -469,31 +471,24 @@ export default function ProductSearch() {
     });
     
     // Priority 1: If we have search results from live API, use them (they have real images)
-    if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
-      // The API returns { data: [...] } format
-      console.log('API response structure:', Object.keys(searchResults || {}));
-      console.log('Full searchResults:', JSON.stringify(searchResults).substring(0, 200));
+    if (searchResults?.data && Array.isArray(searchResults.data)) {
+      console.log('API response has data array with', searchResults.data.length, 'items');
       
-      // The API returns an array directly, not wrapped in { data: [...] }
-      const results = Array.isArray(searchResults) ? searchResults : (searchResults?.data || searchResults?.search_results || []);
-      console.log('Extracted results:', results.length, 'items');
+      const targetProducts = searchResults.data.filter((p: any) => p.retailer === 'target');
+      const walmartProducts = searchResults.data.filter((p: any) => p.retailer === 'walmart');
+      const amazonProducts = searchResults.data.filter((p: any) => p.retailer === 'amazon');
+      console.log(`Live API results: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
       
-      if (results.length > 0) {
-        const targetProducts = results.filter((p: any) => p.retailer === 'target');
-        const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
-        const amazonProducts = results.filter((p: any) => p.retailer === 'amazon');
-        console.log(`Live API results: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
-        return results;
-      }
+      return searchResults.data;
     }
     
     // Priority 2: Show cached "Basic Essentials" when no search has been performed
-    if (!debouncedQuery || (!searchResults && activeSearch === "Basic Essentials")) {
+    if ((!debouncedQuery && !activeSearch) || (!searchResults && activeSearch === "Basic Essentials")) {
       return cachedProducts["Basic Essentials"] || [];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, cachedProducts]);
+  }, [debouncedQuery, searchResults, cachedProducts, activeSearch]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -830,12 +825,20 @@ export default function ProductSearch() {
         {/* Search Results */}
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
           <div>
-            {console.log('Showing results section:', { activeSearch, debouncedQuery, displayProductsLength: displayProducts.length })}
+            {console.log('Showing results section:', { 
+              activeSearch, 
+              debouncedQuery, 
+              displayProductsLength: displayProducts.length,
+              searchResultsExists: !!searchResults,
+              searchResultsDataExists: !!searchResults?.data,
+              searchResultsDataLength: searchResults?.data?.length || 0,
+              rawSearchResults: searchResults
+            })}
             {/* Results Header - Only show when we have actual results */}
-            {searchResults?.data && searchResults.data.length > 0 && !isLoading && (
+            {displayProducts.length > 0 && !isLoading && (
               <div className="flex items-center justify-between mb-6">
                 <div className="text-gray-600">
-                  Found {searchResults.data.length} results for "{activeSearch || debouncedQuery}"
+                  Found {totalResults || displayProducts.length} results for "{activeSearch || debouncedQuery}"
                 </div>
                 {searchResults?.pagination && (
                   <div className="text-sm text-gray-500">
