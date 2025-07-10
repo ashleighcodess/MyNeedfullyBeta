@@ -90,7 +90,7 @@ class EmailService {
           </p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile" 
+            <a href="https://myneedfully.app/profile" 
                style="background-color: #FF6B6B; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
               View My Dashboard
             </a>
@@ -156,7 +156,7 @@ class EmailService {
           </p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile" 
+            <a href="https://myneedfully.app/profile" 
                style="background-color: #FF6B6B; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
               View All Thank You Notes
             </a>
@@ -226,7 +226,7 @@ class EmailService {
           </div>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/browse" 
+            <a href="https://myneedfully.app/browse" 
                style="background-color: #FF6B6B; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px; font-weight: bold;">
               Start Exploring
             </a>
@@ -248,7 +248,7 @@ class EmailService {
       </div>
     `;
 
-    const text = `Welcome to MyNeedfully, ${userName}! You're now part of a caring community. Browse needs lists to help others, or create your own if you need support. Start exploring at ${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/browse`;
+    const text = `Welcome to MyNeedfully, ${userName}! You're now part of a caring community. Browse needs lists to help others, or create your own if you need support. Start exploring at https://myneedfully.app/browse`;
 
     return this.sendEmail({
       to: userEmail,
@@ -267,7 +267,7 @@ class EmailService {
     // Use localhost for development, production domain for production
     const baseUrl = process.env.NODE_ENV === 'development' 
       ? 'http://localhost:5000' 
-      : (process.env.REPLIT_DOMAIN || 'https://myneedfully.com');
+      : 'https://myneedfully.app';
     const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
     const subject = `Reset Your MyNeedfully Password`;
     
@@ -329,8 +329,8 @@ class EmailService {
     userName: string,
     verificationToken: string
   ): Promise<boolean> {
-    // Use same URL logic as working emails
-    const baseUrl = process.env.REPLIT_DOMAIN || 'https://myneedfully.com';
+    // Use production domain
+    const baseUrl = 'https://myneedfully.app';
     const verificationLink = `${baseUrl}/verify-email?token=${verificationToken}`;
     const subject = `Verify Your Email Address - MyNeedfully`;
     
@@ -442,7 +442,7 @@ class EmailService {
           </p>
           
           <div style="text-align: center; margin: 40px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/contact" 
+            <a href="https://myneedfully.app/contact" 
                style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 25px; display: inline-block; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); transition: all 0.3s ease;">
               Contact Support
             </a>
@@ -524,7 +524,7 @@ class EmailService {
           </p>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile/privacy" 
+            <a href="https://myneedfully.app/profile/privacy" 
                style="background-color: #856404; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
               Review Account Settings
             </a>
@@ -596,7 +596,7 @@ class EmailService {
           </p>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile#my-lists" 
+            <a href="https://myneedfully.app/profile#my-lists" 
                style="background-color: ${isApproved ? '#28a745' : '#FF6B6B'}; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
               ${isApproved ? 'View My Live List' : 'Update My List'}
             </a>
@@ -756,7 +756,7 @@ class EmailService {
           </p>
           
           <div style="text-align: center; margin: 35px 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/profile" 
+            <a href="https://myneedfully.app/profile" 
                style="background-color: #FF6B6B; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px;">
               View Your Impact Dashboard
             </a>
@@ -770,7 +770,7 @@ class EmailService {
         <div style="background-color: #333; color: white; padding: 20px; text-align: center; font-size: 14px;">
           <p style="margin: 0;">© 2025 MyNeedfully. Connecting hearts, fulfilling needs.</p>
           <p style="margin: 5px 0 0 0;">
-            <a href="${process.env.REPLIT_DOMAIN || 'https://myneedfully.com'}/settings" style="color: #FF6B6B;">Manage email preferences</a>
+            <a href="https://myneedfully.app/settings" style="color: #FF6B6B;">Manage email preferences</a>
           </p>
         </div>
       </div>
