@@ -94,8 +94,11 @@ function NotificationHandler() {
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  // Skip authentication for browse page to prevent 401 polling spam
   const [location] = useLocation();
+  const isBrowsePage = location === '/browse';
+  
+  const { isAuthenticated, isLoading } = isBrowsePage ? { isAuthenticated: false, isLoading: false } : useAuth();
   
   // WebSocket temporarily disabled for deployment stability
   // useWebSocket();

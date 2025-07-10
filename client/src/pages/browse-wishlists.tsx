@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth"; // DISABLED - causes 401 polling spam
 import { useLocation } from "wouter";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
