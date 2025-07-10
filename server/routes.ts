@@ -2921,27 +2921,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (rainforestService) {
         const amazonPromise = (async () => {
           try {
-            // First try ASIN if we have an Amazon URL
-            if (item.productUrl && isAmazonUrl(item.productUrl)) {
-              const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
-              const asin = asinMatch ? (asinMatch[1] || asinMatch[2]) : null;
-              
-              if (asin) {
-                const products = await rainforestService.searchProducts(asin);
-                if (products && products.length > 0) {
-                  const product = products[0];
-                  const amazonLink = product.link && isAmazonUrl(product.link) ? product.link : item.productUrl;
-                  return {
-                    available: true,
-                    price: product.price?.value || item.price,
-                    link: amazonLink,
-                    image: product.image || item.imageUrl || null
-                  };
-                }
-              }
-            }
-            
-            // If ASIN search didn't work, try title search
+            // Use title search for better accuracy instead of ASIN lookup
+            console.log(`💰 RainforestAPI: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
             const titleProducts = await rainforestService.searchProducts(optimizedQuery);
             if (titleProducts && titleProducts.length > 0) {
               const product = titleProducts[0];
