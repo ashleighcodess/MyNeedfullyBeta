@@ -413,9 +413,12 @@ export default function ProductSearch() {
       // Simple, direct API call without caching overhead
       const response = await fetch(searchUrl);
       if (!response.ok) {
-        throw new Error('Search failed');
+        const errorData = await response.json();
+        console.error('Search API error:', response.status, errorData);
+        throw new Error(errorData.error || 'Search failed');
       }
       const data = await response.json();
+      console.log('Search API response:', data);
       return data;
     },
   });
@@ -459,7 +462,12 @@ export default function ProductSearch() {
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       // The API returns { data: [...] } format
-      const results = searchResults?.data || [];
+      console.log('API response structure:', Object.keys(searchResults || {}));
+      console.log('Full searchResults:', searchResults);
+      
+      const results = searchResults?.data || searchResults?.search_results || searchResults || [];
+      console.log('Extracted results:', results.length, 'items');
+      
       if (results.length > 0) {
         const targetProducts = results.filter((p: any) => p.retailer === 'target');
         const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
