@@ -11,6 +11,9 @@ export function useAuth() {
   const isPublicPage = typeof window !== 'undefined' && 
     (window.location.pathname === '/' ||  // Landing page
      window.location.pathname === '/browse' || 
+     window.location.pathname === '/products' ||  // Product search
+     window.location.pathname === '/product-search' ||  // Product search
+     window.location.pathname === '/search' ||  // Product search
      window.location.pathname.startsWith('/wishlist/') ||
      window.location.pathname.startsWith('/needslist/') ||
      window.location.pathname.startsWith('/wishlists/'));
