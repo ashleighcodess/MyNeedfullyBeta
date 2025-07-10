@@ -399,10 +399,39 @@ export default function ProductSearch() {
   
   const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
-  // TEMPORARILY DISABLE LIVE SEARCH TO STOP INFINITE LOOP
-  const searchResults = null;
-  const isLoading = false;
-  const error = null;
+  // Debug the query enabling logic
+  const shouldEnableQuery = !!(debouncedQuery && debouncedQuery.length > 2 && debouncedQuery !== "Basic Essentials");
+  console.log('Query Debug:', {
+    debouncedQuery,
+    shouldEnableQuery,
+    searchUrl,
+    queryKey: [searchUrl]
+  });
+
+  const { data: searchResults, isLoading, error } = useQuery({
+    queryKey: [searchUrl],
+    enabled: shouldEnableQuery,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: false,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      console.log('Starting API call to:', searchUrl);
+      const response = await fetch(searchUrl);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Search API error:', response.status, errorData);
+        
+        if (response.status === 429) {
+          throw new Error(errorData.error || 'Too many requests, please wait');
+        }
+        throw new Error(errorData.error || 'Search failed');
+      }
+      const data = await response.json();
+      console.log('Search API response:', data);
+      return data;
+    },
+  });
 
   // Update total results when search results change
   useEffect(() => {
