@@ -749,7 +749,7 @@ export default function ProductSearch() {
 
         {/* Mobile Collapsible Categories + Desktop Always Visible */}
         <div className={`mb-4 md:mb-6 transition-all duration-300 ${showCategories || 'hidden md:block'}`}>
-          <div className="mb-3 md:mb-4">
+          <div className="mb-2 md:mb-3">
             <h3 className="text-sm md:text-lg font-semibold text-navy hidden md:block">Popular Categories</h3>
             <h3 className="text-sm font-medium text-navy md:hidden">Quick Search Categories</h3>
           </div>
