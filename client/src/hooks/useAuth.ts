@@ -7,10 +7,12 @@ export function useAuth() {
   const [isInitialized, setIsInitialized] = useState(false);
   const queryClient = useQueryClient();
   
-  // CRITICAL FIX: Disable authentication for browse page to prevent 401 spam
-  const isBrowsePage = typeof window !== 'undefined' && window.location.pathname === '/browse';
+  // CRITICAL FIX: Disable authentication for public pages to prevent 401 spam
+  const isPublicPage = typeof window !== 'undefined' && 
+    (window.location.pathname === '/browse' || 
+     window.location.pathname.startsWith('/wishlist/'));
   
-  if (isBrowsePage) {
+  if (isPublicPage) {
     return {
       user: null,
       isLoading: false,
