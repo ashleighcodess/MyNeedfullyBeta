@@ -650,7 +650,13 @@ export default function WishlistDetail() {
               <CardContent>
                 {wishlist.items && wishlist.items.length > 0 ? (
                   <div className="space-y-4">
-                    {wishlist.items.map((item: any) => (
+                    {/* Sort items: unfulfilled first, fulfilled last */}
+                    {wishlist.items
+                      .sort((a: any, b: any) => {
+                        // Unfulfilled items first (false = 0), fulfilled items last (true = 1)
+                        return (a.quantityFulfilled >= a.quantity ? 1 : 0) - (b.quantityFulfilled >= b.quantity ? 1 : 0);
+                      })
+                      .map((item: any) => (
                       <div key={item.id} className={`flex flex-col sm:flex-row bg-white rounded-lg border overflow-hidden ${
                         item.isFulfilled ? 'border-gray-300 opacity-60' : 'border-gray-200'
                       }`}>
