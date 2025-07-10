@@ -398,7 +398,7 @@ export default function ProductSearch() {
   const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
   const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: [searchUrl],
+    queryKey: ['/api/search', debouncedQuery, category, page],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
     staleTime: 0, // No caching - always fresh data
     placeholderData: () => {
@@ -416,6 +416,7 @@ export default function ProductSearch() {
         throw new Error('Search failed');
       }
       const data = await response.json();
+      console.log('✅ Search results received:', data);
       return data;
     },
   });
@@ -442,6 +443,13 @@ export default function ProductSearch() {
 
   // Get display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
+    console.log('🔍 DisplayProducts Debug:', {
+      debouncedQuery,
+      hasSearchResults: !!searchResults,
+      searchResultsData: searchResults?.data?.length || 0,
+      activeSearch,
+    });
+    
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       // Check the actual API response structure - it should be searchResults.data
@@ -457,11 +465,13 @@ export default function ProductSearch() {
     
     // Priority 2: Show cached "Basic Essentials" when no search has been performed
     if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
+      console.log('📦 Using cached Basic Essentials products');
       return popularProducts["Basic Essentials"] || [];
     }
     
+    console.log('❌ No products to display');
     return [];
-  }, [debouncedQuery, searchResults, popularProducts]);
+  }, [debouncedQuery, searchResults, popularProducts, activeSearch]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -770,6 +780,9 @@ export default function ProductSearch() {
                   setCategory(category.value);
                   setPage(1);
                   setShowCategories(false); // Hide categories on mobile after selection
+                  
+                  // Force query invalidation to trigger immediate search
+                  queryClient.invalidateQueries({ queryKey: ['/api/search'] });
                 }}
               >
                 {/* Icon with pulse animation on hover */}

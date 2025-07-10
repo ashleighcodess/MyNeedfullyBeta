@@ -1,0 +1,88 @@
+ Don’t Require Auth to Search
+In your code, the search (/api/search) has no auth check—this is correct if search should work for everyone.
+
+But your auth check (likely in your useAuth hook or AuthProvider) is still running, and it keeps calling /api/auth/user, which always returns 401, over and over.
+
+2. How to Prevent Infinite Auth Requests
+What you want:
+
+When the user is not logged in, your app should make ONE request to /api/auth/user, see it’s 401, and then just set isAuthenticated to false and stop.
+
+It should NOT keep retrying, polling, or remounting on every 401.
+
+Here’s how to do it:
+A. Check your useAuth or AuthProvider logic
+Make sure you do not keep requesting /api/auth/user after it returns 401.
+
+Example pattern (React Context or custom hook):
+
+js
+Copy
+Edit
+// Inside your useAuth or AuthProvider
+const [authChecked, setAuthChecked] = useState(false);
+
+useEffect(() => {
+  fetch('/api/auth/user', { credentials: 'include' })
+    .then(res => {
+      if (res.status === 401) {
+        setIsAuthenticated(false);
+        setUser(null);
+      } else {
+        return res.json();
+      }
+    })
+    .then(data => {
+      if (data) {
+        setIsAuthenticated(true);
+        setUser(data);
+      }
+      setAuthChecked(true); // Only set this ONCE
+    })
+    .catch(() => {
+      setIsAuthenticated(false);
+      setUser(null);
+      setAuthChecked(true);
+    });
+}, []); // Only run ONCE on mount!
+Key points:
+
+Runs ONCE on mount.
+
+Does NOT poll or retry if 401.
+
+If 401, just sets state and stops.
+
+The rest of the app can now use isAuthenticated and user, or ignore them for guests.
+
+B. If you are polling or have an interval anywhere, STOP IT.
+Don’t have any setInterval, react-query with refetchInterval, or window.location.reload or similar based on failed auth.
+
+Only check once at page load, unless the user takes an action that should update auth state (e.g. logs in/out).
+
+C. If you’re using React Query for auth, disable refetching/polling
+js
+Copy
+Edit
+const { data: user, isError } = useQuery({
+  queryKey: ['/api/auth/user'],
+  queryFn: () => fetch('/api/auth/user').then(r => {
+    if (!r.ok) throw new Error('Not authenticated');
+    return r.json();
+  }),
+  retry: false,         // don't retry if 401
+  refetchOnWindowFocus: false,
+  refetchInterval: false,
+});
+This ensures a single call unless you explicitly refetch.
+
+3. Summary of What To Fix
+Do NOT retry/fetch /api/auth/user if you already know the user isn’t logged in.
+
+Do NOT run the auth check on every render or every API response.
+
+Only check once on mount (or on user action like login/logout).
+
+If you get 401, just update state and stop.
+
+Let guest users use search and all public features with no auth check interfering!

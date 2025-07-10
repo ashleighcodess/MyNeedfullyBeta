@@ -99,13 +99,8 @@ function Router() {
   // WebSocket temporarily disabled for deployment stability
   // useWebSocket();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
-      </div>
-    );
-  }
+  // Don't block the entire app for auth loading - most features work without auth
+  // Individual components can handle their own auth requirements
 
   return (
     <div className="min-h-screen flex flex-col">
