@@ -153,18 +153,16 @@ export default function ProductSearch() {
     addToWishlistMutation.mutate(product);
   };
 
-  // Cached products - real product search will provide actual images from APIs
+  // Lightweight cached products - only essential items to speed up loading
   const popularProducts = useMemo(() => ({
     "Basic Essentials": [
-      // Amazon Products - placeholder images to be replaced with exact URLs
+      // Just 4 essential products to reduce loading time
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
         image: pampersWipesImage,
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
-        ratings_total: 29853,
-        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20",
         retailer: "amazon"
       },
       {
@@ -173,18 +171,6 @@ export default function ProductSearch() {
         image: charminToiletPaperImage,
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
-        ratings_total: 47832,
-        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        asin: "B0949V7VRH",
-        title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
-        image: pampersDiapersImage,
-        price: { value: 28.94, currency: "USD" },
-        rating: 4.5,
-        ratings_total: 15234,
-        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20",
         retailer: "amazon"
       },
       {
@@ -193,113 +179,17 @@ export default function ProductSearch() {
         image: tideDetergentImage,
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
-        ratings_total: 18745,
-        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
         retailer: "amazon"
       },
-      {
-        asin: "B08BYND8YN",
-        title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: bountyPaperTowelsImage,
-        price: { value: 19.49, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 32156,
-        link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
-        retailer: "amazon"
-      },
-      // Walmart Products - placeholder images to be replaced with exact URLs
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
         image: walmartToiletPaperImage,
         price: "$11.98",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
-        product_id: "10315001",
-        retailer: "walmart",
-        retailer_name: "Walmart"
+        retailer: "walmart"
       }
     ],
-    "baby wipes": [
-      {
-        asin: "B08TMLHWTD",
-        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs, 672 Total Wipes",
-        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
-        price: { value: 18.97, currency: "USD" },
-        rating: 4.7,
-        ratings_total: 29853,
-        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20"
-      },
-      {
-        asin: "B07GDQX4YS",
-        title: "Huggies Natural Care Sensitive Baby Wipes, Unscented, 8 Flip-Top Packs (448 Wipes Total)",
-        image: "https://m.media-amazon.com/images/I/81nqYmT7DgL._SL1500_.jpg",
-        price: { value: 15.84, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 18739,
-        link: "https://www.amazon.com/dp/B07GDQX4YS?tag=needfully-20"
-      }
-    ],
-    "toilet paper": [
-      {
-        asin: "B073V1T37H",
-        title: "Charmin Ultra Soft Cushiony Touch Toilet Paper, 18 Family Mega Rolls = 90 Regular Rolls",
-        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
-        price: { value: 23.94, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 47832,
-        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20"
-      },
-      {
-        asin: "B071Z8XBHY",
-        title: "Cottonelle Ultra ComfortCare Toilet Paper, 24 Family Mega Rolls = 108 Regular Rolls",
-        image: "https://m.media-amazon.com/images/I/81fH4-yKUJL._SL1500_.jpg",
-        price: { value: 21.48, currency: "USD" },
-        rating: 4.5,
-        ratings_total: 32156,
-        link: "https://www.amazon.com/dp/B071Z8XBHY?tag=needfully-20"
-      }
-    ],
-    "sleeping bag": [
-      {
-        asin: "B08F3MGC9Q",
-        title: "Coleman Brazos Cold Weather Sleeping Bag, 20°F Comfort Rating",
-        image: "https://m.media-amazon.com/images/I/71xDqNzLfqL._SL1500_.jpg",
-        price: { value: 34.99, currency: "USD" },
-        rating: 4.3,
-        ratings_total: 8945,
-        link: "https://www.amazon.com/dp/B08F3MGC9Q?tag=needfully-20"
-      },
-      {
-        asin: "B00363RGHQ",
-        title: "TETON Sports Celsius Regular Sleeping Bag; Great for Family Camping",
-        image: "https://m.media-amazon.com/images/I/81rRVLPkL6L._SL1500_.jpg",
-        price: { value: 45.99, currency: "USD" },
-        rating: 4.4,
-        ratings_total: 5672,
-        link: "https://www.amazon.com/dp/B00363RGHQ?tag=needfully-20"
-      }
-    ],
-    "diapers": [
-      {
-        asin: "B0949V7VRH",
-        title: "Pampers Baby Dry Night Overnight Diapers, Size 3, 172 Count",
-        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
-        price: { value: 28.94, currency: "USD" },
-        rating: 4.5,
-        ratings_total: 15234,
-        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20"
-      }
-    ],
-    "blanket": [
-      {
-        asin: "B07H9T8VTQ",
-        title: "Utopia Bedding Fleece Blanket Queen Size Grey - Lightweight Bed Blanket",
-        image: "https://m.media-amazon.com/images/I/71XGJfF6fDL._SL1500_.jpg",
-        price: { value: 12.99, currency: "USD" },
-        rating: 4.4,
-        ratings_total: 89567,
-        link: "https://www.amazon.com/dp/B07H9T8VTQ?tag=needfully-20"
-      }
-    ]
+
   }), []);
 
 
