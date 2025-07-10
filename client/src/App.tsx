@@ -93,9 +93,19 @@ function NotificationHandler() {
   return null;
 }
 
+// Component for home route logic
+function HomeRoute() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Home /> : <Landing />;
+}
+
+// Component for dashboard route logic
+function DashboardRoute() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <QuickActions /> : <Landing />;
+}
+
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-  
   // WebSocket temporarily disabled for deployment stability
   // useWebSocket();
 
@@ -174,10 +184,10 @@ function Router() {
                 <Route path="/impact" component={CommunityImpact} />
                 
                 {/* Home route - show Landing for unauthenticated, Home for authenticated */}
-                <Route path="/" component={() => isAuthenticated ? <Home /> : <Landing />} />
+                <Route path="/" component={HomeRoute} />
                 
                 {/* Dashboard route for authenticated users */}
-                <Route path="/dashboard" component={() => isAuthenticated ? <QuickActions /> : <Landing />} />
+                <Route path="/dashboard" component={DashboardRoute} />
                 
                 <Route component={NotFound} />
               </Switch>
