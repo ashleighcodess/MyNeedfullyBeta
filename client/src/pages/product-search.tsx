@@ -757,7 +757,7 @@ export default function ProductSearch() {
             {PRODUCT_CATEGORIES.slice(0, 6).map((category, index) => (
               <div
                 key={category.value}
-                className="group relative p-3 md:p-4 border-2 border-gray-200 rounded-xl hover:border-coral/60 hover:shadow-lg transition-all duration-300 cursor-pointer text-center bg-white hover:bg-coral/5 active:scale-95 transform hover:scale-105"
+                className="group relative p-3 md:p-4 border-2 border-gray-200 rounded-xl hover:border-coral/60 hover:shadow-lg transition-all duration-300 cursor-pointer text-center bg-white hover:bg-coral/5 active:scale-95 transform hover:scale-105 flex flex-col items-center justify-center min-h-[80px] md:min-h-[100px]"
                 style={{
                   animation: `category-bounce 0.6s ease-out ${index * 0.1}s both`
                 }}
@@ -772,7 +772,7 @@ export default function ProductSearch() {
                 }}
               >
                 {/* Icon with pulse animation on hover */}
-                <div className="relative mb-1 md:mb-2">
+                <div className="relative mb-1.5 md:mb-2 flex items-center justify-center">
                   <div className="absolute inset-0 bg-coral/20 rounded-full transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                   <CategoryIcon 
                     iconName={category.icon}
