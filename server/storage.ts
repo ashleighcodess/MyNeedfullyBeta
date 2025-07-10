@@ -420,12 +420,40 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateWishlist(id: number, updates: Partial<Wishlist>): Promise<Wishlist> {
-    const [wishlist] = await db
-      .update(wishlists)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(wishlists.id, id))
-      .returning();
-    return wishlist;
+    console.log('💾 Storage updateWishlist called:', { id, updates });
+    
+    try {
+      // Handle PostgreSQL array fields properly
+      const updateData: any = { ...updates, updatedAt: new Date() };
+      
+      // Convert storyImages array to PostgreSQL array format if present
+      if (updates.storyImages !== undefined) {
+        if (Array.isArray(updates.storyImages)) {
+          updateData.storyImages = updates.storyImages;
+          console.log('📸 Story images array processed:', updateData.storyImages);
+        } else {
+          updateData.storyImages = [];
+          console.log('📸 Story images set to empty array');
+        }
+      }
+      
+      const [wishlist] = await db
+        .update(wishlists)
+        .set(updateData)
+        .where(eq(wishlists.id, id))
+        .returning();
+      
+      if (!wishlist) {
+        console.error('❌ No wishlist returned from update');
+        throw new Error('Wishlist not found or update failed');
+      }
+      
+      console.log('✅ Wishlist updated successfully:', { id: wishlist.id, title: wishlist.title });
+      return wishlist;
+    } catch (error) {
+      console.error('❌ Storage updateWishlist error:', error);
+      throw error;
+    }
   }
 
   async deleteWishlist(id: number): Promise<void> {

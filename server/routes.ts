@@ -1820,16 +1820,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/wishlists/:id', isAuthenticated, uploadLimiter, upload.array('storyImages', 5), async (req: any, res) => {
     try {
+      console.log('🔄 PUT /api/wishlists/:id endpoint hit');
       const wishlistId = parseInt(req.params.id);
       const userId = req.user.profile?.id || req.user.claims?.sub;
+      console.log('📝 Updating wishlist:', { wishlistId, userId });
+      console.log('📋 Request body:', req.body);
+      console.log('📎 Files:', req.files?.length || 0);
       
       // Verify user owns the wishlist
       const existingWishlist = await storage.getWishlist(wishlistId);
       if (!existingWishlist || existingWishlist.userId.toString() !== userId.toString()) {
+        console.log('❌ Forbidden: User does not own wishlist');
         return res.status(403).json({ message: "Forbidden" });
       }
       
-      // Parse form data
+      // Parse form data safely
+      let shippingAddress = {};
+      try {
+        shippingAddress = JSON.parse(req.body.shippingAddress || '{}');
+      } catch (error) {
+        console.log('⚠️ Warning: Could not parse shipping address, using empty object');
+      }
+      
       const updateData: any = {
         title: req.body.title,
         description: req.body.description,
@@ -1837,38 +1849,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
         location: req.body.location,
         urgencyLevel: req.body.urgencyLevel,
         category: req.body.category,
-        shippingAddress: JSON.parse(req.body.shippingAddress || '{}'),
+        shippingAddress,
       };
       
       // Handle story images
       let storyImages = [];
       
       // Keep existing images that weren't removed
-      const existingImages = JSON.parse(req.body.existingImages || '[]');
-      storyImages.push(...existingImages);
+      try {
+        const existingImages = JSON.parse(req.body.existingImages || '[]');
+        storyImages.push(...existingImages);
+        console.log('📸 Existing images:', existingImages);
+      } catch (error) {
+        console.log('⚠️ Warning: Could not parse existing images, starting with empty array');
+      }
       
       // Add new uploaded images
       if (req.files && req.files.length > 0) {
         const newImagePaths = req.files.map((file: any) => `/uploads/${file.filename}`);
         storyImages.push(...newImagePaths);
+        console.log('📸 New uploaded images:', newImagePaths);
       }
       
       // Limit to 5 images total
       if (storyImages.length > 5) {
         storyImages = storyImages.slice(0, 5);
+        console.log('📸 Limited to 5 images:', storyImages);
       }
       
       updateData.storyImages = storyImages;
       
+      console.log('💾 Final update data:', updateData);
       const updatedWishlist = await storage.updateWishlist(wishlistId, updateData);
+      console.log('✅ Successfully updated wishlist');
       
       res.json(updatedWishlist);
     } catch (error) {
-      console.error("Error updating wishlist:", error);
+      console.error("❌ CRITICAL ERROR updating wishlist:", error);
+      console.error("❌ Error name:", error?.name);
+      console.error("❌ Error message:", error?.message);
+      console.error("❌ Error stack:", error?.stack);
+      console.error("❌ Request body:", req.body);
+      console.error("❌ User ID:", userId);
+      console.error("❌ Wishlist ID:", wishlistId);
+      
       if (error instanceof z.ZodError) {
+        console.error("❌ Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid data", errors: error.errors });
       }
-      res.status(500).json({ message: "Failed to update wishlist" });
+      
+      res.status(500).json({ 
+        message: "Failed to update wishlist",
+        error: error instanceof Error ? error.message : 'Unknown error',
+        errorDetails: {
+          name: error?.name,
+          message: error?.message,
+          wishlistId,
+          userId
+        }
+      });
     }
   });
 
