@@ -102,7 +102,7 @@ function HomeRoute() {
 // Component for dashboard route logic
 function DashboardRoute() {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <QuickActions /> : <Landing />;
+  return isAuthenticated ? <Profile /> : <Landing />;
 }
 
 function Router() {
