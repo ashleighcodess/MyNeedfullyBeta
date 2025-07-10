@@ -306,7 +306,7 @@ export async function setupMultiAuth(app: Express) {
     console.log(`🔍 Callback attempt - req.hostname: ${req.hostname}, using strategy: replitauth:${strategyDomain}`);
     
     passport.authenticate(`replitauth:${strategyDomain}`, {
-      successReturnToOrRedirect: "/",
+      successReturnToOrRedirect: "/profile",
       failureRedirect: "/api/login/replit",
     })(req, res, next);
   });
@@ -375,7 +375,7 @@ export async function setupMultiAuth(app: Express) {
           console.log('Authenticated?', req.isAuthenticated());
           
           // Redirect to dashboard
-          res.redirect("/dashboard");
+          res.redirect("/profile");
         });
       })(req, res, next);
     });
