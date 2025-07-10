@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import SearchFilters from "@/components/search-filters";
@@ -22,23 +21,41 @@ export default function BrowseWishlists() {
   });
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Direct useState approach for data fetching
+  const [wishlistsData, setWishlistsData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const { data: wishlistsData, isLoading, error } = useQuery({
-    queryKey: ['/api/wishlists'],
-    queryFn: async () => {
-      console.log('Fetching wishlists...');
-      const response = await fetch('/api/wishlists');
-      if (!response.ok) throw new Error('Failed to fetch wishlists');
-      const data = await response.json();
-      console.log('Wishlists data received:', data);
-      return data;
-    },
-    retry: 1,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
+  // Fetch wishlists on component mount
+  useEffect(() => {
+    const fetchWishlists = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        console.log('Fetching wishlists directly...');
+        
+        const response = await fetch('/api/wishlists');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch wishlists: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Wishlists data received directly:', data);
+        setWishlistsData(data);
+      } catch (err) {
+        console.error('Error fetching wishlists:', err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWishlists();
+  }, []);
 
   // Debug logging
-  console.log('Browse page state:', { isLoading, error, wishlistsData });
+  console.log('Browse page state (useState):', { isLoading, error, wishlistsData, hasData: !!wishlistsData });
 
   // SEO Configuration
   useSEO({
