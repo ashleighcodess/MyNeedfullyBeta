@@ -3156,6 +3156,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test email endpoint (temporary for debugging)
+  app.post('/api/test-email', async (req, res) => {
+    try {
+      const { email } = req.body;
+      console.log(`🧪 Testing direct email delivery to: ${email || 'roguegirl@icloud.com'}`);
+      
+      const testEmail = email || 'roguegirl@icloud.com';
+      const emailSent = await emailService.sendEmail({
+        to: testEmail,
+        from: 'data@myneedfully.app',
+        subject: 'MyNeedfully - Email Delivery Test',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #FF6B6B;">Email Delivery Test</h2>
+            <p>This is a test email to verify that SendGrid is working correctly.</p>
+            <p>If you receive this email, the delivery system is functioning properly.</p>
+            <p>Sent at: ${new Date().toISOString()}</p>
+          </div>
+        `,
+        text: 'This is a test email to verify SendGrid delivery. Sent at: ' + new Date().toISOString()
+      });
+      
+      if (emailSent) {
+        console.log('✅ Test email sent successfully');
+        res.json({ success: true, message: 'Test email sent successfully' });
+      } else {
+        console.log('❌ Test email failed to send');
+        res.status(500).json({ success: false, message: 'Test email failed to send' });
+      }
+    } catch (error) {
+      console.error('Test email error:', error);
+      res.status(500).json({ success: false, message: 'Test email error', error: error.message });
+    }
+  });
+
   // Email verification resend endpoint
   app.post('/api/auth/resend-verification', isAuthenticated, async (req: any, res) => {
     try {
