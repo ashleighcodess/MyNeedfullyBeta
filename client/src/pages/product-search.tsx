@@ -367,6 +367,150 @@ export default function ProductSearch() {
         rating: 4.5,
         retailer: "amazon",
         retailer_name: "Amazon"
+      },
+      {
+        asin: "B08KTXNZQH",
+        title: "Apple iPad (9th Generation): 64GB Wi-Fi",
+        image: "https://m.media-amazon.com/images/I/61NGnpjoTDL._AC_SL1500_.jpg",
+        price: { value: 329.99, currency: "USD" },
+        rating: 4.8,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07W6JD39X",
+        title: "JBL Flip 5 Waterproof Portable Bluetooth Speaker",
+        image: "https://m.media-amazon.com/images/I/81fRODO5jjL._AC_SL1500_.jpg",
+        price: { value: 89.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B087CRSXMZ",
+        title: "Samsung Galaxy Buds Live True Wireless Earbuds",
+        image: "https://m.media-amazon.com/images/I/61EkNtOWcgL._AC_SL1500_.jpg",
+        price: { value: 169.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08B3XNTFK",
+        title: "Roku Streaming Stick 4K+ with Voice Remote Pro",
+        image: "https://m.media-amazon.com/images/I/71GXeVB35CL._AC_SL1500_.jpg",
+        price: { value: 59.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07HZLHPKP",
+        title: "Anker Wireless Charger, PowerWave 10 Stand",
+        image: "https://m.media-amazon.com/images/I/611kR8KWwZL._AC_SL1500_.jpg",
+        price: { value: 25.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B09HXGVX74",
+        title: "Logitech MX Master 3S Wireless Mouse",
+        image: "https://m.media-amazon.com/images/I/61ni3t1ryqL._AC_SL1500_.jpg",
+        price: { value: 99.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B09B8RXYYG",
+        title: "ASUS VivoBook 15 Laptop, 15.6 FHD Display",
+        image: "https://m.media-amazon.com/images/I/81fstJkUlaL._AC_SL1500_.jpg",
+        price: { value: 459.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07QP8VK41",
+        title: "Ring Video Doorbell Wired",
+        image: "https://m.media-amazon.com/images/I/61jxJCHhkdL._AC_SL1000_.jpg",
+        price: { value: 59.99, currency: "USD" },
+        rating: 4.1,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B087DFZQXH",
+        title: "Fitbit Versa 3 Health & Fitness Smartwatch",
+        image: "https://m.media-amazon.com/images/I/61HoiwRHBUL._AC_SL1500_.jpg",
+        price: { value: 199.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08GGGM3VJ",
+        title: "HP DeskJet 3755 Compact All-in-One Wireless Printer",
+        image: "https://m.media-amazon.com/images/I/61lE+E4XJUL._AC_SL1500_.jpg",
+        price: { value: 79.99, currency: "USD" },
+        rating: 4.0,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08X6HL4D2",
+        title: "SanDisk 128GB Ultra MicroSDXC UHS-I Memory Card",
+        image: "https://m.media-amazon.com/images/I/61+BLGV+OuL._AC_SL1500_.jpg",
+        price: { value: 19.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07G2JVYRD",
+        title: "Govee Smart WiFi LED Strip Lights, 16.4ft",
+        image: "https://m.media-amazon.com/images/I/71UepVJmgJL._AC_SL1500_.jpg",
+        price: { value: 19.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08XXBG4NP",
+        title: "Kindle Paperwhite (11th Generation)",
+        image: "https://m.media-amazon.com/images/I/71YuL8X4D9L._AC_SL1500_.jpg",
+        price: { value: 139.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08F7PTF53",
+        title: "Nintendo Switch Console with Neon Blue and Neon Red Joy‑Con",
+        image: "https://m.media-amazon.com/images/I/61-PblYntsL._AC_SL1500_.jpg",
+        price: { value: 299.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08ZJL4XKK",
+        title: "Bose QuietComfort 45 Wireless Bluetooth Noise Cancelling Headphones",
+        image: "https://m.media-amazon.com/images/I/51AddVCd5HL._AC_SL1500_.jpg",
+        price: { value: 329.00, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B09V3HN1KC",
+        title: "Meta Quest 2 Advanced All-In-One Virtual Reality Headset",
+        image: "https://m.media-amazon.com/images/I/615YaAiA-ML._AC_SL1500_.jpg",
+        price: { value: 399.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
       }
     ],
     "Household": [
@@ -423,6 +567,132 @@ export default function ProductSearch() {
         rating: 4.1,
         retailer: "amazon",
         retailer_name: "Amazon"
+      },
+      {
+        asin: "B08X6Y1KMQ",
+        title: "Keurig K-Mini Coffee Maker, Single Serve K-Cup Pod Coffee Brewer",
+        image: "https://m.media-amazon.com/images/I/61FgMJxdmHL._AC_SL1500_.jpg",
+        price: { value: 79.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B01E6AO69U",
+        title: "Instant Pot Duo 7-in-1 Electric Pressure Cooker, 6 Quart",
+        image: "https://m.media-amazon.com/images/I/71VWBJpDN4L._AC_SL1500_.jpg",
+        price: { value: 89.95, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08GKLQZXC",
+        title: "Cuisinart DFP-14BCNY 14-Cup Food Processor",
+        image: "https://m.media-amazon.com/images/I/81K3D5GFr1L._AC_SL1500_.jpg",
+        price: { value: 199.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07Q3S5G8Z",
+        title: "Hamilton Beach Electric Tea Kettle, Water Boiler & Heater, Cordless",
+        image: "https://m.media-amazon.com/images/I/71uMOVYyhlL._AC_SL1500_.jpg",
+        price: { value: 39.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B086LGDHPQ",
+        title: "KitchenAid Stand Mixer tilt-head, 4.5 quart, Aqua Sky",
+        image: "https://m.media-amazon.com/images/I/81aKAdYHZxL._AC_SL1500_.jpg",
+        price: { value: 299.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07QP8VK41",
+        title: "Honeywell Home RTH9585WF1004 Wi-Fi Smart Color Thermostat",
+        image: "https://m.media-amazon.com/images/I/71gGnCcHqKL._AC_SL1500_.jpg",
+        price: { value: 199.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07RTTDQZM",
+        title: "Eureka Groove Electric Can Opener, Extra Tall, Black",
+        image: "https://m.media-amazon.com/images/I/61Y8lrb52PL._AC_SL1500_.jpg",
+        price: { value: 15.99, currency: "USD" },
+        rating: 4.1,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07TJR3K1T",
+        title: "Rubbermaid Reveal Spray Mop for Floor Cleaning",
+        image: "https://m.media-amazon.com/images/I/71lW8zLa46L._AC_SL1500_.jpg",
+        price: { value: 34.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08BCRQTHL",
+        title: "Simplehuman 45 Liter / 12 Gallon Stainless Steel Butterfly Step Trash Can",
+        image: "https://m.media-amazon.com/images/I/61pPEh+6-yL._AC_SL1500_.jpg",
+        price: { value: 149.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B076BQZ9YX",
+        title: "Swiffer Sweeper Pet Heavy Duty Dry Sweeping Cloth Refills for Floor Mopping",
+        image: "https://m.media-amazon.com/images/I/81vWVGYT7xL._AC_SL1500_.jpg",
+        price: { value: 21.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B089GBRC7M",
+        title: "O-Cedar EasyWring RinseClean Microfiber Spin Mop & Bucket Floor Cleaning System",
+        image: "https://m.media-amazon.com/images/I/71cT5gZCGXL._AC_SL1500_.jpg",
+        price: { value: 59.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07T1CH2YX",
+        title: "IRIS USA 3-Drawer Rolling Storage Cart with Organizer Top, White",
+        image: "https://m.media-amazon.com/images/I/71YvGvCwGKL._AC_SL1500_.jpg",
+        price: { value: 49.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0BZ2L5J4Q",
+        title: "Sterilite 66 Quart/62 Liter Gasket Box, Stackable Storage Bin with Latching Lid",
+        image: "https://m.media-amazon.com/images/I/81fDhJZJD9L._AC_SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07Q4X4Y4S",
+        title: "Simple Trending 3-Tier Under Sink Expandable Shelf Organizer",
+        image: "https://m.media-amazon.com/images/I/71FY6YtKxHL._AC_SL1500_.jpg",
+        price: { value: 29.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
       }
     ],
     "Baby & Kids": [
@@ -477,6 +747,141 @@ export default function ProductSearch() {
         image: "https://m.media-amazon.com/images/I/71rIo9w2ndL._AC_SL1500_.jpg",
         price: { value: 299.99, currency: "USD" },
         rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08TMLHWTD",
+        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
+        image: "https://m.media-amazon.com/images/I/71oOkIoaqXL._AC_SL1500_.jpg",
+        price: { value: 18.97, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07QZ8Q7R5",
+        title: "Graco Pack 'n Play On the Go Playard",
+        image: "https://m.media-amazon.com/images/I/91VaIUQdqcL._AC_SL1500_.jpg",
+        price: { value: 89.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B01AXQQLBQ",
+        title: "Baby Brezza Formula Pro Advanced Formula Dispenser",
+        image: "https://m.media-amazon.com/images/I/71xMM2N-gzL._AC_SL1500_.jpg",
+        price: { value: 199.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07XJTQZL3",
+        title: "Skip Hop Baby Bath Toys for Toddlers, Zoo Mix & Match",
+        image: "https://m.media-amazon.com/images/I/91n4Df9RHSL._AC_SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07BBK7SLM",
+        title: "Munchkin LATCH Lightweight Pacifier, 6+ Months, 2 Pack",
+        image: "https://m.media-amazon.com/images/I/81wT6XYJ7kL._AC_SL1500_.jpg",
+        price: { value: 8.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08Z3Q7X6D",
+        title: "Crayola Light-Up Tracing Pad - Pink, Gift for Girls, Ages 6, 7, 8",
+        image: "https://m.media-amazon.com/images/I/81ZWvTmK5qL._AC_SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08GXQV7Y8",
+        title: "LEGO Classic Creative Bricks Building Kit 10692",
+        image: "https://m.media-amazon.com/images/I/91RZSz-JMQL._AC_SL1500_.jpg",
+        price: { value: 29.99, currency: "USD" },
+        rating: 4.8,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07W7TGXP2",
+        title: "Melissa & Doug Shape Sorting Cube",
+        image: "https://m.media-amazon.com/images/I/91Wx1N6QAZL._AC_SL1500_.jpg",
+        price: { value: 16.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B096SX7GHJ",
+        title: "Baby Jogger City Mini GT2 All-Terrain Stroller",
+        image: "https://m.media-amazon.com/images/I/71v8PGvmmkL._AC_SL1500_.jpg",
+        price: { value: 349.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07YPQFXF8",
+        title: "Dr. Brown's Options+ Anti-Colic Baby Bottles, 8 oz, 4 Pack",
+        image: "https://m.media-amazon.com/images/I/71a8fOz3SjL._AC_SL1500_.jpg",
+        price: { value: 39.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07H2NVQXZ",
+        title: "Boon Grass Countertop Drying Rack, Green",
+        image: "https://m.media-amazon.com/images/I/71dLz1oFoZL._AC_SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B086B6T6FG",
+        title: "Bright Starts Sit & Bounce Baby Activity Seat",
+        image: "https://m.media-amazon.com/images/I/81k3mCJLqrL._AC_SL1500_.jpg",
+        price: { value: 79.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B01M8N7VF5",
+        title: "Summer Infant 3Dlite+ Convenience Stroller",
+        image: "https://m.media-amazon.com/images/I/61L7Kx5mnUL._AC_SL1500_.jpg",
+        price: { value: 99.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08Y5KN5K7",
+        title: "Nuby Ice Gel Teether Keys",
+        image: "https://m.media-amazon.com/images/I/61PKc7BHhbL._AC_SL1000_.jpg",
+        price: { value: 6.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08GLBSR2L",
+        title: "VTech Baby Lil' Critters Moosical Beads",
+        image: "https://m.media-amazon.com/images/I/91YlXXfzv7L._AC_SL1500_.jpg",
+        price: { value: 19.99, currency: "USD" },
+        rating: 4.6,
         retailer: "amazon",
         retailer_name: "Amazon"
       }
