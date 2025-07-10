@@ -174,6 +174,33 @@ export default function ProductSearch() {
         rating: 4.8,
         retailer: "amazon",
         retailer_name: "Amazon"
+      },
+      {
+        asin: "B004CG0URC",
+        title: "Bounty Select-a-Size Paper Towels, 8 Triple Rolls",
+        image: "https://m.media-amazon.com/images/I/81fKH2-uPkL._AC_SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08F2X7JRD",
+        title: "Clorox Disinfecting Wipes, 5 Pack (425 Wipes Total)",
+        image: "https://m.media-amazon.com/images/I/81gJNa9XRRL._AC_SL1500_.jpg",
+        price: { value: 19.97, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07BYB4Q6Z",
+        title: "Kleenex Ultra Soft Facial Tissues, 12 Boxes",
+        image: "https://m.media-amazon.com/images/I/81VgRo8R-8L._AC_SL1500_.jpg",
+        price: { value: 16.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
       }
     ],
     "Electronics": [
@@ -194,6 +221,42 @@ export default function ProductSearch() {
         rating: 4.5,
         retailer: "amazon",
         retailer_name: "Amazon"
+      },
+      {
+        asin: "B07YLZQQ7L",
+        title: "Instant Vortex Plus 4-Quart Air Fryer",
+        image: "https://m.media-amazon.com/images/I/71jblfczoKL._AC_SL1500_.jpg",
+        price: { value: 79.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08KRV7S9Q",
+        title: "Fire TV Stick 4K Max streaming device",
+        image: "https://m.media-amazon.com/images/I/51TjJOTfslL._AC_SL1000_.jpg",
+        price: { value: 54.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0C1SLD1PZ",
+        title: "Apple iPhone 15 (128 GB) - Blue",
+        image: "https://m.media-amazon.com/images/I/71xb2xkN5qL._AC_SL1500_.jpg",
+        price: { value: 799.00, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B09JQSYCDS",
+        title: "Sony WH-CH720N Noise Canceling Wireless Headphones",
+        image: "https://m.media-amazon.com/images/I/61Oqm-ZG3bL._AC_SL1500_.jpg",
+        price: { value: 149.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
       }
     ],
     "Household": [
@@ -209,9 +272,45 @@ export default function ProductSearch() {
       {
         asin: "B07VVK39F7",
         title: "LEVOIT Air Purifier for Home Large Room",
-        image: "https://m.media-amazon.com/images/I/61Oqm-ZG3bL._AC_SL1500_.jpg",
+        image: "https://m.media-amazon.com/images/I/61lmTBNpRwL._AC_SL1500_.jpg",
         price: { value: 149.99, currency: "USD" },
         rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08F2Q83QZ",
+        title: "Bissell CrossWave Pet Pro All in One Wet Dry Vacuum",
+        image: "https://m.media-amazon.com/images/I/71apmYzKNNL._AC_SL1500_.jpg",
+        price: { value: 229.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B089CY3DM6",
+        title: "iRobot Roomba 694 Robot Vacuum",
+        image: "https://m.media-amazon.com/images/I/71e+jrzN9AL._AC_SL1500_.jpg",
+        price: { value: 274.99, currency: "USD" },
+        rating: 4.2,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0CR6GXKPV",
+        title: "Ninja Foodi Personal Blender with Cups",
+        image: "https://m.media-amazon.com/images/I/81hXJJ-RKZL._AC_SL1500_.jpg",
+        price: { value: 79.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B074WMJ1D2",
+        title: "BLACK+DECKER Dustbuster Handheld Vacuum",
+        image: "https://m.media-amazon.com/images/I/71cqP2W3bKL._AC_SL1500_.jpg",
+        price: { value: 59.99, currency: "USD" },
+        rating: 4.1,
         retailer: "amazon",
         retailer_name: "Amazon"
       }
@@ -232,6 +331,42 @@ export default function ProductSearch() {
         image: "https://m.media-amazon.com/images/I/81ScU+A7tDL._AC_SL1500_.jpg",
         price: { value: 299.99, currency: "USD" },
         rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B01LXJK9YZ",
+        title: "Fisher-Price Baby Learning Toy Laugh & Learn Smart Stages Chair",
+        image: "https://m.media-amazon.com/images/I/91YY8wZdR0L._AC_SL1500_.jpg",
+        price: { value: 49.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0822DQBWV",
+        title: "Huggies Little Snugglers Baby Diapers, Size 1",
+        image: "https://m.media-amazon.com/images/I/81aF6H9QKQL._AC_SL1500_.jpg",
+        price: { value: 47.94, currency: "USD" },
+        rating: 4.8,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08GLBSR2L",
+        title: "Baby Einstein Take Along Tunes Musical Toy",
+        image: "https://m.media-amazon.com/images/I/81Hk9I3GYZL._AC_SL1500_.jpg",
+        price: { value: 12.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B078K1W9B3",
+        title: "Chicco Bravo LE Trio Travel System",
+        image: "https://m.media-amazon.com/images/I/71rIo9w2ndL._AC_SL1500_.jpg",
+        price: { value: 299.99, currency: "USD" },
+        rating: 4.4,
         retailer: "amazon",
         retailer_name: "Amazon"
       }
