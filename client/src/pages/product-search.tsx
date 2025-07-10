@@ -410,15 +410,17 @@ export default function ProductSearch() {
     queryKey: [searchUrl]
   });
 
-  // Clear React Query and force fresh search
+  // Controlled React Query - only execute once per search request
   const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: ['product-search', searchUrl, activeSearch, debouncedQuery],
-    enabled: shouldEnableQuery,
-    staleTime: 0, // Force fresh data
-    gcTime: 1000, // Quick cleanup
+    queryKey: ['product-search', activeSearch, category],
+    enabled: !!activeSearch && activeSearch.length > 2,
+    staleTime: 60000, // Cache for 1 minute
+    gcTime: 300000, // Keep in cache for 5 minutes
     retry: false,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     queryFn: async () => {
+      const searchUrl = buildSearchUrl();
       console.log('🔍 React Query: Starting API call to:', searchUrl);
       const response = await fetch(searchUrl);
       if (!response.ok) {
@@ -436,11 +438,6 @@ export default function ProductSearch() {
     },
     onSuccess: (data) => {
       console.log('🎉 React Query: onSuccess called with', data?.data?.length || 0, 'products');
-      // Immediately update live results when React Query succeeds
-      if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-        console.log('🚀 React Query: Immediately updating live results with', data.data.length, 'products');
-        setLiveSearchResults(data.data);
-      }
     },
     onError: (error) => {
       console.error('❌ React Query: onError called with:', error);
@@ -475,75 +472,18 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // State to store live API results directly
-  const [liveSearchResults, setLiveSearchResults] = useState<any[]>([]);
-  
-  // Enhanced API response capture with React Query success handler
-  useEffect(() => {
-    // Also capture from React Query when it succeeds
-    if (searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0) {
-      console.log('🎯 REACT QUERY SUCCESS: Found', (searchResults as any).data.length, 'products - updating display');
-      setLiveSearchResults((searchResults as any).data);
-    }
-  }, [searchResults]);
-
-  // Listen for API responses and capture them directly
-  useEffect(() => {
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-      const response = await originalFetch(...args);
-      
-      // Intercept search API responses
-      if (args[0] && typeof args[0] === 'string' && args[0].includes('/api/search')) {
-        const clonedResponse = response.clone();
-        try {
-          const data = await clonedResponse.json();
-          if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-            console.log('🎯 INTERCEPTED API RESPONSE: Found', data.data.length, 'products - updating display');
-            setLiveSearchResults(data.data);
-          }
-        } catch (error) {
-          console.error('Error parsing intercepted response:', error);
-        }
-      }
-      
-      return response;
-    };
-
-    return () => {
-      window.fetch = originalFetch;
-    };
-  }, []);
-
-  // Get display products - prioritize live results from API interception
+  // Simple display logic - use React Query results or cached products
   const displayProducts = useMemo(() => {
-    // Priority 1: Use intercepted live API results if available
-    if (liveSearchResults && liveSearchResults.length > 0) {
-      console.log('✅ Using intercepted live results with', liveSearchResults.length, 'products');
-      return liveSearchResults;
+    // Priority 1: Use React Query search results when available
+    if (searchResults && searchResults.data && Array.isArray(searchResults.data) && searchResults.data.length > 0) {
+      console.log('✅ Using React Query results with', searchResults.data.length, 'products');
+      return searchResults.data;
     }
     
-    // Priority 2: If we have search results from React Query, use them
-    if (searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0) {
-      console.log('Using React Query results with', (searchResults as any).data.length, 'items');
-      return (searchResults as any).data;
-    }
-    
-    // Priority 3: Show cached products for immediate display
-    if (activeSearch && cachedProducts[activeSearch]) {
-      console.log('Using cached products for activeSearch:', activeSearch, 'with', cachedProducts[activeSearch].length, 'items');
-      return cachedProducts[activeSearch];
-    }
-    
-    if (debouncedQuery && cachedProducts[debouncedQuery]) {
-      console.log('Using cached products for debouncedQuery:', debouncedQuery, 'with', cachedProducts[debouncedQuery].length, 'items');
-      return cachedProducts[debouncedQuery];
-    }
-    
-    // Priority 4: Show "Basic Essentials" by default
-    console.log('Using Basic Essentials fallback with', (cachedProducts["Basic Essentials"] || []).length, 'items');
-    return cachedProducts["Basic Essentials"] || [];
-  }, [liveSearchResults, debouncedQuery, searchResults, cachedProducts, activeSearch]);
+    // Priority 2: Show cached products for initial display
+    console.log('Using cached products with', cachedProducts.length, 'items');
+    return cachedProducts;
+  }, [searchResults, cachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
