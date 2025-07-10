@@ -342,6 +342,13 @@ export default function ProductSearch() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Update total results when search results change
+  useEffect(() => {
+    if (searchResults?.data) {
+      setTotalResults(searchResults.data.length);
+    }
+  }, [searchResults]);
+
   // Generate cache key for search results
   const getCacheKey = useCallback((query: string, cat: string, page: number) => {
     return `${query}-${cat}-${page}`;
@@ -444,7 +451,8 @@ export default function ProductSearch() {
   const displayProducts = useMemo(() => {
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
-      const results = searchResults?.data || searchResults?.search_results || [];
+      // The API returns { data: [...] } format
+      const results = searchResults?.data || [];
       if (results.length > 0) {
         const targetProducts = results.filter((p: any) => p.retailer === 'target');
         const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
@@ -798,7 +806,7 @@ export default function ProductSearch() {
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
           <div>
             {/* Results Header - Only show when we have actual results */}
-            {searchResults?.data && searchResults.data.length > 0 && (
+            {searchResults?.data && searchResults.data.length > 0 && !isLoading && (
               <div className="flex items-center justify-between mb-6">
                 <div className="text-gray-600">
                   Found {searchResults.data.length} results for "{activeSearch || debouncedQuery}"
