@@ -9,7 +9,8 @@ export function useAuth() {
   
   // CRITICAL FIX: Detect public pages to prevent 401 spam
   const isPublicPage = typeof window !== 'undefined' && 
-    (window.location.pathname === '/browse' || 
+    (window.location.pathname === '/' ||  // Landing page
+     window.location.pathname === '/browse' || 
      window.location.pathname.startsWith('/wishlist/') ||
      window.location.pathname.startsWith('/needslist/') ||
      window.location.pathname.startsWith('/wishlists/'));
