@@ -449,6 +449,13 @@ export default function ProductSearch() {
 
   // Get display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
+    console.log('displayProducts calculation:', {
+      debouncedQuery,
+      hasSearchResults: !!searchResults,
+      searchResultsData: searchResults?.data?.length || 0,
+      searchResults
+    });
+    
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       // The API returns { data: [...] } format
@@ -463,7 +470,7 @@ export default function ProductSearch() {
     }
     
     // Priority 2: Show cached "Basic Essentials" when no search has been performed
-    if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
+    if (!debouncedQuery || (!searchResults && activeSearch === "Basic Essentials")) {
       return cachedProducts["Basic Essentials"] || [];
     }
     
@@ -805,6 +812,7 @@ export default function ProductSearch() {
         {/* Search Results */}
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
           <div>
+            {console.log('Showing results section:', { activeSearch, debouncedQuery, displayProductsLength: displayProducts.length })}
             {/* Results Header - Only show when we have actual results */}
             {searchResults?.data && searchResults.data.length > 0 && !isLoading && (
               <div className="flex items-center justify-between mb-6">
@@ -863,6 +871,7 @@ export default function ProductSearch() {
             {/* Search Results Grid */}
             {displayProducts && displayProducts.length > 0 && (
               <>
+                {console.log('Rendering products grid with', displayProducts.length, 'products')}
                 <div className="space-y-4">
                   {/* Dynamic Header - Different for cached vs search results */}
                   <div className="flex justify-between items-center">
