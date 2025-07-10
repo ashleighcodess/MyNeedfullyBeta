@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Important pages for SEO
+Allow: /browse
+Allow: /search
+Allow: /about
+Allow: /signup
+Allow: /category/
+Allow: /wishlist/
+
+# Block admin and user-specific pages
+Disallow: /admin
+Disallow: /profile
+Disallow: /dashboard
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://myneedfully.app/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

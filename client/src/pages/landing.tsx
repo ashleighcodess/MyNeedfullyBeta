@@ -70,6 +70,7 @@ import logoPath from "@assets/Logo_1_1751586675899.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 // Custom hook for scroll-triggered wobble animation
 const useWobbleAnimation = () => {
@@ -137,6 +138,39 @@ export default function Landing() {
   const [searchPlaceholder, setSearchPlaceholder] = useState("Search needs lists by keywords, location, or needs...");
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
+
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("A Registry For Recovery, Relief and Hardships", false),
+    description: generatePageDescription("MyNeedfully connects people in crisis with generous supporters through secure needs lists. Help families recover from disasters, medical emergencies, and hardships by donating essential items they need most."),
+    keywords: generateKeywords([
+      "crisis support platform",
+      "disaster relief registry",
+      "medical emergency help",
+      "family recovery assistance",
+      "community donation platform"
+    ]),
+    canonical: generateCanonicalUrl("/"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "MyNeedfully",
+      "url": "https://myneedfully.app",
+      "description": "A compassionate donation platform connecting people in crisis with generous supporters through secure needs lists and community support.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://myneedfully.app/browse?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "MyNeedfully",
+        "url": "https://myneedfully.app",
+        "logo": "https://myneedfully.app/attached_assets/Logo_6_1752017502495.png",
+        "sameAs": []
+      }
+    }
+  });
   
   // Initialize wobble animation hooks
   const { isVisible: isWobbleVisible, elementRef: wobbleRef } = useWobbleAnimation();

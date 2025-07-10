@@ -41,6 +41,7 @@ import {
   Trash2,
   Minus
 } from "lucide-react";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl, generateWishlistStructuredData, generateOgImage } from "@/lib/seo";
 
 export default function WishlistDetail() {
   const params = useParams();
@@ -140,7 +141,26 @@ export default function WishlistDetail() {
     }
   }, [wishlist?.items]);
 
-
+  // SEO Configuration - Dynamic based on wishlist data
+  useSEO({
+    title: wishlist 
+      ? generatePageTitle(`${wishlist.title} - ${wishlist.location}`)
+      : generatePageTitle("Needs List Details"),
+    description: wishlist 
+      ? generatePageDescription(`Support ${wishlist.title} in ${wishlist.location}. ${wishlist.description}`)
+      : generatePageDescription("View detailed information about this needs list and support a family in crisis."),
+    keywords: generateKeywords([
+      wishlist?.category,
+      wishlist?.location,
+      "individual needs list",
+      "support family in crisis",
+      "donate to family",
+      "crisis support"
+    ].filter(Boolean)),
+    canonical: generateCanonicalUrl(`/wishlist/${id}`),
+    ogImage: wishlist?.storyImages?.[0] ? generateOgImage(wishlist.storyImages[0]) : undefined,
+    structuredData: wishlist ? generateWishlistStructuredData(wishlist) : undefined
+  });
 
   // Quantity update mutation
   const updateQuantityMutation = useMutation({

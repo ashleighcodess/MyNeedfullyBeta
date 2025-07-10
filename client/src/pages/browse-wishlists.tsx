@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Filter } from "lucide-react";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 export default function BrowseWishlists() {
   const { user } = useAuth();
@@ -21,6 +22,38 @@ export default function BrowseWishlists() {
   });
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("Browse Needs Lists - Find Families to Support"),
+    description: generatePageDescription("Browse active needs lists from families in crisis. Find disaster relief, medical emergency, and hardship support opportunities in your area. Every donation makes a difference."),
+    keywords: generateKeywords([
+      "browse needs lists",
+      "find families to support",
+      "disaster relief opportunities",
+      "medical emergency support",
+      "crisis assistance near me"
+    ]),
+    canonical: generateCanonicalUrl("/browse"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Browse Needs Lists",
+      "description": "Find and support families in crisis through verified needs lists",
+      "url": "https://myneedfully.app/browse",
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": wishlistsData?.wishlists?.length || 0,
+        "itemListElement": wishlistsData?.wishlists?.slice(0, 5)?.map((wishlist: any, index: number) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": wishlist.title,
+          "description": wishlist.description,
+          "url": `https://myneedfully.app/wishlist/${wishlist.id}`
+        })) || []
+      }
+    }
+  });
 
   const { data: wishlistsData, isLoading } = useQuery({
     queryKey: ['/api/wishlists', { ...filters, query: searchQuery, page }],

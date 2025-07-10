@@ -19,6 +19,7 @@ import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 // Product images
 import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
@@ -74,6 +75,35 @@ export default function ProductSearch() {
   const [location, navigate] = useLocation();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+
+  // SEO Configuration - Dynamic based on search
+  useSEO({
+    title: generatePageTitle(searchQuery ? `${searchQuery} Products` : "Product Search - Find Items for Your Needs List"),
+    description: generatePageDescription(searchQuery 
+      ? `Find ${searchQuery} products from Amazon, Walmart, and Target. Add items to your needs list and get support from the community.`
+      : "Search for products across Amazon, Walmart, and Target. Find exactly what you need and add items to your needs list for community support."),
+    keywords: generateKeywords([
+      searchQuery,
+      "product search",
+      "multi-retailer search",
+      "amazon walmart target",
+      "add to needs list",
+      "find products online"
+    ].filter(Boolean)),
+    canonical: generateCanonicalUrl(`/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Product Search",
+      "description": "Search for products across multiple retailers to add to your needs list",
+      "url": `https://myneedfully.app/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`,
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "MyNeedfully",
+        "url": "https://myneedfully.app"
+      }
+    }
+  });
   
   // Get parameters from URL
   const urlParams = new URLSearchParams(window.location.search);

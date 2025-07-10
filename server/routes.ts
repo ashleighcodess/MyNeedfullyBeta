@@ -3507,6 +3507,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // SEO Routes
+  
+  // Dynamic sitemap generation
+  app.get('/api/sitemap.xml', async (req, res) => {
+    try {
+      const recentWishlists = await db
+        .select({
+          id: wishlists.id,
+          title: wishlists.title,
+          location: wishlists.location,
+          updatedAt: wishlists.updatedAt,
+        })
+        .from(wishlists)
+        .where(eq(wishlists.status, 'active'))
+        .orderBy(desc(wishlists.updatedAt))
+        .limit(1000);
+
+      const baseUrl = 'https://myneedfully.app';
+      const currentDate = new Date().toISOString().split('T')[0];
+      
+      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+      // Add main pages
+      const mainPages = [
+        { url: '/', priority: '1.0', changefreq: 'daily' },
+        { url: '/browse', priority: '0.9', changefreq: 'daily' },
+        { url: '/search', priority: '0.8', changefreq: 'weekly' },
+        { url: '/about', priority: '0.7', changefreq: 'monthly' },
+        { url: '/signup', priority: '0.6', changefreq: 'monthly' },
+        { url: '/faq', priority: '0.5', changefreq: 'monthly' },
+      ];
+
+      mainPages.forEach(page => {
+        sitemap += `
+  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`;
+      });
+
+      // Add wishlist pages
+      recentWishlists.forEach(wishlist => {
+        const lastmod = wishlist.updatedAt ? new Date(wishlist.updatedAt).toISOString().split('T')[0] : currentDate;
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/wishlist/${wishlist.id}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      });
+
+      sitemap += `
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Error generating sitemap:', error);
+      res.status(500).json({ message: 'Failed to generate sitemap' });
+    }
+  });
+
+  // SEO meta data for individual wishlists
+  app.get('/api/wishlists/:id/seo', async (req, res) => {
+    try {
+      const wishlistId = parseInt(req.params.id);
+      const wishlist = await storage.getWishlist(wishlistId);
+      
+      if (!wishlist) {
+        return res.status(404).json({ message: 'Wishlist not found' });
+      }
+
+      const seoData = {
+        title: `${wishlist.title} - ${wishlist.location} | MyNeedfully`,
+        description: wishlist.description.length > 160 
+          ? wishlist.description.substring(0, 157) + '...' 
+          : wishlist.description,
+        keywords: [
+          wishlist.category,
+          wishlist.location,
+          'crisis support',
+          'donation',
+          'community help',
+          'needs list'
+        ].filter(Boolean).join(', '),
+        canonical: `https://myneedfully.app/wishlist/${wishlist.id}`,
+        ogImage: wishlist.storyImages?.[0] 
+          ? `https://myneedfully.app${wishlist.storyImages[0]}`
+          : 'https://myneedfully.app/attached_assets/Logo_6_1752017502495.png',
+        structuredData: {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": wishlist.title,
+          "description": wishlist.description,
+          "url": `https://myneedfully.app/wishlist/${wishlist.id}`,
+          "dateCreated": wishlist.createdAt,
+          "location": {
+            "@type": "Place",
+            "name": wishlist.location
+          },
+          "creator": {
+            "@type": "Person",
+            "name": `${wishlist.user?.firstName || ''} ${wishlist.user?.lastName || ''}`.trim()
+          }
+        }
+      };
+
+      res.json(seoData);
+    } catch (error) {
+      console.error('Error generating SEO data:', error);
+      res.status(500).json({ message: 'Failed to generate SEO data' });
+    }
+  });
+
+  // SEO analytics endpoint
+  app.get('/api/seo/analytics', async (req, res) => {
+    try {
+      const totalWishlists = await db
+        .select({ count: count() })
+        .from(wishlists)
+        .where(eq(wishlists.status, 'active'));
+
+      const totalUsers = await db
+        .select({ count: count() })
+        .from(users);
+
+      const totalDonations = await db
+        .select({ count: count() })
+        .from(donations);
+
+      const seoAnalytics = {
+        totalPages: totalWishlists[0]?.count || 0,
+        totalUsers: totalUsers[0]?.count || 0,
+        totalDonations: totalDonations[0]?.count || 0,
+        lastUpdated: new Date().toISOString(),
+        siteHealth: {
+          status: 'healthy',
+          uptime: process.uptime(),
+          lastIndexed: new Date().toISOString()
+        }
+      };
+
+      res.json(seoAnalytics);
+    } catch (error) {
+      console.error('Error generating SEO analytics:', error);
+      res.status(500).json({ message: 'Failed to generate SEO analytics' });
+    }
+  });
+
   return httpServer;
 }
 
