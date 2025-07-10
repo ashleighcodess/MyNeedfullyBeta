@@ -772,7 +772,7 @@ export default function ProductSearch() {
                 }}
               >
                 {/* Icon with pulse animation on hover */}
-                <div className="relative mb-2 md:mb-3">
+                <div className="relative mb-1 md:mb-2">
                   <div className="absolute inset-0 bg-coral/20 rounded-full transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                   <CategoryIcon 
                     iconName={category.icon}
