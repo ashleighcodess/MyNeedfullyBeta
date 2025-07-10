@@ -11,7 +11,7 @@ import { useEffect, Suspense, lazy, ErrorBoundary } from "react";
 // Lazy load pages to prevent import errors from breaking the app
 const Landing = lazy(() => import("@/pages/landing").catch(() => ({ default: () => <div>Error loading Landing page</div> })));
 const Home = lazy(() => import("@/pages/home").catch(() => ({ default: () => <div>Error loading Home page</div> })));
-const BrowseWishlists = lazy(() => import("@/pages/browse-wishlists-simple").catch(() => ({ default: () => <div>Error loading Browse page</div> })));
+const BrowseWishlists = lazy(() => import("@/pages/browse-wishlists").catch(() => ({ default: () => <div>Error loading Browse page</div> })));
 const MyNeedsLists = lazy(() => import("@/pages/my-needs-lists").catch(() => ({ default: () => <div>Error loading My Lists page</div> })));
 const CreateNeedsList = lazy(() => import("@/pages/create-wishlist").catch(() => ({ default: () => <div>Error loading Create page</div> })));
 const EditWishlist = lazy(() => import("@/pages/edit-wishlist").catch(() => ({ default: () => <div>Error loading Edit page</div> })));
@@ -94,11 +94,20 @@ function NotificationHandler() {
 }
 
 function Router() {
-  // Temporarily disable authentication to stop 401 spam
-  // const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+  const [location] = useLocation();
   
   // WebSocket temporarily disabled for deployment stability
   // useWebSocket();
+
+  // Skip loading check for browse page to prevent hanging
+  if (isLoading && !location.includes('/browse')) {
+    return (
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -171,11 +180,11 @@ function Router() {
                 <Route path="/community-impact" component={CommunityImpact} />
                 <Route path="/impact" component={CommunityImpact} />
                 
-                {/* Home route - temporarily always show Landing */}
-                <Route path="/" component={Landing} />
+                {/* Home route - show Landing for unauthenticated, Home for authenticated */}
+                <Route path="/" component={isAuthenticated ? Home : Landing} />
                 
-                {/* Dashboard route - temporarily show Landing */}
-                <Route path="/dashboard" component={Landing} />
+                {/* Dashboard route for authenticated users */}
+                <Route path="/dashboard" component={isAuthenticated ? QuickActions : Landing} />
                 
                 <Route component={NotFound} />
               </Switch>

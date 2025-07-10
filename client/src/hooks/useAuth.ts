@@ -14,10 +14,8 @@ export function useAuth() {
       retry: false,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      refetchInterval: false, // Disable background refetching
-      staleTime: Infinity, // Never consider data stale
+      staleTime: 30000, // 30 seconds
       gcTime: 300000, // Keep data for 5 minutes after component unmounts
-      enabled: false, // Disable automatic auth checks for now
     });
 
     // Mark as initialized after first attempt

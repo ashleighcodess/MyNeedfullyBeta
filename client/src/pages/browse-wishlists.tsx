@@ -13,7 +13,9 @@ import { Search, Filter, X, MapPin } from "lucide-react";
 import { CATEGORIES, URGENCY_LEVELS, WISHLIST_STATUS } from "@/lib/constants";
 
 export default function BrowseWishlists() {
-  const { user } = useAuth();
+  // Skip authentication for browse page to prevent loading issues
+  // const { user } = useAuth();
+  const user = null;
   const [location, setLocation] = useLocation();
   
   // Search and filter states
