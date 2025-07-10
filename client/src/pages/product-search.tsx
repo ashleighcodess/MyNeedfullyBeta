@@ -342,13 +342,6 @@ export default function ProductSearch() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Update total results when search results change
-  useEffect(() => {
-    if (searchResults?.data) {
-      setTotalResults(searchResults.data.length);
-    }
-  }, [searchResults]);
-
   // Generate cache key for search results
   const getCacheKey = useCallback((query: string, cat: string, page: number) => {
     return `${query}-${cat}-${page}`;
@@ -426,6 +419,13 @@ export default function ProductSearch() {
       return data;
     },
   });
+
+  // Update total results when search results change
+  useEffect(() => {
+    if (searchResults?.data) {
+      setTotalResults(searchResults.data.length);
+    }
+  }, [searchResults]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
