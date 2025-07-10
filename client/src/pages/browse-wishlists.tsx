@@ -23,29 +23,22 @@ export default function BrowseWishlists() {
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data: wishlistsData, isLoading } = useQuery({
-    queryKey: ['/api/wishlists', { ...filters, query: searchQuery, page }],
+  const { data: wishlistsData, isLoading, error } = useQuery({
+    queryKey: ['/api/wishlists'],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        ...filters,
-        query: searchQuery,
-        page: page.toString(),
-        limit: "20",
-      });
-      
-      // Remove empty params
-      Object.keys(filters).forEach(key => {
-        if (!params.get(key)) {
-          params.delete(key);
-        }
-      });
-      
-      const response = await fetch(`/api/wishlists?${params}`);
+      console.log('Fetching wishlists...');
+      const response = await fetch('/api/wishlists');
       if (!response.ok) throw new Error('Failed to fetch wishlists');
-      return response.json();
+      const data = await response.json();
+      console.log('Wishlists data received:', data);
+      return data;
     },
-    enabled: true,
+    retry: 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  // Debug logging
+  console.log('Browse page state:', { isLoading, error, wishlistsData });
 
   // SEO Configuration
   useSEO({
@@ -185,7 +178,14 @@ export default function BrowseWishlists() {
                   </Card>
                 ))}
               </div>
-            ) : wishlistsData?.wishlists.length === 0 ? (
+            ) : error ? (
+              <Card className="p-6 sm:p-12 text-center">
+                <div className="text-red-500 mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">Error loading needs lists</h3>
+                  <p className="text-sm sm:text-base">{error.message}</p>
+                </div>
+              </Card>
+            ) : !wishlistsData?.wishlists || wishlistsData?.wishlists.length === 0 ? (
               <Card className="p-6 sm:p-12 text-center">
                 <div className="text-gray-500 mb-4">
                   <Search className="mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-4 text-gray-300" />
