@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation } from "wouter";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -67,6 +68,38 @@ export default function CreateNeedsList() {
       return;
     }
   }, [isAuthenticated, isLoading, navigate, toast]);
+  
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("Create Needs List - Get Help During Crisis"),
+    description: generatePageDescription("Create a needs list to get help during crisis situations. Share your story with our community and receive support from generous donors who want to help families in need."),
+    keywords: generateKeywords([
+      "create needs list",
+      "crisis help",
+      "disaster relief request",
+      "emergency assistance",
+      "community support"
+    ]),
+    canonical: generateCanonicalUrl("/create"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Create Needs List",
+      "description": "Create a needs list to get help during crisis situations",
+      "url": "https://myneedfully.app/create",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "MyNeedfully",
+        "url": "https://myneedfully.app"
+      },
+      "potentialAction": {
+        "@type": "CreateAction",
+        "name": "Create Needs List",
+        "description": "Create a needs list for crisis support"
+      }
+    }
+  });
+
   const [step, setStep] = useState(1);
   const [storyImages, setStoryImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);

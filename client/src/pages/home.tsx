@@ -13,6 +13,7 @@ import {
   Settings,
   User
 } from "lucide-react";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 export default function Home() {
   const { user } = useAuth();
@@ -23,6 +24,32 @@ export default function Home() {
   // Check if user preference is supporter (default) or creator
   const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
   const { isAuthenticated } = useAuth();
+
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("Dashboard - MyNeedfully Community Support"),
+    description: generatePageDescription("Welcome to your MyNeedfully dashboard. Access quick actions to create needs lists, browse support opportunities, and manage your community involvement."),
+    keywords: generateKeywords([
+      "myneedfully dashboard",
+      "crisis support dashboard",
+      "community help center",
+      "needs list management",
+      "donation platform dashboard"
+    ]),
+    canonical: generateCanonicalUrl("/home"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "MyNeedfully Dashboard",
+      "description": "Access your MyNeedfully dashboard for community support actions",
+      "url": "https://myneedfully.app/home",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "MyNeedfully",
+        "url": "https://myneedfully.app"
+      }
+    }
+  });
 
   return (
     <div className="min-h-screen bg-warm-bg relative overflow-hidden">

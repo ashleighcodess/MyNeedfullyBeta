@@ -7,10 +7,42 @@ import handIcon from "@assets/hand.png";
 import handsIcon from "@assets/hands.png";
 import shieldIcon from "@assets/shield.png";
 import logoIcon from "@assets/Logo_5_1751660244282.png";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 export default function Signup() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [, setLocation] = useLocation();
+
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("Sign Up - Join MyNeedfully Community"),
+    description: generatePageDescription("Join MyNeedfully's community of supporters and recipients. Create needs lists during crisis situations or help families by fulfilling their essential needs. Free and easy to use."),
+    keywords: generateKeywords([
+      "sign up myneedfully",
+      "join crisis support community",
+      "create account donation platform",
+      "register for community help",
+      "free crisis assistance signup"
+    ]),
+    canonical: generateCanonicalUrl("/signup"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Sign Up - MyNeedfully",
+      "description": "Join MyNeedfully's community of supporters and recipients",
+      "url": "https://myneedfully.app/signup",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "MyNeedfully",
+        "url": "https://myneedfully.app"
+      },
+      "potentialAction": {
+        "@type": "RegisterAction",
+        "name": "Sign Up for MyNeedfully",
+        "description": "Create an account to join our community"
+      }
+    }
+  });
 
   const options = [
     {

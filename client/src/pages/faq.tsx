@@ -9,6 +9,7 @@ import {
   Gift 
 } from "lucide-react";
 import { useState } from "react";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 interface FAQItem {
   question: string;
@@ -103,6 +104,35 @@ const categoryIcons = {
 export default function FAQ() {
   const [openItems, setOpenItems] = useState<number[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("general");
+
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("FAQ - Frequently Asked Questions About MyNeedfully"),
+    description: generatePageDescription("Get answers to common questions about using MyNeedfully's donation platform. Learn how to create needs lists, support families in crisis, and navigate our community support system."),
+    keywords: generateKeywords([
+      "myneedfully faq",
+      "donation platform help",
+      "crisis support questions",
+      "how to create needs list",
+      "community support guide"
+    ]),
+    canonical: generateCanonicalUrl("/faq"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "name": "MyNeedfully FAQ",
+      "description": "Frequently asked questions about using MyNeedfully donation platform",
+      "url": "https://myneedfully.app/faq",
+      "mainEntity": faqData.slice(0, 10).map((faq, index) => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  });
 
   const toggleItem = (index: number) => {
     setOpenItems(prev => 

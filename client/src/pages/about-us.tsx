@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 import { Link } from "wouter";
+import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 import { 
   Gift, 
   Share, 
@@ -98,6 +99,37 @@ export default function AboutUs() {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldWobble, setShouldWobble] = useState(false);
   const [howItWorksVisible, setHowItWorksVisible] = useState(false);
+
+  // SEO Configuration
+  useSEO({
+    title: generatePageTitle("About Us - MyNeedfully's Mission to Help Communities"),
+    description: generatePageDescription("Learn about MyNeedfully's mission to connect communities through crisis support. Discover how we help families in need through our transparent donation platform and generous supporters."),
+    keywords: generateKeywords([
+      "about myneedfully",
+      "donation platform mission",
+      "crisis support community",
+      "helping families in need",
+      "charitable giving platform"
+    ]),
+    canonical: generateCanonicalUrl("/about-us"),
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "name": "About MyNeedfully",
+      "description": "Learn about MyNeedfully's mission to connect communities through crisis support",
+      "url": "https://myneedfully.app/about-us",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "MyNeedfully",
+        "description": "A compassionate platform connecting people in crisis with community supporters",
+        "url": "https://myneedfully.app",
+        "foundingDate": "2025",
+        "mission": "To connect hearts and fulfill needs by helping families in crisis through community support",
+        "areaServed": "United States",
+        "serviceType": "Crisis Support Platform"
+      }
+    }
+  });
 
   useEffect(() => {
     const handleScroll = () => {

@@ -23,6 +23,30 @@ export default function BrowseWishlists() {
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: wishlistsData, isLoading } = useQuery({
+    queryKey: ['/api/wishlists', { ...filters, query: searchQuery, page }],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        ...filters,
+        query: searchQuery,
+        page: page.toString(),
+        limit: "20",
+      });
+      
+      // Remove empty params
+      Object.keys(filters).forEach(key => {
+        if (!params.get(key)) {
+          params.delete(key);
+        }
+      });
+      
+      const response = await fetch(`/api/wishlists?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch wishlists');
+      return response.json();
+    },
+    enabled: true,
+  });
+
   // SEO Configuration
   useSEO({
     title: generatePageTitle("Browse Needs Lists - Find Families to Support"),
@@ -53,30 +77,6 @@ export default function BrowseWishlists() {
         })) || []
       }
     }
-  });
-
-  const { data: wishlistsData, isLoading } = useQuery({
-    queryKey: ['/api/wishlists', { ...filters, query: searchQuery, page }],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        ...filters,
-        query: searchQuery,
-        page: page.toString(),
-        limit: "20",
-      });
-      
-      // Remove empty params
-      Object.keys(filters).forEach(key => {
-        if (!params.get(key)) {
-          params.delete(key);
-        }
-      });
-      
-      const response = await fetch(`/api/wishlists?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch wishlists');
-      return response.json();
-    },
-    enabled: true,
   });
 
   const handleSearch = (e: React.FormEvent) => {
