@@ -109,10 +109,11 @@ export default function WishlistDetail() {
     }
   };
 
-  // Fetch real recent activity data from API
+  // Fetch real recent activity data from API with optimized polling
   const { data: recentActivitiesData, isLoading: activitiesLoading } = useQuery({
     queryKey: ['/api/activity/recent'],
-    refetchInterval: 60000, // Refresh every minute for better performance
+    refetchInterval: 180000, // Refresh every 3 minutes for better performance
+    staleTime: 120000, // Consider data stale after 2 minutes
   });
 
   // Format activities data for display with proper time formatting

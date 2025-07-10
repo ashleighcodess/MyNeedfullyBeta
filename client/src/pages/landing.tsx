@@ -177,9 +177,11 @@ export default function Landing() {
   const { isVisible: isSupportWobbleVisible, elementRef: supportWobbleRef } = useWobbleAnimation();
   const { isVisible: isHowWorksVisible, elementRef: howWorksRef } = useWobbleAnimation();
   
-  // Fetch featured wishlists from database
+  // Fetch featured wishlists from database with optimized polling
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
     queryKey: ['/api/featured-wishlists'],
+    refetchInterval: 300000, // Refresh every 5 minutes instead of every few seconds
+    staleTime: 240000, // Consider data stale after 4 minutes
   });
   
   // Animated counter values
