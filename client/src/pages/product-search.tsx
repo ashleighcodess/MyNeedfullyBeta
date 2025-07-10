@@ -39,7 +39,16 @@ import {
   ChevronLeft,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Baby,
+  Home,
+  Smartphone,
+  ShirtIcon,
+  Bike,
+  Gamepad2,
+  Car,
+  BookOpen,
+  Grid3X3
 } from "lucide-react";
 
 // Helper function to get retailer logo
@@ -54,6 +63,26 @@ const getRetailerLogo = (retailer: string) => {
     default:
       return amazonLogo; // Default to Amazon for backward compatibility
   }
+};
+
+// Dynamic icon component for category buttons
+const CategoryIcon = ({ iconName, className }: { iconName: string; className?: string }) => {
+  const iconMap: { [key: string]: React.ComponentType<any> } = {
+    Baby,
+    Home,
+    Smartphone,
+    ShirtIcon,
+    ShoppingCart,
+    Heart,
+    Bike,
+    Gamepad2,
+    Car,
+    BookOpen,
+    Grid3X3,
+  };
+  
+  const IconComponent = iconMap[iconName];
+  return IconComponent ? <IconComponent className={className} /> : <Package className={className} />;
 };
 
 export default function ProductSearch() {
@@ -725,10 +754,13 @@ export default function ProductSearch() {
             <h3 className="text-sm font-medium text-navy md:hidden">Quick Search Categories</h3>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4">
-            {PRODUCT_CATEGORIES.slice(0, 6).map((category) => (
+            {PRODUCT_CATEGORIES.slice(0, 6).map((category, index) => (
               <div
                 key={category.value}
-                className="p-2 md:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer text-center bg-white hover:bg-gray-50 active:scale-95"
+                className="group relative p-3 md:p-4 border-2 border-gray-200 rounded-xl hover:border-coral/60 hover:shadow-lg transition-all duration-300 cursor-pointer text-center bg-white hover:bg-coral/5 active:scale-95 transform hover:scale-105"
+                style={{
+                  animation: `category-bounce 0.6s ease-out ${index * 0.1}s both`
+                }}
                 onClick={() => {
                   console.log('Category clicked:', category.label);
                   setSearchQuery(category.label);
@@ -739,8 +771,24 @@ export default function ProductSearch() {
                   setShowCategories(false); // Hide categories on mobile after selection
                 }}
               >
-                <i className={`${category.icon} text-coral text-lg md:text-2xl mb-1 md:mb-2`}></i>
-                <div className="text-xs md:text-sm font-medium">{category.label}</div>
+                {/* Icon with pulse animation on hover */}
+                <div className="relative mb-2 md:mb-3">
+                  <div className="absolute inset-0 bg-coral/20 rounded-full transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                  <CategoryIcon 
+                    iconName={category.icon}
+                    className="relative z-10 h-6 w-6 md:h-8 md:w-8 text-coral group-hover:text-coral/80 transition-all duration-300 group-hover:scale-110 category-icon-wiggle"
+                  />
+                </div>
+                
+                {/* Label with subtle animation */}
+                <div className="text-xs md:text-sm font-semibold text-navy group-hover:text-coral transition-colors duration-300">
+                  {category.label}
+                </div>
+                
+                {/* Subtle selection indicator */}
+                <div className={`absolute inset-0 rounded-xl border-2 transition-all duration-300 ${
+                  category.value === category ? 'border-coral bg-coral/10' : 'border-transparent'
+                }`}></div>
               </div>
             ))}
           </div>

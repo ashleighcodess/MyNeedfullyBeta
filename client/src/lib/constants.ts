@@ -13,19 +13,19 @@ export const NEEDS_LIST_CATEGORIES = [
   { value: "other", label: "Other Crisis", icon: "fas fa-ellipsis-h" },
 ];
 
-// PRODUCT SEARCH CATEGORIES (for shopping/retailers)
+// PRODUCT SEARCH CATEGORIES (for shopping/retailers) - Using Lucide React icons
 export const PRODUCT_CATEGORIES = [
-  { value: "baby_kids", label: "Baby & Kids", icon: "fas fa-baby" },
-  { value: "household", label: "Household", icon: "fas fa-home" },
-  { value: "electronics", label: "Electronics", icon: "fas fa-tv" },
-  { value: "clothing", label: "Clothing", icon: "fas fa-tshirt" },
-  { value: "food_grocery", label: "Food & Grocery", icon: "fas fa-shopping-cart" },
-  { value: "health_beauty", label: "Health & Beauty", icon: "fas fa-heart" },
-  { value: "sports_outdoors", label: "Sports & Outdoors", icon: "fas fa-bicycle" },
-  { value: "toys_games", label: "Toys & Games", icon: "fas fa-gamepad" },
-  { value: "automotive", label: "Automotive", icon: "fas fa-car" },
-  { value: "books", label: "Books", icon: "fas fa-book" },
-  { value: "all", label: "All Categories", icon: "fas fa-th" },
+  { value: "baby_kids", label: "Baby & Kids", icon: "Baby" },
+  { value: "household", label: "Household", icon: "Home" },
+  { value: "electronics", label: "Electronics", icon: "Smartphone" },
+  { value: "clothing", label: "Clothing", icon: "ShirtIcon" },
+  { value: "food_grocery", label: "Food & Grocery", icon: "ShoppingCart" },
+  { value: "health_beauty", label: "Health & Beauty", icon: "Heart" },
+  { value: "sports_outdoors", label: "Sports & Outdoors", icon: "Bike" },
+  { value: "toys_games", label: "Toys & Games", icon: "Gamepad2" },
+  { value: "automotive", label: "Automotive", icon: "Car" },
+  { value: "books", label: "Books", icon: "BookOpen" },
+  { value: "all", label: "All Categories", icon: "Grid3X3" },
 ];
 
 // Keep CATEGORIES for backward compatibility (pointing to needs list categories)
