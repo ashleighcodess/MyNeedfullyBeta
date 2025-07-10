@@ -3159,22 +3159,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Email verification resend endpoint
   app.post('/api/auth/resend-verification', isAuthenticated, async (req: any, res) => {
     try {
+      console.log(`🔍 Resend verification - Session data:`, {
+        hasUser: !!req.user,
+        userKeys: req.user ? Object.keys(req.user) : [],
+        profile: req.user?.profile,
+        claims: req.user?.claims,
+        sessionID: req.sessionID,
+        isAuthenticated: req.isAuthenticated()
+      });
+      
       const userId = req.user.profile?.id || req.user.claims?.sub;
       console.log(`🔍 Resend verification attempt for user ID: ${userId}`);
+      
+      if (!userId) {
+        console.error('❌ No user ID found in session for verification resend');
+        return res.status(401).json({ message: "Authentication failed" });
+      }
+      
       const user = await storage.getUser(userId);
       
       if (!user) {
+        console.error(`❌ User not found in database: ${userId}`);
         return res.status(404).json({ message: "User not found" });
       }
       
+      console.log(`📝 User found: ${user.email}, verified: ${user.isVerified}`);
+      
       // Check if user is already verified
       if (user.isVerified) {
+        console.log(`✓ User ${user.email} is already verified`);
         return res.json({ message: "Email already verified" });
       }
       
       // Generate verification token
       const token = generateSecureToken();
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      
+      console.log(`🔑 Generated verification token for ${user.email}`);
       
       // Save verification token
       await storage.createEmailVerificationToken({
@@ -3183,6 +3204,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: user.email,
         expiresAt
       });
+      
+      console.log(`💾 Saved verification token to database`);
       
       // Send verification email using SendGrid
       try {
@@ -3197,6 +3220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`✅ Verification email sent successfully to ${user.email}`);
         } else {
           console.error(`❌ Failed to send verification email to ${user.email}`);
+          return res.status(500).json({ message: "Failed to send verification email" });
         }
       } catch (emailError) {
         console.error('Failed to send verification email:', emailError);
