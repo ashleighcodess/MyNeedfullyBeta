@@ -739,11 +739,11 @@ export default function WishlistDetail() {
                               </div>
                               <button 
                                 onClick={() => {
-                                  if (!item.isFulfilled && (itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl)) {
+                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.amazon?.link) {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '$99.00',
-                                      link: itemPricing[item.id]?.pricing?.amazon?.link || item.productUrl,
+                                      link: itemPricing[item.id]?.pricing?.amazon?.link,
                                       retailer: 'amazon',
                                       image: item.imageUrl,
                                       itemId: item.id
@@ -751,16 +751,16 @@ export default function WishlistDetail() {
                                     setShowPurchaseModal(true);
                                   }
                                 }}
-                                disabled={item.isFulfilled || (!itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl)}
+                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available}
                                 className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || (!itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl)
+                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available
                                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                                     : 'bg-coral text-white hover:bg-coral/90'
                                 }`}
                               >
                                 {item.isFulfilled ? 'Fulfilled' : 
                                  !itemPricing[item.id]?.pricing ? 'Loading...' :
-                                 !itemPricing[item.id]?.pricing?.amazon?.available && !item.productUrl ? 'Unavailable' : 'View'}
+                                 !itemPricing[item.id]?.pricing?.amazon?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
 
