@@ -617,7 +617,7 @@ export default function WishlistDetail() {
                         {/* Product Image */}
                         <div className="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 relative sm:m-4">
                           <img
-                            src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
+                            src={item.image_url || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
                             alt={item.title}
                             className={`w-full h-full object-cover sm:rounded-lg ${
                               item.isFulfilled ? 'grayscale' : ''
@@ -765,7 +765,7 @@ export default function WishlistDetail() {
                                       price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '$99.00',
                                       link: itemPricing[item.id]?.pricing?.amazon?.link,
                                       retailer: 'amazon',
-                                      image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
+                                      image: itemPricing[item.id]?.pricing?.amazon?.image || item.image_url,
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
@@ -806,7 +806,7 @@ export default function WishlistDetail() {
                                       price: itemPricing[item.id]?.pricing?.target?.price || item.price || '$99.00',
                                       link: itemPricing[item.id]?.pricing?.target?.link,
                                       retailer: 'target',
-                                      image: itemPricing[item.id]?.pricing?.target?.image || item.imageUrl,
+                                      image: itemPricing[item.id]?.pricing?.target?.image || item.image_url,
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
@@ -847,7 +847,7 @@ export default function WishlistDetail() {
                                       price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '$99.00',
                                       link: itemPricing[item.id]?.pricing?.walmart?.link,
                                       retailer: 'walmart',
-                                      image: itemPricing[item.id]?.pricing?.walmart?.image || item.imageUrl,
+                                      image: itemPricing[item.id]?.pricing?.walmart?.image || item.image_url,
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
