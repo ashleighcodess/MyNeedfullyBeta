@@ -94,17 +94,13 @@ function NotificationHandler() {
 }
 
 function Router() {
-  // Skip authentication for browse page to prevent 401 polling spam
   const [location] = useLocation();
-  const isBrowsePage = location === '/browse';
-  
-  const { isAuthenticated, isLoading } = isBrowsePage ? { isAuthenticated: false, isLoading: false } : useAuth();
+  const { isAuthenticated, isLoading } = useAuth(); // useAuth now handles public pages properly
   
   // WebSocket temporarily disabled for deployment stability
   // useWebSocket();
 
-  // Skip loading check for browse page to prevent hanging
-  if (isLoading && !location.includes('/browse')) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-warm-bg flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
