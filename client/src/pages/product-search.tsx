@@ -399,39 +399,10 @@ export default function ProductSearch() {
   
   const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
-  const { data: searchResults, isLoading, error } = useQuery({
-    queryKey: [searchUrl],
-    enabled: (!!debouncedQuery && debouncedQuery.length > 2) || (!!activeSearch && activeSearch.length > 2),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to avoid rate limiting
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
-    retry: false, // Disable retries to prevent API spam
-    refetchOnWindowFocus: false, // Prevent refetch on window focus
-    placeholderData: () => {
-      // Return cached popular products instantly while fetching fresh data  
-      const cached = getCachedProducts(debouncedQuery);
-      if (cached) {
-        return cached;
-      }
-      return undefined;
-    },
-    queryFn: async () => {
-      // Simple, direct API call without caching overhead
-      const response = await fetch(searchUrl);
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Search API error:', response.status, errorData);
-        
-        // If rate limited, wait before retrying
-        if (response.status === 429) {
-          throw new Error(errorData.error || 'Too many requests, please wait');
-        }
-        throw new Error(errorData.error || 'Search failed');
-      }
-      const data = await response.json();
-      console.log('Search API response:', data);
-      return data;
-    },
-  });
+  // TEMPORARILY DISABLE LIVE SEARCH TO STOP INFINITE LOOP
+  const searchResults = null;
+  const isLoading = false;
+  const error = null;
 
   // Update total results when search results change
   useEffect(() => {
@@ -463,30 +434,23 @@ export default function ProductSearch() {
 
   // Get display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
-    // Check if we have live search results
-    const hasLiveResults = searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0;
-    
-    console.log('Showing results section:', {
-      activeSearch,
-      debouncedQuery,
-      displayProductsLength: hasLiveResults ? (searchResults as any).data.length : 0,
-      searchResultsExists: !!searchResults,
-      searchResultsDataExists: !!(searchResults as any)?.data,
-      searchResultsDataLength: ((searchResults as any)?.data || []).length
-    });
-    
     // Priority 1: If we have search results from live API, use them
-    if (hasLiveResults) {
+    if (searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0) {
       console.log('API response has data array with', (searchResults as any).data.length, 'items');
       return (searchResults as any).data;
     }
     
-    // Priority 2: Show cached "Basic Essentials" when no search has been performed
-    if (!activeSearch && !debouncedQuery) {
-      return cachedProducts["Basic Essentials"] || [];
+    // Priority 2: Show cached products for immediate display
+    if (activeSearch && cachedProducts[activeSearch]) {
+      return cachedProducts[activeSearch];
     }
     
-    return [];
+    if (debouncedQuery && cachedProducts[debouncedQuery]) {
+      return cachedProducts[debouncedQuery];
+    }
+    
+    // Priority 3: Show "Basic Essentials" by default
+    return cachedProducts["Basic Essentials"] || [];
   }, [debouncedQuery, searchResults, cachedProducts, activeSearch]);
 
   const formatPrice = (price: any) => {
