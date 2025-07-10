@@ -17,15 +17,15 @@ import logoPath from "@assets/Logo_1 copy_1751749982849.png";
 import NotificationCenter from "./notification-center";
 
 export default function Navigation() {
+  const { user } = useAuth();
   const [location] = useLocation();
-  const { user } = useAuth(); // useAuth now properly handles public pages
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [userKey, setUserKey] = useState(0); // Force re-render key
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
-    enabled: !!user, // Only fetch when user is authenticated
+    enabled: !!user,
     refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
     retry: false,
   });
