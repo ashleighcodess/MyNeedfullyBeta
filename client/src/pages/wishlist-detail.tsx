@@ -386,7 +386,7 @@ export default function WishlistDetail() {
   };
 
   // Preload story images for faster loading
-  React.useEffect(() => {
+  useEffect(() => {
     if (wishlist) {
       const storyImages = getStoryImages();
       
@@ -398,7 +398,7 @@ export default function WishlistDetail() {
         link.href = imagePath;
         link.as = 'image';
         if (index === 0) {
-          link.fetchpriority = 'high'; // Highest priority for featured image
+          link.setAttribute('fetchpriority', 'high'); // Highest priority for featured image
         }
         document.head.appendChild(link);
         
@@ -406,7 +406,7 @@ export default function WishlistDetail() {
         const img = new Image();
         img.src = imagePath;
         if (index === 0) {
-          img.fetchpriority = 'high' as any;
+          (img as any).fetchpriority = 'high';
         }
       });
       
@@ -555,7 +555,7 @@ export default function WishlistDetail() {
                     alt={wishlist.title}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="eager"
-                    fetchpriority="high"
+                    fetchPriority="high"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
@@ -601,7 +601,7 @@ export default function WishlistDetail() {
                             alt={`Story image ${index + 1}`}
                             className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
                             loading={index < 3 ? "eager" : "lazy"}
-                            fetchpriority={index === 0 ? "high" : "auto"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
                           />
                           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
                             <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
