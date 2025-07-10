@@ -21,7 +21,13 @@ import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
-// Simplified cached products - using URLs instead of imports for faster loading
+// Product images
+import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
+import charminToiletPaperImage from "@assets/81Ml0P+qqnL._AC__1751759916227.jpg";
+import pampersDiapersImage from "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp";
+import tideDetergentImage from "@assets/tide_1751760058768.webp";
+import bountyPaperTowelsImage from "@assets/81+BZP2zUHL._AC__1751760103041.jpg";
+import walmartToiletPaperImage from "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg";
 import { 
   Search, 
   Filter, 
@@ -58,8 +64,7 @@ export default function ProductSearch() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
-  const [cachedPage, setCachedPage] = useState(1);
-  const itemsPerPage = 20;
+
 
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
@@ -111,19 +116,20 @@ export default function ProductSearch() {
   // Synchronously initialize activeSearch to ensure immediate cached product display
   const [activeSearch, setActiveSearch] = useState(() => {
     // Initialize with cached products ready - this prevents any loading flash
-    return initialQuery || "";
+    return initialQuery || "Basic Essentials";
   });
 
-  // Initialize search from URL parameters
+  // Initialize search from URL parameters or default to "Basic Essentials"
   useEffect(() => {
     if (initialQuery) {
       setSearchQuery(initialQuery);
       setDebouncedQuery(initialQuery);
-      setActiveSearch(initialQuery);
+      // activeSearch already set in useState initializer
     } else {
-      // Show Basic Essentials by default on page load
-      setActiveSearch("Basic Essentials");
-      setCachedPage(1); // Reset pagination
+      // Auto-load with pre-cached "Basic Essentials" results when no query parameter is provided
+      // Keep search input empty for default state - don't set searchQuery
+      // Don't set debouncedQuery - this prevents the automatic search trigger
+      // activeSearch already set in useState initializer to "Basic Essentials"
     }
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
@@ -147,743 +153,151 @@ export default function ProductSearch() {
     addToWishlistMutation.mutate(product);
   };
 
-  // Mixed instant results with real images for fast loading
-  const cachedProducts = useMemo(() => ({
+  // Cached products - real product search will provide actual images from APIs
+  const popularProducts = useMemo(() => ({
     "Basic Essentials": [
+      // Amazon Products - placeholder images to be replaced with exact URLs
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71oOkIoaqXL._AC_SL1500_.jpg",
+        image: pampersWipesImage,
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 29853,
+        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20",
+        retailer: "amazon"
       },
       {
         asin: "B073V1T37H", 
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "https://m.media-amazon.com/images/I/81Ml0P+qqnL._AC_.jpg",
+        image: charminToiletPaperImage,
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 47832,
+        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        asin: "B0949V7VRH",
+        title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
+        image: pampersDiapersImage,
+        price: { value: 28.94, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 15234,
+        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20",
+        retailer: "amazon"
       },
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: "https://m.media-amazon.com/images/I/81+BZP2zUHL._AC_.jpg",
+        image: tideDetergentImage,
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 18745,
+        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
+        retailer: "amazon"
       },
       {
-        asin: "B004CG0URC",
-        title: "Bounty Select-a-Size Paper Towels, 8 Triple Rolls",
-        image: "https://m.media-amazon.com/images/I/81fKH2-uPkL._AC_SL1500_.jpg",
-        price: { value: 24.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08F2X7JRD",
-        title: "Clorox Disinfecting Wipes, 5 Pack (425 Wipes Total)",
-        image: "https://m.media-amazon.com/images/I/81gJNa9XRRL._AC_SL1500_.jpg",
-        price: { value: 19.97, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07BYB4Q6Z",
-        title: "Kleenex Ultra Soft Facial Tissues, 12 Boxes",
-        image: "https://m.media-amazon.com/images/I/81VgRo8R-8L._AC_SL1500_.jpg",
-        price: { value: 16.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B075RDQFMZ",
-        title: "Dawn Ultra Dishwashing Liquid Dish Soap, Original Scent, 7 oz, 8 count",
-        image: "https://m.media-amazon.com/images/I/81K7OfGqPYL._AC_SL1500_.jpg",
-        price: { value: 15.48, currency: "USD" },
-        rating: 4.8,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0779VKDVN",
-        title: "Lysol Disinfectant Spray, Crisp Linen, 12.5oz (Pack of 6)",
-        image: "https://m.media-amazon.com/images/I/71V3H0VwZ6L._AC_SL1500_.jpg",
-        price: { value: 24.99, currency: "USD" },
+        asin: "B08BYND8YN",
+        title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
+        image: bountyPaperTowelsImage,
+        price: { value: 19.49, currency: "USD" },
         rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 32156,
+        link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
+        retailer: "amazon"
       },
+      // Walmart Products - placeholder images to be replaced with exact URLs
       {
-        asin: "B072KBQX8X",
-        title: "Ziploc Storage Bags Gallon, 120 Count",
-        image: "https://m.media-amazon.com/images/I/81VK5O+QBCL._AC_SL1500_.jpg",
-        price: { value: 17.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B00QFUDDAE",
-        title: "Hefty Strong Large Trash Bags, 30 Gallon, 56 Count",
-        image: "https://m.media-amazon.com/images/I/81h2z4oqF-L._AC_SL1500_.jpg",
-        price: { value: 18.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08G4H3LQB",
-        title: "Reynolds Wrap Aluminum Foil, 200 Square Feet",
-        image: "https://m.media-amazon.com/images/I/71lGaVb8tpL._AC_SL1500_.jpg",
-        price: { value: 11.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B073WGG2XD",
-        title: "Glad Press'n Seal Plastic Food Wrap, 140 sq ft",
-        image: "https://m.media-amazon.com/images/I/81kHUXM7J8L._AC_SL1500_.jpg",
-        price: { value: 13.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07FQHTPVQ",
-        title: "Scott Comfort Plus Toilet Paper, 36 Double Rolls",
-        image: "https://m.media-amazon.com/images/I/81yZ9VKJ-nL._AC_SL1500_.jpg",
-        price: { value: 29.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B089Q7T6HS",
-        title: "Arm & Hammer Clean Burst Laundry Detergent, 150 oz",
-        image: "https://m.media-amazon.com/images/I/61nL4QwKVJL._AC_SL1000_.jpg",
-        price: { value: 14.97, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07H2NVQXZ",
-        title: "Downy Unstopables In-Wash Scent Booster Beads, Fresh Scent, 26.5 oz",
-        image: "https://m.media-amazon.com/images/I/61K6eZ+nJOL._AC_SL1000_.jpg",
-        price: { value: 12.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0842D8SFG",
-        title: "Pine-Sol All-Purpose Cleaner, Original Pine, 100 oz",
-        image: "https://m.media-amazon.com/images/I/61UxRdPNLBL._AC_SL1200_.jpg",
-        price: { value: 8.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0779G4CJM",
-        title: "Seventh Generation Free & Clear Laundry Detergent, 112 oz",
-        image: "https://m.media-amazon.com/images/I/71eJJ4gXKjL._AC_SL1500_.jpg",
-        price: { value: 16.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08GLXMWMQ",
-        title: "Mrs. Meyer's Clean Day Multi-Surface Cleaner, Lavender, 16 oz, 3 pk",
-        image: "https://m.media-amazon.com/images/I/71VB8mKsNhL._AC_SL1500_.jpg",
-        price: { value: 19.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
+        image: walmartToiletPaperImage,
+        price: "$11.98",
+        product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
+        product_id: "10315001",
+        retailer: "walmart",
+        retailer_name: "Walmart"
       }
     ],
-    "Electronics": [
-      {
-        asin: "B08C1W5N87",
-        title: "Echo Dot (4th Gen) | Smart speaker with Alexa",
-        image: "https://m.media-amazon.com/images/I/714Rq4k05UL._AC_SL1000_.jpg",
-        price: { value: 49.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08N5WRWNW",
-        title: "Apple AirPods (3rd Generation)",
-        image: "https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SL1500_.jpg", 
-        price: { value: 179.00, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07YLZQQ7L",
-        title: "Instant Vortex Plus 4-Quart Air Fryer",
-        image: "https://m.media-amazon.com/images/I/71jblfczoKL._AC_SL1500_.jpg",
-        price: { value: 79.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08KRV7S9Q",
-        title: "Fire TV Stick 4K Max streaming device",
-        image: "https://m.media-amazon.com/images/I/51TjJOTfslL._AC_SL1000_.jpg",
-        price: { value: 54.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0C1SLD1PZ",
-        title: "Apple iPhone 15 (128 GB) - Blue",
-        image: "https://m.media-amazon.com/images/I/71xb2xkN5qL._AC_SL1500_.jpg",
-        price: { value: 799.00, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B09JQSYCDS",
-        title: "Sony WH-CH720N Noise Canceling Wireless Headphones",
-        image: "https://m.media-amazon.com/images/I/61Oqm-ZG3bL._AC_SL1500_.jpg",
-        price: { value: 149.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08KTXNZQH",
-        title: "Apple iPad (9th Generation): 64GB Wi-Fi",
-        image: "https://m.media-amazon.com/images/I/61NGnpjoTDL._AC_SL1500_.jpg",
-        price: { value: 329.99, currency: "USD" },
-        rating: 4.8,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07W6JD39X",
-        title: "JBL Flip 5 Waterproof Portable Bluetooth Speaker",
-        image: "https://m.media-amazon.com/images/I/81fRODO5jjL._AC_SL1500_.jpg",
-        price: { value: 89.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B087CRSXMZ",
-        title: "Samsung Galaxy Buds Live True Wireless Earbuds",
-        image: "https://m.media-amazon.com/images/I/61EkNtOWcgL._AC_SL1500_.jpg",
-        price: { value: 169.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08B3XNTFK",
-        title: "Roku Streaming Stick 4K+ with Voice Remote Pro",
-        image: "https://m.media-amazon.com/images/I/71GXeVB35CL._AC_SL1500_.jpg",
-        price: { value: 59.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07HZLHPKP",
-        title: "Anker Wireless Charger, PowerWave 10 Stand",
-        image: "https://m.media-amazon.com/images/I/611kR8KWwZL._AC_SL1500_.jpg",
-        price: { value: 25.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B09HXGVX74",
-        title: "Logitech MX Master 3S Wireless Mouse",
-        image: "https://m.media-amazon.com/images/I/61ni3t1ryqL._AC_SL1500_.jpg",
-        price: { value: 99.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B09B8RXYYG",
-        title: "ASUS VivoBook 15 Laptop, 15.6 FHD Display",
-        image: "https://m.media-amazon.com/images/I/81fstJkUlaL._AC_SL1500_.jpg",
-        price: { value: 459.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07QP8VK41",
-        title: "Ring Video Doorbell Wired",
-        image: "https://m.media-amazon.com/images/I/61jxJCHhkdL._AC_SL1000_.jpg",
-        price: { value: 59.99, currency: "USD" },
-        rating: 4.1,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B087DFZQXH",
-        title: "Fitbit Versa 3 Health & Fitness Smartwatch",
-        image: "https://m.media-amazon.com/images/I/61HoiwRHBUL._AC_SL1500_.jpg",
-        price: { value: 199.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08GGGM3VJ",
-        title: "HP DeskJet 3755 Compact All-in-One Wireless Printer",
-        image: "https://m.media-amazon.com/images/I/61lE+E4XJUL._AC_SL1500_.jpg",
-        price: { value: 79.99, currency: "USD" },
-        rating: 4.0,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08X6HL4D2",
-        title: "SanDisk 128GB Ultra MicroSDXC UHS-I Memory Card",
-        image: "https://m.media-amazon.com/images/I/61+BLGV+OuL._AC_SL1500_.jpg",
-        price: { value: 19.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07G2JVYRD",
-        title: "Govee Smart WiFi LED Strip Lights, 16.4ft",
-        image: "https://m.media-amazon.com/images/I/71UepVJmgJL._AC_SL1500_.jpg",
-        price: { value: 19.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08XXBG4NP",
-        title: "Kindle Paperwhite (11th Generation)",
-        image: "https://m.media-amazon.com/images/I/71YuL8X4D9L._AC_SL1500_.jpg",
-        price: { value: 139.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08F7PTF53",
-        title: "Nintendo Switch Console with Neon Blue and Neon Red Joy‑Con",
-        image: "https://m.media-amazon.com/images/I/61-PblYntsL._AC_SL1500_.jpg",
-        price: { value: 299.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08ZJL4XKK",
-        title: "Bose QuietComfort 45 Wireless Bluetooth Noise Cancelling Headphones",
-        image: "https://m.media-amazon.com/images/I/51AddVCd5HL._AC_SL1500_.jpg",
-        price: { value: 329.00, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B09V3HN1KC",
-        title: "Meta Quest 2 Advanced All-In-One Virtual Reality Headset",
-        image: "https://m.media-amazon.com/images/I/615YaAiA-ML._AC_SL1500_.jpg",
-        price: { value: 399.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      }
-    ],
-    "Household": [
-      {
-        asin: "B07VPN4QMW",
-        title: "Shark Navigator Lift-Away Professional NV356E",
-        image: "https://m.media-amazon.com/images/I/71Y+8Et7PIL._AC_SL1500_.jpg",
-        price: { value: 179.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07VVK39F7",
-        title: "LEVOIT Air Purifier for Home Large Room",
-        image: "https://m.media-amazon.com/images/I/61lmTBNpRwL._AC_SL1500_.jpg",
-        price: { value: 149.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08F2Q83QZ",
-        title: "Bissell CrossWave Pet Pro All in One Wet Dry Vacuum",
-        image: "https://m.media-amazon.com/images/I/71apmYzKNNL._AC_SL1500_.jpg",
-        price: { value: 229.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B089CY3DM6",
-        title: "iRobot Roomba 694 Robot Vacuum",
-        image: "https://m.media-amazon.com/images/I/71e+jrzN9AL._AC_SL1500_.jpg",
-        price: { value: 274.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0CR6GXKPV",
-        title: "Ninja Foodi Personal Blender with Cups",
-        image: "https://m.media-amazon.com/images/I/81hXJJ-RKZL._AC_SL1500_.jpg",
-        price: { value: 79.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B074WMJ1D2",
-        title: "BLACK+DECKER Dustbuster Handheld Vacuum",
-        image: "https://m.media-amazon.com/images/I/71cqP2W3bKL._AC_SL1500_.jpg",
-        price: { value: 59.99, currency: "USD" },
-        rating: 4.1,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08X6Y1KMQ",
-        title: "Keurig K-Mini Coffee Maker, Single Serve K-Cup Pod Coffee Brewer",
-        image: "https://m.media-amazon.com/images/I/61FgMJxdmHL._AC_SL1500_.jpg",
-        price: { value: 79.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B01E6AO69U",
-        title: "Instant Pot Duo 7-in-1 Electric Pressure Cooker, 6 Quart",
-        image: "https://m.media-amazon.com/images/I/71VWBJpDN4L._AC_SL1500_.jpg",
-        price: { value: 89.95, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08GKLQZXC",
-        title: "Cuisinart DFP-14BCNY 14-Cup Food Processor",
-        image: "https://m.media-amazon.com/images/I/81K3D5GFr1L._AC_SL1500_.jpg",
-        price: { value: 199.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07Q3S5G8Z",
-        title: "Hamilton Beach Electric Tea Kettle, Water Boiler & Heater, Cordless",
-        image: "https://m.media-amazon.com/images/I/71uMOVYyhlL._AC_SL1500_.jpg",
-        price: { value: 39.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B086LGDHPQ",
-        title: "KitchenAid Stand Mixer tilt-head, 4.5 quart, Aqua Sky",
-        image: "https://m.media-amazon.com/images/I/81aKAdYHZxL._AC_SL1500_.jpg",
-        price: { value: 299.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07QP8VK41",
-        title: "Honeywell Home RTH9585WF1004 Wi-Fi Smart Color Thermostat",
-        image: "https://m.media-amazon.com/images/I/71gGnCcHqKL._AC_SL1500_.jpg",
-        price: { value: 199.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07RTTDQZM",
-        title: "Eureka Groove Electric Can Opener, Extra Tall, Black",
-        image: "https://m.media-amazon.com/images/I/61Y8lrb52PL._AC_SL1500_.jpg",
-        price: { value: 15.99, currency: "USD" },
-        rating: 4.1,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07TJR3K1T",
-        title: "Rubbermaid Reveal Spray Mop for Floor Cleaning",
-        image: "https://m.media-amazon.com/images/I/71lW8zLa46L._AC_SL1500_.jpg",
-        price: { value: 34.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08BCRQTHL",
-        title: "Simplehuman 45 Liter / 12 Gallon Stainless Steel Butterfly Step Trash Can",
-        image: "https://m.media-amazon.com/images/I/61pPEh+6-yL._AC_SL1500_.jpg",
-        price: { value: 149.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B076BQZ9YX",
-        title: "Swiffer Sweeper Pet Heavy Duty Dry Sweeping Cloth Refills for Floor Mopping",
-        image: "https://m.media-amazon.com/images/I/81vWVGYT7xL._AC_SL1500_.jpg",
-        price: { value: 21.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B089GBRC7M",
-        title: "O-Cedar EasyWring RinseClean Microfiber Spin Mop & Bucket Floor Cleaning System",
-        image: "https://m.media-amazon.com/images/I/71cT5gZCGXL._AC_SL1500_.jpg",
-        price: { value: 59.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07T1CH2YX",
-        title: "IRIS USA 3-Drawer Rolling Storage Cart with Organizer Top, White",
-        image: "https://m.media-amazon.com/images/I/71YvGvCwGKL._AC_SL1500_.jpg",
-        price: { value: 49.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0BZ2L5J4Q",
-        title: "Sterilite 66 Quart/62 Liter Gasket Box, Stackable Storage Bin with Latching Lid",
-        image: "https://m.media-amazon.com/images/I/81fDhJZJD9L._AC_SL1500_.jpg",
-        price: { value: 24.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07Q4X4Y4S",
-        title: "Simple Trending 3-Tier Under Sink Expandable Shelf Organizer",
-        image: "https://m.media-amazon.com/images/I/71FY6YtKxHL._AC_SL1500_.jpg",
-        price: { value: 29.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      }
-    ],
-    "Baby & Kids": [
-      {
-        asin: "B075M7FHM7",
-        title: "VTech DM221 Audio Baby Monitor",
-        image: "https://m.media-amazon.com/images/I/61aJCWjjG5L._AC_SL1500_.jpg",
-        price: { value: 39.95, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07HBQZPX1",
-        title: "Graco 4Ever DLX 4 in 1 Car Seat",
-        image: "https://m.media-amazon.com/images/I/81ScU+A7tDL._AC_SL1500_.jpg",
-        price: { value: 299.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B01LXJK9YZ",
-        title: "Fisher-Price Baby Learning Toy Laugh & Learn Smart Stages Chair",
-        image: "https://m.media-amazon.com/images/I/91YY8wZdR0L._AC_SL1500_.jpg",
-        price: { value: 49.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B0822DQBWV",
-        title: "Huggies Little Snugglers Baby Diapers, Size 1",
-        image: "https://m.media-amazon.com/images/I/81aF6H9QKQL._AC_SL1500_.jpg",
-        price: { value: 47.94, currency: "USD" },
-        rating: 4.8,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08GLBSR2L",
-        title: "Baby Einstein Take Along Tunes Musical Toy",
-        image: "https://m.media-amazon.com/images/I/81Hk9I3GYZL._AC_SL1500_.jpg",
-        price: { value: 12.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B078K1W9B3",
-        title: "Chicco Bravo LE Trio Travel System",
-        image: "https://m.media-amazon.com/images/I/71rIo9w2ndL._AC_SL1500_.jpg",
-        price: { value: 299.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
+    "baby wipes": [
       {
         asin: "B08TMLHWTD",
-        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71oOkIoaqXL._AC_SL1500_.jpg",
+        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs, 672 Total Wipes",
+        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 29853,
+        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20"
       },
       {
-        asin: "B07QZ8Q7R5",
-        title: "Graco Pack 'n Play On the Go Playard",
-        image: "https://m.media-amazon.com/images/I/91VaIUQdqcL._AC_SL1500_.jpg",
-        price: { value: 89.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B01AXQQLBQ",
-        title: "Baby Brezza Formula Pro Advanced Formula Dispenser",
-        image: "https://m.media-amazon.com/images/I/71xMM2N-gzL._AC_SL1500_.jpg",
-        price: { value: 199.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07XJTQZL3",
-        title: "Skip Hop Baby Bath Toys for Toddlers, Zoo Mix & Match",
-        image: "https://m.media-amazon.com/images/I/91n4Df9RHSL._AC_SL1500_.jpg",
-        price: { value: 24.99, currency: "USD" },
+        asin: "B07GDQX4YS",
+        title: "Huggies Natural Care Sensitive Baby Wipes, Unscented, 8 Flip-Top Packs (448 Wipes Total)",
+        image: "https://m.media-amazon.com/images/I/81nqYmT7DgL._SL1500_.jpg",
+        price: { value: 15.84, currency: "USD" },
         rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
+        ratings_total: 18739,
+        link: "https://www.amazon.com/dp/B07GDQX4YS?tag=needfully-20"
+      }
+    ],
+    "toilet paper": [
       {
-        asin: "B07BBK7SLM",
-        title: "Munchkin LATCH Lightweight Pacifier, 6+ Months, 2 Pack",
-        image: "https://m.media-amazon.com/images/I/81wT6XYJ7kL._AC_SL1500_.jpg",
-        price: { value: 8.99, currency: "USD" },
-        rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08Z3Q7X6D",
-        title: "Crayola Light-Up Tracing Pad - Pink, Gift for Girls, Ages 6, 7, 8",
-        image: "https://m.media-amazon.com/images/I/81ZWvTmK5qL._AC_SL1500_.jpg",
-        price: { value: 24.99, currency: "USD" },
-        rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08GXQV7Y8",
-        title: "LEGO Classic Creative Bricks Building Kit 10692",
-        image: "https://m.media-amazon.com/images/I/91RZSz-JMQL._AC_SL1500_.jpg",
-        price: { value: 29.99, currency: "USD" },
-        rating: 4.8,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B07W7TGXP2",
-        title: "Melissa & Doug Shape Sorting Cube",
-        image: "https://m.media-amazon.com/images/I/91Wx1N6QAZL._AC_SL1500_.jpg",
-        price: { value: 16.99, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B096SX7GHJ",
-        title: "Baby Jogger City Mini GT2 All-Terrain Stroller",
-        image: "https://m.media-amazon.com/images/I/71v8PGvmmkL._AC_SL1500_.jpg",
-        price: { value: 349.99, currency: "USD" },
+        asin: "B073V1T37H",
+        title: "Charmin Ultra Soft Cushiony Touch Toilet Paper, 18 Family Mega Rolls = 90 Regular Rolls",
+        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
+        price: { value: 23.94, currency: "USD" },
         rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 47832,
+        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20"
       },
       {
-        asin: "B07YPQFXF8",
-        title: "Dr. Brown's Options+ Anti-Colic Baby Bottles, 8 oz, 4 Pack",
-        image: "https://m.media-amazon.com/images/I/71a8fOz3SjL._AC_SL1500_.jpg",
-        price: { value: 39.99, currency: "USD" },
+        asin: "B071Z8XBHY",
+        title: "Cottonelle Ultra ComfortCare Toilet Paper, 24 Family Mega Rolls = 108 Regular Rolls",
+        image: "https://m.media-amazon.com/images/I/81fH4-yKUJL._SL1500_.jpg",
+        price: { value: 21.48, currency: "USD" },
         rating: 4.5,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
+        ratings_total: 32156,
+        link: "https://www.amazon.com/dp/B071Z8XBHY?tag=needfully-20"
+      }
+    ],
+    "sleeping bag": [
       {
-        asin: "B07H2NVQXZ",
-        title: "Boon Grass Countertop Drying Rack, Green",
-        image: "https://m.media-amazon.com/images/I/71dLz1oFoZL._AC_SL1500_.jpg",
-        price: { value: 24.99, currency: "USD" },
+        asin: "B08F3MGC9Q",
+        title: "Coleman Brazos Cold Weather Sleeping Bag, 20°F Comfort Rating",
+        image: "https://m.media-amazon.com/images/I/71xDqNzLfqL._SL1500_.jpg",
+        price: { value: 34.99, currency: "USD" },
         rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        ratings_total: 8945,
+        link: "https://www.amazon.com/dp/B08F3MGC9Q?tag=needfully-20"
       },
       {
-        asin: "B086B6T6FG",
-        title: "Bright Starts Sit & Bounce Baby Activity Seat",
-        image: "https://m.media-amazon.com/images/I/81k3mCJLqrL._AC_SL1500_.jpg",
-        price: { value: 79.99, currency: "USD" },
+        asin: "B00363RGHQ",
+        title: "TETON Sports Celsius Regular Sleeping Bag; Great for Family Camping",
+        image: "https://m.media-amazon.com/images/I/81rRVLPkL6L._SL1500_.jpg",
+        price: { value: 45.99, currency: "USD" },
         rating: 4.4,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
+        ratings_total: 5672,
+        link: "https://www.amazon.com/dp/B00363RGHQ?tag=needfully-20"
+      }
+    ],
+    "diapers": [
       {
-        asin: "B01M8N7VF5",
-        title: "Summer Infant 3Dlite+ Convenience Stroller",
-        image: "https://m.media-amazon.com/images/I/61L7Kx5mnUL._AC_SL1500_.jpg",
-        price: { value: 99.99, currency: "USD" },
-        rating: 4.3,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
+        asin: "B0949V7VRH",
+        title: "Pampers Baby Dry Night Overnight Diapers, Size 3, 172 Count",
+        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
+        price: { value: 28.94, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 15234,
+        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20"
+      }
+    ],
+    "blanket": [
       {
-        asin: "B08Y5KN5K7",
-        title: "Nuby Ice Gel Teether Keys",
-        image: "https://m.media-amazon.com/images/I/61PKc7BHhbL._AC_SL1000_.jpg",
-        price: { value: 6.99, currency: "USD" },
-        rating: 4.2,
-        retailer: "amazon",
-        retailer_name: "Amazon"
-      },
-      {
-        asin: "B08GLBSR2L",
-        title: "VTech Baby Lil' Critters Moosical Beads",
-        image: "https://m.media-amazon.com/images/I/91YlXXfzv7L._AC_SL1500_.jpg",
-        price: { value: 19.99, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon",
-        retailer_name: "Amazon"
+        asin: "B07H9T8VTQ",
+        title: "Utopia Bedding Fleece Blanket Queen Size Grey - Lightweight Bed Blanket",
+        image: "https://m.media-amazon.com/images/I/71XGJfF6fDL._SL1500_.jpg",
+        price: { value: 12.99, currency: "USD" },
+        rating: 4.4,
+        ratings_total: 89567,
+        link: "https://www.amazon.com/dp/B07H9T8VTQ?tag=needfully-20"
       }
     ]
   }), []);
@@ -929,7 +343,7 @@ export default function ProductSearch() {
     return getCachedResult(key);
   }, [category, getCacheKey, getCachedResult]);
 
-  // Build query URL with parameters - Smart routing for speed
+  // Build query URL with parameters
   const buildSearchUrl = useCallback(() => {
     const params = new URLSearchParams();
     if (debouncedQuery) params.append('query', debouncedQuery);
@@ -938,15 +352,8 @@ export default function ProductSearch() {
     if (maxPrice) params.append('max_price', maxPrice);
     if (page && page !== 1) params.append('page', page.toString());
     
-    // Smart decision: Use multi-retailer search only for user-typed queries
-    // Category clicks get fast Amazon-only search for instant results
-    const isUserTypedQuery = searchQuery.length > 0 && debouncedQuery === searchQuery;
-    if (isUserTypedQuery) {
-      params.append('multi_retailer', 'true');
-    }
-    
     return `/api/search?${params.toString()}`;
-  }, [debouncedQuery, category, minPrice, maxPrice, page, searchQuery]);
+  }, [debouncedQuery, category, minPrice, maxPrice, page]);
 
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
@@ -956,14 +363,25 @@ export default function ProductSearch() {
 
 
 
-  // Smart search with optimized loading
+  // Custom query with smart caching and fallbacks
+  const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page]);
+  
   const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [searchUrl],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
-    staleTime: 60000, // 1 minute cache for better performance
+    staleTime: 0, // No caching - always fresh data
+    placeholderData: () => {
+      // Return cached popular products instantly while fetching fresh data  
+      const cached = getCachedProducts(debouncedQuery);
+      if (cached) {
+        return cached;
+      }
+      return undefined;
+    },
     queryFn: async () => {
+      // Simple, direct API call without caching overhead
       const response = await fetch(searchUrl);
       if (!response.ok) {
         throw new Error('Search failed');
@@ -993,9 +411,9 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products with pagination for cached results
+  // Get display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
-    // Priority 1: If we have search results from live API, use them
+    // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       const results = searchResults?.search_results || searchResults?.data || [];
       if (results.length > 0) {
@@ -1007,36 +425,13 @@ export default function ProductSearch() {
       }
     }
     
-    // Priority 2: Show instant category results with pagination
-    if (activeSearch && cachedProducts[activeSearch as keyof typeof cachedProducts]) {
-      const allProducts = cachedProducts[activeSearch as keyof typeof cachedProducts];
-      const startIndex = (cachedPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const paginatedProducts = allProducts.slice(startIndex, endIndex);
-      console.log(`Instant category results for ${activeSearch}: page ${cachedPage}, showing ${paginatedProducts.length} of ${allProducts.length} products`);
-      return paginatedProducts;
-    }
-    
-    // Priority 3: Show basic essentials by default when page loads
-    if (!debouncedQuery || debouncedQuery.length < 3) {
-      const allProducts = cachedProducts["Basic Essentials"] || [];
-      const startIndex = (cachedPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      return allProducts.slice(startIndex, endIndex);
+    // Priority 2: Show cached "Basic Essentials" when no search has been performed
+    if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
+      return popularProducts["Basic Essentials"] || [];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, activeSearch, cachedProducts, cachedPage, itemsPerPage]);
-
-  // Get total count for pagination
-  const totalCount = useMemo(() => {
-    if (activeSearch && cachedProducts[activeSearch as keyof typeof cachedProducts]) {
-      return cachedProducts[activeSearch as keyof typeof cachedProducts].length;
-    }
-    return cachedProducts["Basic Essentials"]?.length || 0;
-  }, [activeSearch, cachedProducts]);
-
-  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  }, [debouncedQuery, searchResults, popularProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -1307,12 +702,11 @@ export default function ProductSearch() {
                 className="p-2 md:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer text-center bg-white hover:bg-gray-50 active:scale-95"
                 onClick={() => {
                   console.log('Category clicked:', category.label);
-                  setSearchQuery(""); // Clear search input
-                  setDebouncedQuery(""); // Don't trigger API search
-                  setActiveSearch(category.label); // Show instant results
+                  setSearchQuery(category.label);
+                  setDebouncedQuery(category.label);
+                  setActiveSearch(category.label);
                   setCategory(category.value);
                   setPage(1);
-                  setCachedPage(1); // Reset pagination for cached results
                   setShowCategories(false); // Hide categories on mobile after selection
                 }}
               >
@@ -1506,56 +900,8 @@ export default function ProductSearch() {
                   ))}
                 </div>
 
-                {/* Pagination Controls for Cached Products */}
-                {totalPages > 1 && !debouncedQuery && (
-                  <div className="flex justify-center items-center space-x-4 mt-8">
-                    <Button
-                      variant="outline"
-                      disabled={cachedPage === 1}
-                      onClick={() => setCachedPage(prev => Math.max(1, prev - 1))}
-                      className="px-4 py-2"
-                    >
-                      Previous
-                    </Button>
-                    
-                    <div className="flex space-x-2">
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        const pageNum = Math.max(1, Math.min(totalPages - 4, cachedPage - 2)) + i;
-                        if (pageNum > totalPages) return null;
-                        
-                        return (
-                          <Button
-                            key={pageNum}
-                            variant={pageNum === cachedPage ? "default" : "outline"}
-                            onClick={() => setCachedPage(pageNum)}
-                            className="w-10 h-10 p-0"
-                          >
-                            {pageNum}
-                          </Button>
-                        );
-                      })}
-                    </div>
-                    
-                    <Button
-                      variant="outline"
-                      disabled={cachedPage === totalPages}
-                      onClick={() => setCachedPage(prev => Math.min(totalPages, prev + 1))}
-                      className="px-4 py-2"
-                    >
-                      Next
-                    </Button>
-                  </div>
-                )}
-
-                {/* Results Info */}
-                {totalCount > 0 && !debouncedQuery && (
-                  <div className="text-center mt-4 text-sm text-gray-600">
-                    Showing {((cachedPage - 1) * itemsPerPage) + 1}-{Math.min(cachedPage * itemsPerPage, totalCount)} of {totalCount} products
-                  </div>
-                )}
-
-                {/* Smart Pagination - Show More Results for API */}
-                {hasMoreResults && debouncedQuery && debouncedQuery.length >= 3 && (
+                {/* Smart Pagination - Show More Results */}
+                {hasMoreResults && (
                   <div className="mt-8 text-center">
                     <Button
                       onClick={loadMoreResults}

@@ -389,139 +389,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // FAST Amazon-Only Search for Category Searches (Quick Response)
+  // ULTRA FAST Multi-Retailer Search Endpoint (Amazon + Walmart + Target)
   app.get('/api/search', searchLimiter, async (req, res) => {
     try {
-      const { query, page = '1', multi_retailer = 'false' } = req.query;
+      const { query, page = '1' } = req.query;
       
       if (!query) {
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      const isMultiRetailer = multi_retailer === 'true';
-      
-      if (isMultiRetailer) {
-        // Multi-retailer search for detailed searches (user typed query)
-        console.log(`🚀 Multi-Retailer search for: "${query}"`);
-        const startTime = Date.now();
+      console.log(`🚀 ULTRA FAST Multi-Retailer search for: "${query}"`);
+      const startTime = Date.now();
 
-        const searchPromises = [];
+      // Parallel search across all three retailers with 3-second timeout
+      const searchPromises = [];
 
-        // 1. Amazon Search (RainforestAPI)
-        if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-          const amazonPromise = fetch(`https://api.rainforestapi.com/request?${new URLSearchParams({
-            api_key: RAINFOREST_API_KEY,
-            type: "search",
-            amazon_domain: "amazon.com",
-            search_term: query as string
-          }).toString()}`)
-          .then(res => res.json())
-          .then(data => ({
+      // 1. Amazon Search (RainforestAPI)
+      if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
+        const amazonPromise = fetch(`https://api.rainforestapi.com/request?${new URLSearchParams({
+          api_key: RAINFOREST_API_KEY,
+          type: "search",
+          amazon_domain: "amazon.com",
+          search_term: query as string
+        }).toString()}`)
+        .then(res => res.json())
+        .then(data => ({
+          retailer: 'amazon',
+          products: data.search_results?.map((product: any) => ({
+            ...product,
             retailer: 'amazon',
-            products: data.search_results?.map((product: any) => ({
-              ...product,
-              retailer: 'amazon',
-              retailer_name: 'Amazon',
-              link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
-            })) || []
-          }))
-          .catch(() => ({ retailer: 'amazon', products: [] }));
-          
-          searchPromises.push(amazonPromise);
-        }
-
-        // 2. Walmart Search (SerpAPI)
-        const serpApiService = getSerpAPIService();
-        if (serpApiService) {
-          const walmartPromise = Promise.race([
-            serpApiService.searchWalmart(query as string, '60602', 20),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 8000))
-          ])
-          .then((products: any) => ({ retailer: 'walmart', products }))
-          .catch(() => ({ retailer: 'walmart', products: [] }));
-          
-          searchPromises.push(walmartPromise);
-
-          // 3. Target Search (SerpAPI)
-          const targetPromise = Promise.race([
-            serpApiService.searchTarget(query as string, '10001', 20),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 8000))
-          ])
-          .then((products: any) => ({ retailer: 'target', products }))
-          .catch(() => ({ retailer: 'target', products: [] }));
-          
-          searchPromises.push(targetPromise);
-        }
-
-        // Execute all searches in parallel
-        const results = await Promise.all(searchPromises);
-        const endTime = Date.now();
-
-        // Combine and shuffle results
-        const allProducts = results.flatMap(result => result.products);
-        const shuffledProducts = allProducts.sort(() => Math.random() - 0.5);
-
-        console.log(`✅ Multi-Retailer: ${allProducts.length} products (${results.map(r => `${r.retailer}: ${r.products.length}`).join(', ')}) in ${endTime - startTime}ms`);
+            retailer_name: 'Amazon',
+            link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+          })) || []
+        }))
+        .catch(() => ({ retailer: 'amazon', products: [] }));
         
-        return res.json({
-          data: shuffledProducts.slice(0, 60) // Limit to 60 total products
-        });
-
-      } else {
-        // Fast Amazon-only search for category buttons (2-3 second response)
-        console.log(`⚡ Fast Amazon search for: "${query}"`);
-        const startTime = Date.now();
-
-        if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-          // Add timeout to Amazon search to prevent long waits
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-
-          try {
-            const response = await fetch(`https://api.rainforestapi.com/request?${new URLSearchParams({
-              api_key: RAINFOREST_API_KEY,
-              type: "search",
-              amazon_domain: "amazon.com",
-              search_term: query as string
-            }).toString()}`, {
-              signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-              const data = await response.json();
-              const products = data.search_results?.map((product: any) => ({
-                ...product,
-                retailer: 'amazon',
-                retailer_name: 'Amazon',
-                link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
-              })) || [];
-
-              const endTime = Date.now();
-              console.log(`⚡ Fast Amazon: ${products.length} products in ${endTime - startTime}ms`);
-              
-              return res.json({
-                data: products.slice(0, 40) // Limit to 40 Amazon products for speed
-              });
-            }
-          } catch (error) {
-            clearTimeout(timeoutId);
-            if (error.name === 'AbortError') {
-              console.log(`⚡ Amazon search timeout after 3 seconds for: "${query}"`);
-            } else {
-              console.error('Amazon search error:', error);
-            }
-          }
-        }
-
-        // Fallback if Amazon search fails or times out
-        console.log(`⚡ Fallback: No Amazon results for "${query}"`);
-        return res.json({ data: [] });
+        searchPromises.push(amazonPromise);
       }
 
+      // 2. Walmart Search (SerpAPI)
+      const serpApiService = getSerpAPIService();
+      if (serpApiService) {
+        const walmartPromise = Promise.race([
+          serpApiService.searchWalmart(query as string, '60602', 20),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 8000))
+        ])
+        .then((products: any) => ({ retailer: 'walmart', products }))
+        .catch(() => ({ retailer: 'walmart', products: [] }));
+        
+        searchPromises.push(walmartPromise);
+
+        // 3. Target Search (SerpAPI)
+        const targetPromise = Promise.race([
+          serpApiService.searchTarget(query as string, '10001', 20),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 8000))
+        ])
+        .then((products: any) => ({ retailer: 'target', products }))
+        .catch(() => ({ retailer: 'target', products: [] }));
+        
+        searchPromises.push(targetPromise);
+      }
+
+      // Execute all searches in parallel
+      const results = await Promise.all(searchPromises);
+      const endTime = Date.now();
+
+      // Combine and shuffle results
+      const allProducts = results.flatMap(result => result.products);
+      const shuffledProducts = allProducts.sort(() => Math.random() - 0.5);
+
+      console.log(`✅ ULTRA FAST Multi-Retailer: ${allProducts.length} products (${results.map(r => `${r.retailer}: ${r.products.length}`).join(', ')}) in ${endTime - startTime}ms`);
+      
+      return res.json({
+        data: shuffledProducts.slice(0, 60) // Limit to 60 total products
+      });
+
     } catch (error) {
-      console.error("Search error:", error);
+      console.error("Multi-retailer search error:", error);
       res.status(500).json({ message: "Search failed" });
     }
   });
