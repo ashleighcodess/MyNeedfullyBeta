@@ -65,11 +65,21 @@ export default function WishlistDetail() {
   const [showShareModal, setShowShareModal] = useState(false);
 
   // Helper function to format relative time
-  const formatRelativeTime = (dateString: string) => {
+  const formatRelativeTime = (dateString: string | Date | null | undefined) => {
+    if (!dateString) return 'Unknown time';
+    
     const now = new Date();
     const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date received:', dateString);
+      return 'Invalid date';
+    }
+    
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     
+    if (diffInSeconds < 0) return 'Just now';
     if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
@@ -121,15 +131,20 @@ export default function WishlistDetail() {
     staleTime: 120000, // Consider data stale after 2 minutes
   });
 
-  // Format activities data for display with proper time formatting
-  const recentActivities = (recentActivitiesData || []).map((activity: any, index: number) => ({
-    id: activity.id,
-    type: activity.type,
-    message: activity.message,
-    timestamp: formatRelativeTime(activity.time),
-    animate: index === 0, // Only animate the first (newest) activity
-    icon: activity.icon
-  }));
+  // Format activities data for display - API returns pre-formatted data
+  const recentActivities = (recentActivitiesData || []).map((activity: any, index: number) => {
+    // Create a readable message from the activity data
+    const activityMessage = `${activity.supporter} ${activity.action} ${activity.item}`;
+    
+    return {
+      id: activity.id,
+      type: activity.type,
+      message: activityMessage,
+      timestamp: activity.timeAgo, // API returns pre-formatted time like "1h ago", "18h ago"
+      animate: index === 0, // Only animate the first (newest) activity
+      icon: activity.type === 'donation' ? 'gift' : activity.type === 'request' ? 'plus' : activity.type === 'thanks' ? 'heart' : 'activity'
+    };
+  });
 
   const { data: wishlist, isLoading } = useQuery({
     queryKey: [`/api/wishlists/${id}`],
