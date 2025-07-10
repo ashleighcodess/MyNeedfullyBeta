@@ -112,7 +112,6 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
             alt={wishlist.title}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             loading="eager"
-            fetchPriority="high"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
