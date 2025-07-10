@@ -78,28 +78,16 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       ? wishlist.storyImages.slice(1, -1).split(',').map(img => img.trim().replace(/"/g, ''))
       : [];
 
-  // Simple immediate image preload - no complex logic
-  useEffect(() => {
-    if (storyImages.length > 0) {
-      const firstImage = storyImages[0];
-      // Just force the browser to start downloading immediately
-      const img = new Image();
-      img.src = firstImage;
-    }
-  }, [storyImages]);
-
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
       {/* Featured Image */}
       {storyImages && storyImages.length > 0 && (
-        <div className="h-40 sm:h-48 overflow-hidden">
+        <div className="h-40 sm:h-48 overflow-hidden bg-gray-100">
           <img 
             src={storyImages[0]}
             alt={wishlist.title}
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            className="w-full h-full object-cover"
             loading="eager"
-            decoding="sync"
-            style={{ willChange: 'auto' }}
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
