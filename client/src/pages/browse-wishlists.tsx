@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-// import { useAuth } from "@/hooks/useAuth"; // DISABLED - causes 401 polling spam
+import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,7 @@ import { Search, Filter, X, MapPin } from "lucide-react";
 import { CATEGORIES, URGENCY_LEVELS, WISHLIST_STATUS } from "@/lib/constants";
 
 export default function BrowseWishlists() {
-  // Skip authentication for browse page to prevent loading issues
-  // const { user } = useAuth();
-  const user = null;
+  const { user } = useAuth(); // Now properly handles public pages without 401 errors
   const [location, setLocation] = useLocation();
   
   // Search and filter states
