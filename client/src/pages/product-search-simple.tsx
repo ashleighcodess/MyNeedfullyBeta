@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "wouter";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Search, Package, Heart, ChevronLeft } from "lucide-react";
+import { Star, Search, Package, Heart } from "lucide-react";
 
 const PRODUCT_CATEGORIES = [
   { value: "baby_kids", label: "Baby & Kids" },
@@ -15,15 +14,12 @@ const PRODUCT_CATEGORIES = [
 ];
 
 export default function ProductSearchSimple() {
-  const [navigate] = useNavigate();
-  const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Simple search function without React Query
   const performSearch = async (searchTerm: string, searchCategory?: string) => {
     if (!searchTerm || searchTerm.length < 3) return;
     
@@ -42,8 +38,7 @@ export default function ProductSearchSimple() {
       const response = await fetch(searchUrl);
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Search failed');
+        throw new Error('Search failed');
       }
       
       const data = await response.json();
@@ -73,10 +68,6 @@ export default function ProductSearchSimple() {
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
-    
-    if (typeof price === 'object' && price.value !== undefined) {
-      return `$${price.value.toFixed(2)}`;
-    }
     
     if (typeof price === 'string') {
       return price.startsWith('$') ? price : `$${price}`;
@@ -132,7 +123,7 @@ export default function ProductSearchSimple() {
           </div>
         </div>
 
-        {/* Results */}
+        {/* Loading State */}
         {isLoading && (
           <div className="text-center py-12">
             <div className="inline-flex items-center justify-center p-2 bg-white rounded-full shadow-lg mb-6">
@@ -143,6 +134,7 @@ export default function ProductSearchSimple() {
           </div>
         )}
 
+        {/* Error State */}
         {error && (
           <Card className="p-12 text-center">
             <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
@@ -154,6 +146,7 @@ export default function ProductSearchSimple() {
           </Card>
         )}
 
+        {/* Results */}
         {searchResults && searchResults.length > 0 && (
           <div>
             <h3 className="text-lg font-semibold text-navy mb-4">
@@ -214,6 +207,7 @@ export default function ProductSearchSimple() {
           </div>
         )}
 
+        {/* No Results */}
         {!isLoading && !error && searchResults.length === 0 && searchQuery && (
           <Card className="p-12 text-center">
             <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
