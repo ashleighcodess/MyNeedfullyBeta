@@ -53,10 +53,10 @@ export function getSession() {
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
     resave: false,
-    saveUninitialized: true, // Create session even if not authenticated
+    saveUninitialized: false, // Don't create empty sessions
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Only secure in production
+      secure: false, // Disable secure cookies for development
       maxAge: sessionTtl,
       sameSite: 'lax', // Allow cross-origin cookies for OAuth
       domain: undefined, // Don't set domain to avoid subdomain issues
@@ -286,14 +286,26 @@ export async function setupMultiAuth(app: Express) {
 
   // Replit Auth Routes with rate limiting
   app.get("/api/login/replit", authLimiter, (req, res, next) => {
-    passport.authenticate(`replitauth:${req.hostname}`, {
+    // Use the actual configured domain instead of req.hostname for strategy lookup
+    const configuredDomains = process.env.REPLIT_DOMAINS!.split(",");
+    const strategyDomain = configuredDomains[0]; // Use first configured domain
+    
+    console.log(`🔍 Login attempt - req.hostname: ${req.hostname}, using strategy: replitauth:${strategyDomain}`);
+    
+    passport.authenticate(`replitauth:${strategyDomain}`, {
       prompt: "login consent",
       scope: ["openid", "email", "profile", "offline_access"],
     })(req, res, next);
   });
 
   app.get("/api/callback/replit", authLimiter, (req, res, next) => {
-    passport.authenticate(`replitauth:${req.hostname}`, {
+    // Use the actual configured domain instead of req.hostname for strategy lookup
+    const configuredDomains = process.env.REPLIT_DOMAINS!.split(",");
+    const strategyDomain = configuredDomains[0]; // Use first configured domain
+    
+    console.log(`🔍 Callback attempt - req.hostname: ${req.hostname}, using strategy: replitauth:${strategyDomain}`);
+    
+    passport.authenticate(`replitauth:${strategyDomain}`, {
       successReturnToOrRedirect: "/",
       failureRedirect: "/api/login/replit",
     })(req, res, next);

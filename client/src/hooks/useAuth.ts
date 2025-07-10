@@ -1,68 +1,21 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getQueryFn } from "@/lib/queryClient";
 import type { User } from "@shared/schema";
-import { useEffect, useState } from "react";
 
 export function useAuth() {
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [authState, setAuthState] = useState<{
-    user: User | null;
-    isAuthenticated: boolean;
-    checkedOnce: boolean;
-  }>({
-    user: null,
-    isAuthenticated: false,
-    checkedOnce: false,
-  });
   const queryClient = useQueryClient();
   
-  // Only check auth ONCE on mount, then stop
-  useEffect(() => {
-    if (authState.checkedOnce) return; // Don't check again
-    
-    fetch('/api/auth/user', { credentials: 'include' })
-      .then(async (res) => {
-        if (res.status === 401) {
-          // Not authenticated - this is fine, just set state and stop
-          setAuthState({
-            user: null,
-            isAuthenticated: false,
-            checkedOnce: true,
-          });
-          setIsInitialized(true);
-          return;
-        }
-        
-        if (res.ok) {
-          const userData = await res.json();
-          setAuthState({
-            user: userData,
-            isAuthenticated: true,
-            checkedOnce: true,
-          });
-        } else {
-          setAuthState({
-            user: null,
-            isAuthenticated: false,
-            checkedOnce: true,
-          });
-        }
-        setIsInitialized(true);
-      })
-      .catch(() => {
-        // Network error or other issue - just assume not authenticated
-        setAuthState({
-          user: null,
-          isAuthenticated: false,
-          checkedOnce: true,
-        });
-        setIsInitialized(true);
-      });
-  }, [authState.checkedOnce]);
+  // Use React Query for consistent auth state across all components
+  const { data: user, isLoading, error } = useQuery<User>({
+    queryKey: ['/api/auth/user'],
+    retry: false, // Don't retry 401 errors
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    refetchOnMount: true, // Always check auth on component mount
+  });
 
   return {
-    user: authState.user,
-    isLoading: !isInitialized,
-    isAuthenticated: authState.isAuthenticated,
+    user: user || null,
+    isLoading,
+    isAuthenticated: !!user && !error,
   };
 }
