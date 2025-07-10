@@ -183,8 +183,8 @@ export default function EditProfile() {
                 <CardContent className="text-center">
                   <Avatar className="h-32 w-32 mx-auto mb-4">
                     <AvatarImage src={form.watch("profileImageUrl")} alt="Profile" />
-                    <AvatarFallback className="text-2xl bg-white">
-                      <img src="/attached_assets/Logo_6_1752017502495.png" alt="Profile" className="w-full h-full object-cover rounded-full" />
+                    <AvatarFallback className="text-2xl bg-gradient-to-br from-coral to-coral/70 text-white font-bold">
+                      {user?.firstName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                   

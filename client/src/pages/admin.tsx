@@ -494,7 +494,11 @@ export default function AdminDashboard() {
                             {user.profileImageUrl ? (
                               <img src={user.profileImageUrl} alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
                             ) : (
-                              <img src="/attached_assets/Logo_6_1752017502495.png" alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" />
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-coral to-coral/70 rounded-full flex items-center justify-center ring-2 ring-coral/20 ring-offset-1">
+                                <span className="text-white text-xs sm:text-sm font-semibold">
+                                  {user.firstName?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'U'}
+                                </span>
+                              </div>
                             )}
                           </div>
                           <div className="min-w-0 flex-1">

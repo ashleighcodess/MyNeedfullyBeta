@@ -145,11 +145,11 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
                 className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover"
               />
             ) : (
-              <img 
-                src="/attached_assets/Logo_6_1752017502495.png" 
-                alt="Creator" 
-                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover"
-              />
+              <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-coral to-coral/70 rounded-full flex items-center justify-center ring-1 ring-coral/20">
+                <span className="text-white text-xs font-semibold">
+                  {wishlist.user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                </span>
+              </div>
             )}
             <span className="text-xs sm:text-sm text-gray-600 truncate">
               by {wishlist.user.firstName} {wishlist.user.lastName}

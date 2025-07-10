@@ -889,11 +889,11 @@ export default function WishlistDetail() {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <img 
-                      src="/attached_assets/Logo_6_1752017502495.png" 
-                      alt="Profile" 
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                    <div className="w-12 h-12 bg-gradient-to-br from-coral to-coral/70 rounded-full flex items-center justify-center ring-2 ring-coral/20 ring-offset-1">
+                      <span className="text-white text-lg font-semibold">
+                        {wishlist?.user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
+                      </span>
+                    </div>
                   )}
                   <div>
                     <div className="font-semibold">

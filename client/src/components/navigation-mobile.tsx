@@ -97,11 +97,11 @@ export default function MobileNavigation() {
                           className="w-6 h-6 rounded-full object-cover"
                         />
                       ) : (
-                        <img 
-                          src="/attached_assets/Logo_6_1752017502495.png" 
-                          alt="Profile" 
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
+                        <div className="w-6 h-6 bg-gradient-to-br from-coral to-coral/70 rounded-full flex items-center justify-center ring-1 ring-coral/20 ring-offset-1">
+                          <span className="text-white text-xs font-semibold">
+                            {user?.firstName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+                          </span>
+                        </div>
                       )}
                     </Button>
                   </DropdownMenuTrigger>
