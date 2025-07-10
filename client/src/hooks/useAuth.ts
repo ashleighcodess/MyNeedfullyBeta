@@ -7,6 +7,17 @@ export function useAuth() {
   const [isInitialized, setIsInitialized] = useState(false);
   const queryClient = useQueryClient();
   
+  // CRITICAL FIX: Disable authentication for browse page to prevent 401 spam
+  const isBrowsePage = typeof window !== 'undefined' && window.location.pathname === '/browse';
+  
+  if (isBrowsePage) {
+    return {
+      user: null,
+      isLoading: false,
+      isAuthenticated: false,
+    };
+  }
+  
   try {
     const { data: user, isLoading, error, isError } = useQuery<User | null>({
       queryKey: ["/api/auth/user"],

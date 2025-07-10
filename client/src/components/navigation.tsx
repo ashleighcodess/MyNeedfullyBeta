@@ -17,15 +17,18 @@ import logoPath from "@assets/Logo_1 copy_1751749982849.png";
 import NotificationCenter from "./notification-center";
 
 export default function Navigation() {
-  const { user } = useAuth();
   const [location] = useLocation();
+  // Skip authentication on browse page to prevent 401 spam
+  const isBrowsePage = location === '/browse';
+  
+  const { user } = isBrowsePage ? { user: null } : useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [userKey, setUserKey] = useState(0); // Force re-render key
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
-    enabled: !!user,
+    enabled: !!user && !isBrowsePage, // Disable notifications on browse page
     refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
     retry: false,
   });
