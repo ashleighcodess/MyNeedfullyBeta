@@ -78,27 +78,18 @@ export default function Home() {
             <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {isSupporter ? (
-                <Link href="/browse">
-                  <Button data-tip="browse-needs" className="w-full h-16 sm:h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
-                    <Search className="h-5 w-5 sm:h-6 sm:w-6" />
-                    <span className="text-xs sm:text-sm font-medium">Find Needs Lists</span>
-                  </Button>
-                </Link>
-              ) : (
-                <Link href={isAuthenticated ? "/create" : "/signup"}>
-                  <Button data-tip="create-list" className="w-full h-16 sm:h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
-                    <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
-                    <span className="text-xs sm:text-sm font-medium">Create Needs List</span>
-                  </Button>
-                </Link>
-              )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <Link href="/browse">
+                <Button data-tip="browse-needs" className="w-full h-16 sm:h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                  <Search className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm font-medium">Find Needs Lists</span>
+                </Button>
+              </Link>
               
-              <Link href={isSupporter ? (isAuthenticated ? "/create" : "/signup") : "/browse"}>
-                <Button data-tip={isSupporter ? "create-list" : "browse-needs"} variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
-                  {isSupporter ? <Plus className="h-5 w-5 sm:h-6 sm:w-6" /> : <Search className="h-5 w-5 sm:h-6 sm:w-6" />}
-                  <span className="text-xs sm:text-sm font-medium">{isSupporter ? "Create Needs List" : "Browse Needs Lists"}</span>
+              <Link href="/create">
+                <Button data-tip="create-list" variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                  <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm font-medium">Create Needs List</span>
                 </Button>
               </Link>
               
@@ -106,13 +97,6 @@ export default function Home() {
                 <Button data-tip="product-search" variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
                   <Gift className="h-5 w-5 sm:h-6 sm:w-6" />
                   <span className="text-xs sm:text-sm font-medium">Search Products</span>
-                </Button>
-              </Link>
-              
-              <Link href="/profile">
-                <Button data-tip="go-to-dashboard" variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
-                  <User className="h-5 w-5 sm:h-6 sm:w-6" />
-                  <span className="text-xs sm:text-sm font-medium text-center">Go to my Dashboard</span>
                 </Button>
               </Link>
             </div>
@@ -126,12 +110,12 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="space-y-0">
-              <Link href={isAuthenticated ? "/create" : "/signup"}>
+              <Link href="/my-lists">
                 <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle flex-shrink-0" strokeWidth={1.5} />
+                  <Settings className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle flex-shrink-0" strokeWidth={1.5} />
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Create Your First Needs List</h3>
-                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Share what you need with our caring community</p>
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Manage my Needs Lists</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Edit, update, and track your existing needs lists</p>
                   </div>
                 </div>
               </Link>
@@ -141,12 +125,12 @@ export default function Home() {
                 <div className="h-0.5 bg-navy/50 separator-draw" style={{animationDelay: '0.2s'}}></div>
               </div>
               
-              <Link href="/browse">
+              <Link href="/profile">
                 <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-1 flex-shrink-0" strokeWidth={1.5} />
+                  <User className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-1 flex-shrink-0" strokeWidth={1.5} />
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Browse and Help Others</h3>
-                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Find needs lists where you can make a difference</p>
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>View My Dashboard</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Access your profile, donations, and thank you notes</p>
                   </div>
                 </div>
               </Link>
@@ -156,12 +140,12 @@ export default function Home() {
                 <div className="h-0.5 bg-navy/50 separator-draw" style={{animationDelay: '0.4s'}}></div>
               </div>
               
-              <Link href="/products">
+              <Link href="/profile#thank-you-notes">
                 <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-2 flex-shrink-0" strokeWidth={1.5} />
+                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-2 flex-shrink-0" strokeWidth={1.5} />
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Search for Specific Items</h3>
-                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Use our product search to find exactly what's needed</p>
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>View Thank You Notes</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>See appreciation messages from the community</p>
                   </div>
                 </div>
               </Link>
@@ -171,12 +155,12 @@ export default function Home() {
                 <div className="h-0.5 bg-navy/50 separator-draw" style={{animationDelay: '0.6s'}}></div>
               </div>
               
-              <Link href="/profile#my-lists">
+              <Link href="/settings">
                 <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Settings className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-3 flex-shrink-0" strokeWidth={1.5} />
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Manage my Needs Lists</h3>
-                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Edit, update, and track your existing needs lists</p>
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Account Settings</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Update your profile and email preferences</p>
                   </div>
                 </div>
               </Link>
