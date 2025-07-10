@@ -2891,102 +2891,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amazon: { 
           available: false, 
           price: item.price, 
-          link: isAmazonUrl(item.productUrl) ? item.productUrl : null 
+          link: isAmazonUrl(item.productUrl) ? item.productUrl : null,
+          image: item.imageUrl || null
         },
         walmart: { 
           available: false, 
           price: item.price, 
-          link: isWalmartUrl(item.productUrl) ? item.productUrl : null 
+          link: isWalmartUrl(item.productUrl) ? item.productUrl : null,
+          image: item.imageUrl || null
         },
         target: { 
           available: false, 
           price: item.price, 
-          link: isTargetUrl(item.productUrl) ? item.productUrl : null 
+          link: isTargetUrl(item.productUrl) ? item.productUrl : null,
+          image: item.imageUrl || null
         }
       };
 
       const optimizedQuery = optimizeSearchQuery(item.title);
       console.log(`💲 Pricing search for "${item.title}" optimized to "${optimizedQuery}"`);
 
-      // Try to get live pricing from RainforestAPI (Amazon search by title instead of just ASIN)
+      // PARALLEL API CALLS for much faster performance
+      const searchPromises = [];
+      
       const rainforestService = getRainforestAPIService();
+      const serpService = getSerpAPIService();
+
+      // Amazon search promise
       if (rainforestService) {
-        try {
-          // First try ASIN if we have an Amazon URL
-          if (item.productUrl && isAmazonUrl(item.productUrl)) {
-            const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
-            const asin = asinMatch ? (asinMatch[1] || asinMatch[2]) : null;
-            
-            if (asin) {
-              const products = await rainforestService.searchProducts(asin);
-              if (products && products.length > 0) {
-                const product = products[0];
-                const amazonLink = product.link && isAmazonUrl(product.link) ? product.link : item.productUrl;
-                pricing.amazon = {
-                  available: true,
-                  price: product.price?.value || item.price,
-                  link: amazonLink
-                };
+        const amazonPromise = (async () => {
+          try {
+            // First try ASIN if we have an Amazon URL
+            if (item.productUrl && isAmazonUrl(item.productUrl)) {
+              const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
+              const asin = asinMatch ? (asinMatch[1] || asinMatch[2]) : null;
+              
+              if (asin) {
+                const products = await rainforestService.searchProducts(asin);
+                if (products && products.length > 0) {
+                  const product = products[0];
+                  const amazonLink = product.link && isAmazonUrl(product.link) ? product.link : item.productUrl;
+                  return {
+                    available: true,
+                    price: product.price?.value || item.price,
+                    link: amazonLink,
+                    image: product.image || item.imageUrl || null
+                  };
+                }
               }
             }
-          }
-          
-          // If ASIN search didn't work, try title search
-          if (!pricing.amazon.available) {
+            
+            // If ASIN search didn't work, try title search
             const titleProducts = await rainforestService.searchProducts(optimizedQuery);
             if (titleProducts && titleProducts.length > 0) {
               const product = titleProducts[0];
               if (product.link && isAmazonUrl(product.link)) {
-                pricing.amazon = {
+                return {
                   available: true,
                   price: product.price?.value || item.price,
-                  link: product.link
+                  link: product.link,
+                  image: product.image || item.imageUrl || null
                 };
               }
             }
+          } catch (error) {
+            console.log('RainforestAPI pricing error:', error);
           }
-        } catch (error) {
-          console.log('RainforestAPI pricing error:', error);
-        }
+          return pricing.amazon;
+        })();
+        searchPromises.push({ type: 'amazon', promise: amazonPromise });
       }
 
-      // Try to get Walmart/Target pricing from SerpAPI with optimized search
-      const serpService = getSerpAPIService();
+      // Walmart search promise
       if (serpService) {
-        try {
-          const walmartResults = await serpService.searchWalmart(optimizedQuery, '60602', 1);
-          if (walmartResults && walmartResults.length > 0) {
-            const walmartProduct = walmartResults[0];
-            const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
-              ? walmartProduct.product_url 
-              : null;
-            if (walmartLink) {
-              pricing.walmart = {
-                available: true,
-                price: walmartProduct.price || item.price,
-                link: walmartLink
-              };
+        const walmartPromise = (async () => {
+          try {
+            const walmartResults = await serpService.searchWalmart(optimizedQuery, '60602', 1);
+            if (walmartResults && walmartResults.length > 0) {
+              const walmartProduct = walmartResults[0];
+              const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
+                ? walmartProduct.product_url 
+                : null;
+              if (walmartLink) {
+                return {
+                  available: true,
+                  price: walmartProduct.price || item.price,
+                  link: walmartLink,
+                  image: walmartProduct.thumbnail || item.imageUrl || null
+                };
+              }
             }
+          } catch (error) {
+            console.log('Walmart pricing error:', error);
           }
+          return pricing.walmart;
+        })();
+        searchPromises.push({ type: 'walmart', promise: walmartPromise });
 
-          const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1);
-          if (targetResults && targetResults.length > 0) {
-            const targetProduct = targetResults[0];
-            const targetLink = targetProduct.product_url && isTargetUrl(targetProduct.product_url) 
-              ? targetProduct.product_url 
-              : null;
-            if (targetLink) {
-              pricing.target = {
-                available: true,
-                price: targetProduct.price || item.price,
-                link: targetLink
-              };
+        // Target search promise
+        const targetPromise = (async () => {
+          try {
+            const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1);
+            if (targetResults && targetResults.length > 0) {
+              const targetProduct = targetResults[0];
+              const targetLink = targetProduct.product_url && isTargetUrl(targetProduct.product_url) 
+                ? targetProduct.product_url 
+                : null;
+              if (targetLink) {
+                return {
+                  available: true,
+                  price: targetProduct.price || item.price,
+                  link: targetLink,
+                  image: targetProduct.thumbnail || item.imageUrl || null
+                };
+              }
             }
+          } catch (error) {
+            console.log('Target pricing error:', error);
           }
-        } catch (error) {
-          console.log('SerpAPI pricing error:', error);
-        }
+          return pricing.target;
+        })();
+        searchPromises.push({ type: 'target', promise: targetPromise });
       }
+
+      // Wait for ALL API calls to complete in parallel (much faster!)
+      const results = await Promise.allSettled(searchPromises.map(p => p.promise));
+      
+      // Process results
+      searchPromises.forEach((search, index) => {
+        const result = results[index];
+        if (result.status === 'fulfilled') {
+          pricing[search.type] = result.value;
+        }
+      });
 
       console.log(`💲 Pricing results: Amazon=${pricing.amazon.available}, Walmart=${pricing.walmart.available}, Target=${pricing.target.available}`);
       res.json({ pricing });

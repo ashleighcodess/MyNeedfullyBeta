@@ -745,7 +745,7 @@ export default function WishlistDetail() {
                                       price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '$99.00',
                                       link: itemPricing[item.id]?.pricing?.amazon?.link,
                                       retailer: 'amazon',
-                                      image: item.imageUrl,
+                                      image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
@@ -786,7 +786,7 @@ export default function WishlistDetail() {
                                       price: itemPricing[item.id]?.pricing?.target?.price || item.price || '$99.00',
                                       link: itemPricing[item.id]?.pricing?.target?.link,
                                       retailer: 'target',
-                                      image: item.imageUrl,
+                                      image: itemPricing[item.id]?.pricing?.target?.image || item.imageUrl,
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
@@ -827,7 +827,7 @@ export default function WishlistDetail() {
                                       price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '$99.00',
                                       link: itemPricing[item.id]?.pricing?.walmart?.link,
                                       retailer: 'walmart',
-                                      image: item.imageUrl,
+                                      image: itemPricing[item.id]?.pricing?.walmart?.image || item.imageUrl,
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
