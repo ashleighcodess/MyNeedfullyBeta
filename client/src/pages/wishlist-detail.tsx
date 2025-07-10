@@ -121,7 +121,7 @@ export default function WishlistDetail() {
     id: activity.id,
     type: activity.type,
     message: activity.message,
-    timestamp: formatRelativeTime(activity.time),
+    timestamp: activity.timeAgo || 'Recently', // Use timeAgo from API, fallback to 'Recently'
     animate: index === 0, // Only animate the first (newest) activity
     icon: activity.icon
   }));
