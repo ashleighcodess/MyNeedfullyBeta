@@ -12,9 +12,9 @@ export default function BrowseWishlists() {
   const { user } = useAuth();
   
   // Direct useState approach for data fetching
-  const [wishlistsData, setWishlistsData] = useState(null);
+  const [wishlistsData, setWishlistsData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any>(null);
 
   // Fetch wishlists on component mount
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function BrowseWishlists() {
         
         const data = await response.json();
         setWishlistsData(data);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching wishlists:', err);
         setError(err.message);
       } finally {
@@ -78,9 +78,10 @@ export default function BrowseWishlists() {
 
 
   return (
-    <div className="min-h-screen bg-warm-bg">
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+    <>
+      <div className="min-h-screen bg-warm-bg">
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
@@ -125,7 +126,7 @@ export default function BrowseWishlists() {
               <Card className="p-6 sm:p-12 text-center">
                 <div className="text-red-500 mb-4">
                   <h3 className="text-base sm:text-lg font-semibold mb-2">Error loading needs lists</h3>
-                  <p className="text-sm sm:text-base">{error.message}</p>
+                  <p className="text-sm sm:text-base">{error}</p>
                 </div>
               </Card>
             ) : !wishlistsData?.wishlists || wishlistsData?.wishlists.length === 0 ? (
@@ -155,6 +156,6 @@ export default function BrowseWishlists() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
