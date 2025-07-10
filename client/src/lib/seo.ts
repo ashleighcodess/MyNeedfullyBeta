@@ -129,13 +129,14 @@ export const generateKeywords = (baseKeywords: string[], pageKeywords: string[] 
 };
 
 export const generateCanonicalUrl = (path: string) => {
-  const baseUrl = 'https://myneedfully.app';
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://myneedfully.app';
   return `${baseUrl}${path}`;
 };
 
 export const generateOgImage = (imagePath?: string) => {
-  const defaultImage = 'https://myneedfully.app/attached_assets/Logo_6_1752017502495.png';
-  return imagePath ? `https://myneedfully.app${imagePath}` : defaultImage;
+  const defaultImage = `${typeof window !== 'undefined' ? window.location.origin : 'https://myneedfully.app'}/attached_assets/Logo_6_1752017502495.png`;
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://myneedfully.app';
+  return imagePath ? `${baseUrl}${imagePath}` : defaultImage;
 };
 
 // Structured data generators
@@ -145,7 +146,7 @@ export const generateWishlistStructuredData = (wishlist: any) => {
     "@type": "ItemList",
     "name": wishlist.title,
     "description": wishlist.description,
-    "url": `https://myneedfully.app/wishlist/${wishlist.id}`,
+    "url": `${typeof window !== 'undefined' ? window.location.origin : 'https://myneedfully.app'}/wishlist/${wishlist.id}`,
     "creator": {
       "@type": "Person",
       "name": `${wishlist.user?.firstName || ''} ${wishlist.user?.lastName || ''}`.trim()
@@ -174,7 +175,7 @@ export const generatePersonStructuredData = (user: any) => {
     "@type": "Person",
     "name": `${user.firstName || ''} ${user.lastName || ''}`.trim(),
     "description": `Member of MyNeedfully community`,
-    "url": `https://myneedfully.app/profile/${user.id}`,
+    "url": `${typeof window !== 'undefined' ? window.location.origin : 'https://myneedfully.app'}/profile/${user.id}`,
     "image": user.profileImageUrl || 'https://myneedfully.app/attached_assets/Logo_6_1752017502495.png',
     "memberOf": {
       "@type": "Organization",

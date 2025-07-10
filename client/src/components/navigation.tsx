@@ -17,18 +17,22 @@ import logoPath from "@assets/Logo_1 copy_1751749982849.png";
 import NotificationCenter from "./notification-center";
 
 export default function Navigation() {
-  const { user } = useAuth();
+  // Temporarily disable auth to stop 401 spam
+  // const { user } = useAuth();
+  const user = null; // Temporarily set to null
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [userKey, setUserKey] = useState(0); // Force re-render key
 
-  const { data: notifications } = useQuery<any[]>({
-    queryKey: ['/api/notifications'],
-    enabled: !!user,
-    refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
-    retry: false,
-  });
+  // Temporarily disable notifications query
+  // const { data: notifications } = useQuery<any[]>({
+  //   queryKey: ['/api/notifications'],
+  //   enabled: !!user,
+  //   refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
+  //   retry: false,
+  // });
+  const notifications: any[] = [];
 
   // Listen for user data updates to force re-render
   useEffect(() => {
