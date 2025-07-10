@@ -117,43 +117,45 @@ export async function setupMultiAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Replit OAuth Strategy
-  const replitConfig = await getOidcConfig();
+  // Replit OAuth Strategy - TEMPORARILY DISABLED DUE TO BROWSER CRASHES
+  // CRITICAL: Replit OAuth is causing entire browser crashes, disabling until fixed
+  // TODO: Investigate and fix Replit OIDC configuration causing browser instability
+  
+  // const replitConfig = await getOidcConfig();
+  // const replitVerify: VerifyFunction = async (
+  //   tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
+  //   verified: passport.AuthenticateCallback
+  // ) => {
+  //   const user = { provider: 'replit' };
+  //   updateUserSession(user, tokens);
+  //   
+  //   const claims = tokens.claims();
+  //   if (claims) {
+  //     await upsertUserFromProfile({
+  //       id: String(claims["sub"] || ''),
+  //       email: String(claims["email"] || ''),
+  //       firstName: String(claims["first_name"] || ''),
+  //       lastName: String(claims["last_name"] || ''),
+  //       profileImageUrl: String(claims["profile_image_url"] || ''),
+  //       provider: 'replit'
+  //     });
+  //   }
+  //   
+  //   verified(null, user);
+  // };
 
-  const replitVerify: VerifyFunction = async (
-    tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
-    verified: passport.AuthenticateCallback
-  ) => {
-    const user = { provider: 'replit' };
-    updateUserSession(user, tokens);
-    
-    const claims = tokens.claims();
-    if (claims) {
-      await upsertUserFromProfile({
-        id: String(claims["sub"] || ''),
-        email: String(claims["email"] || ''),
-        firstName: String(claims["first_name"] || ''),
-        lastName: String(claims["last_name"] || ''),
-        profileImageUrl: String(claims["profile_image_url"] || ''),
-        provider: 'replit'
-      });
-    }
-    
-    verified(null, user);
-  };
-
-  for (const domain of process.env.REPLIT_DOMAINS!.split(",")) {
-    const strategy = new ReplitStrategy(
-      {
-        name: `replitauth:${domain}`,
-        config: replitConfig,
-        scope: "openid email profile offline_access",
-        callbackURL: `https://${domain}/api/callback/replit`,
-      },
-      replitVerify,
-    );
-    passport.use(strategy);
-  }
+  // for (const domain of process.env.REPLIT_DOMAINS!.split(",")) {
+  //   const strategy = new ReplitStrategy(
+  //     {
+  //       name: `replitauth:${domain}`,
+  //       config: replitConfig,
+  //       scope: "openid email profile offline_access",
+  //       callbackURL: `https://${domain}/api/callback/replit`,
+  //     },
+  //     replitVerify,
+  //   );
+  //   passport.use(strategy);
+  // }
 
   // Google OAuth Strategy with multiple domain support
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {

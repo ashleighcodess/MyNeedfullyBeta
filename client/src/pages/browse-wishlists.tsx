@@ -9,7 +9,9 @@ import { Search } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 export default function BrowseWishlists() {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  
+  console.log('🔍 BrowseWishlists auth state:', { user: !!user, isAuthenticated, authLoading });
   
   // Direct useState approach for data fetching
   const [wishlistsData, setWishlistsData] = useState<any>(null);
