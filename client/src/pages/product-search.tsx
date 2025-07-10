@@ -113,17 +113,15 @@ export default function ProductSearch() {
     return initialQuery || "";
   });
 
-  // Initialize search from URL parameters or default to "Basic Essentials"
+  // Initialize search from URL parameters
   useEffect(() => {
     if (initialQuery) {
       setSearchQuery(initialQuery);
       setDebouncedQuery(initialQuery);
-      // activeSearch already set in useState initializer
+      setActiveSearch(initialQuery);
     } else {
-      // Auto-load with pre-cached "Basic Essentials" results when no query parameter is provided
-      // Keep search input empty for default state - don't set searchQuery
-      // Don't set debouncedQuery - this prevents the automatic search trigger
-      // activeSearch already set in useState initializer to "Basic Essentials"
+      // Show Basic Essentials by default on page load
+      setActiveSearch("Basic Essentials");
     }
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
@@ -147,22 +145,96 @@ export default function ProductSearch() {
     addToWishlistMutation.mutate(product);
   };
 
-  // Instant category results - no API calls needed
-  const categoryProducts = useMemo(() => ({
+  // Mixed instant results with real images for fast loading
+  const cachedProducts = useMemo(() => ({
+    "Basic Essentials": [
+      {
+        asin: "B08TMLHWTD",
+        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
+        image: "https://m.media-amazon.com/images/I/71oOkIoaqXL._AC_SL1500_.jpg",
+        price: { value: 18.97, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B073V1T37H", 
+        title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
+        image: "https://m.media-amazon.com/images/I/81Ml0P+qqnL._AC_.jpg",
+        price: { value: 23.94, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07MJBT4T1",
+        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
+        image: "https://m.media-amazon.com/images/I/81+BZP2zUHL._AC_.jpg",
+        price: { value: 12.97, currency: "USD" },
+        rating: 4.8,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      }
+    ],
     "Electronics": [
-      { asin: "B123", title: "Wireless Bluetooth Headphones", price: { value: 149.99, currency: "USD" }, rating: 4.3, retailer: "amazon", retailer_name: "Amazon" },
-      { asin: "B124", title: "Laptop Computer", price: { value: 699.99, currency: "USD" }, rating: 4.5, retailer: "amazon", retailer_name: "Amazon" },
-      { asin: "B125", title: "Smartphone", price: { value: 399.99, currency: "USD" }, rating: 4.4, retailer: "amazon", retailer_name: "Amazon" }
+      {
+        asin: "B08C1W5N87",
+        title: "Echo Dot (4th Gen) | Smart speaker with Alexa",
+        image: "https://m.media-amazon.com/images/I/714Rq4k05UL._AC_SL1000_.jpg",
+        price: { value: 49.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08N5WRWNW",
+        title: "Apple AirPods (3rd Generation)",
+        image: "https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SL1500_.jpg", 
+        price: { value: 179.00, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      }
     ],
     "Household": [
-      { asin: "B126", title: "Vacuum Cleaner", price: { value: 299.99, currency: "USD" }, rating: 4.4, retailer: "amazon", retailer_name: "Amazon" },
-      { asin: "B127", title: "Air Purifier", price: { value: 199.99, currency: "USD" }, rating: 4.6, retailer: "amazon", retailer_name: "Amazon" },
-      { asin: "B128", title: "Kitchen Mixer", price: { value: 149.99, currency: "USD" }, rating: 4.5, retailer: "amazon", retailer_name: "Amazon" }
+      {
+        asin: "B07VPN4QMW",
+        title: "Shark Navigator Lift-Away Professional NV356E",
+        image: "https://m.media-amazon.com/images/I/71Y+8Et7PIL._AC_SL1500_.jpg",
+        price: { value: 179.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07VVK39F7",
+        title: "LEVOIT Air Purifier for Home Large Room",
+        image: "https://m.media-amazon.com/images/I/61Oqm-ZG3bL._AC_SL1500_.jpg",
+        price: { value: 149.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      }
     ],
     "Baby & Kids": [
-      { asin: "B129", title: "Baby Monitor", price: { value: 89.99, currency: "USD" }, rating: 4.2, retailer: "amazon", retailer_name: "Amazon" },
-      { asin: "B130", title: "Car Seat", price: { value: 249.99, currency: "USD" }, rating: 4.7, retailer: "amazon", retailer_name: "Amazon" },
-      { asin: "B131", title: "Stroller", price: { value: 299.99, currency: "USD" }, rating: 4.4, retailer: "amazon", retailer_name: "Amazon" }
+      {
+        asin: "B075M7FHM7",
+        title: "VTech DM221 Audio Baby Monitor",
+        image: "https://m.media-amazon.com/images/I/61aJCWjjG5L._AC_SL1500_.jpg",
+        price: { value: 39.95, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07HBQZPX1",
+        title: "Graco 4Ever DLX 4 in 1 Car Seat",
+        image: "https://m.media-amazon.com/images/I/81ScU+A7tDL._AC_SL1500_.jpg",
+        price: { value: 299.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      }
     ]
   }), []);
 
@@ -271,7 +343,7 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products - instant category results or API search results
+  // Get display products - smart display with instant results and API fallbacks
   const displayProducts = useMemo(() => {
     // Priority 1: If we have search results from live API, use them
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
@@ -285,14 +357,19 @@ export default function ProductSearch() {
       }
     }
     
-    // Priority 2: Show instant category results for category clicks
-    if (activeSearch && categoryProducts[activeSearch as keyof typeof categoryProducts]) {
-      console.log(`Instant category results for ${activeSearch}:`, categoryProducts[activeSearch as keyof typeof categoryProducts].length, "products");
-      return categoryProducts[activeSearch as keyof typeof categoryProducts];
+    // Priority 2: Show instant category results for category clicks  
+    if (activeSearch && cachedProducts[activeSearch as keyof typeof cachedProducts]) {
+      console.log(`Instant category results for ${activeSearch}:`, cachedProducts[activeSearch as keyof typeof cachedProducts].length, "products");
+      return cachedProducts[activeSearch as keyof typeof cachedProducts];
+    }
+    
+    // Priority 3: Show basic essentials by default when page loads
+    if (!debouncedQuery || debouncedQuery.length < 3) {
+      return cachedProducts["Basic Essentials"] || [];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, activeSearch, categoryProducts]);
+  }, [debouncedQuery, searchResults, activeSearch, cachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
