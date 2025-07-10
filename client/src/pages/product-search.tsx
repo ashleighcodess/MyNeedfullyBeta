@@ -444,12 +444,13 @@ export default function ProductSearch() {
   const displayProducts = useMemo(() => {
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
-      const results = searchResults?.search_results || searchResults?.data || [];
+      // Check the actual API response structure - it should be searchResults.data
+      const results = searchResults?.data || [];
       if (results.length > 0) {
         const targetProducts = results.filter((p: any) => p.retailer === 'target');
         const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
         const amazonProducts = results.filter((p: any) => p.retailer === 'amazon');
-        console.log(`Live API results: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
+        console.log(`✅ Using live results with ${results.length} products: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
         return results;
       }
     }
