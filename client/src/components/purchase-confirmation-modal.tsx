@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { X, Package, MapPin, ExternalLink, Check } from 'lucide-react';
+import { X, Package, MapPin, ExternalLink, Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -32,6 +33,8 @@ export default function PurchaseConfirmationModal({
 }: PurchaseConfirmationModalProps) {
   const [showShippingAddress, setShowShippingAddress] = useState(false);
   const [isPurchased, setIsPurchased] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
+  const { toast } = useToast();
 
   const getRetailerName = () => {
     switch (product.retailer) {
@@ -108,6 +111,45 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  const copyAddressToClipboard = async () => {
+    const addressText = formatShippingAddress(wishlistOwner.shippingAddress);
+    try {
+      await navigator.clipboard.writeText(addressText);
+      setCopiedAddress(true);
+      toast({
+        title: "Address Copied!",
+        description: "Shipping address has been copied to your clipboard",
+        duration: 2000,
+      });
+      setTimeout(() => setCopiedAddress(false), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = addressText;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopiedAddress(true);
+        toast({
+          title: "Address Copied!",
+          description: "Shipping address has been copied to your clipboard",
+          duration: 2000,
+        });
+        setTimeout(() => setCopiedAddress(false), 2000);
+      } catch (fallbackErr) {
+        toast({
+          title: "Copy Failed",
+          description: "Unable to copy address. Please copy manually.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0">
@@ -159,12 +201,35 @@ export default function PurchaseConfirmationModal({
               {/* Shipping Address Display */}
               {showShippingAddress && wishlistOwner.shippingAddress && (
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
-                  <h4 className="font-medium text-gray-800 mb-2">Shipping Address:</h4>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-800">Shipping Address:</h4>
+                    <Button
+                      onClick={copyAddressToClipboard}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
+                    >
+                      {copiedAddress ? (
+                        <>
+                          <Check className="h-3 w-3 mr-1" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  </div>
                   <div className="text-sm text-gray-600 whitespace-pre-line font-mono bg-white p-3 rounded border">
                     {formatShippingAddress(wishlistOwner.shippingAddress)}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Copy and paste this address during checkout on the retailer's website
+                    {copiedAddress 
+                      ? "Address copied to clipboard! Paste it during checkout on the retailer's website."
+                      : "Click 'Copy' above to copy this address for checkout on the retailer's website."
+                    }
                   </p>
                 </div>
               )}
