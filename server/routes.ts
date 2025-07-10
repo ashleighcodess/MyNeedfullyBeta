@@ -2972,18 +2972,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Target search promise
         const targetPromise = (async () => {
           try {
+            console.log(`🎯 SerpAPI Target: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
             const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1);
             if (targetResults && targetResults.length > 0) {
               const targetProduct = targetResults[0];
-              const targetLink = targetProduct.product_url && isTargetUrl(targetProduct.product_url) 
-                ? targetProduct.product_url 
-                : null;
-              if (targetLink) {
+              // Target search returns Google Shopping URLs, not direct target.com links
+              // But the search is specifically for Target products, so accept any valid URL
+              const targetLink = targetProduct.product_url || null;
+              if (targetLink && targetProduct.price) {
                 return {
                   available: true,
-                  price: targetProduct.price || item.price,
+                  price: targetProduct.price,
                   link: targetLink,
-                  image: targetProduct.thumbnail || item.imageUrl || null
+                  image: targetProduct.image_url || targetProduct.thumbnail || item.imageUrl || null
                 };
               }
             }
