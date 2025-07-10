@@ -444,7 +444,7 @@ export default function ProductSearch() {
   const displayProducts = useMemo(() => {
     // Priority 1: If we have search results from live API, use them (they have real images)
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
-      const results = searchResults?.search_results || searchResults?.data || [];
+      const results = searchResults?.data || searchResults?.search_results || [];
       if (results.length > 0) {
         const targetProducts = results.filter((p: any) => p.retailer === 'target');
         const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
@@ -814,8 +814,25 @@ export default function ProductSearch() {
             {/* Loading State - Only show if we don't have cached products to display */}
             {isLoading && displayProducts.length === 0 && (
               <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-coral mx-auto mb-4"></div>
-                <p className="text-gray-600">Searching for products...</p>
+                <div className="inline-flex items-center justify-center p-2 bg-white rounded-full shadow-lg mb-6">
+                  <img src={myneedfullyLogo} alt="Loading" className="h-12 w-12 animate-pulse" />
+                </div>
+                <p className="text-lg font-semibold text-gray-700 mb-2">Searching for "{activeSearch || debouncedQuery}"</p>
+                <p className="text-sm text-gray-600 mb-4">This may take 7-14 seconds as we search multiple retailers...</p>
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <img src={amazonLogo} alt="Amazon" className="h-5 w-5 animate-pulse" />
+                    <span className="text-xs text-gray-500">Amazon</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={walmartLogo} alt="Walmart" className="h-5 w-5 animate-pulse" />
+                    <span className="text-xs text-gray-500">Walmart</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={targetLogo} alt="Target" className="h-5 w-5 animate-pulse" />
+                    <span className="text-xs text-gray-500">Target</span>
+                  </div>
+                </div>
               </div>
             )}
 
