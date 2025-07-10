@@ -63,46 +63,48 @@ export default function BrowseWishlists() {
   return (
     <div className="min-h-screen bg-warm-bg">
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
-          <p className="text-gray-600">
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
+          <p className="text-sm sm:text-base text-gray-600">
             Find families and organizations who need your support
           </p>
         </div>
 
         {/* Search Bar */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="p-4 sm:p-6">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                 <Input
                   placeholder="Search by keywords, location, or needs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 py-3"
+                  className="pl-9 sm:pl-10 py-2 sm:py-3 text-sm sm:text-base"
                 />
               </div>
-              <Button type="submit" className="bg-coral hover:bg-coral/90 px-8">
-                <Search className="mr-2 h-4 w-4" />
-                Search
-              </Button>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => setShowFilters(!showFilters)}
-                className="border-coral text-coral hover:bg-coral/10"
-              >
-                <Filter className="mr-2 h-4 w-4" />
-                Filters
-              </Button>
+              <div className="flex gap-2 sm:gap-4">
+                <Button type="submit" className="bg-coral hover:bg-coral/90 px-4 sm:px-8 flex-1 sm:flex-none">
+                  <Search className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-sm sm:text-base">Search</span>
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="border-coral text-coral hover:bg-coral/10 px-4 sm:px-6"
+                >
+                  <Filter className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-sm sm:text-base">Filters</span>
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
           {/* Filters Sidebar */}
           <div className={`lg:w-80 ${showFilters ? 'block' : 'hidden lg:block'}`}>
             <SearchFilters 
@@ -114,8 +116,8 @@ export default function BrowseWishlists() {
           {/* Results */}
           <div className="flex-1">
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-gray-600">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+              <div className="text-sm sm:text-base text-gray-600">
                 {wishlistsData ? (
                   <>
                     Showing {wishlistsData.wishlists.length} of {wishlistsData.total} results
@@ -125,7 +127,7 @@ export default function BrowseWishlists() {
                 )}
               </div>
               
-              <select className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-coral/50">
+              <select className="border border-gray-300 rounded-md px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm focus:ring-2 focus:ring-coral/50">
                 <option value="newest">Newest First</option>
                 <option value="urgent">Most Urgent</option>
                 <option value="completion">Nearly Complete</option>
@@ -135,27 +137,27 @@ export default function BrowseWishlists() {
 
             {/* Wishlist Grid */}
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <Card key={i} className="overflow-hidden">
-                    <Skeleton className="h-48 w-full" />
-                    <CardContent className="p-6">
-                      <Skeleton className="h-4 w-20 mb-2" />
-                      <Skeleton className="h-6 w-full mb-2" />
-                      <Skeleton className="h-4 w-full mb-2" />
-                      <Skeleton className="h-4 w-3/4 mb-4" />
+                    <Skeleton className="h-40 sm:h-48 w-full" />
+                    <CardContent className="p-4 sm:p-6">
+                      <Skeleton className="h-3 sm:h-4 w-16 sm:w-20 mb-2" />
+                      <Skeleton className="h-4 sm:h-6 w-full mb-2" />
+                      <Skeleton className="h-3 sm:h-4 w-full mb-2" />
+                      <Skeleton className="h-3 sm:h-4 w-3/4 mb-4" />
                       <Skeleton className="h-2 w-full mb-4" />
-                      <Skeleton className="h-10 w-full" />
+                      <Skeleton className="h-8 sm:h-10 w-full" />
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : wishlistsData?.wishlists.length === 0 ? (
-              <Card className="p-12 text-center">
+              <Card className="p-6 sm:p-12 text-center">
                 <div className="text-gray-500 mb-4">
-                  <Search className="mx-auto h-12 w-12 mb-4 text-gray-300" />
-                  <h3 className="text-lg font-semibold mb-2">No needs lists found</h3>
-                  <p>Try adjusting your search criteria or filters</p>
+                  <Search className="mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-4 text-gray-300" />
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">No needs lists found</h3>
+                  <p className="text-sm sm:text-base">Try adjusting your search criteria or filters</p>
                 </div>
                 <Button 
                   onClick={() => {
@@ -175,7 +177,7 @@ export default function BrowseWishlists() {
               </Card>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                   {wishlistsData?.wishlists.map((wishlist: any) => (
                     <WishlistCard key={wishlist.id} wishlist={wishlist} />
                   ))}
@@ -183,11 +185,11 @@ export default function BrowseWishlists() {
 
                 {/* Load More */}
                 {wishlistsData && wishlistsData.wishlists.length < wishlistsData.total && (
-                  <div className="mt-8 text-center">
+                  <div className="mt-6 sm:mt-8 text-center">
                     <Button 
                       onClick={loadMore}
                       variant="outline"
-                      className="border-coral text-coral hover:bg-coral/10 px-8 py-3"
+                      className="border-coral text-coral hover:bg-coral/10 px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
                     >
                       Load More Needs Lists
                     </Button>

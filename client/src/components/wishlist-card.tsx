@@ -82,7 +82,7 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
       {/* Featured Image */}
       {storyImages && storyImages.length > 0 && (
-        <div className="h-48 overflow-hidden">
+        <div className="h-40 sm:h-48 overflow-hidden">
           <img 
             src={storyImages[0]}
             alt={wishlist.title}
@@ -95,30 +95,30 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
         </div>
       )}
       
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <Badge className={`${getUrgencyColor(wishlist.urgencyLevel)} text-xs sm:text-sm`}>
             {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
           </Badge>
-          <span className="text-sm text-gray-500">{completionPercentage}% Complete</span>
+          <span className="text-xs sm:text-sm text-gray-500">{completionPercentage}% Complete</span>
         </div>
         
         {/* Title and Description */}
-        <h3 className="text-xl font-semibold text-navy mb-2 line-clamp-2">
+        <h3 className="text-lg sm:text-xl font-semibold text-navy mb-2 line-clamp-2">
           {wishlist.title}
         </h3>
-        <p className="text-gray-600 mb-4 line-clamp-3 text-sm">
+        <p className="text-gray-600 mb-3 sm:mb-4 line-clamp-3 text-xs sm:text-sm">
           {wishlist.description}
         </p>
         
         {/* Meta Information */}
-        <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 text-xs sm:text-sm text-gray-500 gap-2 sm:gap-0">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             {wishlist.location && (
               <div className="flex items-center">
                 <MapPin className="mr-1 h-3 w-3" />
-                {wishlist.location}
+                <span className="truncate">{wishlist.location}</span>
               </div>
             )}
             <div className="flex items-center">
@@ -137,28 +137,28 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
 
         {/* Creator Info */}
         {wishlist.user && (
-          <div className="flex items-center space-x-2 mb-4">
+          <div className="flex items-center space-x-2 mb-3 sm:mb-4">
             {wishlist.user.profileImageUrl ? (
               <img 
                 src={wishlist.user.profileImageUrl}
                 alt="Creator"
-                className="w-6 h-6 rounded-full object-cover"
+                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover"
               />
             ) : (
               <img 
                 src="/attached_assets/Logo_6_1752017502495.png" 
                 alt="Creator" 
-                className="w-6 h-6 rounded-full object-cover"
+                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover"
               />
             )}
-            <span className="text-sm text-gray-600">
+            <span className="text-xs sm:text-sm text-gray-600 truncate">
               by {wishlist.user.firstName} {wishlist.user.lastName}
             </span>
           </div>
         )}
         
         {/* Progress Bar */}
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <Progress value={completionPercentage} className="h-2" />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{wishlist.fulfilledItems} fulfilled</span>
@@ -170,7 +170,7 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
         {showActions && (
           <div className="flex space-x-2">
             <Link href={`/wishlist/${wishlist.id}`} className="flex-1">
-              <Button className="w-full bg-coral text-white hover:bg-coral/90">
+              <Button className="w-full bg-coral text-white hover:bg-coral/90 text-xs sm:text-sm py-2 sm:py-2.5">
                 View Needs List
               </Button>
             </Link>
@@ -179,19 +179,19 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="border-coral text-coral hover:bg-coral/10"
+                  className="border-coral text-coral hover:bg-coral/10 p-2"
                 >
-                  <Edit className="h-4 w-4" />
+                  <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </Link>
             )}
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-coral text-coral hover:bg-coral/10"
+              className="border-coral text-coral hover:bg-coral/10 p-2"
               onClick={() => setShowShareModal(true)}
             >
-              <Share2 className="h-4 w-4" />
+              <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
         )}

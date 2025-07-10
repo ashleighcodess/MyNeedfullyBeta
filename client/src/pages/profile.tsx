@@ -430,14 +430,14 @@ export default function Profile() {
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
+                    className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
                       item.active 
                         ? 'bg-coral text-white' 
                         : 'text-gray-700 hover:bg-white'
                     }`}
                   >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.label}</span>
+                    <item.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">{item.label}</span>
                   </button>
                 ))}
               </div>

@@ -31,61 +31,61 @@ export default function Home() {
         <img 
           src={logoImage} 
           alt="MyNeedfully Logo Background" 
-          className="opacity-10 w-80 h-80 object-contain"
+          className="opacity-10 w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 object-contain"
           style={{ filter: 'brightness(0.7)' }}
         />
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 relative z-10">
         {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2">
             Welcome back, {user?.firstName || 'Friend'}!
           </h1>
           <p className="text-gray-600">Ready to make a difference today?</p>
         </div>
 
         {/* Quick Actions */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+        <Card className="mb-6 sm:mb-8">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {isSupporter ? (
                 <Link href="/browse">
-                  <Button data-tip="browse-needs" className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
-                    <Search className="h-6 w-6" />
-                    <span>Find Needs Lists</span>
+                  <Button data-tip="browse-needs" className="w-full h-16 sm:h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                    <Search className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <span className="text-xs sm:text-sm font-medium">Find Needs Lists</span>
                   </Button>
                 </Link>
               ) : (
                 <Link href={isAuthenticated ? "/create" : "/signup"}>
-                  <Button data-tip="create-list" className="w-full h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-2">
-                    <Plus className="h-6 w-6" />
-                    <span>Create Needs List</span>
+                  <Button data-tip="create-list" className="w-full h-16 sm:h-20 bg-coral hover:bg-coral/90 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                    <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <span className="text-xs sm:text-sm font-medium">Create Needs List</span>
                   </Button>
                 </Link>
               )}
               
               <Link href={isSupporter ? (isAuthenticated ? "/create" : "/signup") : "/browse"}>
-                <Button data-tip={isSupporter ? "create-list" : "browse-needs"} variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
-                  {isSupporter ? <Plus className="h-6 w-6" /> : <Search className="h-6 w-6" />}
-                  <span>{isSupporter ? "Create Needs List" : "Browse Needs Lists"}</span>
+                <Button data-tip={isSupporter ? "create-list" : "browse-needs"} variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                  {isSupporter ? <Plus className="h-5 w-5 sm:h-6 sm:w-6" /> : <Search className="h-5 w-5 sm:h-6 sm:w-6" />}
+                  <span className="text-xs sm:text-sm font-medium">{isSupporter ? "Create Needs List" : "Browse Needs Lists"}</span>
                 </Button>
               </Link>
               
               <Link href="/products">
-                <Button data-tip="product-search" variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
-                  <Gift className="h-6 w-6" />
-                  <span>Search Products</span>
+                <Button data-tip="product-search" variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                  <Gift className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm font-medium">Search Products</span>
                 </Button>
               </Link>
               
               <Link href="/dashboard">
-                <Button data-tip="go-to-dashboard" variant="outline" className="w-full h-20 flex flex-col items-center justify-center space-y-2">
-                  <User className="h-6 w-6" />
-                  <span>Go to my Dashboard</span>
+                <Button data-tip="go-to-dashboard" variant="outline" className="w-full h-16 sm:h-20 flex flex-col items-center justify-center space-y-1 sm:space-y-2">
+                  <User className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm font-medium text-center">Go to my Dashboard</span>
                 </Button>
               </Link>
             </div>
@@ -94,62 +94,62 @@ export default function Home() {
 
         {/* Getting Started Guide */}
         <Card>
-          <CardHeader>
-            <CardTitle>Getting Started with MyNeedfully</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg sm:text-xl">Getting Started with MyNeedfully</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-0">
               <Link href={isAuthenticated ? "/create" : "/signup"}>
-                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Plus className="h-8 w-8 text-coral mt-0.5 icon-wiggle" strokeWidth={1.5} />
-                  <div>
-                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Create Your First Needs List</h3>
-                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Share what you need with our caring community</p>
+                <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle flex-shrink-0" strokeWidth={1.5} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Create Your First Needs List</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Share what you need with our caring community</p>
                   </div>
                 </div>
               </Link>
               
               {/* Animated Separator */}
-              <div className="my-3 mx-8">
+              <div className="my-2 sm:my-3 mx-6 sm:mx-8">
                 <div className="h-0.5 bg-navy/50 separator-draw" style={{animationDelay: '0.2s'}}></div>
               </div>
               
               <Link href="/browse">
-                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Heart className="h-8 w-8 text-coral mt-0.5 icon-wiggle-delayed-1" strokeWidth={1.5} />
-                  <div>
-                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Browse and Help Others</h3>
-                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Find needs lists where you can make a difference</p>
+                <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-1 flex-shrink-0" strokeWidth={1.5} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Browse and Help Others</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Find needs lists where you can make a difference</p>
                   </div>
                 </div>
               </Link>
               
               {/* Animated Separator */}
-              <div className="my-3 mx-8">
+              <div className="my-2 sm:my-3 mx-6 sm:mx-8">
                 <div className="h-0.5 bg-navy/50 separator-draw" style={{animationDelay: '0.4s'}}></div>
               </div>
               
               <Link href="/products">
-                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Gift className="h-8 w-8 text-coral mt-0.5 icon-wiggle-delayed-2" strokeWidth={1.5} />
-                  <div>
-                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Search for Specific Items</h3>
-                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Use our product search to find exactly what's needed</p>
+                <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-2 flex-shrink-0" strokeWidth={1.5} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Search for Specific Items</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Use our product search to find exactly what's needed</p>
                   </div>
                 </div>
               </Link>
               
               {/* Animated Separator */}
-              <div className="my-3 mx-8">
+              <div className="my-2 sm:my-3 mx-6 sm:mx-8">
                 <div className="h-0.5 bg-navy/50 separator-draw" style={{animationDelay: '0.6s'}}></div>
               </div>
               
               <Link href="/profile#my-lists">
-                <div className="flex items-start space-x-4 p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-                  <Settings className="h-8 w-8 text-coral mt-0.5 icon-wiggle-delayed-3" strokeWidth={1.5} />
-                  <div>
-                    <h3 className="font-semibold text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Manage my Needs Lists</h3>
-                    <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Edit, update, and track your existing needs lists</p>
+                <div className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                  <Settings className="h-6 w-6 sm:h-8 sm:w-8 text-coral mt-0.5 icon-wiggle-delayed-3 flex-shrink-0" strokeWidth={1.5} />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-base sm:text-lg" style={{fontFamily: 'JUST Sans, sans-serif'}}>Manage my Needs Lists</h3>
+                    <p className="text-sm sm:text-base text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>Edit, update, and track your existing needs lists</p>
                   </div>
                 </div>
               </Link>

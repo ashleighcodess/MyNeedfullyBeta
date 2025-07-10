@@ -180,17 +180,17 @@ export default function Navigation() {
             <div className="block sm:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button size="sm" className="bg-coral text-white border-2 border-coral hover:bg-coral/90">
-                    <Menu className="h-5 w-5" />
+                  <Button size="sm" className="bg-coral text-white border-2 border-coral hover:bg-coral/90 p-2">
+                    <Menu className="h-4 w-4" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-80">
-                  <div className="flex flex-col space-y-4 mt-8">
+                <SheetContent side="right" className="w-72 sm:w-80">
+                  <div className="flex flex-col space-y-3 mt-6">
                     {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
                       <Link key={item.href} href={item.href}>
                         <Button 
                           variant="ghost" 
-                          className={`w-full justify-start ${
+                          className={`w-full justify-start text-sm ${
                             isActiveLink(item.href) ? 'text-coral bg-coral/10' : ''
                           }`}
                           onClick={() => setMobileMenuOpen(false)}

@@ -773,7 +773,7 @@ export default function ProductSearch() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                     {displayProducts.map((product: any, index: number) => (
                     <Card key={`${product.retailer}-${product.asin || product.product_id || index}-${Date.now()}-${Math.random()}`} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="relative">
@@ -781,7 +781,7 @@ export default function ProductSearch() {
                           <img 
                             src={product.image || product.image_url}
                             alt={product.title}
-                            className="w-full h-48 object-contain bg-gray-50"
+                            className="w-full h-40 sm:h-48 object-contain bg-gray-50"
                             onError={(e) => {
                               // Show retailer-specific fallback when image fails to load
                               const target = e.target as HTMLImageElement;
@@ -790,15 +790,15 @@ export default function ProductSearch() {
                                 target.dataset.fallbackApplied = 'true';
                                 // Safely create fallback content using DOM methods
                                 const fallbackDiv = document.createElement('div');
-                                fallbackDiv.className = 'w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500';
+                                fallbackDiv.className = 'w-full h-40 sm:h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500';
                                 
                                 const logoImg = document.createElement('img');
                                 logoImg.src = getRetailerLogo(product.retailer);
                                 logoImg.alt = product.retailer;
-                                logoImg.className = 'w-12 h-12 mb-2 opacity-50';
+                                logoImg.className = 'w-10 h-10 sm:w-12 sm:h-12 mb-2 opacity-50';
                                 
                                 const textSpan = document.createElement('span');
-                                textSpan.className = 'text-sm font-medium';
+                                textSpan.className = 'text-xs sm:text-sm font-medium';
                                 textSpan.textContent = 'Image not available';
                                 
                                 fallbackDiv.appendChild(logoImg);
@@ -809,17 +809,17 @@ export default function ProductSearch() {
                           />
                         ) : (
                           // Show retailer logo directly when no image is available
-                          <div className="w-full h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
+                          <div className="w-full h-40 sm:h-48 flex flex-col items-center justify-center bg-gray-50 text-gray-500">
                             <img 
                               src={getRetailerLogo(product.retailer)} 
                               alt={product.retailer} 
-                              className="w-12 h-12 mb-2 opacity-50" 
+                              className="w-10 h-10 sm:w-12 sm:h-12 mb-2 opacity-50" 
                             />
-                            <span className="text-sm font-medium">Image not available</span>
+                            <span className="text-xs sm:text-sm font-medium">Image not available</span>
                           </div>
                         )}
                         {product.is_prime && (
-                          <Badge className="absolute top-2 left-2 bg-blue-600 text-white">
+                          <Badge className="absolute top-2 left-2 bg-blue-600 text-white text-xs">
                             Prime
                           </Badge>
                         )}
@@ -828,19 +828,19 @@ export default function ProductSearch() {
                           <img 
                             src={getRetailerLogo(product.retailer || 'amazon')} 
                             alt={product.retailer_name || 'Amazon'} 
-                            className="h-4 w-4 object-contain"
+                            className="h-3 w-3 sm:h-4 sm:w-4 object-contain"
                           />
                         </div>
                       </div>
                       
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold text-navy mb-2 line-clamp-2 text-sm">
+                      <CardContent className="p-3 sm:p-4">
+                        <h3 className="font-semibold text-navy mb-2 line-clamp-2 text-xs sm:text-sm">
                           {product.title}
                         </h3>
                         
                         <div className="flex items-center justify-between mb-2">
                           {product.price && (
-                            <div className="font-bold text-lg text-coral">
+                            <div className="font-bold text-base sm:text-lg text-coral">
                               {formatPrice(product.price)}
                             </div>
                           )}
@@ -855,12 +855,17 @@ export default function ProductSearch() {
 
                         <div>
                           <Button 
-                            className="w-full bg-coral hover:bg-coral/90"
+                            className="w-full bg-coral hover:bg-coral/90 text-xs sm:text-sm py-2"
                             onClick={() => handleAddToNeedsList(product)}
                             disabled={addingProductId === (product.asin || product.product_id)}
                           >
-                            <Heart className="mr-2 h-4 w-4" />
-                            {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add to Needs List"}
+                            <Heart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                            <span className="hidden xs:inline">
+                              {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add to Needs List"}
+                            </span>
+                            <span className="xs:hidden">
+                              {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add"}
+                            </span>
                           </Button>
                         </div>
 
