@@ -463,27 +463,26 @@ export default function ProductSearch() {
 
   // Get display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
-    console.log('displayProducts calculation:', {
+    // Check if we have live search results
+    const hasLiveResults = searchResults && (searchResults as any).data && Array.isArray((searchResults as any).data) && (searchResults as any).data.length > 0;
+    
+    console.log('Showing results section:', {
+      activeSearch,
       debouncedQuery,
-      hasSearchResults: !!searchResults,
-      searchResultsData: searchResults?.data?.length || 0,
-      searchResults
+      displayProductsLength: hasLiveResults ? (searchResults as any).data.length : 0,
+      searchResultsExists: !!searchResults,
+      searchResultsDataExists: !!(searchResults as any)?.data,
+      searchResultsDataLength: ((searchResults as any)?.data || []).length
     });
     
-    // Priority 1: If we have search results from live API, use them (they have real images)
-    if (searchResults?.data && Array.isArray(searchResults.data)) {
-      console.log('API response has data array with', searchResults.data.length, 'items');
-      
-      const targetProducts = searchResults.data.filter((p: any) => p.retailer === 'target');
-      const walmartProducts = searchResults.data.filter((p: any) => p.retailer === 'walmart');
-      const amazonProducts = searchResults.data.filter((p: any) => p.retailer === 'amazon');
-      console.log(`Live API results: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
-      
-      return searchResults.data;
+    // Priority 1: If we have search results from live API, use them
+    if (hasLiveResults) {
+      console.log('API response has data array with', (searchResults as any).data.length, 'items');
+      return (searchResults as any).data;
     }
     
     // Priority 2: Show cached "Basic Essentials" when no search has been performed
-    if ((!debouncedQuery && !activeSearch) || (!searchResults && activeSearch === "Basic Essentials")) {
+    if (!activeSearch && !debouncedQuery) {
       return cachedProducts["Basic Essentials"] || [];
     }
     
