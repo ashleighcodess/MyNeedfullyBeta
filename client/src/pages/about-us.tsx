@@ -297,59 +297,59 @@ export default function AboutUs() {
           </div>
           
           {/* Statistics Cards */}
-          <div className="grid grid-cols-4 gap-4 animate-fade-in-up mt-8" data-stats-section>
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-8" data-stats-section>
             <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-gray-800 mb-1">
+                    <div className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">
                       {needsListFulfilled}+
                     </div>
-                    <div className="text-sm text-gray-600">Needs Lists Fulfilled</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Needs Lists Fulfilled</div>
                   </div>
-                  <BoxHeartIcon className="h-6 w-6 text-gray-600 mt-1" />
+                  <BoxHeartIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 mt-1" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-white mb-1">
+                    <div className="text-xl sm:text-2xl font-bold text-white mb-1">
                       {needsListCreated}+
                     </div>
-                    <div className="text-sm text-white/90">Needs Lists Created</div>
+                    <div className="text-xs sm:text-sm text-white/90">Needs Lists Created</div>
                   </div>
-                  <Users className="h-6 w-6 text-white mt-1" />
+                  <Users className="h-5 w-5 sm:h-6 sm:w-6 text-white mt-1" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-gray-800 mb-1">
+                    <div className="text-xl sm:text-2xl font-bold text-gray-800 mb-1">
                       {smilesSpread}k
                     </div>
-                    <div className="text-sm text-gray-600">Smiles Spread</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Smiles Spread</div>
                   </div>
-                  <Smile className="h-6 w-6 text-gray-600 mt-1" />
+                  <Smile className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 mt-1" />
                 </div>
               </CardContent>
             </Card>
             
             <Card className="text-left bg-coral border-coral transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-white mb-1">
+                    <div className="text-xl sm:text-2xl font-bold text-white mb-1">
                       {productsDelivered}k
                     </div>
-                    <div className="text-sm text-white/90">Products Delivered</div>
+                    <div className="text-xs sm:text-sm text-white/90">Products Delivered</div>
                   </div>
-                  <Package className="h-6 w-6 text-white mt-1" />
+                  <Package className="h-5 w-5 sm:h-6 sm:w-6 text-white mt-1" />
                 </div>
               </CardContent>
             </Card>
