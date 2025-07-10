@@ -48,53 +48,53 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Redirect non-admin users
+  // Redirect non-admin users using email-based admin check
   useEffect(() => {
-    if (user && user.userType !== 'admin') {
+    if (user && !user.isAdmin) {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
         variant: "destructive",
       });
-      window.location.href = "/home";
+      window.location.href = "/";
     }
   }, [user, toast]);
 
   // Admin stats query
   const { data: adminStats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/admin/stats'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && user.isAdmin,
   });
 
   // Recent activity query
   const { data: recentActivity, isLoading: activityLoading } = useQuery({
     queryKey: ['/api/admin/activity'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && user.isAdmin,
   });
 
   // User management query
   const { data: usersList, isLoading: usersLoading } = useQuery({
     queryKey: ['/api/admin/users'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && user.isAdmin,
   });
 
   // Wishlists management query
   const { data: wishlistsData, isLoading: wishlistsLoading } = useQuery({
     queryKey: ['/api/admin/wishlists'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && user.isAdmin,
   });
 
   // System health query
   const { data: systemHealth, isLoading: healthLoading } = useQuery({
     queryKey: ['/api/admin/health'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && user.isAdmin,
     refetchInterval: 120000, // Refresh every 2 minutes for better performance
   });
 
   // Security dashboard query
   const { data: securityData, isLoading: securityLoading } = useQuery({
     queryKey: ['/api/admin/security/dashboard'],
-    enabled: !!user && user.userType === 'admin',
+    enabled: !!user && user.isAdmin,
     refetchInterval: 120000, // Refresh every 2 minutes for better performance
   });
 
@@ -197,7 +197,7 @@ export default function AdminDashboard() {
   });
 
   // Don't render if not admin
-  if (!user || user.userType !== 'admin') {
+  if (!user || !user.isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

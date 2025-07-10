@@ -380,7 +380,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      res.json(user);
+      // Add computed isAdmin field based on email and userType
+      const adminEmails = ['ashleigh@elitewebdesign.us', 'info@myneedfully.com'];
+      const userWithAdmin = {
+        ...user,
+        isAdmin: user.userType === 'admin' || adminEmails.includes(user.email || '')
+      };
+      
+      res.json(userWithAdmin);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
