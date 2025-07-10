@@ -2862,15 +2862,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Item not found" });
       }
 
+      // Helper function to validate URLs match expected retailer
+      const isAmazonUrl = (url: string) => url && url.includes('amazon.com');
+      const isWalmartUrl = (url: string) => url && url.includes('walmart.com');
+      const isTargetUrl = (url: string) => url && url.includes('target.com');
+
       const pricing = {
-        amazon: { available: false, price: item.price, link: item.productUrl },
-        walmart: { available: false, price: item.price, link: null },
-        target: { available: false, price: item.price, link: null }
+        amazon: { 
+          available: false, 
+          price: item.price, 
+          link: isAmazonUrl(item.productUrl) ? item.productUrl : null 
+        },
+        walmart: { 
+          available: false, 
+          price: item.price, 
+          link: isWalmartUrl(item.productUrl) ? item.productUrl : null 
+        },
+        target: { 
+          available: false, 
+          price: item.price, 
+          link: isTargetUrl(item.productUrl) ? item.productUrl : null 
+        }
       };
 
       // Try to get live pricing from RainforestAPI if available and item has valid Amazon URL
       const rainforestService = getRainforestAPIService();
-      if (rainforestService && item.productUrl && item.productUrl.includes('amazon.com')) {
+      if (rainforestService && item.productUrl && isAmazonUrl(item.productUrl)) {
         try {
           // Extract ASIN from Amazon URL if possible
           const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
@@ -2880,10 +2897,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const products = await rainforestService.searchProducts(asin);
             if (products && products.length > 0) {
               const product = products[0];
+              // Only use Amazon links for Amazon products
+              const amazonLink = product.link && isAmazonUrl(product.link) ? product.link : item.productUrl;
               pricing.amazon = {
                 available: true,
                 price: product.price?.value || item.price,
-                link: product.link || item.productUrl
+                link: amazonLink
               };
             }
           }
@@ -2899,21 +2918,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const walmartResults = await serpService.searchWalmart(item.title, '60602', 1);
           if (walmartResults && walmartResults.length > 0) {
             const walmartProduct = walmartResults[0];
-            pricing.walmart = {
-              available: true,
-              price: walmartProduct.price || item.price,
-              link: walmartProduct.product_url
-            };
+            // Only use Walmart links for Walmart products
+            const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
+              ? walmartProduct.product_url 
+              : null;
+            if (walmartLink) {
+              pricing.walmart = {
+                available: true,
+                price: walmartProduct.price || item.price,
+                link: walmartLink
+              };
+            }
           }
 
           const targetResults = await serpService.searchTarget(item.title, '10001', 1);
           if (targetResults && targetResults.length > 0) {
             const targetProduct = targetResults[0];
-            pricing.target = {
-              available: true,
-              price: targetProduct.price || item.price,
-              link: targetProduct.product_url
-            };
+            // Only use Target links for Target products
+            const targetLink = targetProduct.product_url && isTargetUrl(targetProduct.product_url) 
+              ? targetProduct.product_url 
+              : null;
+            if (targetLink) {
+              pricing.target = {
+                available: true,
+                price: targetProduct.price || item.price,
+                link: targetLink
+              };
+            }
           }
         } catch (error) {
           console.log('SerpAPI pricing error:', error);
