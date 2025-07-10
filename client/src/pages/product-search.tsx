@@ -58,7 +58,8 @@ export default function ProductSearch() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [page, setPage] = useState(1);
-
+  const [cachedPage, setCachedPage] = useState(1);
+  const itemsPerPage = 20;
 
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
@@ -122,6 +123,7 @@ export default function ProductSearch() {
     } else {
       // Show Basic Essentials by default on page load
       setActiveSearch("Basic Essentials");
+      setCachedPage(1); // Reset pagination
     }
     if (initialCategory && initialCategory !== "all") {
       setCategory(initialCategory);
@@ -199,6 +201,114 @@ export default function ProductSearch() {
         image: "https://m.media-amazon.com/images/I/81VgRo8R-8L._AC_SL1500_.jpg",
         price: { value: 16.99, currency: "USD" },
         rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B075RDQFMZ",
+        title: "Dawn Ultra Dishwashing Liquid Dish Soap, Original Scent, 7 oz, 8 count",
+        image: "https://m.media-amazon.com/images/I/81K7OfGqPYL._AC_SL1500_.jpg",
+        price: { value: 15.48, currency: "USD" },
+        rating: 4.8,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0779VKDVN",
+        title: "Lysol Disinfectant Spray, Crisp Linen, 12.5oz (Pack of 6)",
+        image: "https://m.media-amazon.com/images/I/71V3H0VwZ6L._AC_SL1500_.jpg",
+        price: { value: 24.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B072KBQX8X",
+        title: "Ziploc Storage Bags Gallon, 120 Count",
+        image: "https://m.media-amazon.com/images/I/81VK5O+QBCL._AC_SL1500_.jpg",
+        price: { value: 17.99, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B00QFUDDAE",
+        title: "Hefty Strong Large Trash Bags, 30 Gallon, 56 Count",
+        image: "https://m.media-amazon.com/images/I/81h2z4oqF-L._AC_SL1500_.jpg",
+        price: { value: 18.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08G4H3LQB",
+        title: "Reynolds Wrap Aluminum Foil, 200 Square Feet",
+        image: "https://m.media-amazon.com/images/I/71lGaVb8tpL._AC_SL1500_.jpg",
+        price: { value: 11.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B073WGG2XD",
+        title: "Glad Press'n Seal Plastic Food Wrap, 140 sq ft",
+        image: "https://m.media-amazon.com/images/I/81kHUXM7J8L._AC_SL1500_.jpg",
+        price: { value: 13.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07FQHTPVQ",
+        title: "Scott Comfort Plus Toilet Paper, 36 Double Rolls",
+        image: "https://m.media-amazon.com/images/I/81yZ9VKJ-nL._AC_SL1500_.jpg",
+        price: { value: 29.99, currency: "USD" },
+        rating: 4.3,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B089Q7T6HS",
+        title: "Arm & Hammer Clean Burst Laundry Detergent, 150 oz",
+        image: "https://m.media-amazon.com/images/I/61nL4QwKVJL._AC_SL1000_.jpg",
+        price: { value: 14.97, currency: "USD" },
+        rating: 4.7,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B07H2NVQXZ",
+        title: "Downy Unstopables In-Wash Scent Booster Beads, Fresh Scent, 26.5 oz",
+        image: "https://m.media-amazon.com/images/I/61K6eZ+nJOL._AC_SL1000_.jpg",
+        price: { value: 12.99, currency: "USD" },
+        rating: 4.5,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0842D8SFG",
+        title: "Pine-Sol All-Purpose Cleaner, Original Pine, 100 oz",
+        image: "https://m.media-amazon.com/images/I/61UxRdPNLBL._AC_SL1200_.jpg",
+        price: { value: 8.99, currency: "USD" },
+        rating: 4.6,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B0779G4CJM",
+        title: "Seventh Generation Free & Clear Laundry Detergent, 112 oz",
+        image: "https://m.media-amazon.com/images/I/71eJJ4gXKjL._AC_SL1500_.jpg",
+        price: { value: 16.99, currency: "USD" },
+        rating: 4.4,
+        retailer: "amazon",
+        retailer_name: "Amazon"
+      },
+      {
+        asin: "B08GLXMWMQ",
+        title: "Mrs. Meyer's Clean Day Multi-Surface Cleaner, Lavender, 16 oz, 3 pk",
+        image: "https://m.media-amazon.com/images/I/71VB8mKsNhL._AC_SL1500_.jpg",
+        price: { value: 19.99, currency: "USD" },
+        rating: 4.7,
         retailer: "amazon",
         retailer_name: "Amazon"
       }
@@ -478,7 +588,7 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products - smart display with instant results and API fallbacks
+  // Get display products with pagination for cached results
   const displayProducts = useMemo(() => {
     // Priority 1: If we have search results from live API, use them
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
@@ -492,19 +602,36 @@ export default function ProductSearch() {
       }
     }
     
-    // Priority 2: Show instant category results for category clicks  
+    // Priority 2: Show instant category results with pagination
     if (activeSearch && cachedProducts[activeSearch as keyof typeof cachedProducts]) {
-      console.log(`Instant category results for ${activeSearch}:`, cachedProducts[activeSearch as keyof typeof cachedProducts].length, "products");
-      return cachedProducts[activeSearch as keyof typeof cachedProducts];
+      const allProducts = cachedProducts[activeSearch as keyof typeof cachedProducts];
+      const startIndex = (cachedPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedProducts = allProducts.slice(startIndex, endIndex);
+      console.log(`Instant category results for ${activeSearch}: page ${cachedPage}, showing ${paginatedProducts.length} of ${allProducts.length} products`);
+      return paginatedProducts;
     }
     
     // Priority 3: Show basic essentials by default when page loads
     if (!debouncedQuery || debouncedQuery.length < 3) {
-      return cachedProducts["Basic Essentials"] || [];
+      const allProducts = cachedProducts["Basic Essentials"] || [];
+      const startIndex = (cachedPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      return allProducts.slice(startIndex, endIndex);
     }
     
     return [];
-  }, [debouncedQuery, searchResults, activeSearch, cachedProducts]);
+  }, [debouncedQuery, searchResults, activeSearch, cachedProducts, cachedPage, itemsPerPage]);
+
+  // Get total count for pagination
+  const totalCount = useMemo(() => {
+    if (activeSearch && cachedProducts[activeSearch as keyof typeof cachedProducts]) {
+      return cachedProducts[activeSearch as keyof typeof cachedProducts].length;
+    }
+    return cachedProducts["Basic Essentials"]?.length || 0;
+  }, [activeSearch, cachedProducts]);
+
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -780,6 +907,7 @@ export default function ProductSearch() {
                   setActiveSearch(category.label); // Show instant results
                   setCategory(category.value);
                   setPage(1);
+                  setCachedPage(1); // Reset pagination for cached results
                   setShowCategories(false); // Hide categories on mobile after selection
                 }}
               >
@@ -973,8 +1101,56 @@ export default function ProductSearch() {
                   ))}
                 </div>
 
-                {/* Smart Pagination - Show More Results */}
-                {hasMoreResults && (
+                {/* Pagination Controls for Cached Products */}
+                {totalPages > 1 && !debouncedQuery && (
+                  <div className="flex justify-center items-center space-x-4 mt-8">
+                    <Button
+                      variant="outline"
+                      disabled={cachedPage === 1}
+                      onClick={() => setCachedPage(prev => Math.max(1, prev - 1))}
+                      className="px-4 py-2"
+                    >
+                      Previous
+                    </Button>
+                    
+                    <div className="flex space-x-2">
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        const pageNum = Math.max(1, Math.min(totalPages - 4, cachedPage - 2)) + i;
+                        if (pageNum > totalPages) return null;
+                        
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={pageNum === cachedPage ? "default" : "outline"}
+                            onClick={() => setCachedPage(pageNum)}
+                            className="w-10 h-10 p-0"
+                          >
+                            {pageNum}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      disabled={cachedPage === totalPages}
+                      onClick={() => setCachedPage(prev => Math.min(totalPages, prev + 1))}
+                      className="px-4 py-2"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+
+                {/* Results Info */}
+                {totalCount > 0 && !debouncedQuery && (
+                  <div className="text-center mt-4 text-sm text-gray-600">
+                    Showing {((cachedPage - 1) * itemsPerPage) + 1}-{Math.min(cachedPage * itemsPerPage, totalCount)} of {totalCount} products
+                  </div>
+                )}
+
+                {/* Smart Pagination - Show More Results for API */}
+                {hasMoreResults && debouncedQuery && debouncedQuery.length >= 3 && (
                   <div className="mt-8 text-center">
                     <Button
                       onClick={loadMoreResults}
