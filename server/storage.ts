@@ -371,6 +371,17 @@ export class DatabaseStorage implements IStorage {
 
     const conditions = [eq(wishlists.isPublic, true)];
     
+    // CRITICAL FIX: Filter out archived (cancelled) wishlists by default
+    // Only show cancelled wishlists if explicitly requested
+    if (params.status && params.status === 'cancelled') {
+      conditions.push(eq(wishlists.status, 'cancelled'));
+    } else if (params.status) {
+      conditions.push(eq(wishlists.status, params.status as any));
+    } else {
+      // DEFAULT: Only show active wishlists in public browse
+      conditions.push(eq(wishlists.status, 'active'));
+    }
+    
     if (params.query) {
       conditions.push(
         or(
@@ -391,10 +402,6 @@ export class DatabaseStorage implements IStorage {
     
     if (params.location) {
       conditions.push(like(wishlists.location, `%${params.location}%`));
-    }
-    
-    if (params.status) {
-      conditions.push(eq(wishlists.status, params.status as any));
     }
 
     const whereClause = and(...conditions);
