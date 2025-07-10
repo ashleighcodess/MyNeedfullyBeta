@@ -227,7 +227,7 @@ export default function Navigation() {
                             Dashboard
                           </Button>
                         </Link>
-                        <Link href="/profile">
+                        <Link href="/quick-actions">
                           <Button 
                             variant="ghost" 
                             className="w-full justify-start"

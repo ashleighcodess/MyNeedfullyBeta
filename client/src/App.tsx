@@ -188,6 +188,7 @@ function Router() {
                 
                 {/* Dashboard route for authenticated users */}
                 <Route path="/dashboard" component={DashboardRoute} />
+                <Route path="/quick-actions" component={QuickActions} />
                 
                 <Route component={NotFound} />
               </Switch>
