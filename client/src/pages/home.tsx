@@ -75,7 +75,7 @@ export default function Home() {
         {/* Quick Actions */}
         <Card className="mb-6 sm:mb-8">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
+            <CardTitle className="text-lg sm:text-xl">Getting Started with MyNeedfully</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -106,7 +106,7 @@ export default function Home() {
         {/* Getting Started Guide */}
         <Card>
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg sm:text-xl">Getting Started with MyNeedfully</CardTitle>
+            <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-0">
