@@ -36,8 +36,18 @@ export default function Navigation() {
       setUserKey(prev => prev + 1);
     };
     
+    const handleUserLogout = () => {
+      setUserKey(prev => prev + 1);
+      // Force profile picture refresh on logout
+    };
+    
     window.addEventListener('userDataUpdated', handleUserUpdate);
-    return () => window.removeEventListener('userDataUpdated', handleUserUpdate);
+    window.addEventListener('userLoggedOut', handleUserLogout);
+    
+    return () => {
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+      window.removeEventListener('userLoggedOut', handleUserLogout);
+    };
   }, []);
 
   const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;

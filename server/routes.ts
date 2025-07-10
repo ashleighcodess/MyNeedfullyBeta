@@ -3661,6 +3661,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin user deletion endpoint
+  app.delete('/api/admin/users/:userId', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const userIdToDelete = req.params.userId;
+      const adminUserId = req.user.profile?.id || req.user.claims?.sub;
+      
+      console.log(`Admin ${adminUserId} attempting to delete user ${userIdToDelete}`);
+
+      // Get user info before deletion for email notification
+      const userToDelete = await storage.getUser(userIdToDelete);
+      if (!userToDelete) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Prevent admin from deleting themselves
+      if (userIdToDelete === adminUserId) {
+        return res.status(400).json({ message: "Cannot delete your own admin account" });
+      }
+
+      // Prevent deletion of other admin accounts
+      if (userToDelete.userType === 'admin') {
+        return res.status(400).json({ message: "Cannot delete other admin accounts" });
+      }
+
+      // Delete user using the comprehensive remove method
+      await storage.removeUser(userIdToDelete);
+
+      // Send account removal notification email
+      if (userToDelete.email) {
+        try {
+          await emailService.sendUserRemovalNotification(
+            userToDelete.email, 
+            userToDelete.firstName || 'User',
+            'Account removed by system administrator for policy violations or security concerns'
+          );
+          console.log(`✅ Account removal email sent to ${userToDelete.email}`);
+        } catch (emailError) {
+          console.error('Failed to send account removal email:', emailError);
+          // Continue without failing - user is still deleted
+        }
+      }
+
+      console.log(`✅ User ${userIdToDelete} successfully deleted by admin ${adminUserId}`);
+      res.json({ 
+        success: true, 
+        message: "User account has been permanently removed from the platform" 
+      });
+
+    } catch (error) {
+      console.error("Error in admin user deletion:", error);
+      res.status(500).json({ 
+        message: "Failed to remove user account", 
+        error: error.message 
+      });
+    }
+  });
+
   return httpServer;
 }
 

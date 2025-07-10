@@ -1,10 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getQueryFn } from "@/lib/queryClient";
 import type { User } from "@shared/schema";
 import { useEffect, useState } from "react";
 
 export function useAuth() {
   const [isInitialized, setIsInitialized] = useState(false);
+  const queryClient = useQueryClient();
   
   try {
     const { data: user, isLoading, error, isError } = useQuery<User | null>({
@@ -13,8 +14,8 @@ export function useAuth() {
       retry: false,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
-      staleTime: 1000, // 1 second
-      gcTime: 1000, // Keep data for 1 second after component unmounts
+      staleTime: 30000, // 30 seconds
+      gcTime: 300000, // Keep data for 5 minutes after component unmounts
     });
 
     // Mark as initialized after first attempt
@@ -23,6 +24,16 @@ export function useAuth() {
         setIsInitialized(true);
       }
     }, [isLoading, isError, error]);
+
+    // Clear auth cache when logout is detected (when user data disappears)
+    useEffect(() => {
+      if (isInitialized && !isLoading && !user && !error) {
+        // User data is null but no error - likely logged out
+        queryClient.clear(); // Clear all cached data
+        // Force profile picture cache to refresh
+        window.dispatchEvent(new CustomEvent('userLoggedOut'));
+      }
+    }, [user, isInitialized, isLoading, error, queryClient]);
 
     // Log any errors for debugging but don't throw them
     if (error) {
