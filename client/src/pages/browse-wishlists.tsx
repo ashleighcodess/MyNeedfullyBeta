@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,35 +13,12 @@ export default function BrowseWishlists() {
   
   console.log('🔍 BrowseWishlists auth state:', { user: !!user, isAuthenticated, authLoading });
   
-  // Direct useState approach for data fetching
-  const [wishlistsData, setWishlistsData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<any>(null);
-
-  // Fetch wishlists on component mount
-  useEffect(() => {
-    const fetchWishlists = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        const response = await fetch('/api/wishlists');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch wishlists: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        setWishlistsData(data);
-      } catch (err: any) {
-        console.error('Error fetching wishlists:', err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchWishlists();
-  }, []);
+  // Optimized React Query approach with caching
+  const { data: wishlistsData, isLoading, error } = useQuery({
+    queryKey: ['/api/wishlists'],
+    staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
+    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+  });
 
 
 
