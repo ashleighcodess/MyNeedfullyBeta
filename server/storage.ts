@@ -34,6 +34,17 @@ import { db } from "./db";
 import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
+// Admin emails that should automatically get admin privileges
+const ADMIN_EMAILS = [
+  'ashleigh@elitewebdesign.us',
+  'info@myneedfully.com'
+];
+
+// Helper function to check if an email should be automatically granted admin privileges
+function shouldBeAdmin(email: string): boolean {
+  return ADMIN_EMAILS.includes(email?.toLowerCase());
+}
+
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
@@ -140,6 +151,12 @@ export class DatabaseStorage implements IStorage {
     const existingUser = await this.getUser(userData.id);
     const isNewUser = !existingUser;
     
+    // Check if this email should be automatically granted admin privileges
+    if (userData.email && shouldBeAdmin(userData.email)) {
+      userData.userType = 'admin';
+      console.log(`🔐 AUTO-ADMIN: Granting admin privileges to ${userData.email}`);
+    }
+    
     const [user] = await db
       .insert(users)
       .values(userData)
@@ -232,6 +249,12 @@ export class DatabaseStorage implements IStorage {
     // Set auth provider if not already set
     if (!userData.authProvider) {
       userData.authProvider = 'email';
+    }
+    
+    // Check if this email should be automatically granted admin privileges
+    if (userData.email && shouldBeAdmin(userData.email)) {
+      userData.userType = 'admin';
+      console.log(`🔐 AUTO-ADMIN: Granting admin privileges to ${userData.email} (email signup)`);
     }
     
     const [user] = await db.insert(users).values(userData).returning();
