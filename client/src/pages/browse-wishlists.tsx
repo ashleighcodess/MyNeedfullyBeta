@@ -1,26 +1,15 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
-import SearchFilters from "@/components/search-filters";
 import WishlistCard from "@/components/wishlist-card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 export default function BrowseWishlists() {
   const { user } = useAuth();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState({
-    category: "",
-    urgencyLevel: "",
-    location: "",
-    status: "active",
-  });
-  const [page, setPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
   
   // Direct useState approach for data fetching
   const [wishlistsData, setWishlistsData] = useState(null);
@@ -33,7 +22,6 @@ export default function BrowseWishlists() {
       try {
         setIsLoading(true);
         setError(null);
-        console.log('Fetching wishlists directly...');
         
         const response = await fetch('/api/wishlists');
         if (!response.ok) {
@@ -41,7 +29,6 @@ export default function BrowseWishlists() {
         }
         
         const data = await response.json();
-        console.log('Wishlists data received directly:', data);
         setWishlistsData(data);
       } catch (err) {
         console.error('Error fetching wishlists:', err);
@@ -54,8 +41,7 @@ export default function BrowseWishlists() {
     fetchWishlists();
   }, []);
 
-  // Debug logging
-  console.log('Browse page state (useState):', { isLoading, error, wishlistsData, hasData: !!wishlistsData });
+
 
   // SEO Configuration
   useSEO({
@@ -89,19 +75,7 @@ export default function BrowseWishlists() {
     }
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPage(1); // Reset to first page on new search
-  };
 
-  const handleFilterChange = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-    setPage(1); // Reset to first page on filter change
-  };
-
-  const loadMore = () => {
-    setPage(prev => prev + 1);
-  };
 
   return (
     <div className="min-h-screen bg-warm-bg">
@@ -115,67 +89,19 @@ export default function BrowseWishlists() {
           </p>
         </div>
 
-        {/* Search Bar */}
-        <Card className="mb-4 sm:mb-6">
-          <CardContent className="p-4 sm:p-6">
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
-                <Input
-                  placeholder="Search by keywords, location, or needs..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 sm:pl-10 py-2 sm:py-3 text-sm sm:text-base"
-                />
-              </div>
-              <div className="flex gap-2 sm:gap-4">
-                <Button type="submit" className="bg-coral hover:bg-coral/90 px-4 sm:px-8 flex-1 sm:flex-none">
-                  <Search className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="text-sm sm:text-base">Search</span>
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="border-coral text-coral hover:bg-coral/10 px-4 sm:px-6"
-                >
-                  <Filter className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="text-sm sm:text-base">Filters</span>
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
-          {/* Filters Sidebar */}
-          <div className={`lg:w-80 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-            <SearchFilters 
-              filters={filters} 
-              onFiltersChange={handleFilterChange} 
-            />
-          </div>
-
-          {/* Results */}
-          <div className="flex-1">
+        {/* Results */}
+        <div className="w-full">
             {/* Results Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+            <div className="mb-4 sm:mb-6">
               <div className="text-sm sm:text-base text-gray-600">
                 {wishlistsData ? (
                   <>
-                    Showing {wishlistsData.wishlists.length} of {wishlistsData.total} results
+                    Showing {wishlistsData.wishlists.length} needs lists
                   </>
                 ) : (
                   'Loading...'
                 )}
               </div>
-              
-              <select className="border border-gray-300 rounded-md px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm focus:ring-2 focus:ring-coral/50">
-                <option value="newest">Newest First</option>
-                <option value="urgent">Most Urgent</option>
-                <option value="completion">Nearly Complete</option>
-                <option value="location">By Location</option>
-              </select>
             </div>
 
             {/* Wishlist Grid */}
@@ -211,18 +137,12 @@ export default function BrowseWishlists() {
                 </div>
                 <Button 
                   onClick={() => {
-                    setSearchQuery("");
-                    setFilters({
-                      category: "",
-                      urgencyLevel: "",
-                      location: "",
-                      status: "active",
-                    });
+                    window.location.reload();
                   }}
                   variant="outline"
                   className="border-coral text-coral hover:bg-coral/10"
                 >
-                  Clear All Filters
+                  Refresh Page
                 </Button>
               </Card>
             ) : (
@@ -233,18 +153,7 @@ export default function BrowseWishlists() {
                   ))}
                 </div>
 
-                {/* Load More */}
-                {wishlistsData && wishlistsData.wishlists.length < wishlistsData.total && (
-                  <div className="mt-6 sm:mt-8 text-center">
-                    <Button 
-                      onClick={loadMore}
-                      variant="outline"
-                      className="border-coral text-coral hover:bg-coral/10 px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
-                    >
-                      Load More Needs Lists
-                    </Button>
-                  </div>
-                )}
+
               </>
             )}
           </div>
