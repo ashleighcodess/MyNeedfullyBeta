@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useWebSocket } from "@/lib/websocket";
+// import { useWebSocket } from "@/lib/websocket";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
