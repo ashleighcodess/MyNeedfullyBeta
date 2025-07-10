@@ -473,32 +473,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const startTime = Date.now();
 
         if (RAINFOREST_API_KEY && RAINFOREST_API_KEY !== 'your_api_key_here') {
-          const response = await fetch(`https://api.rainforestapi.com/request?${new URLSearchParams({
-            api_key: RAINFOREST_API_KEY,
-            type: "search",
-            amazon_domain: "amazon.com",
-            search_term: query as string
-          }).toString()}`);
+          // Add timeout to Amazon search to prevent long waits
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
 
-          if (response.ok) {
-            const data = await response.json();
-            const products = data.search_results?.map((product: any) => ({
-              ...product,
-              retailer: 'amazon',
-              retailer_name: 'Amazon',
-              link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
-            })) || [];
-
-            const endTime = Date.now();
-            console.log(`⚡ Fast Amazon: ${products.length} products in ${endTime - startTime}ms`);
-            
-            return res.json({
-              data: products.slice(0, 40) // Limit to 40 Amazon products for speed
+          try {
+            const response = await fetch(`https://api.rainforestapi.com/request?${new URLSearchParams({
+              api_key: RAINFOREST_API_KEY,
+              type: "search",
+              amazon_domain: "amazon.com",
+              search_term: query as string
+            }).toString()}`, {
+              signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+              const data = await response.json();
+              const products = data.search_results?.map((product: any) => ({
+                ...product,
+                retailer: 'amazon',
+                retailer_name: 'Amazon',
+                link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+              })) || [];
+
+              const endTime = Date.now();
+              console.log(`⚡ Fast Amazon: ${products.length} products in ${endTime - startTime}ms`);
+              
+              return res.json({
+                data: products.slice(0, 40) // Limit to 40 Amazon products for speed
+              });
+            }
+          } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+              console.log(`⚡ Amazon search timeout after 3 seconds for: "${query}"`);
+            } else {
+              console.error('Amazon search error:', error);
+            }
           }
         }
 
-        // Fallback if Amazon search fails
+        // Fallback if Amazon search fails or times out
+        console.log(`⚡ Fallback: No Amazon results for "${query}"`);
         return res.json({ data: [] });
       }
 

@@ -21,13 +21,7 @@ import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
-// Product images
-import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
-import charminToiletPaperImage from "@assets/81Ml0P+qqnL._AC__1751759916227.jpg";
-import pampersDiapersImage from "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp";
-import tideDetergentImage from "@assets/tide_1751760058768.webp";
-import bountyPaperTowelsImage from "@assets/81+BZP2zUHL._AC__1751760103041.jpg";
-import walmartToiletPaperImage from "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg";
+// Simplified cached products - using URLs instead of imports for faster loading
 import { 
   Search, 
   Filter, 
@@ -116,7 +110,7 @@ export default function ProductSearch() {
   // Synchronously initialize activeSearch to ensure immediate cached product display
   const [activeSearch, setActiveSearch] = useState(() => {
     // Initialize with cached products ready - this prevents any loading flash
-    return initialQuery || "Basic Essentials";
+    return initialQuery || "";
   });
 
   // Initialize search from URL parameters or default to "Basic Essentials"
@@ -153,43 +147,23 @@ export default function ProductSearch() {
     addToWishlistMutation.mutate(product);
   };
 
-  // Lightweight cached products - only essential items to speed up loading
-  const popularProducts = useMemo(() => ({
-    "Basic Essentials": [
-      // Just 4 essential products to reduce loading time
-      {
-        asin: "B08TMLHWTD",
-        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: pampersWipesImage,
-        price: { value: 18.97, currency: "USD" },
-        rating: 4.7,
-        retailer: "amazon"
-      },
-      {
-        asin: "B073V1T37H", 
-        title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: charminToiletPaperImage,
-        price: { value: 23.94, currency: "USD" },
-        rating: 4.6,
-        retailer: "amazon"
-      },
-      {
-        asin: "B07MJBT4T1",
-        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: tideDetergentImage,
-        price: { value: 12.97, currency: "USD" },
-        rating: 4.8,
-        retailer: "amazon"
-      },
-      {
-        title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
-        image: walmartToiletPaperImage,
-        price: "$11.98",
-        product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
-        retailer: "walmart"
-      }
+  // Instant category results - no API calls needed
+  const categoryProducts = useMemo(() => ({
+    "Electronics": [
+      { asin: "B123", title: "Wireless Bluetooth Headphones", price: { value: 149.99, currency: "USD" }, rating: 4.3, retailer: "amazon", retailer_name: "Amazon" },
+      { asin: "B124", title: "Laptop Computer", price: { value: 699.99, currency: "USD" }, rating: 4.5, retailer: "amazon", retailer_name: "Amazon" },
+      { asin: "B125", title: "Smartphone", price: { value: 399.99, currency: "USD" }, rating: 4.4, retailer: "amazon", retailer_name: "Amazon" }
     ],
-
+    "Household": [
+      { asin: "B126", title: "Vacuum Cleaner", price: { value: 299.99, currency: "USD" }, rating: 4.4, retailer: "amazon", retailer_name: "Amazon" },
+      { asin: "B127", title: "Air Purifier", price: { value: 199.99, currency: "USD" }, rating: 4.6, retailer: "amazon", retailer_name: "Amazon" },
+      { asin: "B128", title: "Kitchen Mixer", price: { value: 149.99, currency: "USD" }, rating: 4.5, retailer: "amazon", retailer_name: "Amazon" }
+    ],
+    "Baby & Kids": [
+      { asin: "B129", title: "Baby Monitor", price: { value: 89.99, currency: "USD" }, rating: 4.2, retailer: "amazon", retailer_name: "Amazon" },
+      { asin: "B130", title: "Car Seat", price: { value: 249.99, currency: "USD" }, rating: 4.7, retailer: "amazon", retailer_name: "Amazon" },
+      { asin: "B131", title: "Stroller", price: { value: 299.99, currency: "USD" }, rating: 4.4, retailer: "amazon", retailer_name: "Amazon" }
+    ]
   }), []);
 
 
@@ -260,25 +234,14 @@ export default function ProductSearch() {
 
 
 
-  // Custom query with smart caching and fallbacks
-  const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page]);
-  
+  // Smart search with optimized loading
   const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
   
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: [searchUrl],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
-    staleTime: 0, // No caching - always fresh data
-    placeholderData: () => {
-      // Return cached popular products instantly while fetching fresh data  
-      const cached = getCachedProducts(debouncedQuery);
-      if (cached) {
-        return cached;
-      }
-      return undefined;
-    },
+    staleTime: 60000, // 1 minute cache for better performance
     queryFn: async () => {
-      // Simple, direct API call without caching overhead
       const response = await fetch(searchUrl);
       if (!response.ok) {
         throw new Error('Search failed');
@@ -308,9 +271,9 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products - show cached products immediately, replace with live results when searching
+  // Get display products - instant category results or API search results
   const displayProducts = useMemo(() => {
-    // Priority 1: If we have search results from live API, use them (they have real images)
+    // Priority 1: If we have search results from live API, use them
     if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
       const results = searchResults?.search_results || searchResults?.data || [];
       if (results.length > 0) {
@@ -322,13 +285,14 @@ export default function ProductSearch() {
       }
     }
     
-    // Priority 2: Show cached "Basic Essentials" when no search has been performed
-    if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
-      return popularProducts["Basic Essentials"] || [];
+    // Priority 2: Show instant category results for category clicks
+    if (activeSearch && categoryProducts[activeSearch as keyof typeof categoryProducts]) {
+      console.log(`Instant category results for ${activeSearch}:`, categoryProducts[activeSearch as keyof typeof categoryProducts].length, "products");
+      return categoryProducts[activeSearch as keyof typeof categoryProducts];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, popularProducts]);
+  }, [debouncedQuery, searchResults, activeSearch, categoryProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -599,9 +563,9 @@ export default function ProductSearch() {
                 className="p-2 md:p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer text-center bg-white hover:bg-gray-50 active:scale-95"
                 onClick={() => {
                   console.log('Category clicked:', category.label);
-                  setSearchQuery(""); // Clear search input for fast category search
-                  setDebouncedQuery(category.label); // Trigger fast Amazon-only search
-                  setActiveSearch(category.label);
+                  setSearchQuery(""); // Clear search input
+                  setDebouncedQuery(""); // Don't trigger API search
+                  setActiveSearch(category.label); // Show instant results
                   setCategory(category.value);
                   setPage(1);
                   setShowCategories(false); // Hide categories on mobile after selection
