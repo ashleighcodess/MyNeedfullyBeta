@@ -1052,7 +1052,7 @@ export default function Landing() {
           </div>
           
           <div className="text-center mt-12">
-            <Link href="/browse-wishlists">
+            <Link href="/browse">
               <Button className="bg-navy text-white hover:bg-navy/90 px-8 py-4 text-lg rounded-full">
                 View All Needs Lists
               </Button>

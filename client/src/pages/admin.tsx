@@ -1117,7 +1117,7 @@ export default function AdminDashboard() {
                               <span className="font-medium">847 views</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-600">/browse-wishlists</span>
+                              <span className="text-gray-600">/browse</span>
                               <span className="font-medium">523 views</span>
                             </div>
                             <div className="flex justify-between">
