@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -78,6 +78,30 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       ? wishlist.storyImages.slice(1, -1).split(',').map(img => img.trim().replace(/"/g, ''))
       : [];
 
+  // Preload the first story image for faster loading when browsing
+  useEffect(() => {
+    if (storyImages.length > 0) {
+      const firstImage = storyImages[0];
+      const img = new Image();
+      img.src = firstImage;
+      img.loading = 'eager';
+      // Add preload link for card images
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = firstImage;
+      link.as = 'image';
+      document.head.appendChild(link);
+      
+      // Cleanup
+      return () => {
+        const existingLink = document.querySelector(`link[href="${firstImage}"]`);
+        if (existingLink) {
+          document.head.removeChild(existingLink);
+        }
+      };
+    }
+  }, [storyImages]);
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
       {/* Featured Image */}
@@ -87,6 +111,8 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
             src={storyImages[0]}
             alt={wishlist.title}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            loading="eager"
+            fetchPriority="high"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}

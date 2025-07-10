@@ -385,6 +385,43 @@ export default function WishlistDetail() {
     return [];
   };
 
+  // Preload story images for faster loading
+  React.useEffect(() => {
+    if (wishlist) {
+      const storyImages = getStoryImages();
+      
+      // Add preload link tags to HTML head for priority loading
+      storyImages.forEach((imagePath: string, index: number) => {
+        // Create preload link for critical images
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = imagePath;
+        link.as = 'image';
+        if (index === 0) {
+          link.fetchpriority = 'high'; // Highest priority for featured image
+        }
+        document.head.appendChild(link);
+        
+        // Also preload via Image constructor for browser cache
+        const img = new Image();
+        img.src = imagePath;
+        if (index === 0) {
+          img.fetchpriority = 'high' as any;
+        }
+      });
+      
+      // Cleanup function to remove preload links when component unmounts
+      return () => {
+        const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
+        preloadLinks.forEach(link => {
+          if (storyImages.some(img => img === link.getAttribute('href'))) {
+            document.head.removeChild(link);
+          }
+        });
+      };
+    }
+  }, [wishlist]);
+
   const nextImage = () => {
     const images = getStoryImages();
     if (images.length > 0) {
@@ -517,6 +554,8 @@ export default function WishlistDetail() {
                     src={getStoryImages()[0]}
                     alt={wishlist.title}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="eager"
+                    fetchpriority="high"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
@@ -561,6 +600,8 @@ export default function WishlistDetail() {
                             src={imagePath}
                             alt={`Story image ${index + 1}`}
                             className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
+                            loading={index < 3 ? "eager" : "lazy"}
+                            fetchpriority={index === 0 ? "high" : "auto"}
                           />
                           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
                             <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
@@ -633,6 +674,7 @@ export default function WishlistDetail() {
                                 className={`w-full h-full object-cover sm:rounded-lg ${
                                   item.isFulfilled ? 'grayscale' : ''
                                 }`}
+                                loading="lazy"
                                 onError={(e) => {
                                   console.error(`Failed to load image for ${item.title}:`, finalImageUrl);
                                   (e.target as HTMLImageElement).style.display = 'none';
