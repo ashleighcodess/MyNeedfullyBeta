@@ -78,30 +78,13 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       ? wishlist.storyImages.slice(1, -1).split(',').map(img => img.trim().replace(/"/g, ''))
       : [];
 
-  // Aggressive immediate preload for story thumbnails
+  // Simple immediate image preload - no complex logic
   useEffect(() => {
     if (storyImages.length > 0) {
       const firstImage = storyImages[0];
-      
-      // Immediate priority preload
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.href = firstImage;
-      link.as = 'image';
-      link.setAttribute('importance', 'high');
-      document.head.insertBefore(link, document.head.firstChild);
-      
-      // Force immediate browser fetch
+      // Just force the browser to start downloading immediately
       const img = new Image();
-      img.decoding = 'sync';
       img.src = firstImage;
-      
-      return () => {
-        const existingLink = document.querySelector(`link[rel="preload"][href="${firstImage}"]`);
-        if (existingLink) {
-          document.head.removeChild(existingLink);
-        }
-      };
     }
   }, [storyImages]);
 

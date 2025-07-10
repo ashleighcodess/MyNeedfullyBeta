@@ -37,7 +37,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files from public directory (must be before Vite middleware)
+// Serve static files from public directory with optimized image caching
+app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads'), {
+  maxAge: '1y', // Cache images for 1 year
+  etag: true,
+  immutable: true,
+  index: false, // Don't serve directory listings
+  setHeaders: (res, filePath) => {
+    // Add aggressive caching for images
+    if (/\.(jpg|jpeg|png|gif|webp|avif|svg)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      res.setHeader('Vary', 'Accept-Encoding');
+    }
+  }
+}));
+
+// Serve other static files normally
 app.use(express.static(path.join(process.cwd(), 'public')));
 
 (async () => {
