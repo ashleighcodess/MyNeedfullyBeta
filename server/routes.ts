@@ -2862,6 +2862,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Item not found" });
       }
 
+      // Helper function to optimize search terms for better API matching
+      const optimizeSearchQuery = (title: string) => {
+        // Extract key product terms and remove retailer-specific details
+        let optimized = title
+          .replace(/\(Select for More Options\)/gi, '')
+          .replace(/\(.*?\)/g, '') // Remove all parenthetical content
+          .replace(/,.*$/, '') // Remove everything after first comma
+          .replace(/\b(size|count|pack|oz|lb|lbs|ml|ct)\s+\d+.*$/gi, '') // Remove size/count details
+          .replace(/\b\d+\s*(size|count|pack|oz|lb|lbs|ml|ct)\b/gi, '') // Remove size patterns
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        // For specific known products, use optimized terms
+        if (title.toLowerCase().includes('pampers cruisers')) {
+          optimized = 'Pampers Cruisers Diapers';
+        }
+        
+        return optimized;
+      };
+
       // Helper function to validate URLs match expected retailer
       const isAmazonUrl = (url: string) => url && url.includes('amazon.com');
       const isWalmartUrl = (url: string) => url && url.includes('walmart.com');
@@ -2885,25 +2905,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       };
 
-      // Try to get live pricing from RainforestAPI if available and item has valid Amazon URL
+      const optimizedQuery = optimizeSearchQuery(item.title);
+      console.log(`💲 Pricing search for "${item.title}" optimized to "${optimizedQuery}"`);
+
+      // Try to get live pricing from RainforestAPI (Amazon search by title instead of just ASIN)
       const rainforestService = getRainforestAPIService();
-      if (rainforestService && item.productUrl && isAmazonUrl(item.productUrl)) {
+      if (rainforestService) {
         try {
-          // Extract ASIN from Amazon URL if possible
-          const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
-          const asin = asinMatch ? (asinMatch[1] || asinMatch[2]) : null;
+          // First try ASIN if we have an Amazon URL
+          if (item.productUrl && isAmazonUrl(item.productUrl)) {
+            const asinMatch = item.productUrl.match(/\/dp\/([A-Z0-9]+)|\/gp\/product\/([A-Z0-9]+)/);
+            const asin = asinMatch ? (asinMatch[1] || asinMatch[2]) : null;
+            
+            if (asin) {
+              const products = await rainforestService.searchProducts(asin);
+              if (products && products.length > 0) {
+                const product = products[0];
+                const amazonLink = product.link && isAmazonUrl(product.link) ? product.link : item.productUrl;
+                pricing.amazon = {
+                  available: true,
+                  price: product.price?.value || item.price,
+                  link: amazonLink
+                };
+              }
+            }
+          }
           
-          if (asin) {
-            const products = await rainforestService.searchProducts(asin);
-            if (products && products.length > 0) {
-              const product = products[0];
-              // Only use Amazon links for Amazon products
-              const amazonLink = product.link && isAmazonUrl(product.link) ? product.link : item.productUrl;
-              pricing.amazon = {
-                available: true,
-                price: product.price?.value || item.price,
-                link: amazonLink
-              };
+          // If ASIN search didn't work, try title search
+          if (!pricing.amazon.available) {
+            const titleProducts = await rainforestService.searchProducts(optimizedQuery);
+            if (titleProducts && titleProducts.length > 0) {
+              const product = titleProducts[0];
+              if (product.link && isAmazonUrl(product.link)) {
+                pricing.amazon = {
+                  available: true,
+                  price: product.price?.value || item.price,
+                  link: product.link
+                };
+              }
             }
           }
         } catch (error) {
@@ -2911,14 +2950,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Try to get Walmart/Target pricing from SerpAPI if available
+      // Try to get Walmart/Target pricing from SerpAPI with optimized search
       const serpService = getSerpAPIService();
-      if (serpService && item.title) {
+      if (serpService) {
         try {
-          const walmartResults = await serpService.searchWalmart(item.title, '60602', 1);
+          const walmartResults = await serpService.searchWalmart(optimizedQuery, '60602', 1);
           if (walmartResults && walmartResults.length > 0) {
             const walmartProduct = walmartResults[0];
-            // Only use Walmart links for Walmart products
             const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
               ? walmartProduct.product_url 
               : null;
@@ -2931,10 +2969,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
 
-          const targetResults = await serpService.searchTarget(item.title, '10001', 1);
+          const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1);
           if (targetResults && targetResults.length > 0) {
             const targetProduct = targetResults[0];
-            // Only use Target links for Target products
             const targetLink = targetProduct.product_url && isTargetUrl(targetProduct.product_url) 
               ? targetProduct.product_url 
               : null;
@@ -2951,6 +2988,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      console.log(`💲 Pricing results: Amazon=${pricing.amazon.available}, Walmart=${pricing.walmart.available}, Target=${pricing.target.available}`);
       res.json({ pricing });
     } catch (error) {
       console.error("Error fetching item pricing:", error);
