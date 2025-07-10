@@ -46,6 +46,9 @@ const Footer = lazy(() => import("@/components/footer").catch(() => ({ default: 
 const QuickTips = lazy(() => import("@/components/quick-tips").catch(() => ({ default: () => <div></div> })));
 const Navigation = lazy(() => import("@/components/navigation").catch(() => ({ default: () => <div></div> })));
 const QuickActions = lazy(() => import("@/pages/quick-actions").catch(() => ({ default: () => <div>Error loading Quick Actions page</div> })));
+const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions").catch(() => ({ default: () => <div>Error loading Terms page</div> })));
+const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy").catch(() => ({ default: () => <div>Error loading Privacy page</div> })));
+const CookiesPolicy = lazy(() => import("@/pages/cookies-policy").catch(() => ({ default: () => <div>Error loading Cookies page</div> })));
 
 // Component to handle scroll-to-top on route changes
 function ScrollToTop() {
@@ -130,6 +133,12 @@ function Router() {
                 <Route path="/about" component={AboutUs} />
                 <Route path="/resources" component={Resources} />
                 <Route path="/faq" component={FAQ} />
+                <Route path="/terms-and-conditions" component={TermsAndConditions} />
+                <Route path="/terms" component={TermsAndConditions} />
+                <Route path="/privacy-policy" component={PrivacyPolicy} />
+                <Route path="/privacy" component={PrivacyPolicy} />
+                <Route path="/cookies-policy" component={CookiesPolicy} />
+                <Route path="/cookies" component={CookiesPolicy} />
                 <Route path="/fire-disaster-relief" component={FireDisasterRelief} />
                 <Route path="/medical-necessity" component={MedicalNecessity} />
                 <Route path="/emergency-flood-relief" component={EmergencyFloodRelief} />
