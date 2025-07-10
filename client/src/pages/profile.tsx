@@ -309,13 +309,16 @@ export default function Profile() {
     return { level: 'Beginner', emoji: '✨', color: 'text-gray-500' };
   };
 
+  // Show loading state while user data is being fetched
   if (!user) {
     return (
       <div className="min-h-screen bg-warm-bg">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card className="p-12 text-center">
-            <h3 className="text-lg font-semibold mb-2">Please Log In</h3>
-            <p className="text-gray-600">You need to be logged in to view your profile.</p>
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            </div>
           </Card>
         </div>
       </div>
