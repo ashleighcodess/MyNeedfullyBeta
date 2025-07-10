@@ -183,7 +183,7 @@ export default function ProductSearch() {
   };
 
   // Cached products - real product search will provide actual images from APIs
-  const popularProducts = useMemo(() => ({
+  const cachedProducts = useMemo(() => ({
     "Basic Essentials": [
       // Amazon Products - placeholder images to be replaced with exact URLs
       {
@@ -456,11 +456,11 @@ export default function ProductSearch() {
     
     // Priority 2: Show cached "Basic Essentials" when no search has been performed
     if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
-      return popularProducts["Basic Essentials"] || [];
+      return cachedProducts["Basic Essentials"] || [];
     }
     
     return [];
-  }, [debouncedQuery, searchResults, popularProducts]);
+  }, [debouncedQuery, searchResults, cachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
