@@ -329,10 +329,12 @@ class EmailService {
     userName: string,
     verificationToken: string
   ): Promise<boolean> {
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'https://myneedfully.com';
+    // Use same URL logic as working emails
+    const baseUrl = process.env.REPLIT_DOMAIN || 'https://myneedfully.com';
     const verificationLink = `${baseUrl}/verify-email?token=${verificationToken}`;
     const subject = `Verify Your Email Address - MyNeedfully`;
     
+    // Use same template structure as working purchase confirmation emails
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #FF6B6B; color: white; padding: 20px; text-align: center;">
@@ -340,36 +342,36 @@ class EmailService {
         </div>
         
         <div style="padding: 30px; background-color: #f9f9f9;">
-          <h2 style="color: #333;">Hi ${userName},</h2>
+          <h2 style="color: #333;">Dear ${userName},</h2>
           
           <p style="font-size: 16px; line-height: 1.6; color: #555;">
-            Thank you for signing up for MyNeedfully! To complete your registration and start making a difference, please verify your email address.
+            Thank you for joining MyNeedfully! To complete your registration and start making a difference in your community, please verify your email address.
           </p>
           
-          <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <p style="margin: 0; color: #0c5460; font-size: 14px;">
-              <strong>📧 Almost there!</strong> Click the button below to verify your email and unlock all features.
-            </p>
+          <div style="background-color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #FF6B6B; margin-top: 0;">Verification Required:</h3>
+            <p style="color: #555;">Click the button below to verify your email and activate your account.</p>
           </div>
           
-          <div style="text-align: center; margin: 35px 0;">
+          <div style="text-align: center; margin: 30px 0;">
             <a href="${verificationLink}" 
-               style="background-color: #FF6B6B; color: white; padding: 15px 35px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 16px; font-weight: bold;">
-              Verify My Email
+               style="background-color: #FF6B6B; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
+              Verify My Email Address
             </a>
           </div>
           
+          <p style="font-size: 16px; line-height: 1.6; color: #555;">
+            Once verified, you'll be able to browse needs lists, create your own, and join our caring community of supporters and recipients.
+          </p>
+          
           <p style="font-size: 14px; color: #888; line-height: 1.6;">
-            If the button doesn't work, copy and paste this link into your browser:<br>
-            <a href="${verificationLink}" style="color: #FF6B6B; word-break: break-all;">${verificationLink}</a>
+            If the button doesn't work, you can copy and paste this link into your browser:<br>
+            ${verificationLink}
           </p>
           
-          <p style="font-size: 16px; line-height: 1.6; color: #555; margin-top: 25px;">
-            Once verified, you'll be able to browse needs lists, create your own, and join our caring community!
-          </p>
-          
-          <p style="font-size: 14px; color: #888; text-align: center; margin-top: 30px;">
-            Didn't sign up for MyNeedfully? You can safely ignore this email.
+          <p style="font-size: 14px; color: #888; text-align: center;">
+            This verification link will expire in 24 hours for security.<br>
+            Welcome to the MyNeedfully family!
           </p>
         </div>
         
@@ -379,7 +381,7 @@ class EmailService {
       </div>
     `;
 
-    const text = `Hi ${userName}, please verify your email address to complete your MyNeedfully registration. Click: ${verificationLink}`;
+    const text = `Dear ${userName}, please verify your email address to complete your MyNeedfully registration. Click this link: ${verificationLink} (expires in 24 hours)`;
 
     return this.sendEmail({
       to: userEmail,
