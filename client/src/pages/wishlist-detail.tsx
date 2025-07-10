@@ -39,7 +39,8 @@ import {
   X,
   GitMerge,
   Trash2,
-  Minus
+  Minus,
+  ShoppingBag
 } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl, generateWishlistStructuredData, generateOgImage } from "@/lib/seo";
 
@@ -616,13 +617,26 @@ export default function WishlistDetail() {
                       }`}>
                         {/* Product Image */}
                         <div className="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 relative sm:m-4">
-                          <img
-                            src={item.imageUrl || 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop'}
-                            alt={item.title}
-                            className={`w-full h-full object-cover sm:rounded-lg ${
-                              item.isFulfilled ? 'grayscale' : ''
-                            }`}
-                          />
+                          {item.imageUrl ? (
+                            <img
+                              src={item.imageUrl}
+                              alt={item.title}
+                              className={`w-full h-full object-cover sm:rounded-lg ${
+                                item.isFulfilled ? 'grayscale' : ''
+                              }`}
+                              onError={(e) => {
+                                console.error(`Failed to load image for ${item.title}:`, item.imageUrl);
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-100 sm:rounded-lg">
+                              <div className="text-center text-gray-500 p-2">
+                                <ShoppingBag className="h-8 w-8 mx-auto mb-1" />
+                                <p className="text-xs">No image available</p>
+                              </div>
+                            </div>
+                          )}
                           {item.isFulfilled && (
                             <div className="absolute inset-0 bg-black bg-opacity-10 flex items-center justify-center sm:rounded-lg">
                               <div className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
