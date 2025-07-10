@@ -91,17 +91,17 @@ export default function BrowseWishlists() {
       
       return data;
     },
-    staleTime: 30000, // 30 seconds
-    refetchInterval: 60000, // Refetch every minute
+    staleTime: 300000, // 5 minutes - much longer to prevent flashing
+    refetchOnWindowFocus: false, // Prevent refetch on focus changes
+    retry: 1, // Only retry once on failure
   });
 
   // Handle search
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    refetch();
     
-    // Update URL with search parameters
+    // Update URL with search parameters (this will trigger a natural refetch)
     const params = new URLSearchParams();
     if (searchQuery) params.append('q', searchQuery);
     if (category && category !== 'all') params.append('category', category);
@@ -122,7 +122,7 @@ export default function BrowseWishlists() {
     setStatus("active");
     setPage(1);
     setLocation('/browse');
-    refetch();
+    // Don't call refetch() - let the state changes trigger natural refetch
   };
 
   const hasActiveFilters = searchQuery || category || urgencyLevel || locationFilter || status !== "active";
