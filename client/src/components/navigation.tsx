@@ -18,17 +18,14 @@ import NotificationCenter from "./notification-center";
 
 export default function Navigation() {
   const [location] = useLocation();
-  // Skip authentication on browse page to prevent 401 spam
-  const isBrowsePage = location === '/browse';
-  
-  const { user } = isBrowsePage ? { user: null } : useAuth();
+  const { user } = useAuth(); // useAuth now properly handles public pages
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [userKey, setUserKey] = useState(0); // Force re-render key
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
-    enabled: !!user && !isBrowsePage, // Disable notifications on browse page
+    enabled: !!user, // Only fetch when user is authenticated
     refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
     retry: false,
   });
