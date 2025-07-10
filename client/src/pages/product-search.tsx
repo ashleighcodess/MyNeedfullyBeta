@@ -472,10 +472,30 @@ export default function ProductSearch() {
     return `https://www.amazon.com/dp/${cleanAsin}?tag=${tag}`;
   };
 
+  // Map product search categories to valid database categories
+  const mapProductCategoryToDbCategory = (productCategory: string): string => {
+    const categoryMapping: { [key: string]: string } = {
+      'baby_kids': 'family_crisis',
+      'household': 'disaster_recovery',
+      'electronics': 'family_crisis',
+      'clothing': 'disaster_recovery',
+      'food_grocery': 'family_crisis',
+      'health_beauty': 'medical_emergency',
+      'sports_outdoors': 'family_crisis',
+      'toys_games': 'family_crisis',
+      'automotive': 'family_crisis',
+      'books': 'family_crisis',
+      'all': 'other'
+    };
+    
+    return categoryMapping[productCategory] || 'other';
+  };
+
   // Mutation for adding products to wishlist
   const addToWishlistMutation = useMutation({
     mutationFn: async (product: any) => {
-      setAddingProductId(product.asin);
+      const productId = product.asin || product.product_id || product.id;
+      setAddingProductId(productId);
       
 
       
@@ -489,15 +509,24 @@ export default function ProductSearch() {
         throw new Error("No needs list available. Please create a needs list first.");
       }
       
+      // Determine retailer and build appropriate product URL
+      const retailer = product.retailer || 'amazon';
+      let productUrl = product.link || product.product_url || '#';
+      
+      // For Amazon products, ensure affiliate link
+      if (retailer.toLowerCase() === 'amazon' && product.asin) {
+        productUrl = buildAmazonAffiliateLink(product.asin);
+      }
+      
       const itemData = {
         title: product.title,
         description: product.title,
-        imageUrl: product.image,
+        imageUrl: product.image || product.image_url,
         price: (product.price?.value || product.price?.raw)?.toString(), // Convert to string for decimal field
         currency: "USD",
-        productUrl: buildAmazonAffiliateLink(product.asin),
-        retailer: "Amazon",
-        category: category || "other", // Use selected category or default to "other"
+        productUrl: productUrl,
+        retailer: retailer.charAt(0).toUpperCase() + retailer.slice(1), // Capitalize retailer name
+        category: mapProductCategoryToDbCategory(category || "other"), // Map to valid database category
         quantity: 1,
         priority: 3, // medium priority
       };
