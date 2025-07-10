@@ -890,12 +890,7 @@ export default function ProductSearch() {
                             disabled={addingProductId === (product.asin || product.product_id)}
                           >
                             <Heart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                            <span className="hidden xs:inline">
-                              {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add to Needs List"}
-                            </span>
-                            <span className="xs:hidden">
-                              {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add"}
-                            </span>
+                            {addingProductId === (product.asin || product.product_id) ? "Adding..." : "Add to Needs List"}
                           </Button>
                         </div>
 
