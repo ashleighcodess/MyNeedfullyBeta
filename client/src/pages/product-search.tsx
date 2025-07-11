@@ -811,19 +811,7 @@ export default function ProductSearch() {
         {/* Search Results */}
         {(activeSearch || (debouncedQuery && debouncedQuery.length >= 3)) && (
           <div>
-            {/* Results Header - Only show when we have actual results */}
-            {searchResults?.data && searchResults.data.length > 0 && (
-              <div className="flex items-center justify-between mb-6">
-                <div className="text-gray-600">
-                  Found {searchResults.data.length} results for "{activeSearch || debouncedQuery}"
-                </div>
-                {searchResults?.pagination && (
-                  <div className="text-sm text-gray-500">
-                    Page {page} of {Math.ceil((searchResults.pagination.total_results || 0) / 16)}
-                  </div>
-                )}
-              </div>
-            )}
+
 
             {/* Loading State - Only show if we don't have cached products to display */}
             {isLoading && displayProducts.length === 0 && (
@@ -859,7 +847,7 @@ export default function ProductSearch() {
                       {/* Show different headers for cached products vs search results */}
                       <div>
                         <h3 className="text-lg font-semibold text-navy">
-                          {activeSearch || debouncedQuery || "Basic Essentials"} Products
+                          Products
                         </h3>
                         {totalResults > 0 && (
                           <div className="space-y-1">
