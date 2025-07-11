@@ -335,7 +335,7 @@ export default function ProductSearch() {
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71xOPJ+KWRL._SL1500_.jpg",
+        image: pampersWipesImage,
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
@@ -345,7 +345,7 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count",
-        image: "https://m.media-amazon.com/images/I/81nN8mQ5VGL._SL1500_.jpg",
+        image: pampersDiapersImage,
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
@@ -354,7 +354,7 @@ export default function ProductSearch() {
       },
       {
         title: "Gerber Baby Boys' 5-Pack Short-Sleeve Onesies",
-        image: "https://m.media-amazon.com/images/I/81kLY8rX6FL._SL1500_.jpg",
+        image: "https://i5.walmartimages.com/asr/b8c4a0a6-d2e3-4a2f-9e1b-4f5c8d7e9a0b.jpg",
         price: "$14.98",
         product_url: "https://www.walmart.com/ip/Gerber-Baby-Boys-5-Pack-Short-Sleeve-Onesies/578441046",
         product_id: "578441046",
