@@ -634,8 +634,9 @@ export default function ProductSearch() {
     
     // Priority 2: Check if we have cached products for the activeSearch category
     if (activeSearch && popularProducts[activeSearch]) {
-      console.log(`📦 Using cached products for category: ${activeSearch}`);
-      return popularProducts[activeSearch] || [];
+      const cachedProducts = popularProducts[activeSearch] || [];
+      console.log(`📦 Using cached products for category: ${activeSearch}`, cachedProducts.length, 'products found');
+      return cachedProducts;
     }
     
     // Priority 3: Show cached "Basic Essentials" when no search has been performed
