@@ -12,7 +12,6 @@ export default function Footer() {
     { href: "/", label: "Home" },
     { href: "/about-us", label: "About Us" },
     { href: "/resources", label: "Resources" },
-    { href: "/contact", label: "Contact Us" },
   ];
 
   const features = [
