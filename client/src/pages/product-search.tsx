@@ -409,28 +409,6 @@ export default function ProductSearch() {
         retailer: "amazon"
       }
     ],
-    "Electronics": [
-      {
-        asin: "B08N5WRWNW",
-        title: "Echo Dot (4th Gen) | Smart speaker with Alexa | Charcoal",
-        image: echoDotImage,
-        price: { value: 49.99, currency: "USD" },
-        rating: 4.7,
-        ratings_total: 544751,
-        link: "https://www.amazon.com/dp/B08N5WRWNW?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "onn. 32 Class HD (720P) Roku Smart TV",
-        image: smartTvImage,
-        price: "$98.00",
-        product_url: "https://www.walmart.com/ip/onn-32-Class-HD-720P-Roku-Smart-TV/230166926",
-        product_id: "230166926",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-    // Add missing categories with proper key mapping
     "Clothing": [
       {
         asin: "B07GJVQ3YY",
