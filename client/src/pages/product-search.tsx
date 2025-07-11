@@ -20,6 +20,7 @@ import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
+import { getRealImageByASIN } from "@/lib/realProductImages";
 
 // Product images for instant loading
 import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
@@ -380,7 +381,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H",
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: charminToiletPaperImage,
+        image: getRealImageByASIN("B073V1T37H", charminToiletPaperImage),
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -390,7 +391,7 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: bountyPaperTowelsImage,
+        image: getRealImageByASIN("B08BYND8YN", bountyPaperTowelsImage),
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
@@ -400,7 +401,7 @@ export default function ProductSearch() {
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: tideDetergentImage,
+        image: getRealImageByASIN("B07MJBT4T1", tideDetergentImage),
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
         ratings_total: 18745,
@@ -434,7 +435,7 @@ export default function ProductSearch() {
       {
         asin: "B07GJVQ3YY",
         title: "Hanes Men's 6-Pack FreshIQ Crew T-Shirts",
-        image: hanesShirtImage,
+        image: getRealImageByASIN("B07GJVQ3YY", hanesShirtImage),
         price: { value: 19.50, currency: "USD" },
         rating: 4.4,
         ratings_total: 18265,
@@ -478,7 +479,7 @@ export default function ProductSearch() {
       {
         asin: "B008TMLHWTD",
         title: "Oral-B Pro 1000 Power Rechargeable Electric Toothbrush",
-        image: oralBToothbrushImage,
+        image: getRealImageByASIN("B008TMLHWTD", oralBToothbrushImage),
         price: { value: 39.99, currency: "USD" },
         rating: 4.5,
         ratings_total: 52847,
@@ -500,7 +501,7 @@ export default function ProductSearch() {
       {
         asin: "B07XJ8C8F5",
         title: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
-        image: echoDotImage,
+        image: getRealImageByASIN("B07XJ8C8F5", echoDotImage),
         price: { value: 39.99, currency: "USD" },
         rating: 4.7,
         ratings_total: 123987,
@@ -544,7 +545,7 @@ export default function ProductSearch() {
       {
         asin: "B07GJVQ3YY",
         title: "Hanes Men's 6-Pack FreshIQ Crew T-Shirts",
-        image: "https://m.media-amazon.com/images/I/71GcCY5ybHL._SL1500_.jpg",
+        image: getRealImageByASIN("B07GJVQ3YY", "https://m.media-amazon.com/images/I/71GcCY5ybHL._SL1500_.jpg"),
         price: { value: 19.50, currency: "USD" },
         rating: 4.4,
         ratings_total: 18265,
@@ -586,7 +587,7 @@ export default function ProductSearch() {
       {
         asin: "B08KRXXCZP",
         title: "LEGO Classic Creative Bricks 11005 Building Kit",
-        image: legoBlocksImage,
+        image: getRealImageByASIN("B08KRXXCZP", legoBlocksImage),
         price: { value: 19.99, currency: "USD" },
         rating: 4.8,
         ratings_total: 8634,
@@ -595,7 +596,7 @@ export default function ProductSearch() {
       },
       {
         title: "Play-Doh Modeling Compound 10-Pack Case of Colors",
-        image: playDohImage,
+        image: playDohImage, // Will replace with real image once verified
         price: "$8.97",
         product_url: "https://www.walmart.com/ip/Play-Doh-Modeling-Compound-10-Pack/15066906",
         product_id: "15066906",
