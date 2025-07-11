@@ -423,7 +423,7 @@ export default function Landing() {
     <div className="min-h-screen bg-warm-bg">
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[75vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0">
         {/* Community illustration background */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -438,30 +438,30 @@ export default function Landing() {
         
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 leading-tight hero-text-shadow">
+          <h1 className="text-3xl md:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
             A Registry For Recovery,
             <span className="text-coral"> Relief and Hardships</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-800 mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
+          <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
             Create and Share a Needs List to Help Yourself or Loved Ones. Get the Support You Need During Tough Times.
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
+          <div className="max-w-2xl mx-auto mb-6 md:mb-8">
             <Card className="p-2 shadow-xl">
               <form onSubmit={handleNeedsListSearch} className="flex flex-col md:flex-row gap-2">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5" />
                   <Input 
                     placeholder={searchPlaceholder}
-                    className="pl-12 py-4 text-lg border-0 focus:ring-2 focus:ring-coral/50"
+                    className="pl-10 md:pl-12 py-3 md:py-4 text-base md:text-lg border-0 focus:ring-2 focus:ring-coral/50"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg whitespace-nowrap rounded-xl">
-                  <Search className="mr-2 h-5 w-5" />
+                <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg whitespace-nowrap rounded-xl">
+                  <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                   Search Needs
                 </Button>
               </form>
@@ -469,20 +469,20 @@ export default function Landing() {
           </div>
 
           {/* Quick Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
             <Button 
               variant="outline" 
-              className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-8 py-4 text-lg shadow-lg"
+              className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg shadow-lg w-full sm:w-auto"
               onClick={() => setLocation('/products')}
             >
-              <Search className="mr-2 h-5 w-5" />
+              <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
               Browse Products
             </Button>
             <Button 
-              className="bg-navy text-white hover:bg-navy/90 rounded-full px-8 py-4 text-lg shadow-lg"
+              className="bg-navy text-white hover:bg-navy/90 rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg shadow-lg w-full sm:w-auto"
               onClick={handleCreateList}
             >
-              <Plus className="mr-2 h-5 w-5" />
+              <Plus className="mr-2 h-4 w-4 md:h-5 md:w-5" />
               {isAuthenticated ? "Create Needs List" : "Get Started"}
             </Button>
           </div>
