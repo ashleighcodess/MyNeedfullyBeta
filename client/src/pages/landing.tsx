@@ -423,7 +423,7 @@ export default function Landing() {
     <div className="min-h-screen bg-warm-bg">
 
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+      <section className="relative min-h-[80vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-0">
         {/* Community illustration background */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
