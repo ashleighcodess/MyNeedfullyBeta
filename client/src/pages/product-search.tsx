@@ -20,11 +20,14 @@ import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
-import { getRealImageByASIN } from "@/lib/realProductImages";
 
-// All product images now use direct CDN URLs from Amazon/Walmart/Target
-
-// Real product images replaced with direct Amazon CDN URLs
+// Product images
+import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
+import charminToiletPaperImage from "@assets/81Ml0P+qqnL._AC__1751759916227.jpg";
+import pampersDiapersImage from "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp";
+import tideDetergentImage from "@assets/tide_1751760058768.webp";
+import bountyPaperTowelsImage from "@assets/81+BZP2zUHL._AC__1751760103041.jpg";
+import walmartToiletPaperImage from "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg";
 import { 
   Search, 
   Filter, 
@@ -182,11 +185,11 @@ export default function ProductSearch() {
   // Cached products - real product search will provide actual images from APIs
   const popularProducts = useMemo(() => ({
     "Basic Essentials": [
-      // Amazon Products - now using real CDN URLs
+      // Amazon Products - placeholder images to be replaced with exact URLs
       {
         asin: "B08TMLHWTD",
         title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71jJ6ZY8zKL._SL1500_.jpg",
+        image: pampersWipesImage,
         price: { value: 18.97, currency: "USD" },
         rating: 4.7,
         ratings_total: 29853,
@@ -196,7 +199,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H", 
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "https://m.media-amazon.com/images/I/71RgSn6qpjL._SL1500_.jpg",
+        image: charminToiletPaperImage,
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -206,7 +209,7 @@ export default function ProductSearch() {
       {
         asin: "B0949V7VRH",
         title: "Pampers Baby Dry Diapers, Size 3, 172 Count", 
-        image: "https://m.media-amazon.com/images/I/81YZ7gKYfPL._SL1500_.jpg",
+        image: pampersDiapersImage,
         price: { value: 28.94, currency: "USD" },
         rating: 4.5,
         ratings_total: 15234,
@@ -216,7 +219,7 @@ export default function ProductSearch() {
       {
         asin: "B07MJBT4T1",
         title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: "https://m.media-amazon.com/images/I/81aHWFbqaLS._SL1500_.jpg",
+        image: tideDetergentImage,
         price: { value: 12.97, currency: "USD" },
         rating: 4.8,
         ratings_total: 18745,
@@ -226,7 +229,7 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: "https://m.media-amazon.com/images/I/719kqe6pLxL._SL1500_.jpg",
+        image: bountyPaperTowelsImage,
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
@@ -236,7 +239,7 @@ export default function ProductSearch() {
       // Walmart Products - placeholder images to be replaced with exact URLs
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
-        image: "https://i5.walmartimages.com/asr/8a60cbf5-f57e-4c91-b0f5-f678c96ffec8.jpg",
+        image: walmartToiletPaperImage,
         price: "$11.98",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
         product_id: "10315001",
@@ -323,266 +326,7 @@ export default function ProductSearch() {
         price: { value: 12.99, currency: "USD" },
         rating: 4.4,
         ratings_total: 89567,
-        link: "https://www.amazon.com/dp/B07H9T8VTQ?tag=needfully-20",
-        retailer: "amazon"
-      }
-    ],
-    // Enhanced cached categories for instant category button results
-    "Baby & Kids": [
-      {
-        asin: "B08TMLHWTD",
-        title: "Pampers Sensitive Water Based Baby Wipes, 12 Pop-Top Packs",
-        image: "https://m.media-amazon.com/images/I/71jJ6ZY8zKL._SL1500_.jpg",
-        price: { value: 18.97, currency: "USD" },
-        rating: 4.7,
-        ratings_total: 29853,
-        link: "https://www.amazon.com/dp/B08TMLHWTD?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        asin: "B0949V7VRH",
-        title: "Pampers Baby Dry Diapers, Size 3, 172 Count",
-        image: "https://m.media-amazon.com/images/I/81YZ7gKYfPL._SL1500_.jpg",
-        price: { value: 28.94, currency: "USD" },
-        rating: 4.5,
-        ratings_total: 15234,
-        link: "https://www.amazon.com/dp/B0949V7VRH?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Gerber Baby Boys' 5-Pack Short-Sleeve Onesies",
-        image: "https://m.media-amazon.com/images/I/71q4gvXCeGL._SL1500_.jpg",
-        price: "$14.98",
-        product_url: "https://www.walmart.com/ip/Gerber-Baby-Boys-5-Pack-Short-Sleeve-Onesies/578441046",
-        product_id: "578441046",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-    "Household": [
-      {
-        asin: "B073V1T37H",
-        title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "https://m.media-amazon.com/images/I/71RgSn6qpjL._SL1500_.jpg",
-        price: { value: 23.94, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 47832,
-        link: "https://www.amazon.com/dp/B073V1T37H?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        asin: "B08BYND8YN",
-        title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: "https://m.media-amazon.com/images/I/719kqe6pLxL._SL1500_.jpg",
-        price: { value: 19.49, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 32156,
-        link: "https://www.amazon.com/dp/B08BYND8YN?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        asin: "B07MJBT4T1",
-        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: "https://m.media-amazon.com/images/I/81aHWFbqaLS._SL1500_.jpg",
-        price: { value: 12.97, currency: "USD" },
-        rating: 4.8,
-        ratings_total: 18745,
-        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
-        retailer: "amazon"
-      }
-    ],
-    "Clothing": [
-      {
-        asin: "B07GJVQ3YY",
-        title: "Hanes Men's 6-Pack FreshIQ Crew T-Shirts",
-        image: "https://m.media-amazon.com/images/I/71GcCY5ybHL._SL1500_.jpg",
-        price: { value: 19.50, currency: "USD" },
-        rating: 4.4,
-        ratings_total: 18265,
-        link: "https://www.amazon.com/dp/B07GJVQ3YY?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Fruit of the Loom Women's Cotton Brief Underwear Multipack",
-        image: "https://i5.walmartimages.com/asr/b8c4a0a6-d2e3-4a2f-9e1b-4f5c8d7e9a0b.jpg",
-        price: "$12.84",
-        product_url: "https://www.walmart.com/ip/Fruit-of-the-Loom-Women-Cotton-Brief-Underwear/44394858",
-        product_id: "44394858",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-
-    "Food & Grocery": [
-      {
-        asin: "B07PGL2W5Y",
-        title: "Quaker Instant Oatmeal, Original, 18 Packets",
-        image: "https://m.media-amazon.com/images/I/81QJZW6DZBL._SL1500_.jpg",
-        price: { value: 4.98, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 8245,
-        link: "https://www.amazon.com/dp/B07PGL2W5Y?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Great Value Whole Wheat Bread, 20 oz",
-        image: "https://i5.walmartimages.com/asr/8a60cbf5-f57e-4c91-b0f5-f678c96ffec8.jpg",
-        price: "$1.24",
-        product_url: "https://www.walmart.com/ip/Great-Value-Whole-Wheat-Bread/10291621",
-        product_id: "10291621",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-
-    "Health & Beauty": [
-      {
-        asin: "B008TMLHWTD",
-        title: "Oral-B Pro 1000 Power Rechargeable Electric Toothbrush",
-        image: "https://m.media-amazon.com/images/I/61Q1q4Ft1PL._SL1500_.jpg",
-        price: { value: 39.99, currency: "USD" },
-        rating: 4.5,
-        ratings_total: 52847,
-        link: "https://www.amazon.com/dp/B008TMLHWTD?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Pantene Pro-V Daily Moisture Renewal Shampoo, 25.4 fl oz",
-        image: "https://m.media-amazon.com/images/I/71Fn7Q+XJLL._SL1500_.jpg",
-        price: "$4.97",
-        product_url: "https://www.walmart.com/ip/Pantene-Pro-V-Daily-Moisture-Renewal/10849071",
-        product_id: "10849071",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-
-    "Electronics": [
-      {
-        asin: "B07XJ8C8F5",
-        title: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
-        image: "https://m.media-amazon.com/images/I/61mpMH5TzkL._SL1000_.jpg",
-        price: { value: 39.99, currency: "USD" },
-        rating: 4.7,
-        ratings_total: 123987,
-        link: "https://www.amazon.com/dp/B07XJ8C8F5?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "TCL 32-inch Class 3-Series HD LED Smart Roku TV",
-        image: "https://i5.walmartimages.com/asr/5c2f8c3e-d6a4-4b1a-9e7f-8c9d0e1f2a3b.jpg",
-        price: "$149.99",
-        product_url: "https://www.walmart.com/ip/TCL-32-inch-Class-3-Series-HD-LED-Smart-Roku-TV/397411118",
-        product_id: "397411118",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-
-    "Baby & Kids": [
-      {
-        asin: "B07H4YRF5J",
-        title: "Enfamil NeuroPro Baby Formula Milk Powder, 20.7 oz",
-        image: "https://m.media-amazon.com/images/I/81cB2mVXS4L._SL1500_.jpg",
-        price: { value: 29.99, currency: "USD" },
-        rating: 4.6,
-        ratings_total: 8945,
-        link: "https://www.amazon.com/dp/B07H4YRF5J?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Hot Wheels Basic Car 50-Pack",
-        image: "https://i5.walmartimages.com/asr/d4e5f6a7-8b9c-0d1e-2f3a-4b5c6d7e8f9a.jpg",
-        price: "$49.88",
-        product_url: "https://www.walmart.com/ip/Hot-Wheels-Basic-Car-50-Pack/55126623",
-        product_id: "55126623",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-
-    "Essential Clothing": [
-      {
-        asin: "B07GJVQ3YY",
-        title: "Hanes Men's 6-Pack FreshIQ Crew T-Shirts",
-        image: getRealImageByASIN("B07GJVQ3YY", "https://m.media-amazon.com/images/I/71GcCY5ybHL._SL1500_.jpg"),
-        price: { value: 19.50, currency: "USD" },
-        rating: 4.4,
-        ratings_total: 18265,
-        link: "https://www.amazon.com/dp/B07GJVQ3YY?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Fruit of the Loom Women's Cotton Brief Underwear Multipack",
-        image: "https://i5.walmartimages.com/asr/b8c4a0a6-d2e3-4a2f-9e1b-4f5c8d7e9a0b.jpg",
-        price: "$12.84",
-        product_url: "https://www.walmart.com/ip/Fruit-of-the-Loom-Women-Cotton-Brief-Underwear/44394858",
-        product_id: "44394858",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-    "Sports & Outdoors": [
-      {
-        asin: "B08F3MGC9Q",
-        title: "Coleman Brazos Cold Weather Sleeping Bag, 20°F Comfort Rating",
-        image: "https://m.media-amazon.com/images/I/71xDqNzLfqL._SL1500_.jpg",
-        price: { value: 34.99, currency: "USD" },
-        rating: 4.3,
-        ratings_total: 8945,
-        link: "https://www.amazon.com/dp/B08F3MGC9Q?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Ozark Trail 10' x 10' Instant Straight Leg Canopy",
-        image: "https://i5.walmartimages.com/asr/a4f7b8c9-5e2d-4f1a-8b3c-9d6e7f4a2b1c.jpg",
-        price: "$79.00",
-        product_url: "https://www.walmart.com/ip/Ozark-Trail-10-x-10-Instant-Straight-Leg-Canopy/54643002",
-        product_id: "54643002",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-    "Toys & Games": [
-      {
-        asin: "B08KRXXCZP",
-        title: "LEGO Classic Creative Bricks 11005 Building Kit",
-        image: "https://m.media-amazon.com/images/I/91VZhsQXWDL._SL1500_.jpg",
-        price: { value: 19.99, currency: "USD" },
-        rating: 4.8,
-        ratings_total: 8634,
-        link: "https://www.amazon.com/dp/B08KRXXCZP?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Play-Doh Modeling Compound 10-Pack Case of Colors",
-        image: "https://m.media-amazon.com/images/I/81X2Z3y4VXL._SL1500_.jpg",
-        price: "$8.97",
-        product_url: "https://www.walmart.com/ip/Play-Doh-Modeling-Compound-10-Pack/15066906",
-        product_id: "15066906",
-        retailer: "walmart",
-        retailer_name: "Walmart"
-      }
-    ],
-    "Automotive": [
-      {
-        asin: "B075JBQZPX",
-        title: "Chemical Guys WAC_201_16 Butter Wet Wax (16 oz)",
-        image: "https://m.media-amazon.com/images/I/71HAQ7VcvXL._SL1500_.jpg",
-        price: { value: 13.99, currency: "USD" },
-        rating: 4.4,
-        ratings_total: 22456,
-        link: "https://www.amazon.com/dp/B075JBQZPX?tag=needfully-20",
-        retailer: "amazon"
-      },
-      {
-        title: "Mobil 1 Advanced Fuel Economy Full Synthetic Motor Oil 0W-20, 5 qt",
-        image: "https://i5.walmartimages.com/asr/d5e6f7a8-9b0c-4d1e-2f3a-4b5c6d7e8f9a.jpg",
-        price: "$28.76",
-        product_url: "https://www.walmart.com/ip/Mobil-1-Advanced-Fuel-Economy/15724913",
-        product_id: "15724913",
-        retailer: "walmart",
-        retailer_name: "Walmart"
+        link: "https://www.amazon.com/dp/B07H9T8VTQ?tag=needfully-20"
       }
     ]
   }), []);
@@ -719,18 +463,8 @@ export default function ProductSearch() {
       }
     }
     
-    // Priority 2: Check if we have cached products for the activeSearch category
-    if (activeSearch && popularProducts[activeSearch]) {
-      const cachedProducts = popularProducts[activeSearch] || [];
-      console.log(`📦 Using cached products for category: ${activeSearch}`, cachedProducts.length, 'products found');
-      // Only return cached products if we don't have a search query that would override them
-      if (!debouncedQuery || debouncedQuery.length < 3) {
-        return cachedProducts;
-      }
-    }
-    
-    // Priority 3: Show cached "Basic Essentials" when no search has been performed
-    if (!debouncedQuery && (!activeSearch || activeSearch === "Basic Essentials")) {
+    // Priority 2: Show cached "Basic Essentials" when no search has been performed
+    if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
       console.log('📦 Using cached Basic Essentials products');
       return popularProducts["Basic Essentials"] || [];
     }
@@ -1040,16 +774,15 @@ export default function ProductSearch() {
                 }}
                 onClick={() => {
                   console.log('Category clicked:', category.label);
-                  // Use cached products instead of triggering API search
-                  setSearchQuery(""); // Clear search input to show we're using category
-                  setDebouncedQuery(""); // Don't trigger API search
-                  setActiveSearch(category.label); // Set activeSearch to show cached products
+                  setSearchQuery(category.label);
+                  setDebouncedQuery(category.label);
+                  setActiveSearch(category.label);
                   setCategory(category.value);
                   setPage(1);
                   setShowCategories(false); // Hide categories on mobile after selection
                   
-                  // No API calls - using cached products only
-                  console.log(`📦 Using cached products for category: ${category.label}`);
+                  // Force query invalidation to trigger immediate search
+                  queryClient.invalidateQueries({ queryKey: ['/api/search'] });
                 }}
               >
                 {/* Icon with pulse animation on hover */}
