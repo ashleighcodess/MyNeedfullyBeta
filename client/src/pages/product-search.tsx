@@ -451,6 +451,7 @@ export default function ProductSearch() {
         retailer_name: "Walmart"
       }
     ],
+
     "Food & Grocery": [
       {
         asin: "B07PGL2W5Y",
@@ -472,6 +473,7 @@ export default function ProductSearch() {
         retailer_name: "Walmart"
       }
     ],
+
     "Health & Beauty": [
       {
         asin: "B008TMLHWTD",
@@ -493,6 +495,51 @@ export default function ProductSearch() {
         retailer_name: "Walmart"
       }
     ],
+
+    "Electronics": [
+      {
+        asin: "B07XJ8C8F5",
+        title: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
+        image: echoDotImage,
+        price: { value: 39.99, currency: "USD" },
+        rating: 4.7,
+        ratings_total: 123987,
+        link: "https://www.amazon.com/dp/B07XJ8C8F5?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        title: "TCL 32-inch Class 3-Series HD LED Smart Roku TV",
+        image: smartTvImage,
+        price: "$149.99",
+        product_url: "https://www.walmart.com/ip/TCL-32-inch-Class-3-Series-HD-LED-Smart-Roku-TV/397411118",
+        product_id: "397411118",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      }
+    ],
+
+    "Baby & Kids": [
+      {
+        asin: "B07H4YRF5J",
+        title: "Enfamil NeuroPro Baby Formula Milk Powder, 20.7 oz",
+        image: babyFormulaImage,
+        price: { value: 29.99, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 8945,
+        link: "https://www.amazon.com/dp/B07H4YRF5J?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        title: "Hot Wheels Basic Car 50-Pack",
+        image: toyCarImage,
+        price: "$49.88",
+        product_url: "https://www.walmart.com/ip/Hot-Wheels-Basic-Car-50-Pack/55126623",
+        product_id: "55126623",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      }
+    ],
+
     "Essential Clothing": [
       {
         asin: "B07GJVQ3YY",
