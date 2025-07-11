@@ -21,13 +21,27 @@ import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
-// Product images
+// Product images for instant loading
 import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
 import charminToiletPaperImage from "@assets/81Ml0P+qqnL._AC__1751759916227.jpg";
 import pampersDiapersImage from "@assets/large_cdd37285-c5b5-436c-8986-7a87080f54a5_1751760001330.webp";
 import tideDetergentImage from "@assets/tide_1751760058768.webp";
 import bountyPaperTowelsImage from "@assets/81+BZP2zUHL._AC__1751760103041.jpg";
 import walmartToiletPaperImage from "@assets/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11_1751760136372.jpeg";
+
+// Additional product images for missing categories
+import oralBToothbrushImage from "@assets/IMG_0680_1751689776700.png";
+import panteneShampooImage from "@assets/IMG_0681_1751690077774.png";
+import hanesShirtImage from "@assets/IMG_0682_1751690298249.png";
+import fruitOfLoomImage from "@assets/IMG_0683_1751690398438.png";
+import quakerOatmealImage from "@assets/71Udwbkn3VL._SL1500__1751658605828.jpg";
+import wheatBreadImage from "@assets/IMG_0684_1751690645285.png";
+import legoBlocksImage from "@assets/IMG_0685_1751716453422.png";
+import playDohImage from "@assets/IMG_0686_1751716659276.png";
+import echoDotImage from "@assets/IMG_0687_1751717281295.png";
+import smartTvImage from "@assets/IMG_0688_1751717703565.png";
+import babyFormulaImage from "@assets/IMG_0693_1751719709294.png";
+import toyCarImage from "@assets/IMG_0694_1751720422380.png";
 import { 
   Search, 
   Filter, 
@@ -354,7 +368,7 @@ export default function ProductSearch() {
       },
       {
         title: "Gerber Baby Boys' 5-Pack Short-Sleeve Onesies",
-        image: "https://i5.walmartimages.com/asr/b8c4a0a6-d2e3-4a2f-9e1b-4f5c8d7e9a0b.jpg",
+        image: babyFormulaImage,
         price: "$14.98",
         product_url: "https://www.walmart.com/ip/Gerber-Baby-Boys-5-Pack-Short-Sleeve-Onesies/578441046",
         product_id: "578441046",
@@ -398,7 +412,7 @@ export default function ProductSearch() {
       {
         asin: "B08N5WRWNW",
         title: "Echo Dot (4th Gen) | Smart speaker with Alexa | Charcoal",
-        image: "https://m.media-amazon.com/images/I/714Rq4k05UL._SL1000_.jpg",
+        image: echoDotImage,
         price: { value: 49.99, currency: "USD" },
         rating: 4.7,
         ratings_total: 544751,
@@ -407,7 +421,7 @@ export default function ProductSearch() {
       },
       {
         title: "onn. 32 Class HD (720P) Roku Smart TV",
-        image: "https://i5.walmartimages.com/asr/c1b9ed09-84b5-4d5f-8b0a-8c5c9f1b1c4a.jpg",
+        image: smartTvImage,
         price: "$98.00",
         product_url: "https://www.walmart.com/ip/onn-32-Class-HD-720P-Roku-Smart-TV/230166926",
         product_id: "230166926",
@@ -420,7 +434,7 @@ export default function ProductSearch() {
       {
         asin: "B07GJVQ3YY",
         title: "Hanes Men's 6-Pack FreshIQ Crew T-Shirts",
-        image: "https://m.media-amazon.com/images/I/71GcCY5ybHL._SL1500_.jpg",
+        image: hanesShirtImage,
         price: { value: 19.50, currency: "USD" },
         rating: 4.4,
         ratings_total: 18265,
@@ -429,7 +443,7 @@ export default function ProductSearch() {
       },
       {
         title: "Fruit of the Loom Women's Cotton Brief Underwear Multipack",
-        image: "https://i5.walmartimages.com/asr/b8c4a0a6-d2e3-4a2f-9e1b-4f5c8d7e9a0b.jpg",
+        image: fruitOfLoomImage,
         price: "$12.84",
         product_url: "https://www.walmart.com/ip/Fruit-of-the-Loom-Women-Cotton-Brief-Underwear/44394858",
         product_id: "44394858",
@@ -441,7 +455,7 @@ export default function ProductSearch() {
       {
         asin: "B07PGL2W5Y",
         title: "Quaker Instant Oatmeal, Original, 18 Packets",
-        image: "https://m.media-amazon.com/images/I/81qHbFZzOxL._SL1500_.jpg",
+        image: quakerOatmealImage,
         price: { value: 4.98, currency: "USD" },
         rating: 4.6,
         ratings_total: 8245,
@@ -450,7 +464,7 @@ export default function ProductSearch() {
       },
       {
         title: "Great Value Whole Wheat Bread, 20 oz",
-        image: "https://i5.walmartimages.com/asr/5f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c.jpg",
+        image: wheatBreadImage,
         price: "$1.24",
         product_url: "https://www.walmart.com/ip/Great-Value-Whole-Wheat-Bread/10291621",
         product_id: "10291621",
@@ -462,7 +476,7 @@ export default function ProductSearch() {
       {
         asin: "B008TMLHWTD",
         title: "Oral-B Pro 1000 Power Rechargeable Electric Toothbrush",
-        image: "https://m.media-amazon.com/images/I/61fL+2RaLrL._SL1000_.jpg",
+        image: oralBToothbrushImage,
         price: { value: 39.99, currency: "USD" },
         rating: 4.5,
         ratings_total: 52847,
@@ -471,7 +485,7 @@ export default function ProductSearch() {
       },
       {
         title: "Pantene Pro-V Daily Moisture Renewal Shampoo, 25.4 fl oz",
-        image: "https://i5.walmartimages.com/asr/8c9d0e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f.jpg",
+        image: panteneShampooImage,
         price: "$4.97",
         product_url: "https://www.walmart.com/ip/Pantene-Pro-V-Daily-Moisture-Renewal/10849071",
         product_id: "10849071",
@@ -525,7 +539,7 @@ export default function ProductSearch() {
       {
         asin: "B08KRXXCZP",
         title: "LEGO Classic Creative Bricks 11005 Building Kit",
-        image: "https://m.media-amazon.com/images/I/81+k3dSAb0L._SL1500_.jpg",
+        image: legoBlocksImage,
         price: { value: 19.99, currency: "USD" },
         rating: 4.8,
         ratings_total: 8634,
@@ -534,7 +548,7 @@ export default function ProductSearch() {
       },
       {
         title: "Play-Doh Modeling Compound 10-Pack Case of Colors",
-        image: "https://i5.walmartimages.com/asr/e3f1a2b4-6c5d-4e7f-9a8b-1c2d3e4f5a6b.jpg",
+        image: playDohImage,
         price: "$8.97",
         product_url: "https://www.walmart.com/ip/Play-Doh-Modeling-Compound-10-Pack/15066906",
         product_id: "15066906",
