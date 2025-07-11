@@ -439,7 +439,7 @@ export default function Profile() {
                         : 'text-gray-700 hover:bg-white'
                     }`}
                   >
-                    <item.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <item.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                     <span className="hidden xs:inline">{item.label}</span>
                   </button>
                 ))}
