@@ -428,19 +428,19 @@ export default function Profile() {
             
             {/* Mobile Tab Navigation */}
             <div className="lg:hidden mb-4">
-              <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg overflow-x-auto">
+              <div className="flex justify-between bg-gray-100 p-2 rounded-lg">
                 {sidebarItems.filter(item => !['privacy', 'create', 'find'].includes(item.id)).map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                    className={`flex flex-col items-center justify-center flex-1 py-3 px-1 rounded-md text-xs font-medium transition-colors ${
                       item.active 
                         ? 'bg-coral text-white' 
                         : 'text-gray-700 hover:bg-white'
                     }`}
                   >
-                    <item.icon className="h-5 w-5 sm:h-6 sm:w-6" />
-                    <span className="hidden xs:inline">{item.label}</span>
+                    <item.icon className="h-5 w-5 mb-1" />
+                    <span className="text-[10px] leading-tight text-center">{item.label}</span>
                   </button>
                 ))}
               </div>
