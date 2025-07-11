@@ -729,18 +729,6 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row gap-4 mb-12 max-w-4xl mx-auto">
             <div className="flex-1 relative">
               <select 
-                id="store-select"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
-              >
-                <option value="">Select Store</option>
-                <option value="amazon">Amazon</option>
-                <option value="walmart">Walmart</option>
-                <option value="target">Target</option>
-              </select>
-            </div>
-            
-            <div className="flex-1 relative">
-              <select 
                 id="category-select"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
               >
@@ -770,17 +758,12 @@ export default function Landing() {
             <Button 
               className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg"
               onClick={() => {
-                const store = (document.getElementById('store-select') as HTMLSelectElement)?.value || '';
                 const category = (document.getElementById('category-select') as HTMLSelectElement)?.value || 'emergency';
                 const priceRange = (document.getElementById('price-select') as HTMLSelectElement)?.value || '';
                 
                 let searchQuery = `${category}+essentials`;
                 let params = new URLSearchParams();
                 params.set('q', searchQuery);
-                
-                if (store) {
-                  params.set('retailer', store);
-                }
                 
                 if (priceRange) {
                   const [min, max] = priceRange.includes('-') ? priceRange.split('-') : ['', priceRange.replace('+', '')];
