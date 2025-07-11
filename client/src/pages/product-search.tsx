@@ -384,13 +384,14 @@ export default function ProductSearch() {
         retailer: "amazon"
       },
       {
-        title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
-        image: walmartToiletPaperImage,
-        price: "$11.98",
-        product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
-        product_id: "10315001",
-        retailer: "walmart",
-        retailer_name: "Walmart"
+        asin: "B07MJBT4T1",
+        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
+        image: tideDetergentImage,
+        price: { value: 12.97, currency: "USD" },
+        rating: 4.8,
+        ratings_total: 18745,
+        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
+        retailer: "amazon"
       }
     ],
     "Electronics": [
@@ -438,13 +439,13 @@ export default function ProductSearch() {
     ],
     "Food & Grocery": [
       {
-        asin: "B07MJBT4T1",
-        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
-        image: tideDetergentImage,
-        price: { value: 12.97, currency: "USD" },
-        rating: 4.8,
-        ratings_total: 18745,
-        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
+        asin: "B07PGL2W5Y",
+        title: "Quaker Instant Oatmeal, Original, 18 Packets",
+        image: "https://m.media-amazon.com/images/I/81qHbFZzOxL._SL1500_.jpg",
+        price: { value: 4.98, currency: "USD" },
+        rating: 4.6,
+        ratings_total: 8245,
+        link: "https://www.amazon.com/dp/B07PGL2W5Y?tag=needfully-20",
         retailer: "amazon"
       },
       {
