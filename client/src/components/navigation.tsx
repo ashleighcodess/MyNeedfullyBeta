@@ -293,7 +293,7 @@ export default function Navigation() {
                               className="text-coral hover:text-coral/80 font-medium"
                               onClick={() => {
                                 setMobileMenuOpen(false);
-                                window.location.href = "/login";
+                                window.location.href = "/api/login";
                               }}
                             >
                               Sign In

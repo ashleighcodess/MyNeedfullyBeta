@@ -216,7 +216,7 @@ export default function CreateNeedsList() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/login";
+          window.location.href = "/api/login";
         }, 500);
         return;
       }

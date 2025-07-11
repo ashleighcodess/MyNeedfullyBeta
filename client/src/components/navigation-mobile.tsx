@@ -188,7 +188,7 @@ export default function MobileNavigation() {
                           className="w-full bg-coral text-white hover:bg-coral/90 py-3 text-base"
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            window.location.href = "/login";
+                            window.location.href = "/api/login";
                           }}
                         >
                           Sign In / Get Started
