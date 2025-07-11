@@ -366,7 +366,7 @@ export default function ProductSearch() {
       {
         asin: "B073V1T37H",
         title: "Charmin Ultra Soft Toilet Paper, 18 Family Mega Rolls",
-        image: "https://m.media-amazon.com/images/I/81ILKJw5e7L._SL1500_.jpg",
+        image: charminToiletPaperImage,
         price: { value: 23.94, currency: "USD" },
         rating: 4.6,
         ratings_total: 47832,
@@ -376,7 +376,7 @@ export default function ProductSearch() {
       {
         asin: "B08BYND8YN",
         title: "Bounty Quick-Size Paper Towels, 8 Family Rolls",
-        image: "https://m.media-amazon.com/images/I/81+BZP2zUHL._AC_.jpg",
+        image: bountyPaperTowelsImage,
         price: { value: 19.49, currency: "USD" },
         rating: 4.6,
         ratings_total: 32156,
@@ -385,7 +385,7 @@ export default function ProductSearch() {
       },
       {
         title: "Great Value Ultra Strong Toilet Paper, 12 Mega Rolls",
-        image: "https://i5.walmartimages.com/asr/fa5133ba-1af5-48a1-a1b9-d0c9d1669f06.5b943bfbf480e3c3845678199cfe8d11.jpeg",
+        image: walmartToiletPaperImage,
         price: "$11.98",
         product_url: "https://www.walmart.com/ip/Great-Value-Ultra-Strong-Toilet-Paper/10315001",
         product_id: "10315001",
@@ -410,6 +410,70 @@ export default function ProductSearch() {
         price: "$98.00",
         product_url: "https://www.walmart.com/ip/onn-32-Class-HD-720P-Roku-Smart-TV/230166926",
         product_id: "230166926",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      }
+    ],
+    // Add missing categories with proper key mapping
+    "Clothing": [
+      {
+        asin: "B07GJVQ3YY",
+        title: "Hanes Men's 6-Pack FreshIQ Crew T-Shirts",
+        image: "https://m.media-amazon.com/images/I/71GcCY5ybHL._SL1500_.jpg",
+        price: { value: 19.50, currency: "USD" },
+        rating: 4.4,
+        ratings_total: 18265,
+        link: "https://www.amazon.com/dp/B07GJVQ3YY?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        title: "Fruit of the Loom Women's Cotton Brief Underwear Multipack",
+        image: "https://i5.walmartimages.com/asr/b8c4a0a6-d2e3-4a2f-9e1b-4f5c8d7e9a0b.jpg",
+        price: "$12.84",
+        product_url: "https://www.walmart.com/ip/Fruit-of-the-Loom-Women-Cotton-Brief-Underwear/44394858",
+        product_id: "44394858",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      }
+    ],
+    "Food & Grocery": [
+      {
+        asin: "B07MJBT4T1",
+        title: "Tide Liquid Laundry Detergent, Original Scent, 64 Loads",
+        image: tideDetergentImage,
+        price: { value: 12.97, currency: "USD" },
+        rating: 4.8,
+        ratings_total: 18745,
+        link: "https://www.amazon.com/dp/B07MJBT4T1?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        title: "Great Value Whole Wheat Bread, 20 oz",
+        image: "https://i5.walmartimages.com/asr/5f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c.jpg",
+        price: "$1.24",
+        product_url: "https://www.walmart.com/ip/Great-Value-Whole-Wheat-Bread/10291621",
+        product_id: "10291621",
+        retailer: "walmart",
+        retailer_name: "Walmart"
+      }
+    ],
+    "Health & Beauty": [
+      {
+        asin: "B008TMLHWTD",
+        title: "Oral-B Pro 1000 Power Rechargeable Electric Toothbrush",
+        image: "https://m.media-amazon.com/images/I/61fL+2RaLrL._SL1000_.jpg",
+        price: { value: 39.99, currency: "USD" },
+        rating: 4.5,
+        ratings_total: 52847,
+        link: "https://www.amazon.com/dp/B008TMLHWTD?tag=needfully-20",
+        retailer: "amazon"
+      },
+      {
+        title: "Pantene Pro-V Daily Moisture Renewal Shampoo, 25.4 fl oz",
+        image: "https://i5.walmartimages.com/asr/8c9d0e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f.jpg",
+        price: "$4.97",
+        product_url: "https://www.walmart.com/ip/Pantene-Pro-V-Daily-Moisture-Renewal/10849071",
+        product_id: "10849071",
         retailer: "walmart",
         retailer_name: "Walmart"
       }
@@ -636,7 +700,10 @@ export default function ProductSearch() {
     if (activeSearch && popularProducts[activeSearch]) {
       const cachedProducts = popularProducts[activeSearch] || [];
       console.log(`📦 Using cached products for category: ${activeSearch}`, cachedProducts.length, 'products found');
-      return cachedProducts;
+      // Only return cached products if we don't have a search query that would override them
+      if (!debouncedQuery || debouncedQuery.length < 3) {
+        return cachedProducts;
+      }
     }
     
     // Priority 3: Show cached "Basic Essentials" when no search has been performed
