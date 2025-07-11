@@ -2662,7 +2662,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         search_results: [
           {
             title: "Apple MacBook Air 13-inch Laptop",
-            price: { value: 999.99, currency: "USD", raw: "$999.99" },
+            price: null,
             image: "",
             asin: "B08N5WRWNW",
             rating: 4.5,

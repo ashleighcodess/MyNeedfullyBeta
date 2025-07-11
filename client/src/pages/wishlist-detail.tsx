@@ -104,6 +104,31 @@ export default function WishlistDetail() {
     return null;
   };
 
+  // Helper function to get the best available price from any retailer (for item display)
+  const getBestAvailablePrice = (itemId: number) => {
+    const pricing = itemPricing[itemId]?.pricing;
+    if (!pricing) return null;
+    
+    // Try to get prices from all retailers, prioritize lowest price
+    const prices = [];
+    if (pricing.amazon?.available && pricing.amazon?.price) {
+      prices.push(parseFloat(String(pricing.amazon.price).replace('$', '')));
+    }
+    if (pricing.walmart?.available && pricing.walmart?.price) {
+      prices.push(parseFloat(String(pricing.walmart.price).replace('$', '')));
+    }
+    if (pricing.target?.available && pricing.target?.price) {
+      prices.push(parseFloat(String(pricing.target.price).replace('$', '')));
+    }
+    
+    if (prices.length > 0) {
+      const bestPrice = Math.min(...prices);
+      return `$${bestPrice.toFixed(2)}`;
+    }
+    
+    return null;
+  };
+
   // Helper function to get activity icon
   const getActivityIcon = (iconName: string) => {
     switch (iconName) {
@@ -759,7 +784,7 @@ export default function WishlistDetail() {
                                 <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
-                                  ${item.price || '99.00'}
+                                  {getBestAvailablePrice(item.id) || 'Price not available'}
                                 </div>
                               </div>
                               
