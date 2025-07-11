@@ -707,7 +707,7 @@ export default function ProductSearch() {
     }
     
     // Priority 3: Show cached "Basic Essentials" when no search has been performed
-    if (!debouncedQuery || activeSearch === "Basic Essentials") {
+    if (!debouncedQuery && (!activeSearch || activeSearch === "Basic Essentials")) {
       console.log('📦 Using cached Basic Essentials products');
       return popularProducts["Basic Essentials"] || [];
     }
