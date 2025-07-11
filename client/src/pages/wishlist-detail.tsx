@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -89,7 +89,7 @@ export default function WishlistDetail() {
 
   // Helper function to format price (avoid double dollar signs)
   const formatPrice = (price: string | number | undefined) => {
-    if (!price) return 'Loading...';
+    if (!price || price === '0' || price === 0) return 'Price unavailable';
     const priceStr = String(price);
     // If price already has $, return as is, otherwise add $
     return priceStr.startsWith('$') ? priceStr : `$${priceStr}`;
@@ -750,7 +750,7 @@ export default function WishlistDetail() {
                                 <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
-                                  {item.price ? `$${item.price}` : 'Price loading...'}
+                                  {formatPrice(item.price)}
                                 </div>
                               </div>
                               
@@ -1178,8 +1178,13 @@ export default function WishlistDetail() {
       </div>
 
       {/* Image Carousel Modal */}
-      {showImageCarousel && getStoryImages().length > 0 && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+      <Dialog open={showImageCarousel} onOpenChange={setShowImageCarousel}>
+        <DialogContent className="max-w-6xl max-h-[90vh] bg-black border-none p-0 overflow-hidden">
+          <DialogTitle className="sr-only">Story Image Gallery</DialogTitle>
+          <DialogDescription className="sr-only">
+            Browse through story images for this needs list
+          </DialogDescription>
+          <div className="relative w-full h-full flex items-center justify-center">
           {/* Close Button */}
           <Button
             variant="ghost"
@@ -1248,8 +1253,9 @@ export default function WishlistDetail() {
               ))}
             </div>
           )}
-        </div>
-      )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Purchase Confirmation Modal */}
       {selectedProduct && (
