@@ -89,10 +89,19 @@ export default function WishlistDetail() {
 
   // Helper function to format price (avoid double dollar signs)
   const formatPrice = (price: string | number | undefined) => {
-    if (!price) return '$99.00';
+    if (!price) return 'Price not available';
     const priceStr = String(price);
     // If price already has $, return as is, otherwise add $
     return priceStr.startsWith('$') ? priceStr : `$${priceStr}`;
+  };
+
+  // Helper function to get the best available price for a retailer
+  const getRetailerPrice = (itemId: number, retailer: 'amazon' | 'target' | 'walmart') => {
+    const pricing = itemPricing[itemId]?.pricing;
+    if (pricing && pricing[retailer] && pricing[retailer].available && pricing[retailer].price) {
+      return pricing[retailer].price;
+    }
+    return null;
   };
 
   // Helper function to get activity icon
@@ -820,7 +829,7 @@ export default function WishlistDetail() {
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Amazon</div>
                                   <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(itemPricing[item.id]?.pricing?.amazon?.price || item.price)}
+                                    {formatPrice(getRetailerPrice(item.id, 'amazon'))}
                                     {itemPricing[item.id]?.pricing?.amazon?.available && (
                                       <span className="ml-2 text-xs text-green-600">Live Price</span>
                                     )}
@@ -832,7 +841,7 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled && itemPricing[item.id]?.pricing?.amazon?.link) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '$99.00',
+                                      price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
                                       link: itemPricing[item.id]?.pricing?.amazon?.link,
                                       retailer: 'amazon',
                                       image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
@@ -861,7 +870,7 @@ export default function WishlistDetail() {
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Target</div>
                                   <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(itemPricing[item.id]?.pricing?.target?.price || item.price)}
+                                    {formatPrice(getRetailerPrice(item.id, 'target'))}
                                     {itemPricing[item.id]?.pricing?.target?.available && (
                                       <span className="ml-2 text-xs text-green-600">Live Price</span>
                                     )}
@@ -873,7 +882,7 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: itemPricing[item.id]?.pricing?.target?.price || item.price || '$99.00',
+                                      price: getRetailerPrice(item.id, 'target') || 'Price not available',
                                       link: itemPricing[item.id]?.pricing?.target?.link,
                                       retailer: 'target',
                                       image: itemPricing[item.id]?.pricing?.target?.image || item.imageUrl,
@@ -902,7 +911,7 @@ export default function WishlistDetail() {
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Walmart</div>
                                   <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(itemPricing[item.id]?.pricing?.walmart?.price || item.price)}
+                                    {formatPrice(getRetailerPrice(item.id, 'walmart'))}
                                     {itemPricing[item.id]?.pricing?.walmart?.available && (
                                       <span className="ml-2 text-xs text-green-600">Live Price</span>
                                     )}
@@ -914,7 +923,7 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '$99.00',
+                                      price: getRetailerPrice(item.id, 'walmart') || 'Price not available',
                                       link: itemPricing[item.id]?.pricing?.walmart?.link,
                                       retailer: 'walmart',
                                       image: itemPricing[item.id]?.pricing?.walmart?.image || item.imageUrl,
