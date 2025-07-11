@@ -89,7 +89,7 @@ export default function WishlistDetail() {
 
   // Helper function to format price (avoid double dollar signs)
   const formatPrice = (price: string | number | undefined) => {
-    if (!price) return '$99.00';
+    if (!price) return 'Loading...';
     const priceStr = String(price);
     // If price already has $, return as is, otherwise add $
     return priceStr.startsWith('$') ? priceStr : `$${priceStr}`;
@@ -750,7 +750,7 @@ export default function WishlistDetail() {
                                 <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
-                                  ${item.price || '99.00'}
+                                  {item.price ? `$${item.price}` : 'Price loading...'}
                                 </div>
                               </div>
                               
@@ -832,7 +832,7 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled && itemPricing[item.id]?.pricing?.amazon?.link) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || '$99.00',
+                                      price: itemPricing[item.id]?.pricing?.amazon?.price || item.price || 'Price unavailable',
                                       link: itemPricing[item.id]?.pricing?.amazon?.link,
                                       retailer: 'amazon',
                                       image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
@@ -873,7 +873,7 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: itemPricing[item.id]?.pricing?.target?.price || item.price || '$99.00',
+                                      price: itemPricing[item.id]?.pricing?.target?.price || item.price || 'Price unavailable',
                                       link: itemPricing[item.id]?.pricing?.target?.link,
                                       retailer: 'target',
                                       image: itemPricing[item.id]?.pricing?.target?.image || item.imageUrl,
@@ -914,7 +914,7 @@ export default function WishlistDetail() {
                                   if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
                                     setSelectedProduct({
                                       title: item.title,
-                                      price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || '$99.00',
+                                      price: itemPricing[item.id]?.pricing?.walmart?.price || item.price || 'Price unavailable',
                                       link: itemPricing[item.id]?.pricing?.walmart?.link,
                                       retailer: 'walmart',
                                       image: itemPricing[item.id]?.pricing?.walmart?.image || item.imageUrl,
