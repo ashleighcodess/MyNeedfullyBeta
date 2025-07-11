@@ -360,6 +360,16 @@ export default function AuthPage() {
                     Continue with Facebook
                   </Button>
 
+                  <Button
+                    variant="outline"
+                    onClick={() => window.location.href = "/api/login/replit"}
+                    className="w-full"
+                  >
+                    <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.8 15.6H12v4.8H9.6V9.6h7.2v6z"/>
+                    </svg>
+                    Continue with Replit
+                  </Button>
                 </div>
               </TabsContent>
 
@@ -514,6 +524,16 @@ export default function AuthPage() {
                     Continue with Facebook
                   </Button>
 
+                  <Button
+                    variant="outline"
+                    onClick={() => window.location.href = "/api/login/replit"}
+                    className="w-full"
+                  >
+                    <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.8 15.6H12v4.8H9.6V9.6h7.2v6z"/>
+                    </svg>
+                    Continue with Replit
+                  </Button>
                 </div>
               </TabsContent>
 
