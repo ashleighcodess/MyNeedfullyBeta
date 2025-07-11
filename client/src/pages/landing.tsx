@@ -853,7 +853,7 @@ export default function Landing() {
                     <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
                   </div>
                 </div>
-                <Link href="/product-search?q=emergency+clothing+basic">
+                <Link href="/product-search?q=essential+clothing+basic">
                   <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
                     View Products
                   </Button>
