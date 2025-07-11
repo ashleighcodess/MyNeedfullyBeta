@@ -3270,6 +3270,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const thankYouNote = await storage.createThankYouNote(noteData);
       
+      // Create notification for recipient
+      try {
+        const sender = await storage.getUser(fromUserId);
+        const senderName = sender ? `${sender.firstName} ${sender.lastName}`.trim() || 'A supporter' : 'A supporter';
+        
+        await storage.createNotification({
+          userId: toUserId,
+          type: "thank_you_received",
+          title: "Thank You Note Received! 💝",
+          message: `${senderName} sent you a thank you note: "${subject}"`,
+          data: { 
+            thankYouNoteId: thankYouNote.id,
+            fromUserId,
+            subject 
+          },
+        });
+        console.log(`Thank you note notification created for user ${toUserId}`);
+      } catch (notificationError) {
+        console.error('Failed to create thank you note notification:', notificationError);
+        // Continue without failing
+      }
+      
       // Record analytics event
       await storage.recordEvent({
         eventType: 'thank_you_sent',
