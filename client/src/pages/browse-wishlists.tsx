@@ -43,14 +43,27 @@ export default function BrowseWishlists() {
   
   // Debug logging
   console.log('Search query from URL:', searchQuery);
-  console.log('Query key:', searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists');
+  const url = searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists';
+  console.log('API URL:', url);
 
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
-    queryKey: [searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists'], // URL must be first element for default fetcher
+    queryKey: ['/api/wishlists', { query: searchQuery }], // Proper key structure for cache invalidation
+    queryFn: async () => {
+      console.log('Fetching from URL:', url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch wishlists');
+      }
+      const data = await response.json();
+      console.log('API Response:', data);
+      return data;
+    },
     enabled: true, // Always enabled
-    staleTime: 0, // Always refetch when query key changes
-    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    staleTime: 0, // No cache - always fresh data for debugging
+    gcTime: 0, // No cache retention for debugging
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
   
   // Debug logging for response
