@@ -25,8 +25,13 @@ export default function BrowseWishlists() {
   
   // Get URL parameters to check for search query - reactive to location changes
   const searchQuery = useMemo(() => {
-    const urlParams = new URLSearchParams(location.split('?')[1] || '');
-    return urlParams.get('q') || '';
+    console.log('🔍 Parsing location for search query:', location);
+    const queryString = location.split('?')[1] || '';
+    console.log('🔍 Query string:', queryString);
+    const urlParams = new URLSearchParams(queryString);
+    const query = urlParams.get('q') || '';
+    console.log('🔍 Extracted search query:', query);
+    return query;
   }, [location]);
 
   // Update input when URL changes
