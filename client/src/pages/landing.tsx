@@ -437,7 +437,7 @@ export default function Landing() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-8 md:pt-16">
           <h1 className="text-3xl md:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
             A Registry for Hardships,
             <span className="text-coral"> Relief and Recovery</span>
@@ -446,8 +446,6 @@ export default function Landing() {
           <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
             Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
           </p>
-
-
         </div>
         
         {/* Seamless gradient transition overlay */}
@@ -457,7 +455,7 @@ export default function Landing() {
       {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
-        className="py-20 relative bg-cover bg-center bg-no-repeat -mt-32 pt-32"
+        className="py-12 md:py-20 relative bg-cover bg-center bg-no-repeat -mt-16 md:-mt-32 pt-16 md:pt-32"
         style={{
           backgroundImage: `url(${warmBackgroundImage})`,
           backgroundSize: 'cover',
