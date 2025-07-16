@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,15 +12,22 @@ import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, g
 export default function BrowseWishlists() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   
-  console.log('🔍 BrowseWishlists auth state:', { user: !!user, isAuthenticated, authLoading });
+  // Local state for search functionality
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   
-  // Get URL parameters to check for search query
-  const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
-  const searchQuery = urlParams.get('q') || '';
+  // Get initial search query from URL on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('q') || '';
+    if (initialQuery) {
+      setSearchQuery(initialQuery);
+      setSearchInput(initialQuery);
+    }
+  }, []);
   
-  console.log('🔍 BrowseWishlists search query:', searchQuery);
-  
-  // Build API endpoint based on whether there's a search query
+  // Build API endpoint based on search query
   const apiEndpoint = useMemo(() => {
     if (searchQuery) {
       return `/api/wishlists?query=${encodeURIComponent(searchQuery)}`;
@@ -28,14 +35,39 @@ export default function BrowseWishlists() {
     return '/api/wishlists';
   }, [searchQuery]);
   
-  console.log('🔍 BrowseWishlists API endpoint:', apiEndpoint);
-  
-  // Optimized React Query approach with caching
-  const { data: wishlistsData, isLoading, error } = useQuery({
+  // React Query for data fetching
+  const { data: wishlistsData, isLoading: queryLoading, error, refetch } = useQuery({
     queryKey: [apiEndpoint],
-    staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
-    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000, // Updated from cacheTime to gcTime
   });
+  
+  // Combined loading state
+  const isLoading = queryLoading || isSearching;
+  
+  // Search handler
+  const handleSearch = useCallback(async (query: string) => {
+    setIsSearching(true);
+    setSearchQuery(query);
+    
+    // Update URL without navigation
+    const newUrl = query ? 
+      `${window.location.pathname}?q=${encodeURIComponent(query)}` : 
+      window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+    
+    // Allow the loading state to show briefly
+    setTimeout(() => {
+      setIsSearching(false);
+    }, 300);
+  }, []);
+  
+  // Clear search handler
+  const handleClearSearch = useCallback(() => {
+    setSearchInput('');
+    setSearchQuery('');
+    window.history.replaceState({}, '', window.location.pathname);
+  }, []);
 
 
 
@@ -59,8 +91,8 @@ export default function BrowseWishlists() {
       "url": "https://myneedfully.app/browse",
       "mainEntity": {
         "@type": "ItemList",
-        "numberOfItems": wishlistsData?.wishlists?.length || 0,
-        "itemListElement": wishlistsData?.wishlists?.slice(0, 5)?.map((wishlist: any, index: number) => ({
+        "numberOfItems": (wishlistsData as any)?.wishlists?.length || 0,
+        "itemListElement": (wishlistsData as any)?.wishlists?.slice(0, 5)?.map((wishlist: any, index: number) => ({
           "@type": "ListItem",
           "position": index + 1,
           "name": wishlist.title,
@@ -96,38 +128,49 @@ export default function BrowseWishlists() {
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
-                  const formData = new FormData(e.target as HTMLFormElement);
-                  const query = formData.get('search') as string;
-                  if (query.trim()) {
-                    window.location.href = `/browse?q=${encodeURIComponent(query)}`;
-                  } else {
-                    window.location.href = '/browse';
-                  }
+                  const query = searchInput.trim();
+                  handleSearch(query);
                 }} 
                 className="flex flex-col sm:flex-row gap-2 sm:gap-3"
               >
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                   <input 
-                    name="search"
                     type="text"
                     placeholder="Search by name, zip code, location, or situation..."
                     className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border-0 focus:ring-1 focus:ring-coral/50 rounded bg-transparent placeholder:text-gray-400"
-                    defaultValue={searchQuery}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    disabled={isSearching}
                   />
                 </div>
                 <div className="flex gap-2 sm:gap-3">
-                  <Button type="submit" size="sm" className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base">
-                    <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-                    Search
+                  <Button 
+                    type="submit" 
+                    size="sm" 
+                    className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
+                    disabled={isSearching}
+                  >
+                    {isSearching ? (
+                      <>
+                        <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white mr-1"></div>
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+                        Search
+                      </>
+                    )}
                   </Button>
                   {searchQuery && (
                     <Button 
                       type="button" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => window.location.href = '/browse'}
+                      onClick={handleClearSearch}
                       className="border-gray-300 text-gray-600 hover:bg-gray-50 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
+                      disabled={isSearching}
                     >
                       Clear
                     </Button>
@@ -147,16 +190,16 @@ export default function BrowseWishlists() {
                   <>
                     {searchQuery ? (
                       <>
-                        Found {wishlistsData.wishlists.length} needs lists matching "{searchQuery}"
-                        {wishlistsData.total && wishlistsData.total > wishlistsData.wishlists.length && 
-                          ` (showing first ${wishlistsData.wishlists.length} of ${wishlistsData.total})`
+                        Found {(wishlistsData as any).wishlists?.length || 0} needs lists matching "{searchQuery}"
+                        {(wishlistsData as any).total && (wishlistsData as any).total > (wishlistsData as any).wishlists?.length && 
+                          ` (showing first ${(wishlistsData as any).wishlists?.length} of ${(wishlistsData as any).total})`
                         }
                       </>
                     ) : (
                       <>
-                        Showing {wishlistsData.wishlists.length} needs lists
-                        {wishlistsData.total && wishlistsData.total > wishlistsData.wishlists.length && 
-                          ` of ${wishlistsData.total} total`
+                        Showing {(wishlistsData as any).wishlists?.length || 0} needs lists
+                        {(wishlistsData as any).total && (wishlistsData as any).total > (wishlistsData as any).wishlists?.length && 
+                          ` of ${(wishlistsData as any).total} total`
                         }
                       </>
                     )}
@@ -191,7 +234,7 @@ export default function BrowseWishlists() {
                   <p className="text-sm sm:text-base">{error instanceof Error ? error.message : 'An error occurred while loading needs lists'}</p>
                 </div>
               </Card>
-            ) : !wishlistsData?.wishlists || wishlistsData?.wishlists.length === 0 ? (
+            ) : !(wishlistsData as any)?.wishlists || (wishlistsData as any)?.wishlists.length === 0 ? (
               <Card className="p-6 sm:p-12 text-center">
                 <div className="text-gray-500 mb-4">
                   <Search className="mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-4 text-gray-300" />
@@ -208,7 +251,7 @@ export default function BrowseWishlists() {
                 <Button 
                   onClick={() => {
                     if (searchQuery) {
-                      window.location.href = '/browse';
+                      handleClearSearch();
                     } else {
                       window.location.reload();
                     }
@@ -216,13 +259,12 @@ export default function BrowseWishlists() {
                   variant="outline"
                   className="border-coral text-coral hover:bg-coral/10"
                 >
-                  {searchQuery ? 'View All Needs Lists' : 'Refresh'}
-                  Refresh Page
+                  {searchQuery ? 'View All Needs Lists' : 'Refresh Page'}
                 </Button>
               </Card>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-                {wishlistsData?.wishlists.map((wishlist: any) => (
+                {(wishlistsData as any)?.wishlists?.map((wishlist: any) => (
                   <WishlistCard key={wishlist.id} wishlist={wishlist} />
                 ))}
               </div>
