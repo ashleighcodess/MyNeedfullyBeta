@@ -1078,115 +1078,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* Featured Wishlists */}
-      <section id="browse" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">Featured Needs</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Real families and organizations who need your support right now</p>
-          </div>
 
-          <div className="space-y-8">
-            {/* Large featured card */}
-            {featuredWishlists.length > 0 && (
-              <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                  {/* Image section */}
-                  <div className="relative">
-                    <img 
-                      src={featuredWishlists[0].imageUrl} 
-                      alt={featuredWishlists[0].title}
-                      className="w-full h-64 lg:h-full object-cover"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <Badge className={getUrgencyColor(featuredWishlists[0].urgencyLevel)}>
-                        {featuredWishlists[0].urgencyLevel.charAt(0).toUpperCase() + featuredWishlists[0].urgencyLevel.slice(1)}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  {/* Content section */}
-                  <CardContent className="p-8 flex flex-col justify-center">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-gray-500">{featuredWishlists[0].completionPercentage}% Complete</span>
-                    </div>
-                    
-                    <h3 className="text-2xl font-semibold text-navy mb-4">{featuredWishlists[0].title}</h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{featuredWishlists[0].description}</p>
-                    
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center text-sm text-gray-500">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        <span>{featuredWishlists[0].location}</span>
-                      </div>
-                      <div className="text-sm text-gray-500">{featuredWishlists[0].totalItems} items needed</div>
-                    </div>
-                    
-                    <Progress value={featuredWishlists[0].completionPercentage} className="mb-6" />
-                    
-                    <Link href={`/wishlists/${featuredWishlists[0].id}`}>
-                      <Button className="bg-coral text-white hover:bg-coral/90 px-6 py-3">
-                        Support Needs List →
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </div>
-              </Card>
-            )}
-
-            {/* Three smaller cards */}
-            {featuredWishlists.length > 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {featuredWishlists.slice(1, 4).map((wishlist) => (
-                  <Card key={wishlist.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <img 
-                      src={wishlist.imageUrl} 
-                      alt={wishlist.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
-                          {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
-                        </Badge>
-                        <span className="text-sm text-gray-500">{wishlist.completionPercentage}% Complete</span>
-                      </div>
-                      
-                      <h3 className="text-xl font-semibold text-navy mb-2">{wishlist.title}</h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">{wishlist.description}</p>
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <MapPin className="mr-1 h-4 w-4" />
-                          <span>{wishlist.location}</span>
-                        </div>
-                        <div className="text-sm text-gray-500">{wishlist.totalItems} items needed</div>
-                      </div>
-                      
-                      <Progress value={wishlist.completionPercentage} className="mb-4" />
-                      
-                      <Link href={`/wishlists/${wishlist.id}`}>
-                        <Button className="w-full bg-coral text-white hover:bg-coral/90">
-                          Support Needs List →
-                        </Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link href="/browse">
-              <Button className="bg-navy text-white hover:bg-navy/90 px-8 py-4 text-lg rounded-full">
-                View All Needs Lists
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
       {/* User Journey Map */}
       <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1310,6 +1202,117 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Featured Wishlists */}
+      <section id="browse" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-navy mb-4">Featured Needs</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Real families and organizations who need your support right now</p>
+          </div>
+
+          <div className="space-y-8">
+            {/* Large featured card */}
+            {featuredWishlists.length > 0 && (
+              <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  {/* Image section */}
+                  <div className="relative">
+                    <img 
+                      src={featuredWishlists[0].imageUrl} 
+                      alt={featuredWishlists[0].title}
+                      className="w-full h-64 lg:h-full object-cover"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <Badge className={getUrgencyColor(featuredWishlists[0].urgencyLevel)}>
+                        {featuredWishlists[0].urgencyLevel.charAt(0).toUpperCase() + featuredWishlists[0].urgencyLevel.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  {/* Content section */}
+                  <CardContent className="p-8 flex flex-col justify-center">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-sm text-gray-500">{featuredWishlists[0].completionPercentage}% Complete</span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-semibold text-navy mb-4">{featuredWishlists[0].title}</h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">{featuredWishlists[0].description}</p>
+                    
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <MapPin className="mr-1 h-4 w-4" />
+                        <span>{featuredWishlists[0].location}</span>
+                      </div>
+                      <div className="text-sm text-gray-500">{featuredWishlists[0].totalItems} items needed</div>
+                    </div>
+                    
+                    <Progress value={featuredWishlists[0].completionPercentage} className="mb-6" />
+                    
+                    <Link href={`/wishlists/${featuredWishlists[0].id}`}>
+                      <Button className="bg-coral text-white hover:bg-coral/90 px-6 py-3">
+                        Support Needs List →
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </div>
+              </Card>
+            )}
+
+            {/* Three smaller cards */}
+            {featuredWishlists.length > 1 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {featuredWishlists.slice(1, 4).map((wishlist) => (
+                  <Card key={wishlist.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <img 
+                      src={wishlist.imageUrl} 
+                      alt={wishlist.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
+                          {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
+                        </Badge>
+                        <span className="text-sm text-gray-500">{wishlist.completionPercentage}% Complete</span>
+                      </div>
+                      
+                      <h3 className="text-xl font-semibold text-navy mb-2">{wishlist.title}</h3>
+                      <p className="text-gray-600 mb-4 line-clamp-3">{wishlist.description}</p>
+                      
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <MapPin className="mr-1 h-4 w-4" />
+                          <span>{wishlist.location}</span>
+                        </div>
+                        <div className="text-sm text-gray-500">{wishlist.totalItems} items needed</div>
+                      </div>
+                      
+                      <Progress value={wishlist.completionPercentage} className="mb-4" />
+                      
+                      <Link href={`/wishlists/${wishlist.id}`}>
+                        <Button className="w-full bg-coral text-white hover:bg-coral/90">
+                          Support Needs List →
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link href="/browse">
+              <Button className="bg-navy text-white hover:bg-navy/90 px-8 py-4 text-lg rounded-full">
+                View All Needs Lists
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* What Do People Use MyNeedfully For? - Hidden in production until ready to launch */}
       {import.meta.env.VITE_SHOW_CATEGORY_SECTION !== 'false' && (
         <section className="py-20 bg-gray-50">
