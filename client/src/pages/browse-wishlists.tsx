@@ -18,12 +18,28 @@ interface WishlistData {
 export default function BrowseWishlists() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [location, setLocation] = useLocation();
+  const [searchInput, setSearchInput] = useState('');
   
   // Get URL parameters to check for search query - reactive to location changes
   const searchQuery = useMemo(() => {
     const urlParams = new URLSearchParams(location.split('?')[1] || '');
     return urlParams.get('q') || '';
   }, [location]);
+
+  // Update input when URL changes
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
+
+  // Create a search function that can be called from multiple places
+  const performSearch = (query: string) => {
+    if (query.trim()) {
+      const newUrl = `/browse?q=${encodeURIComponent(query)}`;
+      setLocation(newUrl);
+    } else {
+      setLocation('/browse');
+    }
+  };
   
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
@@ -96,32 +112,29 @@ export default function BrowseWishlists() {
           {/* Search Bar */}
           <div className="mt-4">
             <Card className="p-3 sm:p-4 shadow-sm w-full max-w-4xl">
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const formData = new FormData(e.target as HTMLFormElement);
-                  const query = formData.get('search') as string;
-                  if (query.trim()) {
-                    const newUrl = `/browse?q=${encodeURIComponent(query)}`;
-                    setLocation(newUrl);
-                  } else {
-                    setLocation('/browse');
-                  }
-                }} 
-                className="flex flex-col sm:flex-row gap-2 sm:gap-3"
-              >
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                   <input 
-                    name="search"
                     type="text"
                     placeholder="Search by name, zip code, location, or situation..."
                     className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border-0 focus:ring-1 focus:ring-coral/50 rounded bg-transparent placeholder:text-gray-400"
-                    defaultValue={searchQuery}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        performSearch(searchInput);
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex gap-2 sm:gap-3">
-                  <Button type="submit" size="sm" className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base">
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
+                    onClick={() => performSearch(searchInput)}
+                  >
                     <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
                     Search
                   </Button>
@@ -130,14 +143,14 @@ export default function BrowseWishlists() {
                       type="button" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => setLocation('/browse')}
+                      onClick={() => performSearch('')}
                       className="border-gray-300 text-gray-600 hover:bg-gray-50 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
                     >
                       Clear
                     </Button>
                   )}
                 </div>
-              </form>
+              </div>
             </Card>
           </div>
         </div>
