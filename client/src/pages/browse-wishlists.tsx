@@ -41,6 +41,10 @@ export default function BrowseWishlists() {
     }
   };
   
+  // Debug logging
+  console.log('Search query from URL:', searchQuery);
+  console.log('Query key:', searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists');
+
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
     queryKey: [searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists'], // URL must be first element for default fetcher
@@ -48,6 +52,9 @@ export default function BrowseWishlists() {
     staleTime: 0, // Always refetch when query key changes
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
+  
+  // Debug logging for response
+  console.log('Query response:', { data: wishlistsData, isLoading, error });
 
 
 
