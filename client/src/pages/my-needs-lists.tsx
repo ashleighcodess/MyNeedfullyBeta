@@ -5,7 +5,7 @@ import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, BarChart3, Heart, List } from "lucide-react";
+import { Plus, BarChart3, Heart, List, Search } from "lucide-react";
 import { Link } from "wouter";
 
 export default function MyNeedsLists() {
@@ -54,6 +54,12 @@ export default function MyNeedsLists() {
                 <Button className="bg-coral hover:bg-coral/90 w-full sm:w-auto">
                   <Plus className="mr-2 h-4 w-4" />
                   Create New Needs List
+                </Button>
+              </Link>
+              <Link href="/products">
+                <Button variant="outline" className="border-coral text-coral hover:bg-coral/10 w-full sm:w-auto">
+                  <Search className="mr-2 h-4 w-4" />
+                  Find Products
                 </Button>
               </Link>
               <Link href="/profile">
