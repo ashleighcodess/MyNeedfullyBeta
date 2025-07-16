@@ -56,11 +56,9 @@ export default function MobileNavigation() {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo */}
-            <Link href="/">
-              <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer">
-                <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 w-auto" />
-              </div>
-            </Link>
+            <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onClick={() => window.location.href = "/"}>
+              <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 w-auto" />
+            </div>
             
             {/* Mobile Navigation */}
             <div className="flex md:hidden items-center space-x-1 sm:space-x-2">
