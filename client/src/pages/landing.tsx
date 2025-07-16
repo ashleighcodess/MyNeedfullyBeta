@@ -489,6 +489,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Gradient Transition */}
+      <div className="h-24 bg-gradient-to-b from-orange-50/80 via-orange-100/60 to-orange-200/40"></div>
+
       {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
