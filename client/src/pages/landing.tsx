@@ -593,23 +593,7 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Call to Action */}
-          <div 
-            className={`text-center mt-16 transition-all duration-1000 ease-out ${
-              isHowWorksVisible 
-                ? 'opacity-100 transform translate-y-0' 
-                : 'opacity-0 transform translate-y-8'
-            }`}
-            style={{ transitionDelay: isHowWorksVisible ? '1200ms' : '0ms' }}
-          >
-            <p className="text-lg text-gray-700 mb-6 font-just-sans font-light">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
-            <Button 
-              className="bg-coral text-white hover:bg-coral/90 hover:scale-105 hover:shadow-lg px-8 py-3 rounded-full text-lg font-semibold font-just-sans transform transition-all duration-300"
-              onClick={handleCreateList}
-            >
-              {isAuthenticated ? "Create Needs List" : "Get Started Now"}
-            </Button>
-          </div>
+
         </div>
       </section>
 
