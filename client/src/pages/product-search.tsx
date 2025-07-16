@@ -105,33 +105,12 @@ export default function ProductSearch() {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
 
-  // SEO Configuration - Dynamic based on search
+  // Basic SEO without heavy processing
   useSEO({
-    title: generatePageTitle(searchQuery ? `${searchQuery} Products` : "Product Search - Find Items for Your Needs List"),
-    description: generatePageDescription(searchQuery 
-      ? `Find ${searchQuery} products from Amazon, Walmart, and Target. Add items to your needs list and get support from the community.`
-      : "Search for products across Amazon, Walmart, and Target. Find exactly what you need and add items to your needs list for community support."),
-    keywords: generateKeywords([
-      searchQuery,
-      "product search",
-      "multi-retailer search",
-      "amazon walmart target",
-      "add to needs list",
-      "find products online"
-    ].filter(Boolean)),
-    canonical: generateCanonicalUrl(`/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`),
-    structuredData: {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Product Search",
-      "description": "Search for products across multiple retailers to add to your needs list",
-      "url": `https://myneedfully.app/search${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`,
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "MyNeedfully",
-        "url": "https://myneedfully.app"
-      }
-    }
+    title: "Product Search - MyNeedfully",
+    description: "Search for products across Amazon, Walmart, and Target to add to your needs list.",
+    keywords: ["product search", "amazon", "walmart", "target", "needs list"],
+    canonical: "/products"
   });
   
   // Get parameters from URL
@@ -342,47 +321,7 @@ export default function ProductSearch() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Generate cache key for search results
-  const getCacheKey = useCallback((query: string, cat: string, page: number) => {
-    return `${query}-${cat}-${page}`;
-  }, []);
-
-  // Simplified cache check - remove dependency
-  const getCachedResult = useCallback((key: string) => {
-    return null; // Disable caching temporarily to fix infinite loop
-  }, []);
-
-  // Simplified cache setter - remove dependency to prevent infinite loop
-  const setCacheResult = useCallback((key: string, data: any) => {
-    setSearchCache(prev => {
-      const newCache = new Map(prev);
-      newCache.set(key, { data, timestamp: Date.now() });
-      // Limit cache size to 10 entries for simplicity
-      if (newCache.size > 10) {
-        const firstKey = newCache.keys().next().value;
-        newCache.delete(firstKey);
-      }
-      return newCache;
-    });
-  }, []);
-
-  // Get cached products helper
-  const getCachedProducts = useCallback((query: string) => {
-    const key = getCacheKey(query, category, 1);
-    return getCachedResult(key);
-  }, [category, getCacheKey, getCachedResult]);
-
-  // Build query URL with parameters
-  const buildSearchUrl = useCallback(() => {
-    const params = new URLSearchParams();
-    if (debouncedQuery) params.append('query', debouncedQuery);
-    if (category && category !== 'all') params.append('category', category);
-    if (minPrice) params.append('min_price', minPrice);
-    if (maxPrice) params.append('max_price', maxPrice);
-    if (page && page !== 1) params.append('page', page.toString());
-    
-    return `/api/search?${params.toString()}`;
-  }, [debouncedQuery, category, minPrice, maxPrice, page]);
+  // Removed complex caching logic for better performance
 
   // Fetch user's wishlists when no wishlistId is provided
   const { data: userWishlists } = useQuery({
@@ -392,32 +331,24 @@ export default function ProductSearch() {
 
 
 
-  // Custom query with smart caching and fallbacks
-  const cacheKey = useMemo(() => getCacheKey(debouncedQuery, category, page), [debouncedQuery, category, page]);
-  
-  const searchUrl = useMemo(() => buildSearchUrl(), [buildSearchUrl]);
-  
+  // Simple search query without heavy caching
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: ['/api/search', debouncedQuery, category, page],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
-    staleTime: 0, // No caching - always fresh data
-    placeholderData: () => {
-      // Return cached popular products instantly while fetching fresh data  
-      const cached = getCachedProducts(debouncedQuery);
-      if (cached) {
-        return cached;
-      }
-      return undefined;
-    },
+    staleTime: 300000, // 5 minutes cache
     queryFn: async () => {
-      // Simple, direct API call without caching overhead
-      const response = await fetch(searchUrl);
+      const params = new URLSearchParams();
+      if (debouncedQuery) params.append('query', debouncedQuery);
+      if (category && category !== 'all') params.append('category', category);
+      if (minPrice) params.append('min_price', minPrice);
+      if (maxPrice) params.append('max_price', maxPrice);
+      if (page && page !== 1) params.append('page', page.toString());
+      
+      const response = await fetch(`/api/search?${params.toString()}`);
       if (!response.ok) {
         throw new Error('Search failed');
       }
-      const data = await response.json();
-      console.log('✅ Search results received:', data);
-      return data;
+      return await response.json();
     },
   });
 
@@ -441,37 +372,20 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Get display products - show cached products immediately, replace with live results when searching
+  // Simple product display logic
   const displayProducts = useMemo(() => {
-    console.log('🔍 DisplayProducts Debug:', {
-      debouncedQuery,
-      hasSearchResults: !!searchResults,
-      searchResultsData: searchResults?.data?.length || 0,
-      activeSearch,
-    });
-    
-    // Priority 1: If we have search results from live API, use them (they have real images)
-    if (debouncedQuery && debouncedQuery.length >= 3 && searchResults) {
-      // Check the actual API response structure - it should be searchResults.data
-      const results = searchResults?.data || [];
-      if (results.length > 0) {
-        const targetProducts = results.filter((p: any) => p.retailer === 'target');
-        const walmartProducts = results.filter((p: any) => p.retailer === 'walmart');
-        const amazonProducts = results.filter((p: any) => p.retailer === 'amazon');
-        console.log(`✅ Using live results with ${results.length} products: Amazon: ${amazonProducts.length}, Walmart: ${walmartProducts.length}, Target: ${targetProducts.length}`);
-        return results;
-      }
+    // If we have search results, show them
+    if (searchResults?.data && searchResults.data.length > 0) {
+      return searchResults.data;
     }
     
-    // Priority 2: Show cached "Basic Essentials" when no search has been performed
+    // Otherwise show cached Basic Essentials
     if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
-      console.log('📦 Using cached Basic Essentials products');
       return popularProducts["Basic Essentials"] || [];
     }
     
-    console.log('❌ No products to display');
     return [];
-  }, [debouncedQuery, searchResults, popularProducts, activeSearch]);
+  }, [debouncedQuery, searchResults, popularProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
