@@ -423,10 +423,10 @@ export default function Landing() {
     <div className="min-h-screen bg-warm-bg">
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[70vh] flex items-start justify-center overflow-hidden pt-8 md:pt-16">
+      <section className="relative min-h-[80vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-0">
         {/* Community illustration background */}
         <div 
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroImagePath})` }}
         />
         
@@ -437,7 +437,7 @@ export default function Landing() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-4 md:pt-8">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-8 md:pt-16">
           <h1 className="text-3xl md:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
             A Registry for Hardships,
             <span className="text-coral"> Relief and Recovery</span>
