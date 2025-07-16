@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,82 +9,33 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
-// Type definitions for the API response
-interface WishlistData {
-  wishlists: any[];
-  total: number;
-}
-
 export default function BrowseWishlists() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const [location, setLocation] = useLocation();
-  const [searchInput, setSearchInput] = useState('');
   
-  // Debug component mount
-  console.log('BrowseWishlists component mounted. Current location:', location);
+  console.log('🔍 BrowseWishlists auth state:', { user: !!user, isAuthenticated, authLoading });
   
-  // Get URL parameters to check for search query - reactive to location changes
-  const searchQuery = useMemo(() => {
-    console.log('🔍 Parsing location for search query:', location);
-    const queryString = location.split('?')[1] || '';
-    console.log('🔍 Query string:', queryString);
-    const urlParams = new URLSearchParams(queryString);
-    const query = urlParams.get('q') || '';
-    console.log('🔍 Extracted search query:', query);
-    return query;
-  }, [location]);
-
-  // Update input when URL changes
-  useEffect(() => {
-    setSearchInput(searchQuery);
-  }, [searchQuery]);
-
-  // Create a search function that can be called from multiple places
-  const performSearch = (query: string) => {
-    console.log('performSearch called with query:', query);
-    console.log('Query length:', query.length);
-    console.log('Query trimmed:', query.trim());
-    console.log('Query trimmed length:', query.trim().length);
-    
-    if (query.trim()) {
-      const newUrl = `/browse?q=${encodeURIComponent(query.trim())}`;
-      console.log('Setting new URL:', newUrl);
-      console.log('Current location before change:', location);
-      setLocation(newUrl);
-    } else {
-      console.log('Clearing search - going to /browse');
-      console.log('Current location before clear:', location);
-      setLocation('/browse');
+  // Get URL parameters to check for search query
+  const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
+  const searchQuery = urlParams.get('q') || '';
+  
+  console.log('🔍 BrowseWishlists search query:', searchQuery);
+  
+  // Build API endpoint based on whether there's a search query
+  const apiEndpoint = useMemo(() => {
+    if (searchQuery) {
+      return `/api/wishlists?query=${encodeURIComponent(searchQuery)}`;
     }
-  };
+    return '/api/wishlists';
+  }, [searchQuery]);
   
-  // Debug logging
-  console.log('Search query from URL:', searchQuery);
-  const url = searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists';
-  console.log('API URL:', url);
-
+  console.log('🔍 BrowseWishlists API endpoint:', apiEndpoint);
+  
   // Optimized React Query approach with caching
-  const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
-    queryKey: ['/api/wishlists', { query: searchQuery }], // Proper key structure for cache invalidation
-    queryFn: async () => {
-      console.log('Fetching from URL:', url);
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch wishlists');
-      }
-      const data = await response.json();
-      console.log('API Response:', data);
-      return data;
-    },
-    enabled: true, // Always enabled
-    staleTime: 0, // No cache - always fresh data for debugging
-    gcTime: 0, // No cache retention for debugging
-    refetchOnMount: true,
-    refetchOnWindowFocus: false,
+  const { data: wishlistsData, isLoading, error } = useQuery({
+    queryKey: [apiEndpoint],
+    staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
+    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
-  
-  // Debug logging for response
-  console.log('Query response:', { data: wishlistsData, isLoading, error });
 
 
 
@@ -142,57 +93,31 @@ export default function BrowseWishlists() {
           {/* Search Bar */}
           <div className="mt-4">
             <Card className="p-3 sm:p-4 shadow-sm w-full max-w-4xl">
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target as HTMLFormElement);
+                  const query = formData.get('search') as string;
+                  if (query.trim()) {
+                    window.location.href = `/browse?q=${encodeURIComponent(query)}`;
+                  } else {
+                    window.location.href = '/browse';
+                  }
+                }} 
+                className="flex flex-col sm:flex-row gap-2 sm:gap-3"
+              >
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
                   <input 
+                    name="search"
                     type="text"
                     placeholder="Search by name, zip code, location, or situation..."
                     className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border-0 focus:ring-1 focus:ring-coral/50 rounded bg-transparent placeholder:text-gray-400"
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        performSearch(searchInput);
-                      }
-                    }}
+                    defaultValue={searchQuery}
                   />
                 </div>
                 <div className="flex gap-2 sm:gap-3">
-                  {/* Test button - simple HTML button */}
-                  <button 
-                    type="button"
-                    className="bg-red-500 text-white px-4 py-2 rounded border-none cursor-pointer"
-                    onClick={() => {
-                      console.log('🔥 SIMPLE TEST BUTTON CLICKED! 🔥');
-                      alert('Test button works!');
-                    }}
-                  >
-                    TEST
-                  </button>
-                  
-                  <Button 
-                    type="button" 
-                    size="sm" 
-                    className="bg-coral text-white hover:bg-coral/90 active:bg-coral/80 transition-colors flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      console.log('=== SEARCH BUTTON CLICKED ===');
-                      console.log('Event target:', e.target);
-                      console.log('Search input value:', searchInput);
-                      console.log('Current location:', location);
-                      
-                      // Test basic functionality first
-                      if (searchInput.trim()) {
-                        console.log('Attempting search for:', searchInput.trim());
-                        performSearch(searchInput.trim());
-                      } else {
-                        console.log('Empty search input - clearing search');
-                        performSearch('');
-                      }
-                    }}
-                  >
+                  <Button type="submit" size="sm" className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base">
                     <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
                     Search
                   </Button>
@@ -201,14 +126,14 @@ export default function BrowseWishlists() {
                       type="button" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => performSearch('')}
+                      onClick={() => window.location.href = '/browse'}
                       className="border-gray-300 text-gray-600 hover:bg-gray-50 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
                     >
                       Clear
                     </Button>
                   )}
                 </div>
-              </div>
+              </form>
             </Card>
           </div>
         </div>
@@ -283,7 +208,7 @@ export default function BrowseWishlists() {
                 <Button 
                   onClick={() => {
                     if (searchQuery) {
-                      setLocation('/browse');
+                      window.location.href = '/browse';
                     } else {
                       window.location.reload();
                     }
@@ -292,6 +217,7 @@ export default function BrowseWishlists() {
                   className="border-coral text-coral hover:bg-coral/10"
                 >
                   {searchQuery ? 'View All Needs Lists' : 'Refresh'}
+                  Refresh Page
                 </Button>
               </Card>
             ) : (

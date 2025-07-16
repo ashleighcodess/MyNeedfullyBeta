@@ -368,7 +368,6 @@ export class DatabaseStorage implements IStorage {
     limit?: number;
     offset?: number;
   }): Promise<{ wishlists: Wishlist[]; total: number }> {
-    console.log('searchWishlists called with params:', params);
 
     const conditions = [eq(wishlists.isPublic, true)];
     
