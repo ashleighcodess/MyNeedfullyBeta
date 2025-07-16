@@ -604,7 +604,7 @@ export default function Landing() {
                 <span className="text-coral text-sm font-semibold tracking-wider uppercase">About Us</span>
               </div>
               
-              <h2 className="text-[32px] font-bold text-navy mb-6">
+              <h2 className="text-2xl md:text-[32px] font-bold text-navy mb-6">
                 Our <span className="text-coral">mission</span> is to reshape<br />
                 the <span className="text-navy font-black">donation experience</span>–<br />
                 creating a <span className="text-navy font-black">simpler way</span> for people<br />
