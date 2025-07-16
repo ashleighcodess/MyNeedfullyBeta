@@ -37,12 +37,18 @@ export default function BrowseWishlists() {
   // Create a search function that can be called from multiple places
   const performSearch = (query: string) => {
     console.log('performSearch called with query:', query);
+    console.log('Query length:', query.length);
+    console.log('Query trimmed:', query.trim());
+    console.log('Query trimmed length:', query.trim().length);
+    
     if (query.trim()) {
-      const newUrl = `/browse?q=${encodeURIComponent(query)}`;
+      const newUrl = `/browse?q=${encodeURIComponent(query.trim())}`;
       console.log('Setting new URL:', newUrl);
+      console.log('Current location before change:', location);
       setLocation(newUrl);
     } else {
       console.log('Clearing search - going to /browse');
+      console.log('Current location before clear:', location);
       setLocation('/browse');
     }
   };
