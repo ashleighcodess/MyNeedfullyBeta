@@ -33,10 +33,13 @@ export default function BrowseWishlists() {
 
   // Create a search function that can be called from multiple places
   const performSearch = (query: string) => {
+    console.log('performSearch called with query:', query);
     if (query.trim()) {
       const newUrl = `/browse?q=${encodeURIComponent(query)}`;
+      console.log('Setting new URL:', newUrl);
       setLocation(newUrl);
     } else {
+      console.log('Clearing search - going to /browse');
       setLocation('/browse');
     }
   };
@@ -145,8 +148,11 @@ export default function BrowseWishlists() {
                   <Button 
                     type="button" 
                     size="sm" 
-                    className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
-                    onClick={() => performSearch(searchInput)}
+                    className="bg-coral text-white hover:bg-coral/90 active:bg-coral/80 transition-colors flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
+                    onClick={() => {
+                      console.log('Search button clicked! Input value:', searchInput);
+                      performSearch(searchInput);
+                    }}
                   >
                     <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
                     Search
