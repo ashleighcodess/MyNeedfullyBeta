@@ -444,7 +444,7 @@ export default function Landing() {
           </h1>
           
           <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
-            Create and Share a Needs List to Help Yourself or Loved Ones. Get the Support You Need During Tough Times.
+            Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
           </p>
 
           {/* Search Bar */}
