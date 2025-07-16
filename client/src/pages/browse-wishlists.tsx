@@ -20,26 +20,16 @@ export default function BrowseWishlists() {
   const [location, setLocation] = useLocation();
   
   // Get URL parameters to check for search query - reactive to location changes
-  const urlParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
-  const searchQuery = urlParams.get('q') || '';
-  
-  // Debug logging
-  console.log('Browse Wishlists - Location:', location);
-  console.log('Browse Wishlists - Search Query:', searchQuery);
-  
-  // Build API endpoint based on whether there's a search query
-  const apiEndpoint = useMemo(() => {
-    const endpoint = searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists';
-    console.log('Browse Wishlists - API Endpoint:', endpoint);
-    return endpoint;
-  }, [searchQuery]);
+  const searchQuery = useMemo(() => {
+    const urlParams = new URLSearchParams(location.split('?')[1] || '');
+    return urlParams.get('q') || '';
+  }, [location]);
   
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
     queryKey: ['/api/wishlists', searchQuery], // Use separate keys for better cache management
     queryFn: async () => {
       const endpoint = searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists';
-      console.log('Fetching from:', endpoint);
       const response = await fetch(endpoint, { credentials: 'include' });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -109,16 +99,12 @@ export default function BrowseWishlists() {
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
-                  console.log('Form submitted!');
                   const formData = new FormData(e.target as HTMLFormElement);
                   const query = formData.get('search') as string;
-                  console.log('Search query:', query);
                   if (query.trim()) {
                     const newUrl = `/browse?q=${encodeURIComponent(query)}`;
-                    console.log('Setting location to:', newUrl);
                     setLocation(newUrl);
                   } else {
-                    console.log('Setting location to: /browse');
                     setLocation('/browse');
                   }
                 }} 
