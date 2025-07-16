@@ -436,8 +436,11 @@ export default function Landing() {
         {/* Smooth transition overlay to white space below */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
+        {/* Spacer to push content higher */}
+        <div className="h-16 md:h-24"></div>
+        
         {/* Hero Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-8 md:pt-16">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-3xl md:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
             A Registry for Hardships,
             <span className="text-coral"> Relief and Recovery</span>
