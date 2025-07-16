@@ -93,12 +93,17 @@ function NotificationHandler() {
   return null;
 }
 
-// Component for home route logic
+// Component for home route logic - always show Landing page (public marketing page)
 function HomeRoute() {
-  const { isAuthenticated, user, isLoading } = useAuth();
-  
-  // Removed debug logging for better performance
+  // Always show the public landing page regardless of authentication status
+  // This allows logged-in users to view the main marketing page when clicking logo
+  return <Landing />;
+}
 
+// Component for dashboard route logic - show user dashboard for authenticated users
+function DashboardRoute() {
+  const { isAuthenticated, isLoading } = useAuth();
+  
   // Show loading state while authentication is being determined
   if (isLoading) {
     return (
@@ -109,12 +114,6 @@ function HomeRoute() {
   }
 
   return isAuthenticated ? <Home /> : <Landing />;
-}
-
-// Component for dashboard route logic
-function DashboardRoute() {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Profile /> : <Landing />;
 }
 
 function Router() {
