@@ -148,6 +148,18 @@ export default function BrowseWishlists() {
                   />
                 </div>
                 <div className="flex gap-2 sm:gap-3">
+                  {/* Test button - simple HTML button */}
+                  <button 
+                    type="button"
+                    className="bg-red-500 text-white px-4 py-2 rounded border-none cursor-pointer"
+                    onClick={() => {
+                      console.log('🔥 SIMPLE TEST BUTTON CLICKED! 🔥');
+                      alert('Test button works!');
+                    }}
+                  >
+                    TEST
+                  </button>
+                  
                   <Button 
                     type="button" 
                     size="sm" 
