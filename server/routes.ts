@@ -1599,6 +1599,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/wishlists/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Validate ID is a number
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid wishlist ID" });
+      }
+      
       const wishlist = await storage.getWishlistWithItems(id);
       
       if (!wishlist) {

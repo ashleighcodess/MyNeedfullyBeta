@@ -23,7 +23,7 @@ export default function BrowseWishlists() {
   // Build API endpoint based on whether there's a search query
   const apiEndpoint = useMemo(() => {
     if (searchQuery) {
-      return `/api/wishlists/search?q=${encodeURIComponent(searchQuery)}`;
+      return `/api/wishlists?query=${encodeURIComponent(searchQuery)}`;
     }
     return '/api/wishlists';
   }, [searchQuery]);
@@ -188,7 +188,7 @@ export default function BrowseWishlists() {
               <Card className="p-6 sm:p-12 text-center">
                 <div className="text-red-500 mb-4">
                   <h3 className="text-base sm:text-lg font-semibold mb-2">Error loading needs lists</h3>
-                  <p className="text-sm sm:text-base">{error}</p>
+                  <p className="text-sm sm:text-base">{error instanceof Error ? error.message : 'An error occurred while loading needs lists'}</p>
                 </div>
               </Card>
             ) : !wishlistsData?.wishlists || wishlistsData?.wishlists.length === 0 ? (
