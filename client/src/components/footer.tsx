@@ -18,11 +18,11 @@ export default function Footer() {
     { href: "/products", label: "Search Products" },
     { href: isAuthenticated ? "/create" : "/signup", label: "Create Needs List" },
     { href: isAuthenticated ? "/dashboard" : "/signup", label: "My Dashboard" },
+    { href: "/community", label: "Community Impact" },
   ];
 
   const getHelp = [
     { href: "/resources", label: "Resources" },
-    { href: "/community", label: "Community Impact" },
     { href: "/browse", label: "Support a Needs List" },
     { href: "/faq", label: "FAQ" },
   ];
