@@ -379,7 +379,7 @@ export async function setupMultiAuth(app: Express) {
         const fallbackStrategy = replitStrategies[0];
         console.log(`🔄 Using fallback callback strategy: ${fallbackStrategy}`);
         return passport.authenticate(fallbackStrategy, {
-          successReturnToOrRedirect: "/profile",
+          successReturnToOrRedirect: "/",
           failureRedirect: "/api/login/replit",
         })(req, res, next);
       } else {
@@ -388,7 +388,7 @@ export async function setupMultiAuth(app: Express) {
     }
     
     passport.authenticate(strategyName, {
-      successReturnToOrRedirect: "/profile",
+      successReturnToOrRedirect: "/",
       failureRedirect: "/api/login/replit",
     })(req, res, next);
   });
@@ -456,8 +456,8 @@ export async function setupMultiAuth(app: Express) {
           console.log('Session ID:', req.sessionID);
           console.log('Authenticated?', req.isAuthenticated());
           
-          // Redirect to dashboard
-          res.redirect("/profile");
+          // Redirect to home page
+          res.redirect("/");
         });
       })(req, res, next);
     });
