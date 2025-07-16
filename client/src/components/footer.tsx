@@ -11,7 +11,6 @@ export default function Footer() {
   const quickLinks = [
     { href: "/", label: "Home" },
     { href: "/about-us", label: "About Us" },
-    { href: "/resources", label: "Resources" },
   ];
 
   const features = [
@@ -22,7 +21,7 @@ export default function Footer() {
   ];
 
   const getHelp = [
-    { href: "/resources", label: "Find Resources" },
+    { href: "/resources", label: "Resources" },
     { href: "/community", label: "Community Impact" },
     { href: "/browse", label: "Support a Needs List" },
     { href: "/faq", label: "FAQ" },
