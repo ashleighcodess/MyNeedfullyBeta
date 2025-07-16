@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,9 +14,25 @@ export default function BrowseWishlists() {
   
   console.log('🔍 BrowseWishlists auth state:', { user: !!user, isAuthenticated, authLoading });
   
+  // Get URL parameters to check for search query
+  const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
+  const searchQuery = urlParams.get('q') || '';
+  
+  console.log('🔍 BrowseWishlists search query:', searchQuery);
+  
+  // Build API endpoint based on whether there's a search query
+  const apiEndpoint = useMemo(() => {
+    if (searchQuery) {
+      return `/api/wishlists/search?q=${encodeURIComponent(searchQuery)}`;
+    }
+    return '/api/wishlists';
+  }, [searchQuery]);
+  
+  console.log('🔍 BrowseWishlists API endpoint:', apiEndpoint);
+  
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery({
-    queryKey: ['/api/wishlists'],
+    queryKey: [apiEndpoint],
     staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
     cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
@@ -64,10 +80,62 @@ export default function BrowseWishlists() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2">Browse Needs Lists</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2">
+            {searchQuery ? `Search Results for "${searchQuery}"` : 'Browse Needs Lists'}
+          </h1>
           <p className="text-sm sm:text-base text-gray-600">
-            Find families and organizations who need your support
+            {searchQuery ? 
+              `Showing needs lists matching "${searchQuery}"` : 
+              'Find families and organizations who need your support'
+            }
           </p>
+          
+          {/* Search Bar */}
+          <div className="mt-4">
+            <Card className="p-2 shadow-sm max-w-2xl">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target as HTMLFormElement);
+                  const query = formData.get('search') as string;
+                  if (query.trim()) {
+                    window.location.href = `/browse?q=${encodeURIComponent(query)}`;
+                  } else {
+                    window.location.href = '/browse';
+                  }
+                }} 
+                className="flex flex-col md:flex-row gap-2"
+              >
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input 
+                    name="search"
+                    type="text"
+                    placeholder="Search by creator name, zip code, location, or situation..."
+                    className="w-full pl-10 pr-4 py-2 text-sm border-0 focus:ring-1 focus:ring-coral/50 rounded bg-transparent"
+                    defaultValue={searchQuery}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" size="sm" className="bg-coral text-white hover:bg-coral/90">
+                    <Search className="mr-1 h-3 w-3" />
+                    Search
+                  </Button>
+                  {searchQuery && (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.location.href = '/browse'}
+                      className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                    >
+                      Clear
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </Card>
+          </div>
         </div>
 
         {/* Results */}
@@ -77,7 +145,21 @@ export default function BrowseWishlists() {
               <div className="text-sm sm:text-base text-gray-600">
                 {wishlistsData ? (
                   <>
-                    Showing {wishlistsData.wishlists.length} needs lists
+                    {searchQuery ? (
+                      <>
+                        Found {wishlistsData.wishlists.length} needs lists matching "{searchQuery}"
+                        {wishlistsData.total && wishlistsData.total > wishlistsData.wishlists.length && 
+                          ` (showing first ${wishlistsData.wishlists.length} of ${wishlistsData.total})`
+                        }
+                      </>
+                    ) : (
+                      <>
+                        Showing {wishlistsData.wishlists.length} needs lists
+                        {wishlistsData.total && wishlistsData.total > wishlistsData.wishlists.length && 
+                          ` of ${wishlistsData.total} total`
+                        }
+                      </>
+                    )}
                   </>
                 ) : (
                   'Loading...'
@@ -113,16 +195,28 @@ export default function BrowseWishlists() {
               <Card className="p-6 sm:p-12 text-center">
                 <div className="text-gray-500 mb-4">
                   <Search className="mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-4 text-gray-300" />
-                  <h3 className="text-base sm:text-lg font-semibold mb-2">No needs lists found</h3>
-                  <p className="text-sm sm:text-base">Try adjusting your search criteria or filters</p>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">
+                    {searchQuery ? `No results found for "${searchQuery}"` : 'No needs lists found'}
+                  </h3>
+                  <p className="text-sm sm:text-base">
+                    {searchQuery ? 
+                      'Try a different search term like a name, zip code, or location' : 
+                      'Try adjusting your search criteria or filters'
+                    }
+                  </p>
                 </div>
                 <Button 
                   onClick={() => {
-                    window.location.reload();
+                    if (searchQuery) {
+                      window.location.href = '/browse';
+                    } else {
+                      window.location.reload();
+                    }
                   }}
                   variant="outline"
                   className="border-coral text-coral hover:bg-coral/10"
                 >
+                  {searchQuery ? 'View All Needs Lists' : 'Refresh'}
                   Refresh Page
                 </Button>
               </Card>
