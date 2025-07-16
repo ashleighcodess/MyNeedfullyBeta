@@ -489,126 +489,120 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* User Journey Map */}
-      <section className="bg-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">Your Journey To Fulfill Someone's Need</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps to make a meaningful difference in someone's life</p>
+      {/* How It Works - Enhanced with Microanimations */}
+      <section 
+        id="how" 
+        className="py-20 relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${warmBackgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        {/* Overlay to tone down brightness */}
+        <div className="absolute inset-0 bg-white/40"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div 
+            ref={howWorksRef}
+            className={`text-center mb-16 transition-all duration-1000 ease-out ${
+              isHowWorksVisible 
+                ? 'opacity-100 transform translate-y-0' 
+                : 'opacity-0 transform translate-y-8'
+            }`}
+          >
+            <h2 className="text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
           </div>
-          
-          <div className="relative" ref={journeyRef}>
-            {/* Journey Steps */}
-            <div className="flex flex-col md:grid md:grid-cols-4 gap-8 md:gap-4">
-              {/* Step 1 */}
-              <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
-                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Desktop connecting line */}
-                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
-                       style={{
-                         width: progressSteps[0] ? 'calc(100vw / 4 - 96px)' : '0px',
-                         opacity: progressSteps[0] ? 1 : 0
-                       }}></div>
-                </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Log In Or Sign Up To Fulfill A Need</h3>
-                <p className="text-gray-600 text-sm">Quick and easy registration to get started on your helping journey</p>
-              </div>
 
-              {/* Mobile connecting line 1 */}
-              <div className="md:hidden flex justify-center">
-                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
-                     style={{
-                       height: progressSteps[0] ? '32px' : '0px',
-                       opacity: progressSteps[0] ? 1 : 0
-                     }}></div>
+          <div 
+            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ease-out ${
+              isHowWorksVisible 
+                ? 'opacity-100 transform translate-y-0' 
+                : 'opacity-0 transform translate-y-12'
+            }`}
+            style={{ transitionDelay: isHowWorksVisible ? '200ms' : '0ms' }}
+          >
+            {/* Step 1 - Create A Needs List */}
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-
-              {/* Step 2 */}
-              <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
-                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-200">
-                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Desktop connecting line */}
-                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
-                       style={{
-                         width: progressSteps[1] ? 'calc(100vw / 4 - 96px)' : '0px',
-                         opacity: progressSteps[1] ? 1 : 0,
-                         transitionDelay: '0.3s'
-                       }}></div>
-                </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Provide Your Personal Information</h3>
-                <p className="text-gray-600 text-sm">Share basic details to ensure secure and personalized support</p>
-              </div>
-
-              {/* Mobile connecting line 2 */}
-              <div className="md:hidden flex justify-center">
-                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
-                     style={{
-                       height: progressSteps[1] ? '32px' : '0px',
-                       opacity: progressSteps[1] ? 1 : 0,
-                       transitionDelay: '0.3s'
-                     }}></div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
-                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-400">
-                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Desktop connecting line */}
-                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
-                       style={{
-                         width: progressSteps[2] ? 'calc(100vw / 4 - 96px)' : '0px',
-                         opacity: progressSteps[2] ? 1 : 0,
-                         transitionDelay: '0.6s'
-                       }}></div>
-                </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill A Need And Create A Personalized Needs List</h3>
-                <p className="text-gray-600 text-sm">Choose items to support and optionally create your own needs list</p>
-              </div>
-
-              {/* Mobile connecting line 3 */}
-              <div className="md:hidden flex justify-center">
-                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
-                     style={{
-                       height: progressSteps[2] ? '32px' : '0px',
-                       opacity: progressSteps[2] ? 1 : 0,
-                       transitionDelay: '0.6s'
-                     }}></div>
-              </div>
-
-              {/* Step 4 */}
-              <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
-                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-600">
-                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 0v1m-2 0V6a2 2 0 00-2 0v1m2 0V5.5a2 2 0 10-2 0v1.5m2 0h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill Someone's Need By Giving Their Needs List</h3>
-                <p className="text-gray-600 text-sm">Complete the circle of giving by supporting others in need</p>
-              </div>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create A Needs List</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
             </div>
+
+            {/* Step 2 - Share With Community */}
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '600ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+              </div>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share With Community</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
+            </div>
+
+            {/* Step 3 - Receive Support */}
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+              </div>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive Support</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
+            </div>
+
+            {/* Step 4 - Track Fulfillment */}
+            <div 
+              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
+                isHowWorksVisible 
+                  ? 'opacity-100 translate-y-0 hover:scale-105' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: isHowWorksVisible ? '1000ms' : '0ms' }}
+            >
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+              </div>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track Fulfillment</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div 
+            className={`text-center mt-16 transition-all duration-1000 ease-out ${
+              isHowWorksVisible 
+                ? 'opacity-100 transform translate-y-0' 
+                : 'opacity-0 transform translate-y-8'
+            }`}
+            style={{ transitionDelay: isHowWorksVisible ? '1200ms' : '0ms' }}
+          >
+            <p className="text-lg text-gray-700 mb-6 font-just-sans font-light">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 hover:scale-105 hover:shadow-lg px-8 py-3 rounded-full text-lg font-semibold font-just-sans transform transition-all duration-300"
+              onClick={handleCreateList}
+            >
+              {isAuthenticated ? "Create Needs List" : "Get Started Now"}
+            </Button>
           </div>
         </div>
       </section>
@@ -1082,120 +1076,126 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How It Works - Enhanced with Microanimations */}
-      <section 
-        id="how" 
-        className="py-20 relative bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${warmBackgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        {/* Overlay to tone down brightness */}
-        <div className="absolute inset-0 bg-white/40"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div 
-            ref={howWorksRef}
-            className={`text-center mb-16 transition-all duration-1000 ease-out ${
-              isHowWorksVisible 
-                ? 'opacity-100 transform translate-y-0' 
-                : 'opacity-0 transform translate-y-8'
-            }`}
-          >
-            <h2 className="text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
+      {/* User Journey Map */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-navy mb-4">Your Journey To Fulfill Someone's Need</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps to make a meaningful difference in someone's life</p>
           </div>
-
-          <div 
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ease-out ${
-              isHowWorksVisible 
-                ? 'opacity-100 transform translate-y-0' 
-                : 'opacity-0 transform translate-y-12'
-            }`}
-            style={{ transitionDelay: isHowWorksVisible ? '200ms' : '0ms' }}
-          >
-            {/* Step 1 - Create A Needs List */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+          
+          <div className="relative" ref={journeyRef}>
+            {/* Journey Steps */}
+            <div className="flex flex-col md:grid md:grid-cols-4 gap-8 md:gap-4">
+              {/* Step 1 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Desktop connecting line */}
+                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
+                       style={{
+                         width: progressSteps[0] ? 'calc(100vw / 4 - 96px)' : '0px',
+                         opacity: progressSteps[0] ? 1 : 0
+                       }}></div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Log In Or Sign Up To Fulfill A Need</h3>
+                <p className="text-gray-600 text-sm">Quick and easy registration to get started on your helping journey</p>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create A Needs List</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
-            </div>
 
-            {/* Step 2 - Share With Community */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '600ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+              {/* Mobile connecting line 1 */}
+              <div className="md:hidden flex justify-center">
+                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                     style={{
+                       height: progressSteps[0] ? '32px' : '0px',
+                       opacity: progressSteps[0] ? 1 : 0
+                     }}></div>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share With Community</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
-            </div>
 
-            {/* Step 3 - Receive Support */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+              {/* Step 2 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-200">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Desktop connecting line */}
+                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
+                       style={{
+                         width: progressSteps[1] ? 'calc(100vw / 4 - 96px)' : '0px',
+                         opacity: progressSteps[1] ? 1 : 0,
+                         transitionDelay: '0.3s'
+                       }}></div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Provide Your Personal Information</h3>
+                <p className="text-gray-600 text-sm">Share basic details to ensure secure and personalized support</p>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive Support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
-            </div>
 
-            {/* Step 4 - Track Fulfillment */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '1000ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+              {/* Mobile connecting line 2 */}
+              <div className="md:hidden flex justify-center">
+                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                     style={{
+                       height: progressSteps[1] ? '32px' : '0px',
+                       opacity: progressSteps[1] ? 1 : 0,
+                       transitionDelay: '0.3s'
+                     }}></div>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track Fulfillment</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
-            </div>
-          </div>
 
-          {/* Call to Action */}
-          <div 
-            className={`text-center mt-16 transition-all duration-1000 ease-out ${
-              isHowWorksVisible 
-                ? 'opacity-100 transform translate-y-0' 
-                : 'opacity-0 transform translate-y-8'
-            }`}
-            style={{ transitionDelay: isHowWorksVisible ? '1200ms' : '0ms' }}
-          >
-            <p className="text-lg text-gray-700 mb-6 font-just-sans font-light">Ready To Create A Needs List For Yourself Or Someone In Need?</p>
-            <Button 
-              className="bg-coral text-white hover:bg-coral/90 hover:scale-105 hover:shadow-lg px-8 py-3 rounded-full text-lg font-semibold font-just-sans transform transition-all duration-300"
-              onClick={handleCreateList}
-            >
-              {isAuthenticated ? "Create Needs List" : "Get Started Now"}
-            </Button>
+              {/* Step 3 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-400">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Desktop connecting line */}
+                  <div className="hidden md:block absolute top-12 left-24 h-0.5 bg-gradient-to-r from-coral to-coral-light transition-all duration-1000 ease-out" 
+                       style={{
+                         width: progressSteps[2] ? 'calc(100vw / 4 - 96px)' : '0px',
+                         opacity: progressSteps[2] ? 1 : 0,
+                         transitionDelay: '0.6s'
+                       }}></div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill A Need And Create A Personalized Needs List</h3>
+                <p className="text-gray-600 text-sm">Choose items to support and optionally create your own needs list</p>
+              </div>
+
+              {/* Mobile connecting line 3 */}
+              <div className="md:hidden flex justify-center">
+                <div className="w-0.5 bg-gradient-to-b from-coral to-coral-light transition-all duration-1000 ease-out" 
+                     style={{
+                       height: progressSteps[2] ? '32px' : '0px',
+                       opacity: progressSteps[2] ? 1 : 0,
+                       transitionDelay: '0.6s'
+                     }}></div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="relative mb-6">
+                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-600">
+                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 0v1m-2 0V6a2 2 0 00-2 0v1m2 0V5.5a2 2 0 10-2 0v1.5m2 0h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill Someone's Need By Giving Their Needs List</h3>
+                <p className="text-gray-600 text-sm">Complete the circle of giving by supporting others in need</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
