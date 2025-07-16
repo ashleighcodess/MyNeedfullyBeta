@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 // import { useWebSocket } from "@/lib/websocket";
-import { useEffect, Suspense, lazy, ErrorBoundary } from "react";
+import { useEffect, Suspense, lazy } from "react";
 
 // Lazy load pages to prevent import errors from breaking the app
 const Landing = lazy(() => import("@/pages/landing").catch(() => ({ default: () => <div>Error loading Landing page</div> })));
@@ -97,7 +97,19 @@ function NotificationHandler() {
 function HomeRoute() {
   // Always show the public landing page regardless of authentication status
   // This allows logged-in users to view the main marketing page when clicking logo
-  return <Landing />;
+  try {
+    return <Landing />;
+  } catch (error) {
+    console.error('HomeRoute error:', error);
+    return (
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
+          <p className="text-gray-600">Loading homepage...</p>
+        </div>
+      </div>
+    );
+  }
 }
 
 // Component for dashboard route logic - show user dashboard for authenticated users
@@ -258,7 +270,8 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
-          <QuickTips />
+          {/* Temporarily disable QuickTips to test if it causes issues */}
+          {/* <QuickTips /> */}
         </TooltipProvider>
       </QueryClientProvider>
     );

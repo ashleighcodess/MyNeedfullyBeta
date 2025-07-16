@@ -9,6 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
+// Type definitions for the API response
+interface WishlistData {
+  wishlists: any[];
+  total: number;
+}
+
 export default function BrowseWishlists() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   
@@ -31,10 +37,10 @@ export default function BrowseWishlists() {
   console.log('🔍 BrowseWishlists API endpoint:', apiEndpoint);
   
   // Optimized React Query approach with caching
-  const { data: wishlistsData, isLoading, error } = useQuery({
+  const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
     queryKey: [apiEndpoint],
     staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
-    cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
 
