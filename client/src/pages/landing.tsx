@@ -701,209 +701,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Out of the Box Needs - Emergency Products */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">Out of the Box Needs</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Jumpstart Your Needs List</p>
-          </div>
 
-          {/* Search and Filter Bar */}
-          <div className="flex flex-col md:flex-row gap-4 mb-12 max-w-4xl mx-auto">
-            <div className="flex-1 relative">
-              <select 
-                id="category-select"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
-              >
-                <option value="">Select Categories</option>
-                <option value="emergency">Emergency Supplies</option>
-                <option value="food">Food & Groceries</option>
-                <option value="baby">Baby & Kids</option>
-                <option value="health">Health & Personal Care</option>
-                <option value="clothing">Clothing</option>
-                <option value="household">Household Items</option>
-              </select>
-            </div>
-            
-            <div className="flex-1 relative">
-              <select 
-                id="price-select"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
-              >
-                <option value="">Price Range</option>
-                <option value="0-25">$0 - $25</option>
-                <option value="25-50">$25 - $50</option>
-                <option value="50-100">$50 - $100</option>
-                <option value="100+">$100+</option>
-              </select>
-            </div>
-            
-            <Button 
-              className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg"
-              onClick={() => {
-                const category = (document.getElementById('category-select') as HTMLSelectElement)?.value || 'emergency';
-                const priceRange = (document.getElementById('price-select') as HTMLSelectElement)?.value || '';
-                
-                let searchQuery = `${category}+essentials`;
-                let params = new URLSearchParams();
-                params.set('q', searchQuery);
-                
-                if (priceRange) {
-                  const [min, max] = priceRange.includes('-') ? priceRange.split('-') : ['', priceRange.replace('+', '')];
-                  if (min) params.set('min_price', min);
-                  if (max && max !== '+') params.set('max_price', max);
-                }
-                
-                window.location.href = `/product-search?${params.toString()}`;
-              }}
-            >
-              Search
-            </Button>
-          </div>
-
-          {/* Emergency Product Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Food Product Card */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
-              <div className="relative h-48">
-                <img 
-                  src={emergencyFoodImage}
-                  alt="Emergency Food Kit"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="bg-coral text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Food
-                  </span>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-navy mb-2">Emergency Food Kit</h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Ready-to-eat meals, canned goods, and emergency water supply for disaster preparedness</p>
-                <div className="flex items-center justify-center mb-3">
-                  <div className="flex items-center space-x-2">
-                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
-                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
-                  </div>
-                </div>
-                <Link href="/product-search?q=emergency+food+kit">
-                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
-                    View Products
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Clothes Product Card */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
-              <div className="relative h-48">
-                <img 
-                  src={essentialClothingImage}
-                  alt="Essential Clothing"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="bg-navy text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Clothes
-                  </span>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-navy mb-2">Essential Clothing</h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Basic clothing items including shirts, pants, and undergarments for emergency situations</p>
-                <div className="flex items-center justify-center mb-3">
-                  <div className="flex items-center space-x-2">
-                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
-                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
-                  </div>
-                </div>
-                <Link href="/product-search?q=essential+clothing+basic">
-                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
-                    View Products
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Baby Essentials Product Card */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
-              <div className="relative h-48">
-                <img 
-                  src={babyEssentialsImage}
-                  alt="Baby & Family Essentials"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="bg-warm-orange text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Baby & Kids
-                  </span>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-navy mb-2">Baby & Family Essentials</h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Diapers, formula, baby food, and family necessities for emergency preparedness</p>
-                <div className="flex items-center justify-center mb-3">
-                  <div className="flex items-center space-x-2">
-                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
-                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
-                  </div>
-                </div>
-                <Link href="/product-search?q=baby+diapers+formula">
-                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
-                    View Products
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Crisis Hygiene Product Card */}
-            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
-              <div className="relative h-48">
-                <img 
-                  src={crisisHygieneImage}
-                  alt="Crisis Hygiene Kit"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Crisis Care
-                  </span>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-navy mb-2">Crisis Hygiene Kit</h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Toothbrushes, soap, feminine products, toilet paper, and essential hygiene items for emergencies</p>
-                <div className="flex items-center justify-center mb-3">
-                  <div className="flex items-center space-x-2">
-                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
-                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
-                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
-                  </div>
-                </div>
-                <Link href="/product-search?q=toothbrush+soap+toilet+paper+tampons+hygiene+essentials">
-                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
-                    View Products
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="text-center mt-12">
-            <Button 
-              className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white px-8 py-4 text-lg rounded-full transition-all duration-300"
-              onClick={() => window.location.href = '/browse'}
-            >
-              Explore Other Products
-            </Button>
-          </div>
-        </div>
-      </section>
 
 
       {/* User Journey Map */}
@@ -1136,6 +934,210 @@ export default function Landing() {
                 View All Needs Lists
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Out of the Box Needs - Emergency Products */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-navy mb-4">Out of the Box Needs</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Jumpstart Your Needs List</p>
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="flex flex-col md:flex-row gap-4 mb-12 max-w-4xl mx-auto">
+            <div className="flex-1 relative">
+              <select 
+                id="category-select"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
+              >
+                <option value="">Select Categories</option>
+                <option value="emergency">Emergency Supplies</option>
+                <option value="food">Food & Groceries</option>
+                <option value="baby">Baby & Kids</option>
+                <option value="health">Health & Personal Care</option>
+                <option value="clothing">Clothing</option>
+                <option value="household">Household Items</option>
+              </select>
+            </div>
+            
+            <div className="flex-1 relative">
+              <select 
+                id="price-select"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
+              >
+                <option value="">Price Range</option>
+                <option value="0-25">$0 - $25</option>
+                <option value="25-50">$25 - $50</option>
+                <option value="50-100">$50 - $100</option>
+                <option value="100+">$100+</option>
+              </select>
+            </div>
+            
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg"
+              onClick={() => {
+                const category = (document.getElementById('category-select') as HTMLSelectElement)?.value || 'emergency';
+                const priceRange = (document.getElementById('price-select') as HTMLSelectElement)?.value || '';
+                
+                let searchQuery = `${category}+essentials`;
+                let params = new URLSearchParams();
+                params.set('q', searchQuery);
+                
+                if (priceRange) {
+                  const [min, max] = priceRange.includes('-') ? priceRange.split('-') : ['', priceRange.replace('+', '')];
+                  if (min) params.set('min_price', min);
+                  if (max && max !== '+') params.set('max_price', max);
+                }
+                
+                window.location.href = `/product-search?${params.toString()}`;
+              }}
+            >
+              Search
+            </Button>
+          </div>
+
+          {/* Emergency Product Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Food Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src={emergencyFoodImage}
+                  alt="Emergency Food Kit"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-coral text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Food
+                  </span>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Emergency Food Kit</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Ready-to-eat meals, canned goods, and emergency water supply for disaster preparedness</p>
+                <div className="flex items-center justify-center mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                </div>
+                <Link href="/product-search?q=emergency+food+kit">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Clothes Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src={essentialClothingImage}
+                  alt="Essential Clothing"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-navy text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Clothes
+                  </span>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Essential Clothing</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Basic clothing items including shirts, pants, and undergarments for emergency situations</p>
+                <div className="flex items-center justify-center mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                </div>
+                <Link href="/product-search?q=essential+clothing+basic">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Baby Essentials Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src={babyEssentialsImage}
+                  alt="Baby & Family Essentials"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-warm-orange text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Baby & Kids
+                  </span>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Baby & Family Essentials</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Diapers, formula, baby food, and family necessities for emergency preparedness</p>
+                <div className="flex items-center justify-center mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                </div>
+                <Link href="/product-search?q=baby+diapers+formula">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Crisis Hygiene Product Card */}
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
+              <div className="relative h-48">
+                <img 
+                  src={crisisHygieneImage}
+                  alt="Crisis Hygiene Kit"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Crisis Care
+                  </span>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy mb-2">Crisis Hygiene Kit</h3>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">Toothbrushes, soap, feminine products, toilet paper, and essential hygiene items for emergencies</p>
+                <div className="flex items-center justify-center mb-3">
+                  <div className="flex items-center space-x-2">
+                    <img src={amazonLogo} alt="Amazon" className="w-4 h-4 rounded" />
+                    <img src={targetLogo} alt="Target" className="w-4 h-4 rounded" />
+                    <img src={walmartLogo} alt="Walmart" className="w-4 h-4 rounded" />
+                  </div>
+                </div>
+                <Link href="/product-search?q=toothbrush+soap+toilet+paper+tampons+hygiene+essentials">
+                  <Button className="w-full bg-coral text-white hover:bg-coral/90 text-sm">
+                    View Products
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center mt-12">
+            <Button 
+              className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white px-8 py-4 text-lg rounded-full transition-all duration-300"
+              onClick={() => window.location.href = '/browse'}
+            >
+              Explore Other Products
+            </Button>
           </div>
         </div>
       </section>
