@@ -23,18 +23,30 @@ export default function BrowseWishlists() {
   const urlParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
   const searchQuery = urlParams.get('q') || '';
   
+  // Debug logging
+  console.log('Browse Wishlists - Location:', location);
+  console.log('Browse Wishlists - Search Query:', searchQuery);
+  
   // Build API endpoint based on whether there's a search query
   const apiEndpoint = useMemo(() => {
-    if (searchQuery) {
-      return `/api/wishlists?query=${encodeURIComponent(searchQuery)}`;
-    }
-    return '/api/wishlists';
+    const endpoint = searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists';
+    console.log('Browse Wishlists - API Endpoint:', endpoint);
+    return endpoint;
   }, [searchQuery]);
   
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
-    queryKey: [apiEndpoint],
-    staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
+    queryKey: ['/api/wishlists', searchQuery], // Use separate keys for better cache management
+    queryFn: async () => {
+      const endpoint = searchQuery ? `/api/wishlists?query=${encodeURIComponent(searchQuery)}` : '/api/wishlists';
+      console.log('Fetching from:', endpoint);
+      const response = await fetch(endpoint, { credentials: 'include' });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
+    staleTime: 0, // Always refetch when query key changes
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
@@ -97,11 +109,16 @@ export default function BrowseWishlists() {
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
+                  console.log('Form submitted!');
                   const formData = new FormData(e.target as HTMLFormElement);
                   const query = formData.get('search') as string;
+                  console.log('Search query:', query);
                   if (query.trim()) {
-                    setLocation(`/browse?q=${encodeURIComponent(query)}`);
+                    const newUrl = `/browse?q=${encodeURIComponent(query)}`;
+                    console.log('Setting location to:', newUrl);
+                    setLocation(newUrl);
                   } else {
+                    console.log('Setting location to: /browse');
                     setLocation('/browse');
                   }
                 }} 
