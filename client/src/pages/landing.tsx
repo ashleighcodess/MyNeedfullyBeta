@@ -195,9 +195,9 @@ export default function Landing() {
   useEffect(() => {
     const updatePlaceholder = () => {
       if (window.innerWidth < 768) {
-        setSearchPlaceholder("Search needs lists...");
+        setSearchPlaceholder("Search by name, zip code, or location...");
       } else {
-        setSearchPlaceholder("Search needs lists by keywords, location, or needs...");
+        setSearchPlaceholder("Search by creator name, zip code, location, or situation...");
       }
     };
     

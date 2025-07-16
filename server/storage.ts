@@ -382,14 +382,32 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(wishlists.status, 'active'));
     }
     
+    // Store base query conditions (status, category, etc.) separately from search conditions
+    let searchConditions = [];
+    
     if (params.query) {
-      conditions.push(
-        or(
-          like(wishlists.title, `%${params.query}%`),
-          like(wishlists.description, `%${params.query}%`),
-          like(wishlists.location, `%${params.query}%`)
-        )!
-      );
+      // Enhanced search to include user names, zip codes, and improved location matching
+      const searchTerm = params.query.toLowerCase();
+      
+      // Check if query is a zip code (5 digits, optionally with -XXXX)
+      const zipCodeRegex = /^\d{5}(-\d{4})?$/;
+      const isZipCode = zipCodeRegex.test(searchTerm);
+      
+      searchConditions = [
+        // Search wishlist content
+        like(wishlists.title, `%${params.query}%`),
+        like(wishlists.description, `%${params.query}%`),
+        like(wishlists.story, `%${params.query}%`),
+        // Enhanced location search including zip codes
+        like(wishlists.location, `%${params.query}%`),
+        // If it's a zip code, search specifically for zip patterns
+        ...(isZipCode ? [
+          like(wishlists.location, `%${searchTerm}%`),
+          like(wishlists.location, `%${searchTerm.split('-')[0]}%`) // Search base zip without extension
+        ] : []),
+        // Search beneficiary names if applicable
+        like(wishlists.beneficiaryName, `%${params.query}%`)
+      ];
     }
     
     if (params.category) {
@@ -406,18 +424,95 @@ export class DatabaseStorage implements IStorage {
 
     const whereClause = and(...conditions);
     
-    const [wishlistsResult, totalResult] = await Promise.all([
-      db
+    // If there's a query, we need to join with users to search by names
+    let wishlistsQuery, totalQuery;
+    
+    if (params.query && searchConditions.length > 0) {
+      // Create enhanced search conditions that include user names
+      const userSearchConditions = [
+        // User name searches
+        like(users.firstName, `%${params.query}%`),
+        like(users.lastName, `%${params.query}%`),
+        // Combined first and last name search
+        sql`CONCAT(${users.firstName}, ' ', ${users.lastName}) ILIKE ${`%${params.query}%`}`,
+        sql`CONCAT(${users.lastName}, ' ', ${users.firstName}) ILIKE ${`%${params.query}%`}`
+      ];
+      
+      // Combine wishlist search conditions with user search conditions using OR
+      const allSearchConditions = [
+        ...searchConditions,
+        ...userSearchConditions
+      ];
+      
+      // Add the search condition to base conditions
+      const allConditions = [
+        ...conditions,
+        or(...allSearchConditions)!
+      ];
+      
+      const enhancedWhereClause = and(...allConditions);
+      
+      wishlistsQuery = db
+        .select({
+          id: wishlists.id,
+          userId: wishlists.userId,
+          title: wishlists.title,
+          description: wishlists.description,
+          story: wishlists.story,
+          storyImages: wishlists.storyImages,
+          category: wishlists.category,
+          urgencyLevel: wishlists.urgencyLevel,
+          status: wishlists.status,
+          location: wishlists.location,
+          shippingAddress: wishlists.shippingAddress,
+          isPublic: wishlists.isPublic,
+          isVerified: wishlists.isVerified,
+          totalItems: wishlists.totalItems,
+          fulfilledItems: wishlists.fulfilledItems,
+          viewCount: wishlists.viewCount,
+          shareCount: wishlists.shareCount,
+          featuredUntil: wishlists.featuredUntil,
+          isForSelf: wishlists.isForSelf,
+          beneficiaryName: wishlists.beneficiaryName,
+          relationshipToBeneficiary: wishlists.relationshipToBeneficiary,
+          beneficiaryContext: wishlists.beneficiaryContext,
+          createdAt: wishlists.createdAt,
+          updatedAt: wishlists.updatedAt,
+          // Include user info for display
+          creatorFirstName: users.firstName,
+          creatorLastName: users.lastName
+        })
+        .from(wishlists)
+        .innerJoin(users, eq(wishlists.userId, users.id))
+        .where(enhancedWhereClause)
+        .orderBy(desc(wishlists.createdAt))
+        .limit(params.limit || 20)
+        .offset(params.offset || 0);
+        
+      totalQuery = db
+        .select({ count: count() })
+        .from(wishlists)
+        .innerJoin(users, eq(wishlists.userId, users.id))
+        .where(enhancedWhereClause);
+    } else {
+      // No query search, use original simple query
+      wishlistsQuery = db
         .select()
         .from(wishlists)
         .where(whereClause)
         .orderBy(desc(wishlists.createdAt))
         .limit(params.limit || 20)
-        .offset(params.offset || 0),
-      db
+        .offset(params.offset || 0);
+        
+      totalQuery = db
         .select({ count: count() })
         .from(wishlists)
-        .where(whereClause)
+        .where(whereClause);
+    }
+    
+    const [wishlistsResult, totalResult] = await Promise.all([
+      wishlistsQuery,
+      totalQuery
     ]);
 
     return {
