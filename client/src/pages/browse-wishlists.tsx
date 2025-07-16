@@ -31,16 +31,13 @@ export default function BrowseWishlists() {
     setSearchInput(searchQuery);
   }, [searchQuery]);
 
-  // Create a search function that uses direct window navigation
+  // Create a search function that can be called from multiple places
   const performSearch = (query: string) => {
-    console.log('performSearch called with query:', query);
     if (query.trim()) {
       const newUrl = `/browse?q=${encodeURIComponent(query)}`;
-      console.log('Redirecting to:', newUrl);
-      window.location.href = newUrl;
+      setLocation(newUrl);
     } else {
-      console.log('Empty query, clearing search');
-      window.location.href = '/browse';
+      setLocation('/browse');
     }
   };
   
@@ -132,33 +129,25 @@ export default function BrowseWishlists() {
                   />
                 </div>
                 <div className="flex gap-2 sm:gap-3">
-                  <button 
-                    type="button"
-                    className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base rounded px-4 font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      console.log('DIRECT BUTTON CLICK - searchInput:', searchInput);
-                      const query = searchInput.trim();
-                      if (query) {
-                        console.log('Navigating to search with query:', query);
-                        window.location.href = `/browse?q=${encodeURIComponent(query)}`;
-                      }
-                    }}
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    className="bg-coral text-white hover:bg-coral/90 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
+                    onClick={() => performSearch(searchInput)}
                   >
-                    <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4 inline" />
+                    <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
                     Search
-                  </button>
+                  </Button>
                   {searchQuery && (
-                    <button 
-                      type="button"
-                      className="border border-gray-300 text-gray-600 hover:bg-gray-50 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base rounded px-4 font-medium"
-                      onClick={() => {
-                        console.log('Clear button clicked');
-                        window.location.href = '/browse';
-                      }}
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => performSearch('')}
+                      className="border-gray-300 text-gray-600 hover:bg-gray-50 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
                     >
                       Clear
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
