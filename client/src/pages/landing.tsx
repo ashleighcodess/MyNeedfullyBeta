@@ -426,7 +426,7 @@ export default function Landing() {
       <section className="relative h-[60vh] md:h-[70vh] flex items-start justify-center overflow-hidden pt-8 md:pt-16">
         {/* Community illustration background */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroImagePath})` }}
         />
         
