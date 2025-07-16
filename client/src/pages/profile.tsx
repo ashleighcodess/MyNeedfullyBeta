@@ -201,7 +201,7 @@ export default function Profile() {
 
   const sidebarItems = [
     { id: 'profile', label: 'My Profile', icon: User, active: activeTab === 'profile' },
-    { id: 'lists', label: 'My Lists', icon: List, active: activeTab === 'lists' },
+    { id: 'lists', label: 'My Needs Lists', icon: List, active: activeTab === 'lists' },
     { id: 'purchases', label: 'My Purchases', icon: ShoppingCart, active: activeTab === 'purchases' },
     { id: 'thankyou', label: 'Thank You Notes', icon: MessageCircle, active: activeTab === 'thankyou' },
     { id: 'privacy', label: 'Privacy Settings', icon: Settings, active: activeTab === 'privacy' },
