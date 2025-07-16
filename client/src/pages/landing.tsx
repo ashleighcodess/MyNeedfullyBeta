@@ -439,8 +439,8 @@ export default function Landing() {
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-3xl md:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
-            A Registry For Recovery,
-            <span className="text-coral"> Relief and Hardships</span>
+            A Registry for Hardships,
+            <span className="text-coral"> Relief and Recovery</span>
           </h1>
           
           <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
