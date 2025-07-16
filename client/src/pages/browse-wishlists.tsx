@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,14 +17,11 @@ interface WishlistData {
 
 export default function BrowseWishlists() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  
-  console.log('🔍 BrowseWishlists auth state:', { user: !!user, isAuthenticated, authLoading });
+  const [location, setLocation] = useLocation();
   
   // Get URL parameters to check for search query
   const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
   const searchQuery = urlParams.get('q') || '';
-  
-  console.log('🔍 BrowseWishlists search query:', searchQuery);
   
   // Build API endpoint based on whether there's a search query
   const apiEndpoint = useMemo(() => {
@@ -33,8 +30,6 @@ export default function BrowseWishlists() {
     }
     return '/api/wishlists';
   }, [searchQuery]);
-  
-  console.log('🔍 BrowseWishlists API endpoint:', apiEndpoint);
   
   // Optimized React Query approach with caching
   const { data: wishlistsData, isLoading, error } = useQuery<WishlistData>({
@@ -105,9 +100,9 @@ export default function BrowseWishlists() {
                   const formData = new FormData(e.target as HTMLFormElement);
                   const query = formData.get('search') as string;
                   if (query.trim()) {
-                    window.location.href = `/browse?q=${encodeURIComponent(query)}`;
+                    setLocation(`/browse?q=${encodeURIComponent(query)}`);
                   } else {
-                    window.location.href = '/browse';
+                    setLocation('/browse');
                   }
                 }} 
                 className="flex flex-col sm:flex-row gap-2 sm:gap-3"
@@ -132,7 +127,7 @@ export default function BrowseWishlists() {
                       type="button" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => window.location.href = '/browse'}
+                      onClick={() => setLocation('/browse')}
                       className="border-gray-300 text-gray-600 hover:bg-gray-50 flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
                     >
                       Clear
@@ -214,7 +209,7 @@ export default function BrowseWishlists() {
                 <Button 
                   onClick={() => {
                     if (searchQuery) {
-                      window.location.href = '/browse';
+                      setLocation('/browse');
                     } else {
                       window.location.reload();
                     }
@@ -223,7 +218,6 @@ export default function BrowseWishlists() {
                   className="border-coral text-coral hover:bg-coral/10"
                 >
                   {searchQuery ? 'View All Needs Lists' : 'Refresh'}
-                  Refresh Page
                 </Button>
               </Card>
             ) : (
