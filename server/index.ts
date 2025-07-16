@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { startFileIntegrityMonitoring } from "./file-integrity-check";
 import path from "path";
 
 const app = express();
@@ -57,6 +58,9 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 
 (async () => {
   const server = await registerRoutes(app);
+
+  // CRITICAL: Start file integrity monitoring to prevent data loss
+  startFileIntegrityMonitoring();
 
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

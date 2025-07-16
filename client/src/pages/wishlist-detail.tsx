@@ -40,7 +40,9 @@ import {
   GitMerge,
   Trash2,
   Minus,
-  ShoppingBag
+  ShoppingBag,
+  AlertTriangle,
+  ImageOff
 } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl, generateWishlistStructuredData, generateOgImage } from "@/lib/seo";
 
@@ -64,6 +66,7 @@ export default function WishlistDetail() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [showAllActivity, setShowAllActivity] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [imageErrors, setImageErrors] = useState<{[key: number]: boolean}>({});
 
   // Helper function to format relative time
   const formatRelativeTime = (dateString: string | Date | null | undefined) => {
@@ -580,22 +583,38 @@ export default function WishlistDetail() {
             {/* Featured Image */}
             {getStoryImages().length > 0 && (
               <div className="mb-8">
-                <div 
-                  className="relative h-80 w-full rounded-lg overflow-hidden cursor-pointer group"
-                  onClick={() => openCarousel(0)}
-                >
-                  <img
-                    src={getStoryImages()[0]}
-                    alt={wishlist.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="eager"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                    <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
-                  </div>
-                  {getStoryImages().length > 1 && (
-                    <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full">
-                      +{getStoryImages().length - 1} more photos
+                <div className="relative h-80 w-full rounded-lg overflow-hidden">
+                  {!imageErrors[0] ? (
+                    <div 
+                      className="cursor-pointer group h-full w-full"
+                      onClick={() => openCarousel(0)}
+                    >
+                      <img
+                        src={getStoryImages()[0]}
+                        alt={wishlist.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="eager"
+                        onError={() => setImageErrors(prev => ({...prev, 0: true}))}
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                        <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
+                      </div>
+                      {getStoryImages().length > 1 && (
+                        <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white text-sm px-3 py-1 rounded-full">
+                          +{getStoryImages().length - 1} more photos
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-red-50 border-2 border-red-200 rounded-lg">
+                      <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
+                      <h3 className="text-red-700 text-lg font-semibold mb-2">Story Image Missing</h3>
+                      <p className="text-red-600 text-center px-4 mb-2">
+                        The uploaded story image could not be loaded from the server.
+                      </p>
+                      <p className="text-red-500 text-sm text-center px-4">
+                        File path: {getStoryImages()[0]}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -626,21 +645,38 @@ export default function WishlistDetail() {
                       {getStoryImages().map((imagePath: string, index: number) => (
                         <div 
                           key={index} 
-                          className="relative group cursor-pointer"
-                          onClick={() => openCarousel(index)}
+                          className="relative rounded-lg border border-gray-200 shadow-sm overflow-hidden"
                         >
-                          <img
-                            src={imagePath}
-                            alt={`Story image ${index + 1}`}
-                            className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
-                            loading={index < 3 ? "eager" : "lazy"}
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
-                          </div>
-                          <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                            {index + 1} of {getStoryImages().length}
-                          </div>
+                          {!imageErrors[index] ? (
+                            <div 
+                              className="group cursor-pointer"
+                              onClick={() => openCarousel(index)}
+                            >
+                              <img
+                                src={imagePath}
+                                alt={`Story image ${index + 1}`}
+                                className="w-full h-48 object-cover hover:shadow-md transition-all duration-300 transform hover:scale-105"
+                                loading={index < 3 ? "eager" : "lazy"}
+                                onError={() => setImageErrors(prev => ({...prev, [index]: true}))}
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
+                                <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
+                              </div>
+                              <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                {index + 1} of {getStoryImages().length}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-full h-48 flex flex-col items-center justify-center bg-red-50 border-red-200">
+                              <ImageOff className="h-8 w-8 text-red-500 mb-2" />
+                              <p className="text-red-700 text-sm font-medium text-center px-2">
+                                Image {index + 1} unavailable
+                              </p>
+                              <p className="text-red-600 text-xs text-center px-2 mt-1">
+                                File missing from server
+                              </p>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

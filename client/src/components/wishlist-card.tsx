@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Eye, Heart, Edit, Share2 } from "lucide-react";
+import { MapPin, Clock, Eye, Heart, Edit, Share2, ImageOff, AlertTriangle } from "lucide-react";
 import { ShareModal } from "@/components/share-modal";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
@@ -32,6 +32,7 @@ interface WishlistCardProps {
 
 export default function WishlistCard({ wishlist, showActions = true, isOwner = false }: WishlistCardProps) {
   const [showShareModal, setShowShareModal] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleShare = async () => {
     // Increment share count in the database
@@ -82,16 +83,26 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
       {/* Featured Image */}
       {storyImages && storyImages.length > 0 && (
-        <div className="h-40 sm:h-48 overflow-hidden bg-gray-100">
-          <img 
-            src={storyImages[0]}
-            alt={wishlist.title}
-            className="w-full h-full object-cover"
-            loading="eager"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
-          />
+        <div className="h-40 sm:h-48 overflow-hidden bg-gray-100 relative">
+          {!imageError ? (
+            <img 
+              src={storyImages[0]}
+              alt={wishlist.title}
+              className="w-full h-full object-cover"
+              loading="eager"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-red-50 border-2 border-red-200">
+              <AlertTriangle className="h-8 w-8 text-red-500 mb-2" />
+              <p className="text-red-700 text-sm font-medium text-center px-2">
+                Story image unavailable
+              </p>
+              <p className="text-red-600 text-xs text-center px-2 mt-1">
+                Image file missing from server
+              </p>
+            </div>
+          )}
         </div>
       )}
       

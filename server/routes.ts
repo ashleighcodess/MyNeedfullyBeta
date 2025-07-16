@@ -290,10 +290,48 @@ function getTimeAgo(date: Date | string): string {
 // WebSocket connections map
 const wsConnections = new Map<string, WebSocket>();
 
-// Multer configuration for file uploads
+// CRITICAL DATA PROTECTION: Enhanced file upload system with backup and verification
 const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+const backupDir = path.join(process.cwd(), 'public', 'uploads', 'backup');
+
+// Ensure both directories exist
+[uploadsDir, backupDir].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+    console.log(`📁 Created directory: ${dir}`);
+  }
+});
+
+// Enhanced file verification function
+function verifyFileIntegrity(filePath: string): boolean {
+  try {
+    const stats = fs.statSync(filePath);
+    const isValidSize = stats.size > 0;
+    const isAccessible = fs.accessSync(filePath, fs.constants.R_OK) === undefined;
+    console.log(`🔍 File verification for ${filePath}: size=${stats.size}, accessible=${isAccessible}`);
+    return isValidSize && isAccessible;
+  } catch (error) {
+    console.error(`❌ File verification failed for ${filePath}:`, error);
+    return false;
+  }
+}
+
+// CRITICAL: Create backup copy of uploaded files
+function createFileBackup(originalPath: string, filename: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const backupPath = path.join(backupDir, filename);
+    const readStream = fs.createReadStream(originalPath);
+    const writeStream = fs.createWriteStream(backupPath);
+    
+    readStream.on('error', reject);
+    writeStream.on('error', reject);
+    writeStream.on('finish', () => {
+      console.log(`💾 BACKUP CREATED: ${backupPath}`);
+      resolve();
+    });
+    
+    readStream.pipe(writeStream);
+  });
 }
 
 const upload = multer({
@@ -303,17 +341,21 @@ const upload = multer({
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+      const filename = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname);
+      console.log(`📁 UPLOAD: Generating filename: ${filename}`);
+      cb(null, filename);
     }
   }),
   limits: {
-    fileSize: 25 * 1024 * 1024, // Increased to 25MB limit
+    fileSize: 25 * 1024 * 1024, // 25MB limit
     files: 5, // Maximum 5 files
   },
   fileFilter: (req, file, cb) => {
+    console.log(`🔍 UPLOAD: Filtering file: ${file.originalname}, type: ${file.mimetype}`);
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
+      console.error(`❌ UPLOAD: Rejected non-image file: ${file.originalname}`);
       cb(new Error('Only image files are allowed'));
     }
   }
@@ -1737,15 +1779,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Handle uploaded images
+      // CRITICAL: Handle uploaded images with verification and backup
       const storyImages: string[] = [];
       if (req.files && Array.isArray(req.files)) {
-        req.files.forEach((file: any) => {
-          // Store relative path from public directory
-          storyImages.push(`/uploads/${file.filename}`);
-        });
+        for (const file of req.files) {
+          const filePath = path.join(uploadsDir, file.filename);
+          console.log(`🔍 UPLOAD VERIFICATION: Checking ${filePath}`);
+          
+          // Verify file was uploaded successfully
+          if (verifyFileIntegrity(filePath)) {
+            // Create immediate backup
+            try {
+              await createFileBackup(filePath, file.filename);
+              storyImages.push(`/uploads/${file.filename}`);
+              console.log(`✅ UPLOAD SUCCESS: ${file.filename} verified and backed up`);
+            } catch (backupError) {
+              console.error(`❌ BACKUP FAILED for ${file.filename}:`, backupError);
+              // Still add to array but log the backup failure
+              storyImages.push(`/uploads/${file.filename}`);
+            }
+          } else {
+            console.error(`❌ UPLOAD FAILED: File verification failed for ${file.filename}`);
+            return res.status(500).json({ 
+              message: `Upload failed: File ${file.filename} could not be verified. Please try again.`
+            });
+          }
+        }
       }
-      console.log('📸 Story images:', storyImages);
+      console.log('📸 VERIFIED Story images:', storyImages);
       
       // Add story images to wishlist data
       const wishlistWithImages = {
@@ -1789,6 +1850,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userId: userId
         }
       });
+    }
+  });
+
+  // CRITICAL: File recovery endpoint for missing files
+  app.post('/api/admin/recover-file', isAdmin, async (req: any, res) => {
+    try {
+      const { filename } = req.body;
+      if (!filename) {
+        return res.status(400).json({ message: "Filename required" });
+      }
+
+      const mainPath = path.join(uploadsDir, filename);
+      const backupPath = path.join(backupDir, filename);
+
+      // Check if main file exists
+      if (fs.existsSync(mainPath)) {
+        return res.json({ message: "File already exists in main directory", status: "exists" });
+      }
+
+      // Try to recover from backup
+      if (fs.existsSync(backupPath)) {
+        fs.copyFileSync(backupPath, mainPath);
+        console.log(`🔄 RECOVERED: ${filename} from backup`);
+        return res.json({ message: "File recovered from backup", status: "recovered" });
+      }
+
+      res.status(404).json({ message: "File not found in main or backup directories", status: "not_found" });
+    } catch (error) {
+      console.error("File recovery error:", error);
+      res.status(500).json({ message: "Failed to recover file" });
     }
   });
 
@@ -1838,11 +1929,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('⚠️ Warning: Could not parse existing images, starting with empty array');
       }
       
-      // Add new uploaded images
+      // CRITICAL: Add new uploaded images with verification
       if (req.files && req.files.length > 0) {
-        const newImagePaths = req.files.map((file: any) => `/uploads/${file.filename}`);
-        storyImages.push(...newImagePaths);
-        console.log('📸 New uploaded images:', newImagePaths);
+        for (const file of req.files) {
+          const filePath = path.join(uploadsDir, file.filename);
+          console.log(`🔍 EDIT VERIFICATION: Checking ${filePath}`);
+          
+          if (verifyFileIntegrity(filePath)) {
+            try {
+              await createFileBackup(filePath, file.filename);
+              storyImages.push(`/uploads/${file.filename}`);
+              console.log(`✅ EDIT SUCCESS: ${file.filename} verified and backed up`);
+            } catch (backupError) {
+              console.error(`❌ EDIT BACKUP FAILED for ${file.filename}:`, backupError);
+              storyImages.push(`/uploads/${file.filename}`);
+            }
+          } else {
+            console.error(`❌ EDIT FAILED: File verification failed for ${file.filename}`);
+            return res.status(500).json({ 
+              message: `Upload failed: File ${file.filename} could not be verified. Please try again.`
+            });
+          }
+        }
+        console.log('📸 VERIFIED new uploaded images:', storyImages.slice(-req.files.length));
       }
       
       // Limit to 5 images total
