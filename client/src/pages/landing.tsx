@@ -487,15 +487,15 @@ export default function Landing() {
             </Button>
           </div>
         </div>
+        
+        {/* Seamless gradient transition overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-orange-50/30 to-orange-100/60 pointer-events-none"></div>
       </section>
-
-      {/* Gradient Transition */}
-      <div className="h-24 bg-gradient-to-b from-orange-50/80 via-orange-100/60 to-orange-200/40"></div>
 
       {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
-        className="py-20 relative bg-cover bg-center bg-no-repeat"
+        className="py-20 relative bg-cover bg-center bg-no-repeat -mt-32 pt-32"
         style={{
           backgroundImage: `url(${warmBackgroundImage})`,
           backgroundSize: 'cover',
