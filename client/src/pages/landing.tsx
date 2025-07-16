@@ -446,7 +446,7 @@ export default function Landing() {
             <span className="text-coral"> Relief and Recovery</span>
           </h1>
           
-          <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium pb-[100px]">
+          <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium pb-[180px]">
             Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
           </p>
         </div>
