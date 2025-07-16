@@ -321,12 +321,28 @@ export default function ProductSearch() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Removed complex caching logic for better performance
+  // Get cached products helper function
+  const getCachedProducts = useCallback((query: string) => {
+    // Return cached products for specific queries
+    if (query === "Basic Essentials" || !query) {
+      return { data: popularProducts["Basic Essentials"] || [] };
+    }
+    
+    // Check if we have cached products for this query
+    const lowercaseQuery = query.toLowerCase();
+    for (const [key, products] of Object.entries(popularProducts)) {
+      if (lowercaseQuery.includes(key.toLowerCase())) {
+        return { data: products };
+      }
+    }
+    
+    return null;
+  }, [popularProducts]);
 
-  // Fetch user's wishlists when no wishlistId is provided
+  // Fetch user's wishlists ONLY when actually needed (not on page load)
   const { data: userWishlists } = useQuery({
     queryKey: [`/api/users/${user?.id}/wishlists`],
-    enabled: !wishlistId && !!user?.id, // Only fetch if no specific wishlist is provided and user is authenticated
+    enabled: false, // Disable automatic fetching - will be enabled manually when needed
   });
 
 
@@ -372,20 +388,21 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Simple product display logic
+  // Display products - show cached products immediately, replace with live results when searching
   const displayProducts = useMemo(() => {
-    // If we have search results, show them
+    // Priority 1: If we have search results from live API, use them
     if (searchResults?.data && searchResults.data.length > 0) {
       return searchResults.data;
     }
     
-    // Otherwise show cached Basic Essentials
-    if (!debouncedQuery || debouncedQuery === "Basic Essentials") {
-      return popularProducts["Basic Essentials"] || [];
+    // Priority 2: Show cached products for immediate display
+    const cached = getCachedProducts(debouncedQuery || "Basic Essentials");
+    if (cached?.data && cached.data.length > 0) {
+      return cached.data;
     }
     
     return [];
-  }, [debouncedQuery, searchResults, popularProducts]);
+  }, [debouncedQuery, searchResults, getCachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
