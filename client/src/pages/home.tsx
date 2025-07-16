@@ -27,20 +27,7 @@ export default function Home() {
   const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
   const { isAuthenticated } = useAuth();
 
-  // Debug logging to track any redirect issues
-  useEffect(() => {
-    console.log('🏠 Home component mounted - User authenticated:', isAuthenticated);
-    console.log('🏠 Current location:', location);
-    console.log('🏠 User data:', user ? { id: user.id, email: user.email } : null);
-  }, [isAuthenticated, location, user]);
-
-  // Prevent any potential automatic redirects
-  useEffect(() => {
-    // Ensure we stay on the homepage if we're meant to be here
-    if (location === '/' && isAuthenticated && user) {
-      console.log('🏠 Authenticated user staying on homepage - this is correct behavior');
-    }
-  }, [location, isAuthenticated, user]);
+  // Removed debug logging for better performance
 
   // SEO Configuration
   useSEO({

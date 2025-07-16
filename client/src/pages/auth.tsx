@@ -118,7 +118,7 @@ export default function AuthPage() {
         description: "You've successfully signed in.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      setLocation("/profile");
+      setLocation("/");
     },
     onError: (error: Error) => {
       toast({
@@ -153,7 +153,7 @@ export default function AuthPage() {
         description: "Your account has been created successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      setLocation("/profile");
+      setLocation("/");
     },
     onError: (error: Error) => {
       toast({

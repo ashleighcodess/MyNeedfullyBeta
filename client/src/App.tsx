@@ -97,13 +97,7 @@ function NotificationHandler() {
 function HomeRoute() {
   const { isAuthenticated, user, isLoading } = useAuth();
   
-  // Debug logging to track route behavior
-  useEffect(() => {
-    console.log('🏠 HomeRoute: isAuthenticated =', isAuthenticated);
-    console.log('🏠 HomeRoute: isLoading =', isLoading);
-    console.log('🏠 HomeRoute: user =', user ? { id: user.id, email: user.email } : null);
-    console.log('🏠 HomeRoute: Rendering =', isAuthenticated ? 'Home' : 'Landing');
-  }, [isAuthenticated, isLoading, user]);
+  // Removed debug logging for better performance
 
   // Show loading state while authentication is being determined
   if (isLoading) {
