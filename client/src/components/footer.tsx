@@ -65,7 +65,7 @@ export default function Footer() {
 
           {/* Products */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Features</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Site Directory</h3>
             <ul className="space-y-3">
               {features.map((link, index) => (
                 <li key={index}>
