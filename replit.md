@@ -304,6 +304,13 @@ Changelog:
 
 ## User Preferences
 
+### Development Guidelines
+- **CRITICAL**: When fixing issues, never modify working functionality
+- **Data Integrity**: Never substitute user content with other users' data
+- **Surgical Changes**: Only modify the specific problem components
+- **Preserve Functionality**: All existing working features must remain intact
+- **Test Impact**: Verify changes don't break unrelated functionality
+
 ```
 Preferred communication style: Simple, everyday language.
 ```
