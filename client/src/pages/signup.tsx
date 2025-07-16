@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import handIcon from "@assets/hand.png";
 import handsIcon from "@assets/hands.png";
 import shieldIcon from "@assets/shield.png";
