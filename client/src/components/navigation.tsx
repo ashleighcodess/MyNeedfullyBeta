@@ -59,7 +59,7 @@ export default function Navigation() {
   const navigationItems = [
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
     { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true },
-    { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search" },
+    { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
     { href: "/about-us", label: "About Us", icon: User, dataTip: null },
   ];
 
