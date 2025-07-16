@@ -20,6 +20,9 @@ export default function BrowseWishlists() {
   const [location, setLocation] = useLocation();
   const [searchInput, setSearchInput] = useState('');
   
+  // Debug component mount
+  console.log('BrowseWishlists component mounted. Current location:', location);
+  
   // Get URL parameters to check for search query - reactive to location changes
   const searchQuery = useMemo(() => {
     const urlParams = new URLSearchParams(location.split('?')[1] || '');
@@ -149,9 +152,22 @@ export default function BrowseWishlists() {
                     type="button" 
                     size="sm" 
                     className="bg-coral text-white hover:bg-coral/90 active:bg-coral/80 transition-colors flex-1 sm:flex-none py-2.5 sm:py-3 text-sm sm:text-base"
-                    onClick={() => {
-                      console.log('Search button clicked! Input value:', searchInput);
-                      performSearch(searchInput);
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('=== SEARCH BUTTON CLICKED ===');
+                      console.log('Event target:', e.target);
+                      console.log('Search input value:', searchInput);
+                      console.log('Current location:', location);
+                      
+                      // Test basic functionality first
+                      if (searchInput.trim()) {
+                        console.log('Attempting search for:', searchInput.trim());
+                        performSearch(searchInput.trim());
+                      } else {
+                        console.log('Empty search input - clearing search');
+                        performSearch('');
+                      }
                     }}
                   >
                     <Search className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
