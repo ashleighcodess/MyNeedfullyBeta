@@ -19,8 +19,8 @@ export default function BrowseWishlists() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [location, setLocation] = useLocation();
   
-  // Get URL parameters to check for search query
-  const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
+  // Get URL parameters to check for search query - reactive to location changes
+  const urlParams = useMemo(() => new URLSearchParams(window.location.search), [location]);
   const searchQuery = urlParams.get('q') || '';
   
   // Build API endpoint based on whether there's a search query
