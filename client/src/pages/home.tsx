@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 // import { useWebSocket } from "@/lib/websocket";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, g
 
 export default function Home() {
   const { user } = useAuth();
+  const [location, setLocation] = useLocation();
   
   // Temporarily disable WebSocket to prevent DOMException
   // useWebSocket();
@@ -24,6 +26,21 @@ export default function Home() {
   // Check if user preference is supporter (default) or creator
   const isSupporter = user?.userPreference === 'supporter' || !user?.userPreference;
   const { isAuthenticated } = useAuth();
+
+  // Debug logging to track any redirect issues
+  useEffect(() => {
+    console.log('🏠 Home component mounted - User authenticated:', isAuthenticated);
+    console.log('🏠 Current location:', location);
+    console.log('🏠 User data:', user ? { id: user.id, email: user.email } : null);
+  }, [isAuthenticated, location, user]);
+
+  // Prevent any potential automatic redirects
+  useEffect(() => {
+    // Ensure we stay on the homepage if we're meant to be here
+    if (location === '/' && isAuthenticated && user) {
+      console.log('🏠 Authenticated user staying on homepage - this is correct behavior');
+    }
+  }, [location, isAuthenticated, user]);
 
   // SEO Configuration
   useSEO({

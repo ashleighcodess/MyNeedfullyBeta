@@ -95,7 +95,25 @@ function NotificationHandler() {
 
 // Component for home route logic
 function HomeRoute() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
+  
+  // Debug logging to track route behavior
+  useEffect(() => {
+    console.log('🏠 HomeRoute: isAuthenticated =', isAuthenticated);
+    console.log('🏠 HomeRoute: isLoading =', isLoading);
+    console.log('🏠 HomeRoute: user =', user ? { id: user.id, email: user.email } : null);
+    console.log('🏠 HomeRoute: Rendering =', isAuthenticated ? 'Home' : 'Landing');
+  }, [isAuthenticated, isLoading, user]);
+
+  // Show loading state while authentication is being determined
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+      </div>
+    );
+  }
+
   return isAuthenticated ? <Home /> : <Landing />;
 }
 
