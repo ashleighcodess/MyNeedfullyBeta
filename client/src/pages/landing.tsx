@@ -904,56 +904,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* Need More Than Just Items Section */}
-      <section className="py-20 bg-warm-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left content */}
-            <div className="animate-fade-in-up">
-              <div className="mb-4">
-                <span className="text-coral text-sm font-semibold tracking-wider uppercase">Support Resources</span>
-              </div>
-              
-              <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
-                Need More Than<br />
-                <span className="text-coral">Just Items?</span><br />
-                We're <span className="text-navy font-black">Here to Help.</span>
-              </h2>
-              
-              <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                Life Can Get Tough, And Sometimes We All Need A Little More Support. Whether It's Housing, Food Assistance, Mental Health Resources, Or Emergency Aid — Explore Trusted Organizations Ready To Help You Beyond Material Needs.
-              </p>
-              
-              <Button 
-                className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                onClick={() => window.location.href = '/resources'}
-              >
-                Browse Support Resources
-              </Button>
-            </div>
-            
-            {/* Right image with Wobble Animation */}
-            <div className="flex-1">
-              <div 
-                ref={supportWobbleRef}
-                className={`relative ${
-                  isSupportWobbleVisible 
-                    ? 'animate-wobble-in-right' 
-                    : 'transform translate-x-20 opacity-60'
-                }`}
-              >
-                <img 
-                  src={familyTreeImage}
-                  alt="Family with support tree illustration"
-                  className="w-full h-auto rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-105"
-                />
-                {/* Decorative gradient overlay */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-coral/20 to-transparent rounded-3xl -z-10"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* User Journey Map */}
       <section className="bg-white py-20">
@@ -1362,6 +1313,58 @@ export default function Landing() {
         </div>
       </section>
       )}
+
+      {/* Need More Than Just Items Section */}
+      <section className="py-20 bg-warm-bg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left content */}
+            <div className="animate-fade-in-up">
+              <div className="mb-4">
+                <span className="text-coral text-sm font-semibold tracking-wider uppercase">Support Resources</span>
+              </div>
+              
+              <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
+                Need More Than<br />
+                <span className="text-coral">Just Items?</span><br />
+                We're <span className="text-navy font-black">Here to Help.</span>
+              </h2>
+              
+              <p className="text-gray-600 text-lg mb-8 leading-relaxed">
+                Life Can Get Tough, And Sometimes We All Need A Little More Support. Whether It's Housing, Food Assistance, Mental Health Resources, Or Emergency Aid — Explore Trusted Organizations Ready To Help You Beyond Material Needs.
+              </p>
+              
+              <Button 
+                className="bg-coral text-white hover:bg-coral/90 px-8 py-4 text-lg rounded-full transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                onClick={() => window.location.href = '/resources'}
+              >
+                Browse Support Resources
+              </Button>
+            </div>
+            
+            {/* Right image with Wobble Animation */}
+            <div className="flex-1">
+              <div 
+                ref={supportWobbleRef}
+                className={`relative ${
+                  isSupportWobbleVisible 
+                    ? 'animate-wobble-in-right' 
+                    : 'transform translate-x-20 opacity-60'
+                }`}
+              >
+                <img 
+                  src={familyTreeImage}
+                  alt="Family with support tree illustration"
+                  className="w-full h-auto rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-105"
+                />
+                {/* Decorative gradient overlay */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-coral/20 to-transparent rounded-3xl -z-10"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Call to Action */}
       <section className="py-20 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
