@@ -608,9 +608,12 @@ export default function Landing() {
               </div>
               
               <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
-                Our <span className="text-coral">Dream</span> Is To Transform<br />
-                The Way To <span className="text-navy font-black">Fulfill Needs</span><br />
-                Of <span className="text-navy font-black">People In Need.</span>
+                Our <span className="text-coral">mission</span> is to reshape<br />
+                the <span className="text-navy font-black">donation experience</span>–<br />
+                creating a <span className="text-navy font-black">simpler way</span> for people<br />
+                to ask for what they truly need<br />
+                and for others to <span className="text-coral">give with purpose</span><br />
+                and <span className="text-navy font-black">confidence.</span>
               </h2>
               
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
