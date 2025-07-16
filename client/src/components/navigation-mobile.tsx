@@ -41,7 +41,7 @@ export default function MobileNavigation() {
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
     { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
-    { href: "/about-us", label: "About Us", icon: Users, dataTip: null },
+    { href: "/about-us", label: "About Us", icon: Users, dataTip: null, hideWhenAuthenticated: true },
   ];
 
   const isActiveLink = (href: string) => {
@@ -168,7 +168,7 @@ export default function MobileNavigation() {
                     <div className="pb-4 mb-4 border-b">
                       <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
                     </div>
-                    {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
+                    {navigationItems.filter(item => (!item.requiresAuth || user) && (!item.hideWhenAuthenticated || !user)).map((item) => (
                       <Link key={item.href} href={item.href}>
                         <Button 
                           variant="ghost" 
@@ -203,7 +203,7 @@ export default function MobileNavigation() {
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
-              {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
+              {navigationItems.filter(item => (!item.requiresAuth || user) && (!item.hideWhenAuthenticated || !user)).map((item) => (
                 <Link key={item.href} href={item.href}>
                   <div 
                     {...(item.dataTip && { 'data-tip': item.dataTip })}

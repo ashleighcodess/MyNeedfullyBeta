@@ -61,7 +61,7 @@ export default function Navigation() {
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
     { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
-    { href: "/about-us", label: "About Us", icon: User, dataTip: null },
+    { href: "/about-us", label: "About Us", icon: User, dataTip: null, hideWhenAuthenticated: true },
   ];
 
   const isActiveLink = (href: string) => {
@@ -81,7 +81,7 @@ export default function Navigation() {
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
+            {navigationItems.filter(item => (!item.requiresAuth || user) && (!item.hideWhenAuthenticated || !user)).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}
