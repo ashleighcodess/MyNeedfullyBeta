@@ -421,7 +421,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-
       {/* Hero Section */}
       <section className="relative min-h-[80vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-0">
         {/* Community illustration background */}
@@ -454,7 +453,6 @@ export default function Landing() {
         {/* Seamless gradient transition overlay */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-orange-50/30 to-orange-100/60 pointer-events-none"></div>
       </section>
-
       {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
@@ -596,7 +594,6 @@ export default function Landing() {
 
         </div>
       </section>
-
       {/* About Us Section */}
       <section ref={aboutRef} className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -607,7 +604,7 @@ export default function Landing() {
                 <span className="text-coral text-sm font-semibold tracking-wider uppercase">About Us</span>
               </div>
               
-              <h2 className="text-4xl md:text-5xl font-bold text-navy mb-6 leading-tight">
+              <h2 className="md:text-5xl font-bold text-navy mb-6 text-[32px]">
                 Our <span className="text-coral">mission</span> is to reshape<br />
                 the <span className="text-navy font-black">donation experience</span>–<br />
                 creating a <span className="text-navy font-black">simpler way</span> for people<br />
@@ -703,7 +700,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Out of the Box Needs - Emergency Products */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -907,7 +903,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Need More Than Just Items Section */}
       <section className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -958,7 +953,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Featured Wishlists */}
       <section id="browse" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1068,7 +1062,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* User Journey Map */}
       <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1365,11 +1358,6 @@ export default function Landing() {
         </div>
       </section>
       )}
-
-
-
-
-
       {/* Call to Action */}
       <section className="py-20 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -1395,8 +1383,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
