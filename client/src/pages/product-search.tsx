@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 import { PRODUCT_CATEGORIES } from "@/lib/constants";
 import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
@@ -150,6 +151,10 @@ export default function ProductSearch() {
     }
   }, [initialQuery, initialCategory, initialMinPrice, initialMaxPrice]);
 
+  // State for needs list selection modal
+  const [showNeedsListModal, setShowNeedsListModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
   // Handle adding to needs list with authentication check
   const handleAddToNeedsList = (product: any) => {
     if (!isAuthenticated) {
@@ -157,8 +162,16 @@ export default function ProductSearch() {
       navigate('/signup');
       return;
     }
-    // If authenticated, proceed with adding to wishlist
-    addToWishlistMutation.mutate(product);
+    
+    // If user has multiple needs lists, show selection modal
+    if (userWishlists && Array.isArray(userWishlists) && userWishlists.length > 1) {
+      setSelectedProduct(product);
+      setShowNeedsListModal(true);
+      return;
+    }
+    
+    // If authenticated and has one or zero needs lists, proceed directly
+    addToWishlistMutation.mutate({ product });
   };
 
   // Cached products - real product search will provide actual images from APIs
@@ -464,19 +477,19 @@ export default function ProductSearch() {
 
   // Mutation for adding products to wishlist
   const addToWishlistMutation = useMutation({
-    mutationFn: async (product: any) => {
+    mutationFn: async ({ product, targetWishlistId }: { product: any; targetWishlistId?: string }) => {
       const productId = product.asin || product.product_id || product.id;
       setAddingProductId(productId);
       
 
       
-      // If no wishlistId provided, use the first available wishlist
-      let targetWishlistId = wishlistId;
-      if (!targetWishlistId && userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
-        targetWishlistId = userWishlists[0].id.toString();
+      // Use provided targetWishlistId, or fall back to URL wishlistId, or first available wishlist
+      let finalWishlistId = targetWishlistId || wishlistId;
+      if (!finalWishlistId && userWishlists && Array.isArray(userWishlists) && userWishlists.length > 0) {
+        finalWishlistId = userWishlists[0].id.toString();
       }
       
-      if (!targetWishlistId) {
+      if (!finalWishlistId) {
         throw new Error("No needs list available. Please create a needs list first.");
       }
       
@@ -502,7 +515,7 @@ export default function ProductSearch() {
         priority: 3, // medium priority
       };
       
-      return await apiRequest("POST", `/api/wishlists/${targetWishlistId}/items`, itemData);
+      return await apiRequest("POST", `/api/wishlists/${finalWishlistId}/items`, itemData);
     },
     onSuccess: () => {
       setAddingProductId(null);
@@ -515,6 +528,9 @@ export default function ProductSearch() {
       if (targetWishlistId) {
         queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });
       }
+      // Close modal if it was open
+      setShowNeedsListModal(false);
+      setSelectedProduct(null);
       queryClient.invalidateQueries({ queryKey: ['/api/user/wishlists'] });
     },
     onError: (error) => {
@@ -977,6 +993,54 @@ export default function ProductSearch() {
         )}
       </div>
 
+      {/* Needs List Selection Modal */}
+      <Dialog open={showNeedsListModal} onOpenChange={setShowNeedsListModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Choose Needs List</DialogTitle>
+            <DialogDescription>
+              You have multiple needs lists. Which one would you like to add this item to?
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3">
+            {userWishlists && Array.isArray(userWishlists) && userWishlists.map((needsList: any) => (
+              <Button
+                key={needsList.id}
+                onClick={() => {
+                  addToWishlistMutation.mutate({ 
+                    product: selectedProduct, 
+                    targetWishlistId: needsList.id.toString() 
+                  });
+                }}
+                variant="outline"
+                className="w-full justify-start text-left h-auto p-4"
+                disabled={addingProductId === (selectedProduct?.asin || selectedProduct?.product_id)}
+              >
+                <div>
+                  <div className="font-semibold">{needsList.title}</div>
+                  <div className="text-sm text-gray-500 mt-1">{needsList.description}</div>
+                  <div className="text-xs text-coral mt-1">
+                    {needsList.items?.length || 0} items
+                  </div>
+                </div>
+              </Button>
+            ))}
+          </div>
+          
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowNeedsListModal(false);
+                setSelectedProduct(null);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );
