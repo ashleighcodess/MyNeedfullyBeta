@@ -180,6 +180,21 @@ export class SerpAPIService {
             console.log(`📸 Target image URL: ${imageUrl} | Price extracted: ${extractedPrice}`);
             console.log(`🔗 Target product link: ${resultLink}`);
             console.log(`🔍 Target snippet: ${snippet.substring(0, 100)}...`);
+            console.log(`🏪 MERCHANT LINK CHECK - merchant_link exists: ${!!result.merchant_link}`);
+            if (result.merchant_link) {
+              console.log(`🏪 MERCHANT LINK VALUE: ${result.merchant_link}`);
+            }
+            console.log(`🔍 COMPLETE TARGET RESULT STRUCTURE:`, JSON.stringify(result, null, 2));
+            // Check for other potential direct link fields
+            console.log(`🔗 LINK FIELD ANALYSIS:`);
+            console.log(`   - product_link: ${result.product_link}`);
+            console.log(`   - merchant_link: ${result.merchant_link || 'NOT FOUND'}`);
+            console.log(`   - link: ${result.link || 'NOT FOUND'}`);
+            console.log(`   - url: ${result.url || 'NOT FOUND'}`);
+            console.log(`   - direct_link: ${result.direct_link || 'NOT FOUND'}`);
+            console.log(`   - merchant_url: ${result.merchant_url || 'NOT FOUND'}`);
+            console.log(`   - target_url: ${result.target_url || 'NOT FOUND'}`);
+            console.log(`   - source_url: ${result.source_url || 'NOT FOUND'}`);
           }
 
           return {
