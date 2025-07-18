@@ -357,6 +357,12 @@ export default function ProductSearch() {
   const { data: userWishlists } = useQuery<WishlistWithItemCount[]>({
     queryKey: ['/api/user/wishlists'],
     enabled: !!isAuthenticated, // Only fetch when user is authenticated
+    onSuccess: (data) => {
+      console.log('🔍 DEBUG: Frontend received wishlists data:', data);
+      data?.forEach((list, index) => {
+        console.log(`🔍 List ${index}: id=${list.id}, title="${list.title}", itemCount=${list.itemCount}`);
+      });
+    }
   });
 
 
