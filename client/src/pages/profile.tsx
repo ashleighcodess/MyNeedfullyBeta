@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import WishlistCard from "@/components/wishlist-card";
+import PurchaseSelectionModal from "@/components/purchase-selection-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +45,7 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState('profile');
   const [notesFilter, setNotesFilter] = useState('all'); // 'all', 'sent', 'received'
   const [userKey, setUserKey] = useState(0); // Force re-render key
+  const [showCreateNoteModal, setShowCreateNoteModal] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -781,6 +783,17 @@ export default function Profile() {
                 <div className="text-center">
                   <h2 className="text-2xl sm:text-3xl font-bold text-navy mb-2">Thank You Notes</h2>
                   <p className="text-gray-600 text-sm sm:text-base">Messages of gratitude shared within our community</p>
+                  
+                  {/* Create Thank You Note Button */}
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => setShowCreateNoteModal(true)}
+                      className="bg-coral hover:bg-coral/90 text-white"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Thank You Note
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Filter Tabs */}
@@ -1441,6 +1454,12 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      
+      {/* Purchase Selection Modal for Creating Thank You Notes */}
+      <PurchaseSelectionModal 
+        isOpen={showCreateNoteModal}
+        onClose={() => setShowCreateNoteModal(false)}
+      />
     </div>
   );
 }
