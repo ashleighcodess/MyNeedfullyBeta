@@ -109,6 +109,7 @@ class RainforestAPIService {
         ...(options.category_id && { category_id: options.category_id }),
         ...(options.min_price && { min_price: options.min_price.toString() }),
         ...(options.max_price && { max_price: options.max_price.toString() }),
+        ...(options.max_results && { max_page: Math.ceil(options.max_results / 16).toString() }), // RainforestAPI uses max_page
       });
 
       const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
@@ -119,8 +120,10 @@ class RainforestAPIService {
       
       const data = await response.json();
       const results = data.search_results || [];
-      this.setCache(cacheKey, results);
-      return results;
+      // Apply max_results limit if specified
+      const limitedResults = options.max_results ? results.slice(0, options.max_results) : results;
+      this.setCache(cacheKey, limitedResults);
+      return limitedResults;
     } catch (error) {
       console.error('RainforestAPI error:', error);
       return [];
@@ -3190,95 +3193,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rainforestService = getRainforestAPIService();
       const serpService = getSerpAPIService();
 
-      // Amazon search promise
+      // Amazon search promise with timeout
       if (rainforestService) {
-        const amazonPromise = (async () => {
-          try {
-            // Use title search for better accuracy instead of ASIN lookup
-            console.log(`💰 RainforestAPI: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
-            const titleProducts = await rainforestService.searchProducts(optimizedQuery);
-            if (titleProducts && titleProducts.length > 0) {
-              const product = titleProducts[0];
-              if (product.link && isAmazonUrl(product.link)) {
-                return {
-                  available: true,
-                  price: product.price?.value || item.price,
-                  link: product.link,
-                  image: product.image || item.imageUrl || null
-                };
+        const amazonPromise = Promise.race([
+          (async () => {
+            try {
+              // Use title search for better accuracy instead of ASIN lookup
+              console.log(`💰 RainforestAPI: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
+              const titleProducts = await rainforestService.searchProducts(optimizedQuery, { max_results: 5 }); // Reduced from default
+              if (titleProducts && titleProducts.length > 0) {
+                const product = titleProducts[0];
+                if (product.link && isAmazonUrl(product.link)) {
+                  return {
+                    available: true,
+                    price: product.price?.value || item.price,
+                    link: product.link,
+                    image: product.image || item.imageUrl || null
+                  };
+                }
               }
+            } catch (error) {
+              console.log('RainforestAPI pricing error:', error);
             }
-          } catch (error) {
-            console.log('RainforestAPI pricing error:', error);
-          }
+            return pricing.amazon;
+          })(),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Amazon search timeout')), 4000)
+          )
+        ]).catch(error => {
+          console.log('Amazon pricing timeout or error:', error.message);
           return pricing.amazon;
-        })();
+        });
         searchPromises.push({ type: 'amazon', promise: amazonPromise });
       }
 
-      // Walmart search promise
+      // Walmart search promise with timeout
       if (serpService) {
-        const walmartPromise = (async () => {
-          try {
-            const walmartResults = await serpService.searchWalmart(optimizedQuery, '60602', 1);
-            if (walmartResults && walmartResults.length > 0) {
-              const walmartProduct = walmartResults[0];
-              const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
-                ? walmartProduct.product_url 
-                : null;
-              if (walmartLink) {
-                return {
-                  available: true,
-                  price: walmartProduct.price || item.price,
-                  link: walmartLink,
-                  image: walmartProduct.thumbnail || item.imageUrl || null
-                };
+        const walmartPromise = Promise.race([
+          (async () => {
+            try {
+              const walmartResults = await serpService.searchWalmart(optimizedQuery, '60602', 1); // Already using limit 1
+              if (walmartResults && walmartResults.length > 0) {
+                const walmartProduct = walmartResults[0];
+                const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
+                  ? walmartProduct.product_url 
+                  : null;
+                if (walmartLink) {
+                  return {
+                    available: true,
+                    price: walmartProduct.price || item.price,
+                    link: walmartLink,
+                    image: walmartProduct.thumbnail || item.imageUrl || null
+                  };
+                }
               }
+            } catch (error) {
+              console.log('Walmart pricing error:', error);
             }
-          } catch (error) {
-            console.log('Walmart pricing error:', error);
-          }
+            return pricing.walmart;
+          })(),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Walmart search timeout')), 4000)
+          )
+        ]).catch(error => {
+          console.log('Walmart pricing timeout or error:', error.message);
           return pricing.walmart;
-        })();
+        });
         searchPromises.push({ type: 'walmart', promise: walmartPromise });
 
-        // Target search promise
-        const targetPromise = (async () => {
-          try {
-            console.log(`🎯 SerpAPI Target: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
-            const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1);
-            if (targetResults && targetResults.length > 0) {
-              const targetProduct = targetResults[0];
-              // Target search returns Google Shopping URLs, not direct target.com links
-              // But the search is specifically for Target products, so accept any valid URL
-              const targetLink = targetProduct.product_url || null;
-              if (targetLink && targetProduct.price) {
-                return {
-                  available: true,
-                  price: targetProduct.price,
-                  link: targetLink,
-                  image: targetProduct.image_url || targetProduct.thumbnail || item.imageUrl || null
-                };
+        // Target search promise with timeout
+        const targetPromise = Promise.race([
+          (async () => {
+            try {
+              console.log(`🎯 SerpAPI Target: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
+              const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1); // Already using limit 1
+              if (targetResults && targetResults.length > 0) {
+                const targetProduct = targetResults[0];
+                // Target search returns Google Shopping URLs, not direct target.com links
+                // But the search is specifically for Target products, so accept any valid URL
+                const targetLink = targetProduct.product_url || null;
+                if (targetLink && targetProduct.price) {
+                  return {
+                    available: true,
+                    price: targetProduct.price,
+                    link: targetLink,
+                    image: targetProduct.image_url || targetProduct.thumbnail || item.imageUrl || null
+                  };
+                }
               }
+            } catch (error) {
+              console.log('Target pricing error:', error);
             }
-          } catch (error) {
-            console.log('Target pricing error:', error);
-          }
+            return pricing.target;
+          })(),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Target search timeout')), 4000)
+          )
+        ]).catch(error => {
+          console.log('Target pricing timeout or error:', error.message);
           return pricing.target;
-        })();
+        });
         searchPromises.push({ type: 'target', promise: targetPromise });
       }
 
-      // Wait for ALL API calls to complete in parallel (much faster!)
-      const results = await Promise.allSettled(searchPromises.map(p => p.promise));
-      
-      // Process results
-      searchPromises.forEach((search, index) => {
-        const result = results[index];
-        if (result.status === 'fulfilled') {
-          pricing[search.type] = result.value;
-        }
-      });
+      // Wait for ALL API calls to complete in parallel with overall timeout
+      const overallTimeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Overall pricing timeout')), 8000) // 8 second max for all retailers
+      );
+
+      try {
+        await Promise.race([
+          Promise.allSettled(searchPromises.map(p => p.promise)).then(results => {
+            // Process results
+            searchPromises.forEach((search, index) => {
+              const result = results[index];
+              if (result.status === 'fulfilled') {
+                pricing[search.type] = result.value;
+              }
+            });
+          }),
+          overallTimeout
+        ]);
+      } catch (error) {
+        console.log('Overall pricing timeout reached, returning partial results');
+      }
 
       console.log(`💲 Pricing results: Amazon=${pricing.amazon.available}, Walmart=${pricing.walmart.available}, Target=${pricing.target.available}`);
       res.json({ pricing });
