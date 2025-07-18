@@ -3253,7 +3253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                       
                       pricing.amazon = {
                         available: true,
-                        price: bestProduct.price?.value || item.price,
+                        price: bestProduct.price?.value ? `$${bestProduct.price.value}` : item.price,
                         link: bestProduct.link,
                         image: bestProduct.image || item.imageUrl || null
                       };
@@ -3389,7 +3389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               
               pricing.amazon = {
                 available: true,
-                price: bestProduct.price?.value || item.price,
+                price: bestProduct.price?.value ? `$${bestProduct.price.value}` : item.price,
                 link: bestProduct.link,
                 image: bestProduct.image || item.imageUrl || null
               };

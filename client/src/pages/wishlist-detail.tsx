@@ -237,9 +237,11 @@ export default function WishlistDetail() {
             console.log(`💰 Amazon pricing loaded for ${Object.keys(amazonPricingData).length} items`);
             
             // Update pricing with Amazon data
+            console.log('💰 Amazon data received:', amazonPricingData);
             setItemPricing(prevPricing => {
               const updated = { ...prevPricing };
               Object.entries(amazonPricingData).forEach(([itemId, data]: [string, any]) => {
+                console.log(`💰 Merging Amazon data for item ${itemId}:`, data);
                 updated[itemId] = {
                   ...updated[itemId],
                   pricing: {
@@ -248,6 +250,7 @@ export default function WishlistDetail() {
                   }
                 };
               });
+              console.log('💰 Final updated pricing:', updated);
               return updated;
             });
           }
