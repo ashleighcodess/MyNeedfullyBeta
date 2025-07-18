@@ -117,7 +117,7 @@ export default function QuickActions() {
       id: 'send_thanks',
       title: "Send Thank You",
       description: "Express gratitude to your supporters",
-      action: () => window.location.href = '/profile#thankyou',
+      href: '/profile#thankyou',
       icon: MessageCircle,
       color: 'text-indigo-500',
       bgColor: 'bg-indigo-50',

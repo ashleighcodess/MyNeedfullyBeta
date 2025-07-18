@@ -84,6 +84,8 @@ export default function Profile() {
     const hash = window.location.hash;
     if (hash === '#my-lists') {
       setActiveTab('lists');
+    } else if (hash === '#thankyou') {
+      setActiveTab('thankyou');
     }
     
     // Listen for hash changes
@@ -91,6 +93,8 @@ export default function Profile() {
       const newHash = window.location.hash;
       if (newHash === '#my-lists') {
         setActiveTab('lists');
+      } else if (newHash === '#thankyou') {
+        setActiveTab('thankyou');
       }
     };
     
