@@ -400,18 +400,19 @@ export class DatabaseStorage implements IStorage {
         like(wishlists.story, `%${params.query}%`),
         // Enhanced location search including zip codes
         like(wishlists.location, `%${params.query}%`),
-        // Search in shipping address JSON for zip codes, cities, and states
-        sql`${wishlists.shippingAddress}::text ILIKE ${`%${params.query}%`}`,
-        // If it's a zip code, search specifically for zip patterns in both location and shipping address
-        ...(isZipCode ? [
-          like(wishlists.location, `%${searchTerm}%`),
-          like(wishlists.location, `%${searchTerm.split('-')[0]}%`), // Search base zip without extension
-          sql`${wishlists.shippingAddress}->>'zipCode' ILIKE ${`%${searchTerm}%`}`,
-          sql`${wishlists.shippingAddress}->>'zipCode' ILIKE ${`%${searchTerm.split('-')[0]}%`}` // Search base zip without extension
-        ] : []),
         // Search beneficiary names if applicable
-        like(wishlists.beneficiaryName, `%${params.query}%`)
+        like(wishlists.beneficiaryName, `%${params.query}%`),
+        // Search in shipping address JSON for cities, states, and zip codes
+        sql`${wishlists.shippingAddress}::text ILIKE ${`%${params.query}%`}`
       ];
+      
+      // Add specific zip code searches if it's a zip code
+      if (isZipCode) {
+        searchConditions.push(
+          sql`${wishlists.shippingAddress}->>'zipCode' ILIKE ${`%${searchTerm}%`}`,
+          sql`${wishlists.shippingAddress}->>'zipCode' ILIKE ${`%${searchTerm.split('-')[0]}%`}`
+        );
+      }
     }
     
     if (params.category) {
