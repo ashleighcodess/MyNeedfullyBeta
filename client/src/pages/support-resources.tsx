@@ -301,13 +301,13 @@ export default function SupportResources() {
                 </Link>
                 {isAuthenticated ? (
                   <Link href="/create">
-                    <Button variant="outline" className="border-white text-white hover:bg-white hover:text-coral">
+                    <Button variant="outline" className="border-white text-black bg-white hover:bg-gray-100 hover:text-coral">
                       Create Your List
                     </Button>
                   </Link>
                 ) : (
                   <Link href="/auth/signup">
-                    <Button variant="outline" className="border-white text-white hover:bg-white hover:text-coral">
+                    <Button variant="outline" className="border-white text-black bg-white hover:bg-gray-100 hover:text-coral">
                       Get Started
                     </Button>
                   </Link>
