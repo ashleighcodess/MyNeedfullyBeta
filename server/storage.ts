@@ -386,19 +386,38 @@ export class DatabaseStorage implements IStorage {
     let searchConditions = [];
     
     if (params.query) {
-      // Enhanced search to include user names, zip codes, and improved location matching
+      // Enhanced search to include user names, zip codes, states, and improved location matching
       const searchTerm = params.query.toLowerCase();
       
       // Check if query is a zip code (5 digits, optionally with -XXXX)
       const zipCodeRegex = /^\d{5}(-\d{4})?$/;
       const isZipCode = zipCodeRegex.test(searchTerm);
       
+      // State mapping for enhanced state search
+      const stateMap = {
+        'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
+        'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
+        'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
+        'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+        'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
+        'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+        'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
+        'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+        'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
+        'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
+      };
+      
+      // Check if query is a state (full name or abbreviation)
+      const isFullStateName = stateMap[searchTerm] !== undefined;
+      const stateAbbreviation = stateMap[searchTerm];
+      const isStateAbbr = Object.values(stateMap).includes(searchTerm.toUpperCase());
+      
       searchConditions = [
         // Search wishlist content
         like(wishlists.title, `%${params.query}%`),
         like(wishlists.description, `%${params.query}%`),
         like(wishlists.story, `%${params.query}%`),
-        // Enhanced location search including zip codes
+        // Enhanced location search including states
         like(wishlists.location, `%${params.query}%`),
         // Search beneficiary names if applicable
         like(wishlists.beneficiaryName, `%${params.query}%`),
@@ -411,6 +430,24 @@ export class DatabaseStorage implements IStorage {
         searchConditions.push(
           sql`${wishlists.shippingAddress}->>'zipCode' ILIKE ${`%${searchTerm}%`}`,
           sql`${wishlists.shippingAddress}->>'zipCode' ILIKE ${`%${searchTerm.split('-')[0]}%`}`
+        );
+      }
+      
+      // Add enhanced state searches if it's a state name or abbreviation
+      if (isFullStateName) {
+        // Search for both full state name and abbreviation when user searches full name
+        searchConditions.push(
+          // Search for state abbreviation in shipping address
+          sql`${wishlists.shippingAddress}->>'state' ILIKE ${`%${stateAbbreviation}%`}`,
+          // Search for state abbreviation in location field (like "Austin, TX")
+          like(wishlists.location, `%${stateAbbreviation}%`)
+        );
+      } else if (isStateAbbr) {
+        // Search for state abbreviation in shipping address when user searches abbreviation
+        searchConditions.push(
+          sql`${wishlists.shippingAddress}->>'state' ILIKE ${`%${searchTerm.toUpperCase()}%`}`,
+          // Also search in location field for the abbreviation
+          like(wishlists.location, `%${searchTerm.toUpperCase()}%`)
         );
       }
     }
