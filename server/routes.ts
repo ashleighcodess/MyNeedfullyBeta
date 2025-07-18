@@ -2065,7 +2065,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const currentUserId = req.user.profile?.id || req.user.claims?.sub;
       const wishlists = await storage.getUserWishlists(currentUserId);
-      console.log('🔍 DEBUG: Backend returning wishlists for user', currentUserId, ':', wishlists);
       
       // Parse PostgreSQL array format to JavaScript array for story images
       const parsedWishlists = wishlists.map((wishlist: any) => {

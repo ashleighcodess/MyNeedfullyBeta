@@ -357,12 +357,6 @@ export default function ProductSearch() {
   const { data: userWishlists } = useQuery<WishlistWithItemCount[]>({
     queryKey: ['/api/user/wishlists'],
     enabled: !!isAuthenticated, // Only fetch when user is authenticated
-    onSuccess: (data) => {
-      console.log('🔍 DEBUG: Frontend received wishlists data:', data);
-      data?.forEach((list, index) => {
-        console.log(`🔍 List ${index}: id=${list.id}, title="${list.title}", itemCount=${list.itemCount}`);
-      });
-    }
   });
 
 
@@ -1038,12 +1032,6 @@ export default function ProductSearch() {
                       {needsList.description}
                     </div>
                     <div className="flex items-center space-x-3 mt-2">
-                      <div className="flex items-center space-x-1">
-                        <Package className="h-3 w-3 text-coral" />
-                        <span className="text-xs text-coral font-medium">
-                          {needsList.itemCount || 0} items
-                        </span>
-                      </div>
                       {needsList.urgency && (
                         <Badge variant="outline" className="text-xs border-coral text-coral px-1 py-0">
                           {needsList.urgency}
