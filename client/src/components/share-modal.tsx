@@ -16,6 +16,7 @@ import {
   Mail,
   Copy,
   Share2,
+  Instagram,
 } from "lucide-react";
 
 interface ShareModalProps {
@@ -70,6 +71,12 @@ export function ShareModal({
       url: `https://wa.me/?text=${encodedShareText}`,
     },
     {
+      name: "Instagram",
+      icon: Instagram,
+      color: "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600",
+      url: "instagram",
+    },
+    {
       name: "Email",
       icon: Mail,
       color: "bg-gray-600 hover:bg-gray-700",
@@ -77,13 +84,31 @@ export function ShareModal({
     },
   ];
 
-  const handleSocialShare = (platform: typeof socialPlatforms[0]) => {
+  const handleSocialShare = async (platform: typeof socialPlatforms[0]) => {
     // Call the onShare callback to increment share count
     if (onShare) {
       onShare();
     }
 
-    // Open the sharing URL
+    // Handle Instagram specially
+    if (platform.name === "Instagram") {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        window.open('https://www.instagram.com/', '_blank');
+        toast({
+          title: "Content Copied!",
+          description: "Opening Instagram - paste your content to share this needs list.",
+        });
+      } catch (error) {
+        toast({
+          title: "Instagram Sharing",
+          description: "Copy the link below and share it on Instagram.",
+        });
+      }
+      return;
+    }
+
+    // Open the sharing URL for other platforms
     window.open(platform.url, '_blank', 'width=600,height=400');
     
     toast({
