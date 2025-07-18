@@ -98,29 +98,7 @@ function NotificationHandler() {
 function HomeRoute() {
   // Always show the public landing page regardless of authentication status
   // This allows logged-in users to view the main marketing page when clicking logo
-  console.log("HomeRoute rendering...");
-  
-  // Temporary fallback to diagnose the issue
-  return (
-    <div className="min-h-screen bg-warm-bg flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
-        <p className="text-gray-600">Welcome to MyNeedfully - Connecting Communities in Need</p>
-        <div className="mt-4 space-y-2">
-          <Link href="/browse">
-            <Button className="bg-coral hover:bg-coral/90 text-white">
-              Browse Needs Lists
-            </Button>
-          </Link>
-          <Link href="/about-us">
-            <Button variant="outline" className="border-coral text-coral hover:bg-coral hover:text-white">
-              Learn More
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <Landing />;
 }
 
 // Component for dashboard route logic - show user dashboard for authenticated users
