@@ -190,16 +190,44 @@ export default function WishlistDetail() {
     enabled: !!id,
   });
 
-  // Fetch pricing data for each item when wishlist loads
+  // Fetch batch pricing data for ALL items at once - SUPER FAST!
   useEffect(() => {
-    if (wishlist?.items && Array.isArray(wishlist.items)) {
-      wishlist.items.forEach((item: any) => {
-        if (item.id && !itemPricing[item.id]) {
-          fetchItemPricing(item.id);
+    if (wishlist?.items && Array.isArray(wishlist.items) && wishlist.items.length > 0 && id) {
+      const fetchBatchPricing = async () => {
+        try {
+          console.log(`💰 Starting batch pricing for ${wishlist.items.length} items`);
+          console.log(`💰 Testing endpoint: /api/wishlist/${id}/pricing`);
+          console.log(`💰 Fetching batch pricing for wishlist ${id}`);
+          console.log(`💰 Request URL: /api/wishlist/${id}/pricing`);
+          
+          const response = await fetch(`/api/wishlist/${id}/pricing`);
+          console.log(`💰 Response status: ${response.status} ${response.statusText}`);
+          console.log(`💰 Response headers:`, Object.fromEntries(response.headers.entries()));
+          
+          if (response.ok) {
+            const batchPricingData = await response.json();
+            console.log(`💰 Batch pricing loaded for ${Object.keys(batchPricingData).length} items`);
+            console.log(`💰 Sample data:`, Object.keys(batchPricingData).slice(0, 2));
+            
+            // Update all pricing at once
+            setItemPricing(batchPricingData);
+          } else {
+            console.error('Error fetching batch pricing:', response);
+          }
+        } catch (error) {
+          console.error('Error fetching batch pricing:', error);
+          // Fallback to individual pricing if batch fails
+          wishlist.items.forEach((item: any) => {
+            if (item.id && !itemPricing[item.id]) {
+              fetchItemPricing(item.id);
+            }
+          });
         }
-      });
+      };
+      
+      fetchBatchPricing();
     }
-  }, [wishlist?.items]);
+  }, [wishlist?.items, id]);
 
   // SEO Configuration - Dynamic based on wishlist data
   useSEO({
