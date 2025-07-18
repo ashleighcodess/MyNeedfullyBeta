@@ -410,20 +410,6 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Call to Action */}
-        <Card className="mb-8 bg-gradient-to-r from-coral/10 to-coral/20">
-          <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-navy mb-4">
-              Ready To Create A Needs List For Yourself Or Someone In Need?
-            </h2>
-            <Link href="/create">
-              <Button size="lg" className="bg-coral hover:bg-coral/90">
-                Get Started Now
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-
         {/* Mission Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
           <div>
@@ -450,6 +436,20 @@ export default function AboutUs() {
             </div>
           </div>
         </div>
+
+        {/* Call to Action */}
+        <Card className="mb-8 bg-gradient-to-r from-coral/10 to-coral/20">
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-bold text-navy mb-4">
+              Ready To Create A Needs List For Yourself Or Someone In Need?
+            </h2>
+            <Link href="/create">
+              <Button size="lg" className="bg-coral hover:bg-coral/90">
+                Get Started Now
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
 
 
       </div>
