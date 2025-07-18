@@ -42,6 +42,7 @@ const Clothing = lazy(() => import("@/pages/clothing").catch(() => ({ default: (
 const CommunityHelp = lazy(() => import("@/pages/community-help").catch(() => ({ default: () => <div>Error loading Community Help page</div> })));
 const CrisisReliefSupport = lazy(() => import("@/pages/crisis-relief-support").catch(() => ({ default: () => <div>Error loading Crisis Relief page</div> })));
 const PersonalCareSupplies = lazy(() => import("@/pages/personal-care-supplies").catch(() => ({ default: () => <div>Error loading Personal Care page</div> })));
+const SupportResources = lazy(() => import("@/pages/support-resources").catch(() => ({ default: () => <div>Error loading Support Resources page</div> })));
 const Footer = lazy(() => import("@/components/footer").catch(() => ({ default: () => <div></div> })));
 const QuickTips = lazy(() => import("@/components/quick-tips").catch(() => ({ default: () => <div></div> })));
 const Navigation = lazy(() => import("@/components/navigation").catch(() => ({ default: () => <div></div> })));
@@ -166,6 +167,7 @@ function Router() {
                 <Route path="/community-help" component={CommunityHelp} />
                 <Route path="/crisis-relief-support" component={CrisisReliefSupport} />
                 <Route path="/personal-care-supplies" component={PersonalCareSupplies} />
+                <Route path="/support-resources" component={SupportResources} />
                 <Route path="/signup" component={Signup} />
                 <Route path="/sign-up" component={Signup} />
                 <Route path="/login" component={AuthPage} />

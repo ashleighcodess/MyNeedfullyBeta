@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight, Flame, Droplets, Stethoscope, ShoppingCart, Baby, GraduationCap, Shirt, Sparkles } from "lucide-react";
+import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shield, ChevronDown, CheckCircle, ArrowRight, Flame, Droplets, Stethoscope, ShoppingCart, Baby, GraduationCap, Shirt, Sparkles, LifeBuoy } from "lucide-react";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -1295,6 +1295,19 @@ export default function Landing() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Crisis Relief Support</h3>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
+                </div>
+              </Link>
+
+              {/* Support Resources */}
+              <Link href="/support-resources">
+                <div className="group flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform duration-200">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-coral transition-colors flex-shrink-0">
+                    <LifeBuoy className="h-6 w-6 text-navy group-hover:text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-navy text-base group-hover:text-coral transition-colors">Support Resources</h3>
                   </div>
                   <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-coral group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
