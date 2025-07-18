@@ -154,14 +154,6 @@ export default function PurchaseConfirmationModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0">
         <div className="relative p-6">
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </button>
-
           {/* Header */}
           <DialogHeader className="text-center mb-6">
             <DialogTitle className="text-xl font-semibold text-gray-800">
