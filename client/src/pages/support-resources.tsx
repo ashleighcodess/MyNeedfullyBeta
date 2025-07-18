@@ -174,25 +174,7 @@ export default function SupportResources() {
     }
   ];
 
-  const getUrgencyColor = (urgency: string) => {
-    switch(urgency) {
-      case 'critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
 
-  const getUrgencyIcon = (urgency: string) => {
-    switch(urgency) {
-      case 'critical': return AlertCircle;
-      case 'high': return AlertTriangle;
-      case 'medium': return Info;
-      case 'low': return CheckCircle;
-      default: return Info;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -233,22 +215,15 @@ export default function SupportResources() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recoverySteps.map((step) => {
               const IconComponent = step.icon;
-              const UrgencyIcon = getUrgencyIcon(step.urgency);
               
               return (
                 <Card key={step.id} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-coral-light rounded-lg">
-                          <IconComponent className="h-6 w-6 text-coral" />
-                        </div>
-                        <span className="text-sm font-medium text-gray-500">Step {step.id}</span>
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="p-2 bg-coral-light rounded-lg">
+                        <IconComponent className="h-6 w-6 text-coral" />
                       </div>
-                      <Badge className={`${getUrgencyColor(step.urgency)} text-xs flex items-center space-x-1`}>
-                        <UrgencyIcon className="h-3 w-3" />
-                        <span className="capitalize">{step.urgency}</span>
-                      </Badge>
+                      <span className="text-sm font-medium text-gray-500">Step {step.id}</span>
                     </div>
                     <CardTitle className="text-lg">{step.title}</CardTitle>
                   </CardHeader>
