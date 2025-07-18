@@ -110,6 +110,8 @@ export default function WishlistDetail() {
 
   // Helper function to get the best available price from any retailer (for item display)
   const getBestAvailablePrice = (itemId: number) => {
+    if (loadingPricing[itemId]) return 'Loading Best Price';
+    
     const pricing = itemPricing[itemId]?.pricing;
     if (!pricing) return null;
     
@@ -190,16 +192,29 @@ export default function WishlistDetail() {
     enabled: !!id,
   });
 
-  // Fetch pricing data for each item when wishlist loads
-  useEffect(() => {
-    if (wishlist?.items && Array.isArray(wishlist.items)) {
-      wishlist.items.forEach((item: any) => {
-        if (item.id && !itemPricing[item.id]) {
-          fetchItemPricing(item.id);
-        }
-      });
+  // Track which items have pricing being loaded
+  const [loadingPricing, setLoadingPricing] = useState<Record<number, boolean>>({});
+
+  // Function to fetch live pricing for an item on-demand
+  const fetchItemPricingOnDemand = async (itemId: number) => {
+    if (itemPricing[itemId] || loadingPricing[itemId]) return; // Already loaded or loading
+    
+    setLoadingPricing(prev => ({ ...prev, [itemId]: true }));
+    try {
+      const response = await fetch(`/api/items/${itemId}/pricing`);
+      if (response.ok) {
+        const pricingData = await response.json();
+        setItemPricing(prev => ({
+          ...prev,
+          [itemId]: pricingData
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching pricing for item:', itemId, error);
+    } finally {
+      setLoadingPricing(prev => ({ ...prev, [itemId]: false }));
     }
-  }, [wishlist?.items]);
+  };
 
   // SEO Configuration - Dynamic based on wishlist data
   useSEO({
@@ -821,8 +836,7 @@ export default function WishlistDetail() {
                                 <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
-                                  {!itemPricing[item.id]?.pricing ? 'Loading Best Price' : 
-                                   getBestAvailablePrice(item.id) || 'Price not available'}
+                                  {getBestAvailablePrice(item.id) || 'Click Get Live Pricing'}
                                 </div>
                               </div>
                               
@@ -885,128 +899,149 @@ export default function WishlistDetail() {
                           {/* Show retailer buttons only for authenticated users */}
                           {user && !item.isFulfilled && (
                             <div className="space-y-2">
-                            {/* Amazon */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
-                                <div>
-                                  <div className="text-xs font-medium text-gray-900">Amazon</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'amazon'), !itemPricing[item.id]?.pricing)}
-                                    {itemPricing[item.id]?.pricing?.amazon?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                    )}
-                                  </div>
+                              {/* Show load pricing button if pricing hasn't been fetched yet */}
+                              {!itemPricing[item.id] && !loadingPricing[item.id] && (
+                                <button 
+                                  onClick={() => fetchItemPricingOnDemand(item.id)}
+                                  className="w-full py-3 bg-coral text-white rounded-lg font-medium hover:bg-coral/90 transition-colors"
+                                >
+                                  <ShoppingBag className="w-4 h-4 inline mr-2" />
+                                  Get Live Pricing
+                                </button>
+                              )}
+                              
+                              {/* Show loading state */}
+                              {loadingPricing[item.id] && (
+                                <div className="text-center py-4">
+                                  <div className="animate-spin w-6 h-6 border-2 border-coral border-t-transparent rounded-full mx-auto mb-2"></div>
+                                  <p className="text-sm text-gray-600">Loading best prices...</p>
                                 </div>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.amazon?.link) {
-                                    setSelectedProduct({
-                                      title: item.title,
-                                      price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
-                                      link: itemPricing[item.id]?.pricing?.amazon?.link,
-                                      retailer: 'amazon',
-                                      image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
-                                      itemId: item.id
-                                    });
-                                    setShowPurchaseModal(true);
-                                  }
-                                }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available}
-                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                    : 'bg-coral text-white hover:bg-coral/90'
-                                }`}
-                              >
-                                {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
-                                 !itemPricing[item.id]?.pricing?.amazon?.available ? 'Unavailable' : 'View'}
-                              </button>
-                            </div>
+                              )}
+                              
+                              {/* Show retailer options only after pricing is loaded */}
+                              {itemPricing[item.id]?.pricing && (
+                                <>
+                                  {/* Amazon */}
+                                  <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                                    <div className="flex items-center space-x-2">
+                                      <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
+                                      <div>
+                                        <div className="text-xs font-medium text-gray-900">Amazon</div>
+                                        <div className="text-sm font-bold text-gray-900">
+                                          {formatPrice(getRetailerPrice(item.id, 'amazon'))}
+                                          {itemPricing[item.id]?.pricing?.amazon?.available && (
+                                            <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      onClick={() => {
+                                        if (!item.isFulfilled && itemPricing[item.id]?.pricing?.amazon?.link) {
+                                          setSelectedProduct({
+                                            title: item.title,
+                                            price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
+                                            link: itemPricing[item.id]?.pricing?.amazon?.link,
+                                            retailer: 'amazon',
+                                            image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
+                                            itemId: item.id
+                                          });
+                                          setShowPurchaseModal(true);
+                                        }
+                                      }}
+                                      disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available}
+                                      className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                        item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available
+                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                          : 'bg-coral text-white hover:bg-coral/90'
+                                      }`}
+                                    >
+                                      {item.isFulfilled ? 'Fulfilled' : 
+                                       !itemPricing[item.id]?.pricing?.amazon?.available ? 'Unavailable' : 'View'}
+                                    </button>
+                                  </div>
 
-                            {/* Target */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
-                                <div>
-                                  <div className="text-xs font-medium text-gray-900">Target</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'target'), !itemPricing[item.id]?.pricing)}
-                                    {itemPricing[item.id]?.pricing?.target?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                    )}
+                                  {/* Target */}
+                                  <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                                    <div className="flex items-center space-x-2">
+                                      <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
+                                      <div>
+                                        <div className="text-xs font-medium text-gray-900">Target</div>
+                                        <div className="text-sm font-bold text-gray-900">
+                                          {formatPrice(getRetailerPrice(item.id, 'target'))}
+                                          {itemPricing[item.id]?.pricing?.target?.available && (
+                                            <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      onClick={() => {
+                                        if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
+                                          setSelectedProduct({
+                                            title: item.title,
+                                            price: getRetailerPrice(item.id, 'target') || 'Price not available',
+                                            link: itemPricing[item.id]?.pricing?.target?.link,
+                                            retailer: 'target',
+                                            image: itemPricing[item.id]?.pricing?.target?.image || item.imageUrl,
+                                            itemId: item.id
+                                          });
+                                          setShowPurchaseModal(true);
+                                        }
+                                      }}
+                                      disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available}
+                                      className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                        item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available
+                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                          : 'bg-coral text-white hover:bg-coral/90'
+                                      }`}
+                                    >
+                                      {item.isFulfilled ? 'Fulfilled' : 
+                                       !itemPricing[item.id]?.pricing?.target?.available ? 'Unavailable' : 'View'}
+                                    </button>
                                   </div>
-                                </div>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
-                                    setSelectedProduct({
-                                      title: item.title,
-                                      price: getRetailerPrice(item.id, 'target') || 'Price not available',
-                                      link: itemPricing[item.id]?.pricing?.target?.link,
-                                      retailer: 'target',
-                                      image: itemPricing[item.id]?.pricing?.target?.image || item.imageUrl,
-                                      itemId: item.id
-                                    });
-                                    setShowPurchaseModal(true);
-                                  }
-                                }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available}
-                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                    : 'bg-coral text-white hover:bg-coral/90'
-                                }`}
-                              >
-                                {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
-                                 !itemPricing[item.id]?.pricing?.target?.available ? 'Unavailable' : 'View'}
-                              </button>
-                            </div>
 
-                            {/* Walmart */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
-                                <div>
-                                  <div className="text-xs font-medium text-gray-900">Walmart</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'walmart'), !itemPricing[item.id]?.pricing)}
-                                    {itemPricing[item.id]?.pricing?.walmart?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                    )}
+                                  {/* Walmart */}
+                                  <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
+                                    <div className="flex items-center space-x-2">
+                                      <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
+                                      <div>
+                                        <div className="text-xs font-medium text-gray-900">Walmart</div>
+                                        <div className="text-sm font-bold text-gray-900">
+                                          {formatPrice(getRetailerPrice(item.id, 'walmart'))}
+                                          {itemPricing[item.id]?.pricing?.walmart?.available && (
+                                            <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      onClick={() => {
+                                        if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
+                                          setSelectedProduct({
+                                            title: item.title,
+                                            price: getRetailerPrice(item.id, 'walmart') || 'Price not available',
+                                            link: itemPricing[item.id]?.pricing?.walmart?.link,
+                                            retailer: 'walmart',
+                                            image: itemPricing[item.id]?.pricing?.walmart?.image || item.imageUrl,
+                                            itemId: item.id
+                                          });
+                                          setShowPurchaseModal(true);
+                                        }
+                                      }}
+                                      disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available}
+                                      className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
+                                        item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available
+                                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                                          : 'bg-coral text-white hover:bg-coral/90'
+                                      }`}
+                                    >
+                                      {item.isFulfilled ? 'Fulfilled' : 
+                                       !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
+                                    </button>
                                   </div>
-                                </div>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
-                                    setSelectedProduct({
-                                      title: item.title,
-                                      price: getRetailerPrice(item.id, 'walmart') || 'Price not available',
-                                      link: itemPricing[item.id]?.pricing?.walmart?.link,
-                                      retailer: 'walmart',
-                                      image: itemPricing[item.id]?.pricing?.walmart?.image || item.imageUrl,
-                                      itemId: item.id
-                                    });
-                                    setShowPurchaseModal(true);
-                                  }
-                                }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available}
-                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                    : 'bg-coral text-white hover:bg-coral/90'
-                                }`}
-                              >
-                                {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
-                                 !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
-                              </button>
-                            </div>
+                                </>
+                              )}
                             </div>
                           )}
                         </div>
