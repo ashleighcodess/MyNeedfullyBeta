@@ -241,8 +241,8 @@ export default function AboutUs() {
 
         {/* Main Story Section */}
         <div className="mb-12 animate-fade-in">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-12">
-            <div className="space-y-6 animate-slide-in-left pt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-12">
+            <div className="space-y-6 animate-slide-in-left">
               <div className="text-coral text-sm font-bold tracking-widest uppercase mb-4">
                 ABOUT US
               </div>
@@ -258,7 +258,7 @@ export default function AboutUs() {
               
             </div>
             
-            <div className="flex justify-center lg:justify-end animate-slide-in-right mt-24" data-image-section>
+            <div className="flex justify-center lg:justify-end animate-slide-in-right" data-image-section>
               <div className="relative group w-full">
                 <img 
                   src={aboutUsImage} 
