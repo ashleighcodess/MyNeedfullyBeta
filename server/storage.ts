@@ -362,7 +362,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(wishlists.userId, userId))
       .orderBy(desc(wishlists.createdAt));
     
-    return results;
+    return results as WishlistWithItemCount[];
   }
 
   async searchWishlists(params: {
