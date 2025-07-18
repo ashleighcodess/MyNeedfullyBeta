@@ -112,7 +112,14 @@ export default function Resources() {
       icon: DollarSign,
       resources: [
         { name: "211 United Way", phone: "211", website: "https://www.211.org" },
-        { name: "Salvation Army", phone: "(800) 725-2769", website: "https://www.salvationarmyusa.org" }
+        { name: "Salvation Army", phone: "(800) 725-2769", website: "https://www.salvationarmyusa.org" },
+        { name: "Benefits.gov", phone: "Online Resource", website: "https://www.benefits.gov/" },
+        { name: "Low Income Home Energy Assistance Program (LIHEAP)", phone: "(866) 674-6327", website: "https://www.acf.hhs.gov/ocs/low-income-home-energy-assistance-program-liheap" },
+        { name: "Supplemental Security Income (SSI)", phone: "(800) 772-1213", website: "https://www.ssa.gov/ssi/" },
+        { name: "Temporary Assistance for Needy Families (TANF)", phone: "(202) 401-9275", website: "https://www.acf.hhs.gov/ofa/programs/temporary-assistance-needy-families-tanf" },
+        { name: "Federal Student Aid (FAFSA & Grants)", phone: "(800) 433-3243", website: "https://studentaid.gov/" },
+        { name: "National Disability Rights Network (NDRN)", phone: "(202) 408-9514", website: "https://www.ndrn.org/" },
+        { name: "Modest Needs", phone: "(844) 667-3776", website: "https://www.modestneeds.org/" }
       ]
     },
     emergency: {
