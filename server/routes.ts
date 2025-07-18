@@ -164,10 +164,12 @@ let rainforestAPIService: RainforestAPIService | null = null;
 function getRainforestAPIService(): RainforestAPIService | null {
   if (!RAINFOREST_API_KEY || RAINFOREST_API_KEY === 'your_api_key_here') {
     console.warn('RAINFOREST_API_KEY not found or invalid');
+    console.warn('Current API key:', RAINFOREST_API_KEY ? `${RAINFOREST_API_KEY.substring(0, 10)}...` : 'undefined');
     return null;
   }
 
   if (!rainforestAPIService) {
+    console.log('🔑 Initializing RainforestAPI service with key:', RAINFOREST_API_KEY.substring(0, 10) + '...');
     rainforestAPIService = new RainforestAPIService(RAINFOREST_API_KEY);
   }
 
