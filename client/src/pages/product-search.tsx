@@ -21,6 +21,7 @@ import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
 import targetLogo from "@assets/target_1751644244383.png";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
+import { WishlistWithItemCount } from "@shared/schema";
 
 // Product images
 import pampersWipesImage from "@assets/71oOkIoaqXL._AC__1751759839615.jpg";
@@ -353,7 +354,7 @@ export default function ProductSearch() {
   }, [popularProducts]);
 
   // Fetch user's wishlists for authenticated users
-  const { data: userWishlists } = useQuery({
+  const { data: userWishlists } = useQuery<WishlistWithItemCount[]>({
     queryKey: ['/api/user/wishlists'],
     enabled: !!isAuthenticated, // Only fetch when user is authenticated
   });
@@ -1004,7 +1005,7 @@ export default function ProductSearch() {
           </DialogHeader>
           
           <div className="flex-1 space-y-3 overflow-y-auto pr-2">
-            {userWishlists && Array.isArray(userWishlists) && userWishlists.map((needsList: any) => (
+            {userWishlists && Array.isArray(userWishlists) && userWishlists.map((needsList: WishlistWithItemCount) => (
               <div
                 key={needsList.id}
                 onClick={() => {

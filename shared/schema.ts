@@ -302,3 +302,8 @@ export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSc
 export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type InsertEmailVerificationToken = z.infer<typeof insertEmailVerificationTokenSchema>;
 export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
+
+// Extended types for queries with additional computed fields
+export type WishlistWithItemCount = Wishlist & {
+  itemCount: number;
+};

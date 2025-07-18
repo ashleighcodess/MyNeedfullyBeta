@@ -12,6 +12,7 @@ import {
   type User,
   type UpsertUser,
   type Wishlist,
+  type WishlistWithItemCount,
   type InsertWishlist,
   type WishlistItem,
   type InsertWishlistItem,
@@ -69,7 +70,7 @@ export interface IStorage {
   createWishlist(wishlist: InsertWishlist): Promise<Wishlist>;
   getWishlist(id: number): Promise<Wishlist | undefined>;
   getWishlistWithItems(id: number): Promise<any>;
-  getUserWishlists(userId: string): Promise<Wishlist[]>;
+  getUserWishlists(userId: string): Promise<WishlistWithItemCount[]>;
   searchWishlists(params: {
     query?: string;
     category?: string;
@@ -351,7 +352,7 @@ export class DatabaseStorage implements IStorage {
     return wishlist;
   }
 
-  async getUserWishlists(userId: string): Promise<Wishlist[]> {
+  async getUserWishlists(userId: string): Promise<WishlistWithItemCount[]> {
     const results = await db
       .select({
         ...getTableColumns(wishlists),
