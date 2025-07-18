@@ -106,8 +106,8 @@ export class SerpAPIService {
         google_domain: 'google.com',
         gl: 'us',
         hl: 'en',
-        num: Math.min(limit, 20).toString(), // Reduced from 40 to 20 for speed
-        tbs: 'mr:1,merchagg:m2', // Shopping-specific parameters
+        num: Math.min(limit, 10).toString(), // Ultra speed - max 10 results
+
         output: 'json',
         no_cache: false, // Use cache when available
         safe: 'off', // Faster processing
