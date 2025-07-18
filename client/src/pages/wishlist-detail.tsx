@@ -888,7 +888,7 @@ export default function WishlistDetail() {
                         </div>
 
                         {/* Buying Options - Mobile responsive */}
-                        <div className={`px-4 py-3 flex flex-col justify-center w-full sm:w-[280px] sm:flex-shrink-0 ${
+                        <div className={`px-4 py-3 flex flex-col justify-center w-full sm:w-[320px] sm:flex-shrink-0 ${
                           item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
                         }`}>
                           <h4 className={`font-medium text-sm mb-2 text-center ${
@@ -914,15 +914,15 @@ export default function WishlistDetail() {
                           {user && !item.isFulfilled && (
                             <div className="space-y-2">
                             {/* Amazon */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
-                                <div>
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border gap-2">
+                              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                                <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
                                   <div className="text-xs font-medium text-gray-900">Amazon</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'amazon'), !itemPricing[item.id]?.pricing)}
+                                  <div className="text-sm font-bold text-gray-900 flex items-center flex-wrap">
+                                    <span>{formatPrice(getRetailerPrice(item.id, 'amazon'), !itemPricing[item.id]?.pricing)}</span>
                                     {itemPricing[item.id]?.pricing?.amazon?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                      <span className="ml-2 text-xs text-green-600 whitespace-nowrap">Live Price</span>
                                     )}
                                   </div>
                                 </div>
@@ -955,15 +955,15 @@ export default function WishlistDetail() {
                             </div>
 
                             {/* Target */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
-                                <div>
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border gap-2">
+                              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                                <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
                                   <div className="text-xs font-medium text-gray-900">Target</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'target'), !itemPricing[item.id]?.pricing)}
+                                  <div className="text-sm font-bold text-gray-900 flex items-center flex-wrap">
+                                    <span>{formatPrice(getRetailerPrice(item.id, 'target'), !itemPricing[item.id]?.pricing)}</span>
                                     {itemPricing[item.id]?.pricing?.target?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                      <span className="ml-2 text-xs text-green-600 whitespace-nowrap">Live Price</span>
                                     )}
                                   </div>
                                 </div>
@@ -996,15 +996,15 @@ export default function WishlistDetail() {
                             </div>
 
                             {/* Walmart */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
-                                <div>
+                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border gap-2">
+                              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                                <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
                                   <div className="text-xs font-medium text-gray-900">Walmart</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'walmart'), !itemPricing[item.id]?.pricing)}
+                                  <div className="text-sm font-bold text-gray-900 flex items-center flex-wrap">
+                                    <span>{formatPrice(getRetailerPrice(item.id, 'walmart'), !itemPricing[item.id]?.pricing)}</span>
                                     {itemPricing[item.id]?.pricing?.walmart?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                      <span className="ml-2 text-xs text-green-600 whitespace-nowrap">Live Price</span>
                                     )}
                                   </div>
                                 </div>
