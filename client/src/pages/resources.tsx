@@ -84,7 +84,14 @@ export default function Resources() {
       icon: Utensils,
       resources: [
         { name: "Feeding America", phone: "(800) 771-2303", website: "https://www.feedingamerica.org" },
-        { name: "SNAP Benefits", phone: "(800) 221-5689", website: "https://www.fns.usda.gov/snap" }
+        { name: "SNAP Benefits", phone: "(800) 221-5689", website: "https://www.fns.usda.gov/snap" },
+        { name: "WIC (Women, Infants, and Children Program)", phone: "(800) 942-3678", website: "https://www.fns.usda.gov/wic" },
+        { name: "USDA National Hunger Hotline", phone: "(866) 348-6479", website: "https://www.hungerfreeamerica.org/program/national-hunger-hotline/" },
+        { name: "No Kid Hungry", phone: "(877) 731-0446", website: "https://www.nokidhungry.org/" },
+        { name: "The Salvation Army – Food Assistance", phone: "(800) 725-2769", website: "https://www.salvationarmyusa.org/usn/" },
+        { name: "Food Research & Action Center (FRAC)", phone: "(202) 986-2200", website: "https://frac.org/" },
+        { name: "Catholic Charities USA – Food Assistance", phone: "(703) 549-1390", website: "https://www.catholiccharitiesusa.org/" },
+        { name: "WhyHunger Hotline", phone: "(800) 548-6479", website: "https://whyhunger.org/find-food/" }
       ]
     },
     mental: {
