@@ -112,7 +112,7 @@ class RainforestAPIService {
 
       // Add AbortController for timeout - increased for Amazon reliability
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout for Amazon to ensure it works
+      const timeout = setTimeout(() => controller.abort(), 15000); // 15 second timeout for Amazon API to respond properly
       
       try {
         const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`, {
@@ -141,7 +141,7 @@ class RainforestAPIService {
       } catch (error: any) {
         clearTimeout(timeout);
         if (error.name === 'AbortError') {
-          console.error('Amazon API timeout after 5 seconds');
+          console.error('Amazon API timeout after 15 seconds');
           throw new Error('Amazon API timeout');
         }
         console.error(`🔍 Amazon API Error Details:`, {
@@ -3219,10 +3219,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ]);
           };
 
-          // Amazon search with 5 second timeout (matching internal timeout)
+          // Amazon search with 15 second timeout (matching internal timeout)
           if (rainforestService) {
             itemPromises.push(
-              withTimeout(rainforestService.searchProducts(optimizedQuery), 5000)
+              withTimeout(rainforestService.searchProducts(optimizedQuery), 15000)
                 .then(products => {
                   if (products && products.length > 0) {
                     // Find the best priced product from top 3 results
