@@ -158,26 +158,38 @@ export default function WishlistDetail() {
       setPricingLoading(true);
       setPricingTimeout(false);
       console.log(`💰 Fetching batch pricing for wishlist ${wishlistId}`);
-
-      // Set 10-second timeout for pricing (to allow for multiple API calls)
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Pricing timeout')), 10000)
-      );
-
-      const fetchPromise = fetch(`/api/wishlist/${wishlistId}/pricing`);
       
-      const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
+      const url = `/api/wishlist/${wishlistId}/pricing`;
+      console.log(`💰 Request URL: ${url}`);
       
-      if (response.ok) {
-        const batchPricingData = await response.json();
-        console.log(`💰 Batch pricing loaded for ${Object.keys(batchPricingData).length} items`);
-        setItemPricing(batchPricingData);
-      } else {
-        console.error('Batch pricing failed:', response.status);
-        setPricingTimeout(true);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      });
+
+      console.log(`💰 Response status: ${response.status} ${response.statusText}`);
+      console.log(`💰 Response headers:`, Object.fromEntries(response.headers.entries()));
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`💰 Error response body:`, errorText);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
+
+      const batchPricingData = await response.json();
+      console.log(`💰 Batch pricing loaded for ${Object.keys(batchPricingData).length} items`);
+      console.log(`💰 Sample data:`, Object.keys(batchPricingData).slice(0, 2));
+      setItemPricing(batchPricingData);
+
     } catch (error) {
-      console.error('Error fetching batch pricing:', error);
+      console.error('💰 Error fetching batch pricing:', error);
+      if (error instanceof Error) {
+        console.error('💰 Error details:', error.name, '|', error.message);
+      }
       setPricingTimeout(true);
     } finally {
       setPricingLoading(false);
@@ -215,6 +227,10 @@ export default function WishlistDetail() {
   useEffect(() => {
     if (wishlist?.items && Array.isArray(wishlist.items) && wishlist.items.length > 0 && !pricingLoading) {
       console.log(`💰 Starting batch pricing for ${wishlist.items.length} items`);
+      
+      // Test direct endpoint access first
+      console.log(`💰 Testing endpoint: /api/wishlist/${id}/pricing`);
+      
       fetchBatchPricing(id);
     }
   }, [wishlist?.items, id]);

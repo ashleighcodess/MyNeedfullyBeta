@@ -252,8 +252,21 @@ function App() {
     };
   }, []);
 
-  try {
-    return (
+  return (
+    <ErrorBoundary fallback={
+      <div className="min-h-screen bg-white p-8 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
+          <p className="text-gray-600">Loading application...</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-4 py-2 bg-coral text-white rounded-lg hover:bg-coral-dark"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    }>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -261,18 +274,9 @@ function App() {
           <QuickTips />
         </TooltipProvider>
       </QueryClientProvider>
-    );
-  } catch (error) {
-    console.error('App component error:', error);
-    return (
-      <div className="min-h-screen bg-white p-8 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
-          <p className="text-gray-600">Loading application...</p>
-        </div>
-      </div>
-    );
-  }
+    </ErrorBoundary>
+  );
+}
 }
 
 export default App;
