@@ -956,7 +956,7 @@ export default function WishlistDetail() {
             )}
           </CardHeader>
           <CardContent>
-            {wishlist.items && wishlist.items.length > 0 ? (
+                {wishlist.items && wishlist.items.length > 0 ? (
                   <div className="space-y-4">
                     {/* Sort items: unfulfilled first, fulfilled last */}
                     {wishlist.items
@@ -1265,9 +1265,14 @@ export default function WishlistDetail() {
                     )}
                   </div>
                 )}
-            </CardContent>
+              </CardContent>
             </Card>
           </div>
+
+
+
+
+
       </div>
 
       {/* Image Carousel Modal */}
