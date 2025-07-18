@@ -193,6 +193,13 @@ export default function WishlistDetail() {
   // Fetch batch pricing data for ALL items at once - SUPER FAST!
   useEffect(() => {
     if (wishlist?.items && Array.isArray(wishlist.items) && wishlist.items.length > 0 && id) {
+      // Check if we already have pricing data to avoid refetching
+      const hasAllPricing = wishlist.items.every((item: any) => itemPricing[item.id]?.pricing);
+      if (hasAllPricing) {
+        console.log('💰 Already have pricing data, skipping fetch');
+        return;
+      }
+      
       const fetchBatchPricing = async () => {
         try {
           console.log(`💰 Starting batch pricing for ${wishlist.items.length} items`);
@@ -227,7 +234,7 @@ export default function WishlistDetail() {
       
       fetchBatchPricing();
     }
-  }, [wishlist?.items, id]);
+  }, [wishlist?.items, id, itemPricing]); // Added itemPricing to deps to prevent re-fetching
 
   // SEO Configuration - Dynamic based on wishlist data
   useSEO({

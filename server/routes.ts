@@ -3163,14 +3163,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rainforestService = getRainforestAPIService();
       const serpService = getSerpAPIService();
 
-      // Process all items in parallel batches for maximum speed
-      const BATCH_SIZE = 5; // Process 5 items at a time to avoid API limits
+      // Process all items in parallel for maximum speed
       const pricingResults: Record<number, any> = {};
-
-      for (let i = 0; i < wishlistItems.length; i += BATCH_SIZE) {
-        const batch = wishlistItems.slice(i, i + BATCH_SIZE);
-        
-        await Promise.all(batch.map(async (item) => {
+      
+      // Process ALL items at once with timeout protection
+      await Promise.all(wishlistItems.map(async (item) => {
           const pricing = {
             amazon: { available: false, price: item.price, link: null, image: null },
             walmart: { available: false, price: item.price, link: null, image: null },
@@ -3180,10 +3177,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const optimizedQuery = optimizeSearchQuery(item.title);
           const itemPromises = [];
 
-          // Amazon search
+          // Helper to add timeout to promises
+          const withTimeout = (promise: Promise<any>, timeoutMs: number) => {
+            return Promise.race([
+              promise,
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout')), timeoutMs)
+              )
+            ]);
+          };
+
+          // Amazon search with 3 second timeout
           if (rainforestService) {
             itemPromises.push(
-              rainforestService.searchProducts(optimizedQuery)
+              withTimeout(rainforestService.searchProducts(optimizedQuery), 3000)
                 .then(products => {
                   if (products && products.length > 0) {
                     const product = products[0];
@@ -3201,10 +3208,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             );
           }
 
-          // Walmart search
+          // Walmart search with 3 second timeout
           if (serpService) {
             itemPromises.push(
-              serpService.searchWalmart(optimizedQuery, '60602', 1)
+              withTimeout(serpService.searchWalmart(optimizedQuery, '60602', 1), 3000)
                 .then(results => {
                   if (results && results.length > 0) {
                     const product = results[0];
@@ -3221,9 +3228,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 .catch(err => console.log(`Walmart error for ${item.title}:`, err))
             );
 
-            // Target search
+            // Target search with 3 second timeout
             itemPromises.push(
-              serpService.searchTarget(optimizedQuery, '10001', 1)
+              withTimeout(serpService.searchTarget(optimizedQuery, '10001', 1), 3000)
                 .then(results => {
                   if (results && results.length > 0) {
                     const product = results[0];
@@ -3243,13 +3250,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           await Promise.allSettled(itemPromises);
           pricingResults[item.id] = { pricing };
-        }));
-
-        // Small delay between batches to avoid rate limits
-        if (i + BATCH_SIZE < wishlistItems.length) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
-      }
+      }));
 
       const totalTime = Date.now() - startTime;
       console.log(`💰 Batch pricing completed in ${totalTime}ms for ${wishlistItems.length} items`);
