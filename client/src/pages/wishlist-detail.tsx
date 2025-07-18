@@ -785,10 +785,7 @@ export default function WishlistDetail() {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center bg-gray-100 sm:rounded-lg">
-                                <div className="text-center text-gray-500 p-2">
-                                  <ShoppingBag className="h-8 w-8 mx-auto mb-1" />
-                                  <p className="text-xs">Loading image...</p>
-                                </div>
+                                <Skeleton className="w-full h-full sm:rounded-lg" />
                               </div>
                             );
                           })()}
@@ -849,8 +846,11 @@ export default function WishlistDetail() {
                                 <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
-                                  {!itemPricing[item.id]?.pricing ? 'Loading Best Price' : 
-                                   getBestAvailablePrice(item.id) || 'Price not available'}
+                                  {!itemPricing[item.id]?.pricing ? (
+                                    <div className="h-8 w-24 bg-gray-200 animate-pulse rounded" />
+                                  ) : (
+                                    getBestAvailablePrice(item.id) || 'Price not available'
+                                  )}
                                 </div>
                               </div>
                               
@@ -920,9 +920,15 @@ export default function WishlistDetail() {
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Amazon</div>
                                   <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'amazon'), !itemPricing[item.id]?.pricing)}
-                                    {itemPricing[item.id]?.pricing?.amazon?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    {!itemPricing[item.id]?.pricing ? (
+                                      <Skeleton className="h-4 w-16" />
+                                    ) : (
+                                      <>
+                                        {formatPrice(getRetailerPrice(item.id, 'amazon'))}
+                                        {itemPricing[item.id]?.pricing?.amazon?.available && (
+                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                        )}
+                                      </>
                                     )}
                                   </div>
                                 </div>
@@ -949,7 +955,7 @@ export default function WishlistDetail() {
                                 }`}
                               >
                                 {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing ? <Skeleton className="h-4 w-12" /> :
                                  !itemPricing[item.id]?.pricing?.amazon?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
@@ -961,9 +967,15 @@ export default function WishlistDetail() {
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Target</div>
                                   <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'target'), !itemPricing[item.id]?.pricing)}
-                                    {itemPricing[item.id]?.pricing?.target?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    {!itemPricing[item.id]?.pricing ? (
+                                      <Skeleton className="h-4 w-16" />
+                                    ) : (
+                                      <>
+                                        {formatPrice(getRetailerPrice(item.id, 'target'))}
+                                        {itemPricing[item.id]?.pricing?.target?.available && (
+                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                        )}
+                                      </>
                                     )}
                                   </div>
                                 </div>
@@ -990,7 +1002,7 @@ export default function WishlistDetail() {
                                 }`}
                               >
                                 {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing ? <Skeleton className="h-4 w-12" /> :
                                  !itemPricing[item.id]?.pricing?.target?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
@@ -1002,9 +1014,15 @@ export default function WishlistDetail() {
                                 <div>
                                   <div className="text-xs font-medium text-gray-900">Walmart</div>
                                   <div className="text-sm font-bold text-gray-900">
-                                    {formatPrice(getRetailerPrice(item.id, 'walmart'), !itemPricing[item.id]?.pricing)}
-                                    {itemPricing[item.id]?.pricing?.walmart?.available && (
-                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    {!itemPricing[item.id]?.pricing ? (
+                                      <Skeleton className="h-4 w-16" />
+                                    ) : (
+                                      <>
+                                        {formatPrice(getRetailerPrice(item.id, 'walmart'))}
+                                        {itemPricing[item.id]?.pricing?.walmart?.available && (
+                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                        )}
+                                      </>
                                     )}
                                   </div>
                                 </div>
@@ -1031,7 +1049,7 @@ export default function WishlistDetail() {
                                 }`}
                               >
                                 {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? 'Loading...' :
+                                 !itemPricing[item.id]?.pricing ? <Skeleton className="h-4 w-12" /> :
                                  !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
                               </button>
                             </div>
