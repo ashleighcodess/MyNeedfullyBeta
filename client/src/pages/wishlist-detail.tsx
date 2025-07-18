@@ -606,7 +606,22 @@ export default function WishlistDetail() {
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+        {/* Progress - Full Width */}
+        <div className="bg-white rounded-lg p-4 border mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-700">Progress</span>
+            <span className="text-sm text-gray-600">
+              {wishlist.fulfilledItems} of {wishlist.totalItems} items fulfilled
+            </span>
+          </div>
+          <Progress value={completionPercentage} className="h-3" />
+          <div className="text-center mt-2">
+            <span className="text-lg font-bold text-coral">{completionPercentage}% Complete</span>
+          </div>
+        </div>
+
+        {/* Story Section with Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8 mb-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Featured Image */}
@@ -713,40 +728,234 @@ export default function WishlistDetail() {
                 )}
               </CardContent>
             </Card>
+          </div>
 
-            {/* Progress */}
-            <div className="bg-white rounded-lg p-4 border mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Progress</span>
-                <span className="text-sm text-gray-600">
-                  {wishlist.fulfilledItems} of {wishlist.totalItems} items fulfilled
-                </span>
-              </div>
-              <Progress value={completionPercentage} className="h-3" />
-              <div className="text-center mt-2">
-                <span className="text-lg font-bold text-coral">{completionPercentage}% Complete</span>
-              </div>
-            </div>
-
-            {/* Items */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center">
-                  <Gift className="mr-2 h-5 w-5 text-coral" />
-                  Items Needed ({wishlist.items?.length || 0})
-                </CardTitle>
-                {isOwner && (
-                  <Button 
-                    size="sm" 
-                    className="bg-coral hover:bg-coral/90"
-                    onClick={() => navigate(`/products?wishlistId=${id}`)}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Items
-                  </Button>
-                )}
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            {/* User Information */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg">Need list created by</CardTitle>
               </CardHeader>
               <CardContent>
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-coral/10 rounded-full flex items-center justify-center">
+                    {wishlist.user?.profileImageUrl ? (
+                      <img 
+                        src={wishlist.user.profileImageUrl} 
+                        alt={`${wishlist.user.firstName || 'User'} profile`}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-6 w-6 text-coral" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="font-semibold">
+                      {wishlist.user?.firstName} {wishlist.user?.lastName}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {wishlist.user?.isVerified && (
+                        <span className="text-green-600">✓ Verified</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Shipping Address */}
+            {(isOwner || user) && wishlist.shippingAddress && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <MapPin className="mr-2 h-5 w-5 text-coral" />
+                      Shipping Address
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={copyAddress}
+                      className="h-8 w-8 p-0"
+                    >
+                      {copiedAddress ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm space-y-1">
+                    <div className="font-medium">{wishlist.shippingAddress.fullName}</div>
+                    <div>{wishlist.shippingAddress.addressLine1}</div>
+                    {wishlist.shippingAddress.addressLine2 && (
+                      <div>{wishlist.shippingAddress.addressLine2}</div>
+                    )}
+                    <div>
+                      {wishlist.shippingAddress.city}, {wishlist.shippingAddress.state} {wishlist.shippingAddress.zipCode}
+                    </div>
+                    <div>{wishlist.shippingAddress.country}</div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Stats */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg">Impact</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Items Fulfilled</span>
+                    <span className="font-semibold">{wishlist.fulfilledItems}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Total Items</span>
+                    <span className="font-semibold">{wishlist.totalItems}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Completion</span>
+                    <span className="font-semibold text-coral">{completionPercentage}%</span>
+                  </div>
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Views</span>
+                    <span className="font-semibold">{wishlist.viewCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Shares</span>
+                    <span className="font-semibold">{wishlist.shareCount || 0}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-lg">
+                  <Heart className="mr-2 h-5 w-5 text-coral" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {activitiesLoading ? (
+                    // Loading skeleton
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="flex items-start space-x-2 p-2">
+                        <Skeleton className="h-4 w-4 rounded-full flex-shrink-0 mt-0.5" />
+                        <div className="flex-1 space-y-1">
+                          <Skeleton className="h-4 w-3/4" />
+                          <Skeleton className="h-3 w-1/2" />
+                        </div>
+                      </div>
+                    ))
+                  ) : recentActivities.length > 0 ? (
+                    recentActivities.slice(0, 3).map((activity: any, index: number) => (
+                      <div 
+                        key={activity.id} 
+                        className={`flex items-start space-x-2 text-sm transition-all duration-300 ${
+                          activity.animate ? 'animate-pulse-slow' : ''
+                        } hover:bg-gray-50 p-2 rounded-lg cursor-pointer`}
+                      >
+                        <div className="text-coral flex-shrink-0 mt-0.5">
+                          {getActivityIcon(activity.icon)}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-600">{activity.message}</p>
+                          <p className="text-gray-400 text-xs">{activity.timestamp}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm text-center py-4">No recent activity</p>
+                  )}
+                </div>
+                
+                <Dialog open={showAllActivity} onOpenChange={setShowAllActivity}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full mt-4 hover:bg-coral hover:text-white transition-colors duration-200">
+                      See all
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center">
+                        <Heart className="mr-2 h-5 w-5 text-coral" />
+                        All Recent Activity
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                      {activitiesLoading ? (
+                        // Loading skeleton for modal
+                        Array.from({ length: 8 }).map((_, index) => (
+                          <div key={index} className="flex items-start space-x-3 p-3">
+                            <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+                            <div className="flex-1 space-y-2">
+                              <Skeleton className="h-4 w-3/4" />
+                              <Skeleton className="h-3 w-1/2" />
+                            </div>
+                          </div>
+                        ))
+                      ) : recentActivities.length > 0 ? (
+                        recentActivities.map((activity: any, index: number) => (
+                          <div 
+                            key={activity.id}
+                            className={`flex items-start space-x-3 p-3 rounded-lg border transition-all duration-200 hover:shadow-md hover:border-coral/30 ${
+                              activity.animate ? 'bg-coral/5 border-coral/20' : 'bg-gray-50'
+                            }`}
+                            style={{ 
+                              animationDelay: `${index * 100}ms`,
+                              animation: 'fadeInUp 0.3s ease-out forwards'
+                            }}
+                          >
+                            <div className="flex-shrink-0 w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                              <div className="text-coral">
+                                {getActivityIcon(activity.icon)}
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-gray-800 font-medium">{activity.message}</p>
+                              <p className="text-gray-500 text-sm mt-1">{activity.timestamp}</p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 text-center py-8">No recent activity</p>
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Items Needed - Full Width */}
+        <Card className="mb-6">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center">
+              <Gift className="mr-2 h-5 w-5 text-coral" />
+              Items Needed ({wishlist.items?.length || 0})
+            </CardTitle>
+            {isOwner && (
+              <Button 
+                size="sm" 
+                className="bg-coral hover:bg-coral/90"
+                onClick={() => navigate(`/products?wishlistId=${id}`)}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Items
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent>
                 {wishlist.items && wishlist.items.length > 0 ? (
                   <div className="space-y-4">
                     {/* Sort items: unfulfilled first, fulfilled last */}
@@ -1060,219 +1269,8 @@ export default function WishlistDetail() {
             </Card>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Creator Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <User className="mr-2 h-5 w-5 text-coral" />
-                  Created By
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-3">
-                  {wishlist.user?.profileImageUrl ? (
-                    <img 
-                      src={wishlist.user.profileImageUrl}
-                      alt="Profile"
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-gradient-to-br from-coral to-coral/70 rounded-full flex items-center justify-center ring-2 ring-coral/20 ring-offset-1">
-                      <span className="text-white text-lg font-semibold">
-                        {wishlist?.user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <div className="font-semibold">
-                      {wishlist.user?.firstName} {wishlist.user?.lastName}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {wishlist.user?.isVerified && (
-                        <span className="text-green-600">✓ Verified</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Shipping Address */}
-            {(isOwner || user) && wishlist.shippingAddress && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <MapPin className="mr-2 h-5 w-5 text-coral" />
-                      Shipping Address
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={copyAddress}
-                      className="h-8 w-8 p-0"
-                    >
-                      {copiedAddress ? (
-                        <Check className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm space-y-1">
-                    <div className="font-medium">{wishlist.shippingAddress.fullName}</div>
-                    <div>{wishlist.shippingAddress.addressLine1}</div>
-                    {wishlist.shippingAddress.addressLine2 && (
-                      <div>{wishlist.shippingAddress.addressLine2}</div>
-                    )}
-                    <div>
-                      {wishlist.shippingAddress.city}, {wishlist.shippingAddress.state} {wishlist.shippingAddress.zipCode}
-                    </div>
-                    <div>{wishlist.shippingAddress.country}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
-            {/* Action Buttons - Removed per user request */}
-
-            {/* Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Impact</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Items Fulfilled</span>
-                    <span className="font-semibold">{wishlist.fulfilledItems}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Total Items</span>
-                    <span className="font-semibold">{wishlist.totalItems}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Completion</span>
-                    <span className="font-semibold text-coral">{completionPercentage}%</span>
-                  </div>
-                  <Separator />
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Views</span>
-                    <span className="font-semibold">{wishlist.viewCount}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Shares</span>
-                    <span className="font-semibold">{wishlist.shareCount || 0}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-lg">
-                  <Heart className="mr-2 h-5 w-5 text-coral" />
-                  Recent Activity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {activitiesLoading ? (
-                    // Loading skeleton
-                    Array.from({ length: 3 }).map((_, index) => (
-                      <div key={index} className="flex items-start space-x-2 p-2">
-                        <Skeleton className="h-4 w-4 rounded-full flex-shrink-0 mt-0.5" />
-                        <div className="flex-1 space-y-1">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/2" />
-                        </div>
-                      </div>
-                    ))
-                  ) : recentActivities.length > 0 ? (
-                    recentActivities.slice(0, 3).map((activity: any, index: number) => (
-                      <div 
-                        key={activity.id} 
-                        className={`flex items-start space-x-2 text-sm transition-all duration-300 ${
-                          activity.animate ? 'animate-pulse-slow' : ''
-                        } hover:bg-gray-50 p-2 rounded-lg cursor-pointer`}
-                      >
-                        <div className="text-coral flex-shrink-0 mt-0.5">
-                          {getActivityIcon(activity.icon)}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-gray-600">{activity.message}</p>
-                          <p className="text-gray-400 text-xs">{activity.timestamp}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 text-sm text-center py-4">No recent activity</p>
-                  )}
-                </div>
-                
-                <Dialog open={showAllActivity} onOpenChange={setShowAllActivity}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="w-full mt-4 hover:bg-coral hover:text-white transition-colors duration-200">
-                      See all
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle className="flex items-center">
-                        <Heart className="mr-2 h-5 w-5 text-coral" />
-                        All Recent Activity
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 mt-4">
-                      {activitiesLoading ? (
-                        // Loading skeleton for modal
-                        Array.from({ length: 8 }).map((_, index) => (
-                          <div key={index} className="flex items-start space-x-3 p-3">
-                            <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
-                            <div className="flex-1 space-y-2">
-                              <Skeleton className="h-4 w-3/4" />
-                              <Skeleton className="h-3 w-1/2" />
-                            </div>
-                          </div>
-                        ))
-                      ) : recentActivities.length > 0 ? (
-                        recentActivities.map((activity: any, index: number) => (
-                          <div 
-                            key={activity.id}
-                            className={`flex items-start space-x-3 p-3 rounded-lg border transition-all duration-200 hover:shadow-md hover:border-coral/30 ${
-                              activity.animate ? 'bg-coral/5 border-coral/20' : 'bg-gray-50'
-                            }`}
-                            style={{ 
-                              animationDelay: `${index * 100}ms`,
-                              animation: 'fadeInUp 0.3s ease-out forwards'
-                            }}
-                          >
-                            <div className="flex-shrink-0 w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
-                              <div className="text-coral">
-                                {getActivityIcon(activity.icon)}
-                              </div>
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-gray-800 font-medium">{activity.message}</p>
-                              <p className="text-gray-500 text-sm mt-1">{activity.timestamp}</p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-gray-500 text-center py-8">No recent activity</p>
-                      )}
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
 
 
       </div>
