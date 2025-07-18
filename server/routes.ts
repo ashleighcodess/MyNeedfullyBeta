@@ -109,7 +109,6 @@ class RainforestAPIService {
         ...(options.category_id && { category_id: options.category_id }),
         ...(options.min_price && { min_price: options.min_price.toString() }),
         ...(options.max_price && { max_price: options.max_price.toString() }),
-
       });
 
       const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
