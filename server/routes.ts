@@ -99,15 +99,18 @@ class RainforestAPIService {
         type: options.type || "search",
         amazon_domain: "amazon.com",
         search_term: query,
+        max_page: "1", // Only get first page
+        output: "json",
+        include_html: "false", // Don't include HTML to reduce response size
         ...(options.page && { page: options.page.toString() }),
         ...(options.category_id && { category_id: options.category_id }),
         ...(options.min_price && { min_price: options.min_price.toString() }),
         ...(options.max_price && { max_price: options.max_price.toString() }),
       });
 
-      // Add AbortController for timeout
+      // Add AbortController for timeout - increased for Amazon reliability
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 2500); // 2.5 second timeout for Amazon
+      const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout for Amazon to ensure it works
       
       try {
         const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`, {
@@ -126,7 +129,7 @@ class RainforestAPIService {
       } catch (error: any) {
         clearTimeout(timeout);
         if (error.name === 'AbortError') {
-          console.error('Amazon API timeout after 2.5 seconds');
+          console.error('Amazon API timeout after 5 seconds');
           throw new Error('Amazon API timeout');
         }
         throw error;
@@ -3197,19 +3200,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ]);
           };
 
-          // Amazon search with 2.5 second timeout (matching internal timeout)
+          // Amazon search with 5 second timeout (matching internal timeout)
           if (rainforestService) {
             itemPromises.push(
-              withTimeout(rainforestService.searchProducts(optimizedQuery), 2500)
+              withTimeout(rainforestService.searchProducts(optimizedQuery), 5000)
                 .then(products => {
                   if (products && products.length > 0) {
-                    const product = products[0];
-                    if (product.link && isAmazonUrl(product.link)) {
+                    // Find the best priced product from top 3 results
+                    const topProducts = products.slice(0, 3).filter(p => p.link && isAmazonUrl(p.link));
+                    if (topProducts.length > 0) {
+                      const bestProduct = topProducts.reduce((best, current) => {
+                        const currentPrice = parseFloat(current.price?.value || '999999');
+                        const bestPrice = parseFloat(best.price?.value || '999999');
+                        return currentPrice < bestPrice ? current : best;
+                      }, topProducts[0]);
+                      
                       pricing.amazon = {
                         available: true,
-                        price: product.price?.value || item.price,
-                        link: product.link,
-                        image: product.image || item.imageUrl || null
+                        price: bestProduct.price?.value || item.price,
+                        link: bestProduct.link,
+                        image: bestProduct.image || item.imageUrl || null
                       };
                     }
                   }
