@@ -3367,12 +3367,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const serpService = getSerpAPIService();
 
       // Amazon search promise
+      console.log(`🔍 Checking RainforestAPI service:`, {
+        hasApiKey: !!RAINFOREST_API_KEY,
+        apiKeyPrefix: RAINFOREST_API_KEY ? RAINFOREST_API_KEY.substring(0, 10) + '...' : 'undefined',
+        serviceCreated: !!rainforestService
+      });
+      
       if (rainforestService) {
         const amazonPromise = (async () => {
           try {
             // Use title search for better accuracy instead of ASIN lookup
             console.log(`💰 RainforestAPI: Searching for "${optimizedQuery}" (LIVE REQUEST - COSTS $$$)`);
             const titleProducts = await rainforestService.searchProducts(optimizedQuery);
+            console.log(`💰 RainforestAPI Response:`, {
+              productsFound: titleProducts?.length || 0,
+              firstProduct: titleProducts?.[0]?.title || 'none'
+            });
             if (titleProducts && titleProducts.length > 0) {
               const product = titleProducts[0];
               if (product.link && isAmazonUrl(product.link)) {
@@ -3390,6 +3400,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return pricing.amazon;
         })();
         searchPromises.push({ type: 'amazon', promise: amazonPromise });
+      } else {
+        console.warn('❌ RainforestAPI service not initialized - Amazon pricing unavailable');
       }
 
       // Walmart search promise
