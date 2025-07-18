@@ -995,17 +995,17 @@ export default function ProductSearch() {
 
       {/* Needs List Selection Modal */}
       <Dialog open={showNeedsListModal} onOpenChange={setShowNeedsListModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Choose Needs List</DialogTitle>
-            <DialogDescription>
-              You have multiple needs lists. Which one would you like to add this item to?
+        <DialogContent className="sm:max-w-md max-h-[80vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle className="text-lg font-bold text-navy">Choose Needs List</DialogTitle>
+            <DialogDescription className="text-sm text-gray-600">
+              Select which needs list to add this item to:
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-3">
+          <div className="flex-1 space-y-3 overflow-y-auto pr-2">
             {userWishlists && Array.isArray(userWishlists) && userWishlists.map((needsList: any) => (
-              <Button
+              <div
                 key={needsList.id}
                 onClick={() => {
                   addToWishlistMutation.mutate({ 
@@ -1013,28 +1013,53 @@ export default function ProductSearch() {
                     targetWishlistId: needsList.id.toString() 
                   });
                 }}
-                variant="outline"
-                className="w-full justify-start text-left h-auto p-4"
-                disabled={addingProductId === (selectedProduct?.asin || selectedProduct?.product_id)}
+                className={`
+                  w-full p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-sm
+                  ${addingProductId === (selectedProduct?.asin || selectedProduct?.product_id) 
+                    ? 'border-gray-300 bg-gray-50 cursor-not-allowed' 
+                    : 'border-gray-200 hover:border-coral bg-white hover:bg-coral/5'
+                  }
+                `}
               >
-                <div>
-                  <div className="font-semibold">{needsList.title}</div>
-                  <div className="text-sm text-gray-500 mt-1">{needsList.description}</div>
-                  <div className="text-xs text-coral mt-1">
-                    {needsList.items?.length || 0} items
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2">
+                      <Heart className="h-3 w-3 text-coral flex-shrink-0" />
+                      <div className="font-semibold text-navy text-sm truncate">{needsList.title}</div>
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1 line-clamp-2">
+                      {needsList.description}
+                    </div>
+                    <div className="flex items-center space-x-3 mt-2">
+                      <div className="flex items-center space-x-1">
+                        <Package className="h-3 w-3 text-coral" />
+                        <span className="text-xs text-coral font-medium">
+                          {needsList.items?.length || 0} items
+                        </span>
+                      </div>
+                      {needsList.urgency && (
+                        <Badge variant="outline" className="text-xs border-coral text-coral px-1 py-0">
+                          {needsList.urgency}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ml-3 flex-shrink-0">
+                    <ChevronDown className="h-4 w-4 text-gray-400 transform rotate-[-90deg]" />
                   </div>
                 </div>
-              </Button>
+              </div>
             ))}
           </div>
           
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-end space-x-2 pt-3 border-t flex-shrink-0">
             <Button 
               variant="outline" 
               onClick={() => {
                 setShowNeedsListModal(false);
                 setSelectedProduct(null);
               }}
+              className="px-4 text-sm"
             >
               Cancel
             </Button>
