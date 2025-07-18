@@ -99,7 +99,12 @@ export default function Resources() {
       icon: Heart,
       resources: [
         { name: "Crisis Lifeline", phone: "988", website: "https://suicidepreventionlifeline.org" },
-        { name: "Crisis Text Line", phone: "Text HOME to 741741", website: "https://www.crisistextline.org" }
+        { name: "Crisis Text Line", phone: "Text HOME to 741741", website: "https://www.crisistextline.org" },
+        { name: "National Alliance on Mental Illness (NAMI) HelpLine", phone: "(800) 950-6264", website: "https://www.nami.org/help" },
+        { name: "SAMHSA National Helpline", phone: "(800) 662-4357", website: "https://www.samhsa.gov/find-help/national-helpline" },
+        { name: "Trevor Project (LGBTQ Youth Crisis & Support)", phone: "(866) 488-7386", website: "https://www.thetrevorproject.org/" },
+        { name: "Veterans Crisis Line", phone: "988, Press 1", website: "https://www.veteranscrisisline.net/" },
+        { name: "Mental Health America", phone: "(703) 684-7722", website: "https://www.mhanational.org/" }
       ]
     },
     financial: {
