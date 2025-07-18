@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, useRouter } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -520,12 +520,36 @@ export default function ProductSearch() {
     },
     onSuccess: () => {
       setAddingProductId(null);
-      toast({
-        title: "Item Added!",
-        description: "The item has been added to your needs list.",
-      });
-      // Invalidate cache for the target wishlist
+      
+      // Get the target wishlist info for the success message
       const targetWishlistId = wishlistId || (userWishlists && (userWishlists as any[])?.length > 0 ? (userWishlists as any[])[0].id.toString() : null);
+      const targetWishlist = userWishlists?.find((list: any) => list.id.toString() === targetWishlistId);
+      
+      if (targetWishlist) {
+        toast({
+          title: "Item Added!",
+          description: (
+            <div className="space-y-2">
+              <p>The item has been added to your needs list.</p>
+              <button
+                onClick={() => {
+                  navigate(`/wishlists/${targetWishlistId}`);
+                }}
+                className="text-coral hover:text-coral-dark underline font-medium"
+              >
+                View "{targetWishlist.title}" →
+              </button>
+            </div>
+          ),
+        });
+      } else {
+        toast({
+          title: "Item Added!",
+          description: "The item has been added to your needs list.",
+        });
+      }
+      
+      // Invalidate cache for the target wishlist
       if (targetWishlistId) {
         queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${targetWishlistId}`] });
       }
