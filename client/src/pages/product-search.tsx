@@ -1034,7 +1034,7 @@ export default function ProductSearch() {
                       <div className="flex items-center space-x-1">
                         <Package className="h-3 w-3 text-coral" />
                         <span className="text-xs text-coral font-medium">
-                          {needsList.items?.length || 0} items
+                          {needsList.itemCount || 0} items
                         </span>
                       </div>
                       {needsList.urgency && (

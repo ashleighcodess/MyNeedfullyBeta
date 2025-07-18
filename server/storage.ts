@@ -31,7 +31,7 @@ import {
   type InsertEmailVerificationToken,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte } from "drizzle-orm";
+import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte, getTableColumns } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 // Admin emails that should automatically get admin privileges
@@ -352,11 +352,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserWishlists(userId: string): Promise<Wishlist[]> {
-    return await db
-      .select()
+    const results = await db
+      .select({
+        ...getTableColumns(wishlists),
+        itemCount: sql<number>`(SELECT COUNT(*) FROM ${wishlistItems} WHERE ${wishlistItems.wishlistId} = ${wishlists.id})`
+      })
       .from(wishlists)
       .where(eq(wishlists.userId, userId))
       .orderBy(desc(wishlists.createdAt));
+    
+    return results;
   }
 
   async searchWishlists(params: {
