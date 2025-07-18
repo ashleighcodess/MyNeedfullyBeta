@@ -42,7 +42,7 @@ function generateSecureToken(): string {
 }
 
 // RainforestAPI configuration
-const RAINFOREST_API_KEY = process.env.RAINFOREST_API_KEY || "8789CC1433C54D12B5F2DF1A401E844E";
+const RAINFOREST_API_KEY = process.env.RAINFOREST_API_KEY;
 const RAINFOREST_API_URL = "https://api.rainforestapi.com/request";
 
 // RainforestAPI service class
@@ -92,6 +92,8 @@ class RainforestAPIService {
       }
 
       console.log(`💰 RainforestAPI: Searching for "${query}" (LIVE REQUEST - COSTS $$$)`);
+      console.log(`🔍 Amazon API URL: ${RAINFOREST_API_URL}`);
+      console.log(`🔍 Amazon API Key: ${this.apiKey.substring(0, 10)}...`);
       await this.rateLimitDelay();
 
       const params = new URLSearchParams({
@@ -117,12 +119,22 @@ class RainforestAPIService {
           signal: controller.signal
         });
         
+        console.log(`🔍 Amazon API Response Status: ${response.status}`);
+        
         if (!response.ok) {
-          throw new Error(`RainforestAPI request failed: ${response.status}`);
+          const errorText = await response.text();
+          console.error(`🔍 Amazon API Error Response: ${errorText}`);
+          throw new Error(`RainforestAPI request failed: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
         clearTimeout(timeout);
+        console.log(`🔍 Amazon API Response:`, {
+          hasSearchResults: !!data.search_results,
+          resultsCount: data.search_results?.length || 0,
+          firstProductTitle: data.search_results?.[0]?.title,
+          requestInfo: data.request_info
+        });
         const results = data.search_results || [];
         this.setCache(cacheKey, results);
         return results;
@@ -132,6 +144,11 @@ class RainforestAPIService {
           console.error('Amazon API timeout after 5 seconds');
           throw new Error('Amazon API timeout');
         }
+        console.error(`🔍 Amazon API Error Details:`, {
+          name: error.name,
+          message: error.message,
+          stack: error.stack?.split('\n')[0]
+        });
         throw error;
       }
     } catch (error) {
