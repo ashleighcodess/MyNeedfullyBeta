@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
 
 export default function ContactUs() {
@@ -15,8 +17,36 @@ export default function ContactUs() {
     phoneNumber: "",
     message: ""
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // Contact form mutation
+  const contactMutation = useMutation({
+    mutationFn: async (formData: typeof formData) => {
+      return await apiRequest("POST", "/api/contact", formData);
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Message Sent!",
+        description: data.message || "Thank you for contacting us. We'll respond within 24 hours.",
+        duration: 5000,
+      });
+      
+      // Reset form
+      setFormData({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        message: ""
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
 
   // SEO Configuration
   useSEO({
@@ -58,34 +88,18 @@ export default function ContactUs() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // Simulate form submission - in a real app, this would send to your backend
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll respond within 24 hours.",
-        duration: 5000,
-      });
-
-      // Reset form
-      setFormData({
-        fullName: "",
-        email: "",
-        phoneNumber: "",
-        message: ""
-      });
-    } catch (error) {
+    
+    // Validate form before submission
+    if (!formData.fullName || !formData.email || !formData.phoneNumber || !formData.message) {
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
+      return;
     }
+    
+    contactMutation.mutate(formData);
   };
 
   return (
@@ -182,10 +196,10 @@ export default function ContactUs() {
 
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={contactMutation.isPending}
                 className="w-full bg-coral hover:bg-coral-dark text-white font-medium py-3 rounded-lg transition-colors"
               >
-                {isSubmitting ? "Sending..." : "Submit"}
+                {contactMutation.isPending ? "Sending..." : "Submit"}
               </Button>
             </form>
           </div>

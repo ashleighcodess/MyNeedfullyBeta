@@ -3587,6 +3587,148 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contact Form endpoint
+  app.post('/api/contact', async (req, res) => {
+    try {
+      const { fullName, email, phoneNumber, message } = req.body;
+      
+      // Validate required fields
+      if (!fullName || !email || !phoneNumber || !message) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+      
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+      }
+      
+      console.log(`📧 Contact form submission from: ${fullName} (${email})`);
+      
+      // Send email notification to admin
+      const adminEmailSent = await emailService.sendEmail({
+        to: 'info@myneedfully.com',
+        from: 'data@myneedfully.app',
+        subject: `Contact Form Submission from ${fullName}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+            <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              <h2 style="color: #FF6B6B; margin-bottom: 20px;">New Contact Form Submission</h2>
+              
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #333;">Name:</strong> 
+                <span style="color: #666;">${fullName}</span>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #333;">Email:</strong> 
+                <span style="color: #666;">${email}</span>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #333;">Phone:</strong> 
+                <span style="color: #666;">${phoneNumber}</span>
+              </div>
+              
+              <div style="margin-bottom: 20px;">
+                <strong style="color: #333;">Message:</strong>
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 10px; color: #666; line-height: 1.5;">
+                  ${message.replace(/\n/g, '<br>')}
+                </div>
+              </div>
+              
+              <div style="font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 15px;">
+                Submitted on: ${new Date().toLocaleString()}
+              </div>
+            </div>
+          </div>
+        `,
+        text: `
+New Contact Form Submission
+
+Name: ${fullName}
+Email: ${email}  
+Phone: ${phoneNumber}
+
+Message:
+${message}
+
+Submitted on: ${new Date().toLocaleString()}
+        `
+      });
+      
+      // Send confirmation email to user
+      const userEmailSent = await emailService.sendEmail({
+        to: email,
+        from: 'data@myneedfully.app',
+        subject: 'Thank you for contacting MyNeedfully',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+            <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              <h2 style="color: #FF6B6B; margin-bottom: 20px;">Thank You for Contacting Us</h2>
+              
+              <p style="color: #666; line-height: 1.6;">Dear ${fullName},</p>
+              
+              <p style="color: #666; line-height: 1.6;">
+                Thank you for reaching out to MyNeedfully. We've received your message and will get back to you within 24 hours.
+              </p>
+              
+              <p style="color: #666; line-height: 1.6;">
+                We appreciate you taking the time to contact us and look forward to helping you.
+              </p>
+              
+              <div style="margin: 30px 0; padding: 20px; background-color: #f8f8f8; border-radius: 4px;">
+                <p style="margin: 0; color: #999; font-size: 14px;"><strong>Your message:</strong></p>
+                <p style="margin: 10px 0 0 0; color: #666; font-style: italic;">"${message}"</p>
+              </div>
+              
+              <p style="color: #666; line-height: 1.6;">
+                Best regards,<br>
+                The MyNeedfully Team
+              </p>
+              
+              <div style="font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 15px; margin-top: 30px;">
+                This is an automated confirmation. Please do not reply to this email.
+              </div>
+            </div>
+          </div>
+        `,
+        text: `
+Dear ${fullName},
+
+Thank you for reaching out to MyNeedfully. We've received your message and will get back to you within 24 hours.
+
+Your message: "${message}"
+
+We appreciate you taking the time to contact us and look forward to helping you.
+
+Best regards,
+The MyNeedfully Team
+        `
+      });
+      
+      if (adminEmailSent && userEmailSent) {
+        console.log('✅ Contact form emails sent successfully');
+        res.json({ 
+          success: true, 
+          message: 'Your message has been sent successfully. We will respond within 24 hours.' 
+        });
+      } else {
+        console.log('⚠️ Contact form submission received but email delivery failed');
+        res.status(500).json({ 
+          success: false, 
+          message: 'Message received but there was an issue with email delivery. We will still respond to your inquiry.' 
+        });
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'There was an error processing your message. Please try again.' 
+      });
+    }
+  });
+
   // Test email endpoint (temporary for debugging)
   app.post('/api/test-email', async (req, res) => {
     try {
