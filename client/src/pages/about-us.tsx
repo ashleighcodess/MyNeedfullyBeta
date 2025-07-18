@@ -251,12 +251,7 @@ export default function AboutUs() {
                 Our <span className="font-bold">vision</span> is a world where no one faces their crisis alone, where <span className="font-bold">communities</span> meet individual needs with compassion, and recovery is eased by direct and meaningful <span className="font-bold">support.</span>
               </h2>
               
-              <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
-                MyNeedfully.com was born from a simple observation: when people face 
-                crises like natural disasters, domestic violence, or homelessness, they often 
-                need specific items to rebuild their lives - but it's hard for friends, family, and 
-                community members to know exactly what to provide.
-              </p>
+              
               <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
                 We created a platform that makes it easy for individuals in need to create 
                 wishlists of essential items, and for others to directly fulfill wishes. By 
