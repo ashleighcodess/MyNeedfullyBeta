@@ -110,9 +110,9 @@ class RainforestAPIService {
         ...(options.max_price && { max_price: options.max_price.toString() }),
       });
 
-      // Add AbortController for timeout - increased for Amazon reliability
+      // Add AbortController for timeout - balanced for speed and reliability
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000); // 15 second timeout for Amazon API to respond properly
+      const timeout = setTimeout(() => controller.abort(), 8000); // 8 second timeout - balanced for speed while giving Amazon enough time
       
       try {
         const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`, {
@@ -141,7 +141,7 @@ class RainforestAPIService {
       } catch (error: any) {
         clearTimeout(timeout);
         if (error.name === 'AbortError') {
-          console.error('Amazon API timeout after 15 seconds');
+          console.error('Amazon API timeout after 8 seconds');
           throw new Error('Amazon API timeout');
         }
         console.error(`🔍 Amazon API Error Details:`, {
@@ -3219,10 +3219,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ]);
           };
 
-          // Amazon search with 15 second timeout (matching internal timeout)
+          // Amazon search with 8 second timeout (matching internal timeout)
           if (rainforestService) {
             itemPromises.push(
-              withTimeout(rainforestService.searchProducts(optimizedQuery), 15000)
+              withTimeout(rainforestService.searchProducts(optimizedQuery), 8000)
                 .then(products => {
                   if (products && products.length > 0) {
                     // Find the best priced product from top 3 results
