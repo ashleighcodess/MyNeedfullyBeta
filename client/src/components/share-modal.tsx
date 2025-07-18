@@ -94,15 +94,15 @@ export function ShareModal({
     if (platform.name === "Instagram") {
       try {
         await navigator.clipboard.writeText(shareText);
-        window.open('https://www.instagram.com/', '_blank');
         toast({
-          title: "Content Copied!",
-          description: "Opening Instagram - paste your content to share this needs list.",
+          title: "Content Copied for Instagram!",
+          description: "Text copied to clipboard. Open Instagram app to create a post/story and paste the content.",
         });
       } catch (error) {
         toast({
           title: "Instagram Sharing",
-          description: "Copy the link below and share it on Instagram.",
+          description: "Copy the link below and share it manually on Instagram.",
+          variant: "destructive",
         });
       }
       return;
