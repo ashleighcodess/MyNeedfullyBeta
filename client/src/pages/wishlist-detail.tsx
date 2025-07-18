@@ -1264,11 +1264,10 @@ export default function WishlistDetail() {
                       </Button>
                     )}
                   </div>
-                )}
+                ))}
               </CardContent>
             </Card>
           </div>
-        )}
       </div>
 
       {/* Image Carousel Modal */}
