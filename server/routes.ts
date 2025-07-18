@@ -58,13 +58,7 @@ class RainforestAPIService {
   }
 
   private async rateLimitDelay(): Promise<void> {
-    const now = Date.now();
-    const timeSinceLastRequest = now - this.lastRequestTime;
-    if (timeSinceLastRequest < this.MIN_REQUEST_INTERVAL) {
-      const delay = this.MIN_REQUEST_INTERVAL - timeSinceLastRequest;
-      console.log(`Rate limiting: waiting ${delay}ms before RainforestAPI request`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
+    // Removed rate limiting for batch operations since we're already using timeout protection
     this.lastRequestTime = Date.now();
   }
 
@@ -111,16 +105,32 @@ class RainforestAPIService {
         ...(options.max_price && { max_price: options.max_price.toString() }),
       });
 
-      const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`);
+      // Add AbortController for timeout
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2500); // 2.5 second timeout for Amazon
       
-      if (!response.ok) {
-        throw new Error(`RainforestAPI request failed: ${response.status}`);
+      try {
+        const response = await fetch(`${RAINFOREST_API_URL}?${params.toString()}`, {
+          signal: controller.signal
+        });
+        
+        if (!response.ok) {
+          throw new Error(`RainforestAPI request failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        clearTimeout(timeout);
+        const results = data.search_results || [];
+        this.setCache(cacheKey, results);
+        return results;
+      } catch (error: any) {
+        clearTimeout(timeout);
+        if (error.name === 'AbortError') {
+          console.error('Amazon API timeout after 2.5 seconds');
+          throw new Error('Amazon API timeout');
+        }
+        throw error;
       }
-      
-      const data = await response.json();
-      const results = data.search_results || [];
-      this.setCache(cacheKey, results);
-      return results;
     } catch (error) {
       console.error('RainforestAPI error:', error);
       return [];
@@ -3187,10 +3197,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ]);
           };
 
-          // Amazon search with 3 second timeout
+          // Amazon search with 2.5 second timeout (matching internal timeout)
           if (rainforestService) {
             itemPromises.push(
-              withTimeout(rainforestService.searchProducts(optimizedQuery), 3000)
+              withTimeout(rainforestService.searchProducts(optimizedQuery), 2500)
                 .then(products => {
                   if (products && products.length > 0) {
                     const product = products[0];
