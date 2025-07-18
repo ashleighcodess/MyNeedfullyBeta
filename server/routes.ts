@@ -14,28 +14,7 @@ import { getSerpAPIService, SerpProduct } from "./serpapi-service";
 import { emailService } from "./email-service";
 
 // Import security and performance middleware
-import { 
-  generalLimiter, 
-  authLimiter, 
-  searchLimiter, 
-  createUserLimiter, 
-  uploadLimiter 
-} from "./middleware/rateLimiter";
-import SecurityMonitor from "./services/security-monitor";
-import { 
-  corsOptions, 
-  securityHeaders, 
-  sanitizeInput, 
-  securityLogger, 
-  validateFileUpload 
-} from "./middleware/security";
-import { 
-  compressionMiddleware, 
-  requestTimeout, 
-  responseTimeTracker, 
-  memoryMonitor, 
-  staticCacheHeaders 
-} from "./middleware/performance";
+import { validateDataIntegrity, verifyUserOwnership, checkRateLimit, sanitizeLogData, backupUserFile } from "./data-security";
 import cors from "cors";
 import {
   insertWishlistSchema,
@@ -390,21 +369,13 @@ const isAdmin: RequestHandler = async (req: any, res, next) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Security middleware
-  app.use(cors(corsOptions));
-  app.use(securityHeaders);
-  app.use(sanitizeInput);
-  app.use(securityLogger);
-  app.use(SecurityMonitor.securityMiddleware());
-  
-  // Performance middleware
-  app.use(compressionMiddleware);
-  app.use(requestTimeout(30000)); // 30 second timeout
-  // app.use(responseTimeTracker); // DISABLED: Causes 5+ second delays
-  // app.use(memoryMonitor); // DISABLED: Causes performance issues
-  app.use(staticCacheHeaders);
-  
-  // Rate limiting will be applied to specific routes below
+  // Lightweight data security logging (no performance impact)
+  app.use((req: any, res, next) => {
+    if (req.method !== 'GET') {
+      validateDataIntegrity(req.method, sanitizeLogData(req.body), req.user?.claims?.sub);
+    }
+    next();
+  });
 
   // Auth middleware
   await setupMultiAuth(app);
@@ -448,7 +419,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ULTRA FAST Multi-Retailer Search Endpoint (Amazon + Walmart + Target)
-  app.get('/api/search', searchLimiter, async (req, res) => {
+  app.get('/api/search', async (req, res) => {
     try {
       const { query, page = '1' } = req.query;
       
@@ -1711,7 +1682,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/wishlists', isAuthenticated, uploadLimiter, (req: any, res: any, next: any) => {
+  app.post('/api/wishlists', isAuthenticated, (req: any, res: any, next: any) => {
     upload.array('storyImage', 5)(req, res, (error: any) => {
       if (error) {
         console.error('Multer upload error:', error);
@@ -1883,14 +1854,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/wishlists/:id', isAuthenticated, uploadLimiter, upload.array('storyImages', 5), async (req: any, res) => {
+  app.put('/api/wishlists/:id', isAuthenticated, upload.array('storyImages', 5), async (req: any, res) => {
     try {
       console.log('🔄 PUT /api/wishlists/:id endpoint hit');
       const wishlistId = parseInt(req.params.id);
       const userId = req.user.profile?.id || req.user.claims?.sub;
+      
+      // DATA SECURITY: Rate limiting and ownership verification
+      if (!checkRateLimit(userId, 'wishlist_edit', 10)) {
+        return res.status(429).json({ message: "Too many edit requests. Please try again later." });
+      }
+      
+      if (!await verifyUserOwnership(wishlistId, userId)) {
+        console.log('❌ Edit forbidden: User does not own wishlist');
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
       console.log('📝 Updating wishlist:', { wishlistId, userId });
-      console.log('📋 Request body:', req.body);
+      console.log('📋 Request body:', sanitizeLogData(req.body));
       console.log('📎 Files:', req.files?.length || 0);
+      
+      // Backup uploaded files for data protection
+      if (req.files && req.files.length > 0) {
+        req.files.forEach((file: any) => {
+          backupUserFile(file.path, userId);
+        });
+      }
       
       // Verify user owns the wishlist
       const existingWishlist = await storage.getWishlist(wishlistId);
@@ -2000,7 +1989,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('🗂️ PATCH /api/wishlists/:id endpoint hit (ARCHIVE FUNCTIONALITY)');
       const wishlistId = parseInt(req.params.id);
       const userId = req.user.profile?.id || req.user.claims?.sub;
-      console.log('📋 Archive request:', { wishlistId, userId, body: req.body });
+      
+      // DATA SECURITY: Rate limiting and ownership verification
+      if (!checkRateLimit(userId, 'wishlist_update', 20)) {
+        return res.status(429).json({ message: "Too many update requests. Please try again later." });
+      }
+      
+      if (!await verifyUserOwnership(wishlistId, userId)) {
+        console.log('❌ Archive forbidden: User does not own wishlist');
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      console.log('📋 Archive request:', { wishlistId, userId, body: sanitizeLogData(req.body) });
       
       // Verify user owns the wishlist
       const existingWishlist = await storage.getWishlist(wishlistId);
