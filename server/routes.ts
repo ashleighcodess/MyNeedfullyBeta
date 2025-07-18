@@ -135,7 +135,15 @@ class RainforestAPIService {
           firstProductTitle: data.search_results?.[0]?.title,
           requestInfo: data.request_info
         });
-        const results = data.search_results || [];
+        
+        // Extract only the essential fields we need
+        const results = (data.search_results || []).map((item: any) => ({
+          title: item.title,
+          price: item.price,
+          image: item.image,
+          link: item.link
+        }));
+        
         this.setCache(cacheKey, results);
         return results;
       } catch (error: any) {
@@ -477,10 +485,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .then(data => ({
           retailer: 'amazon',
           products: data.search_results?.map((product: any) => ({
-            ...product,
+            title: product.title,
+            price: product.price,
+            image: product.image,
+            link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`,
             retailer: 'amazon',
-            retailer_name: 'Amazon',
-            link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+            retailer_name: 'Amazon'
           })) || []
         }))
         .catch(() => ({ retailer: 'amazon', products: [] }));
@@ -2914,10 +2924,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         return res.json({
           data: data.search_results?.map((product: any) => ({
-            ...product,
+            title: product.title,
+            price: product.price,
+            image: product.image,
+            link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`,
             retailer: 'amazon',
             retailer_name: 'Amazon',
-            link: product.link || `https://amazon.com/dp/${product.asin}?tag=needfully-20`
+            // Keep additional fields that might be needed
+            asin: product.asin,
+            is_prime: product.is_prime,
+            delivery: product.delivery
           })) || []
         });
       }
