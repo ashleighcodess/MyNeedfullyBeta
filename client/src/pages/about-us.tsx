@@ -94,6 +94,7 @@ function useAnimatedCounter(targetValue: number, duration: number = 2000, startA
 import aboutUsImage from "@assets/AboutUsIMage2_1751592833990.png";
 import missionImage from "@assets/AboutUsImage3_1751592935275.png";
 import howItWorksBackground from "@assets/HowIcons_1751593054903.png";
+import housefireImage from "@assets/housefire_1752846845405.jpg";
 
 export default function AboutUs() {
   const [isVisible, setIsVisible] = useState(false);
@@ -337,7 +338,7 @@ export default function AboutUs() {
             <div className="flex justify-center lg:justify-start animate-slide-in-left" data-story-image-section>
               <div className="relative group w-full">
                 <img 
-                  src="/attached_assets/housefire_1752846845405.jpg"
+                  src={housefireImage}
                   alt="House fire that inspired the creation of MyNeedfully" 
                   className="w-full h-[400px] lg:h-[450px] xl:h-[500px] object-cover rounded-xl shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl"
                 />
