@@ -1264,7 +1264,7 @@ export default function WishlistDetail() {
                       </Button>
                     )}
                   </div>
-                ))}
+                )}
               </CardContent>
             </Card>
           </div>
