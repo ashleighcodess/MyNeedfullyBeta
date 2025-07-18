@@ -147,52 +147,19 @@ export default function WishlistDetail() {
     }
   };
 
-  // OPTIMIZED: Batch pricing fetch for all items in wishlist (1-2 seconds vs 6-8 seconds)
-  const [pricingLoading, setPricingLoading] = useState(false);
-  const [pricingTimeout, setPricingTimeout] = useState(false);
-
-  const fetchBatchPricing = async (wishlistId: string) => {
-    if (pricingLoading) return; // Prevent duplicate calls
-
+  // Function to fetch live pricing for an item
+  const fetchItemPricing = async (itemId: number) => {
     try {
-      setPricingLoading(true);
-      setPricingTimeout(false);
-      console.log(`💰 Fetching batch pricing for wishlist ${wishlistId}`);
-      
-      const url = `/api/wishlist/${wishlistId}/pricing`;
-      console.log(`💰 Request URL: ${url}`);
-      
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-      });
-
-      console.log(`💰 Response status: ${response.status} ${response.statusText}`);
-      console.log(`💰 Response headers:`, Object.fromEntries(response.headers.entries()));
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`💰 Error response body:`, errorText);
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const response = await fetch(`/api/items/${itemId}/pricing`);
+      if (response.ok) {
+        const pricingData = await response.json();
+        setItemPricing(prev => ({
+          ...prev,
+          [itemId]: pricingData
+        }));
       }
-
-      const batchPricingData = await response.json();
-      console.log(`💰 Batch pricing loaded for ${Object.keys(batchPricingData).length} items`);
-      console.log(`💰 Sample data:`, Object.keys(batchPricingData).slice(0, 2));
-      setItemPricing(batchPricingData);
-
     } catch (error) {
-      console.error('💰 Error fetching batch pricing:', error);
-      if (error instanceof Error) {
-        console.error('💰 Error details:', error.name, '|', error.message);
-      }
-      setPricingTimeout(true);
-    } finally {
-      setPricingLoading(false);
+      console.error('Error fetching pricing for item:', itemId, error);
     }
   };
 
@@ -223,17 +190,16 @@ export default function WishlistDetail() {
     enabled: !!id,
   });
 
-  // OPTIMIZED: Fetch batch pricing when wishlist loads (single API call vs multiple)
+  // Fetch pricing data for each item when wishlist loads
   useEffect(() => {
-    if (wishlist?.items && Array.isArray(wishlist.items) && wishlist.items.length > 0 && !pricingLoading) {
-      console.log(`💰 Starting batch pricing for ${wishlist.items.length} items`);
-      
-      // Test direct endpoint access first
-      console.log(`💰 Testing endpoint: /api/wishlist/${id}/pricing`);
-      
-      fetchBatchPricing(id);
+    if (wishlist?.items && Array.isArray(wishlist.items)) {
+      wishlist.items.forEach((item: any) => {
+        if (item.id && !itemPricing[item.id]) {
+          fetchItemPricing(item.id);
+        }
+      });
     }
-  }, [wishlist?.items, id]);
+  }, [wishlist?.items]);
 
   // SEO Configuration - Dynamic based on wishlist data
   useSEO({
@@ -855,15 +821,8 @@ export default function WishlistDetail() {
                                 <div className={`text-xl sm:text-2xl font-bold ${
                                   (item.quantityFulfilled >= item.quantity) ? 'text-gray-400 line-through' : 'text-gray-900'
                                 }`}>
-                                  {pricingLoading ? (
-                                    <span className="text-blue-600">Loading price...</span>
-                                  ) : pricingTimeout ? (
-                                    <span className="text-red-600">Price not available</span>
-                                  ) : !itemPricing[item.id]?.pricing ? (
-                                    <span className="text-gray-500">Loading price...</span>
-                                  ) : (
-                                    getBestAvailablePrice(item.id) || 'Price not available'
-                                  )}
+                                  {!itemPricing[item.id]?.pricing ? 'Loading Best Price' : 
+                                   getBestAvailablePrice(item.id) || 'Price not available'}
                                 </div>
                               </div>
                               

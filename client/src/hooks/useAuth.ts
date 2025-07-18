@@ -13,32 +13,28 @@ export function useAuth() {
     refetchOnWindowFocus: false, // Don't refetch on focus to prevent constant requests
     refetchOnMount: false, // Don't refetch on every mount to reduce requests
     queryFn: async () => {
-      try {
-        const response = await fetch('/api/auth/user', {
-          credentials: 'include', // Ensure cookies are sent
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (response.status === 401) {
-          // Return null for unauthorized instead of throwing
-          return null;
-        }
-        
-        if (!response.ok) {
-          console.warn(`Auth check failed: ${response.status} ${response.statusText}`);
-          return null; // Return null instead of throwing to prevent app crashes
-        }
-        
-        const userData = await response.json();
-        return userData;
-      } catch (networkError) {
-        console.warn('Auth network error:', networkError);
-        return null; // Return null for network errors to prevent app crashes
+      const response = await fetch('/api/auth/user', {
+        credentials: 'include', // Ensure cookies are sent
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.status === 401) {
+        // Return null for unauthorized instead of throwing
+        return null;
       }
+      
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+      
+      const userData = await response.json();
+      return userData;
     },
   });
+
+  // Removed excessive logging for better performance
 
   return {
     user: user || null,
