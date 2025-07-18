@@ -467,7 +467,11 @@ export default function Profile() {
                         </Badge>
                       </div>
                       <p className="text-gray-600 mb-4 text-sm sm:text-base">
-                        {user.bio || `Welcome to ${user.firstName}'s profile! This community member is ready to help make a difference in people's lives.`}
+                        {user.bio || (
+                          <Link href="/profile/edit" className="text-coral hover:text-coral/80 text-sm underline">
+                            Fill out your bio
+                          </Link>
+                        )}
                       </p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
