@@ -3177,13 +3177,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/wishlist/:wishlistId/pricing', async (req, res) => {
     try {
       const wishlistId = parseInt(req.params.wishlistId);
+      const progressive = req.query.progressive === 'true';
       const wishlistItems = await storage.getWishlistItems(wishlistId);
       
       if (!wishlistItems || wishlistItems.length === 0) {
         return res.json({});
       }
 
-      console.log(`💰 Starting batch pricing for ${wishlistItems.length} items`);
+      console.log(`💰 Starting batch pricing for ${wishlistItems.length} items (progressive: ${progressive})`);
       const startTime = Date.now();
 
       // Helper function to optimize search terms
@@ -3235,8 +3236,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             ]);
           };
 
-          // Amazon search with 8 second timeout (matching internal timeout)
-          if (rainforestService) {
+          // Amazon search with 8 second timeout (skip in progressive mode)
+          if (rainforestService && !progressive) {
             itemPromises.push(
               withTimeout(rainforestService.searchProducts(optimizedQuery), 8000)
                 .then(products => {
@@ -3314,6 +3315,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error in batch pricing:", error);
       res.status(500).json({ message: "Failed to fetch batch pricing" });
+    }
+  });
+
+  // NEW: Amazon-only pricing endpoint for progressive loading
+  app.get('/api/wishlist/:wishlistId/amazon-pricing', async (req, res) => {
+    try {
+      const wishlistId = parseInt(req.params.wishlistId);
+      const wishlistItems = await storage.getWishlistItems(wishlistId);
+      
+      if (!wishlistItems || wishlistItems.length === 0) {
+        return res.json({});
+      }
+
+      console.log(`💰 Starting Amazon-only pricing for ${wishlistItems.length} items`);
+      const startTime = Date.now();
+
+      // Helper function to optimize search terms
+      const optimizeSearchQuery = (title: string) => {
+        let optimized = title
+          .replace(/\(Select for More Options\)/gi, '')
+          .replace(/\(.*?\)/g, '')
+          .replace(/,.*$/, '')
+          .replace(/\b(size|count|pack|oz|lb|lbs|ml|ct)\s+\d+.*$/gi, '')
+          .replace(/\b\d+\s*(size|count|pack|oz|lb|lbs|ml|ct)\b/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        if (title.toLowerCase().includes('pampers cruisers')) {
+          optimized = 'Pampers Cruisers Diapers';
+        }
+        
+        return optimized;
+      };
+
+      const isAmazonUrl = (url: string) => url && url.includes('amazon.com');
+      const rainforestService = getRainforestAPIService();
+      const pricingResults: Record<number, any> = {};
+      
+      if (!rainforestService) {
+        return res.json({});
+      }
+
+      // Helper to add timeout to promises
+      const withTimeout = (promise: Promise<any>, timeoutMs: number) => {
+        return Promise.race([
+          promise,
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout')), timeoutMs)
+          )
+        ]);
+      };
+      
+      // Process all Amazon searches in parallel
+      await Promise.all(wishlistItems.map(async (item) => {
+        const pricing = {
+          amazon: { available: false, price: item.price, link: null, image: null }
+        };
+
+        const optimizedQuery = optimizeSearchQuery(item.title);
+
+        try {
+          const products = await withTimeout(rainforestService.searchProducts(optimizedQuery), 8000);
+          if (products && products.length > 0) {
+            // Find the best priced product from top 3 results
+            const topProducts = products.slice(0, 3).filter(p => p.link && isAmazonUrl(p.link));
+            if (topProducts.length > 0) {
+              const bestProduct = topProducts.reduce((best, current) => {
+                const currentPrice = parseFloat(current.price?.value || '999999');
+                const bestPrice = parseFloat(best.price?.value || '999999');
+                return currentPrice < bestPrice ? current : best;
+              }, topProducts[0]);
+              
+              pricing.amazon = {
+                available: true,
+                price: bestProduct.price?.value || item.price,
+                link: bestProduct.link,
+                image: bestProduct.image || item.imageUrl || null
+              };
+            }
+          }
+        } catch (err) {
+          console.log(`Amazon error for ${item.title}:`, err);
+        }
+        
+        pricingResults[item.id] = { pricing };
+      }));
+      
+      const totalTime = Date.now() - startTime;
+      console.log(`💰 Amazon pricing completed in ${totalTime}ms for ${wishlistItems.length} items`);
+      
+      res.json(pricingResults);
+    } catch (error) {
+      console.error("Error in Amazon pricing:", error);
+      res.status(500).json({ message: "Failed to fetch Amazon pricing" });
     }
   });
 

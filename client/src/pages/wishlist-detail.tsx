@@ -190,7 +190,7 @@ export default function WishlistDetail() {
     enabled: !!id,
   });
 
-  // Fetch batch pricing data for ALL items at once - SUPER FAST!
+  // Fetch batch pricing data with progressive loading - Target/Walmart first, then Amazon
   useEffect(() => {
     if (wishlist?.items && Array.isArray(wishlist.items) && wishlist.items.length > 0 && id) {
       // Check if we already have pricing data to avoid refetching
@@ -200,29 +200,59 @@ export default function WishlistDetail() {
         return;
       }
       
-      const fetchBatchPricing = async () => {
+      const fetchProgressivePricing = async () => {
         try {
-          console.log(`💰 Starting batch pricing for ${wishlist.items.length} items`);
-          console.log(`💰 Testing endpoint: /api/wishlist/${id}/pricing`);
-          console.log(`💰 Fetching batch pricing for wishlist ${id}`);
-          console.log(`💰 Request URL: /api/wishlist/${id}/pricing`);
+          console.log(`💰 Starting progressive pricing for ${wishlist.items.length} items`);
           
-          const response = await fetch(`/api/wishlist/${id}/pricing`);
-          console.log(`💰 Response status: ${response.status} ${response.statusText}`);
-          console.log(`💰 Response headers:`, Object.fromEntries(response.headers.entries()));
+          // First, fetch Target and Walmart prices (fast - 3 second timeout each)
+          console.log(`💰 Fetching fast retailers (Target/Walmart) first...`);
+          const fastResponse = await fetch(`/api/wishlist/${id}/pricing?progressive=true`);
           
-          if (response.ok) {
-            const batchPricingData = await response.json();
-            console.log(`💰 Batch pricing loaded for ${Object.keys(batchPricingData).length} items`);
-            console.log(`💰 Sample data:`, Object.keys(batchPricingData).slice(0, 2));
+          if (fastResponse.ok) {
+            const fastPricingData = await fastResponse.json();
+            console.log(`💰 Fast retailers loaded for ${Object.keys(fastPricingData).length} items`);
             
-            // Update all pricing at once
-            setItemPricing(batchPricingData);
-          } else {
-            console.error('Error fetching batch pricing:', response);
+            // Update pricing with Target/Walmart data immediately
+            setItemPricing(prevPricing => {
+              const updated = { ...prevPricing };
+              Object.entries(fastPricingData).forEach(([itemId, data]: [string, any]) => {
+                updated[itemId] = {
+                  ...updated[itemId],
+                  pricing: {
+                    ...updated[itemId]?.pricing,
+                    ...data.pricing
+                  }
+                };
+              });
+              return updated;
+            });
+          }
+          
+          // Then fetch Amazon prices separately (slower - 8 second timeout)
+          console.log(`💰 Now fetching Amazon prices...`);
+          const amazonResponse = await fetch(`/api/wishlist/${id}/amazon-pricing`);
+          
+          if (amazonResponse.ok) {
+            const amazonPricingData = await amazonResponse.json();
+            console.log(`💰 Amazon pricing loaded for ${Object.keys(amazonPricingData).length} items`);
+            
+            // Update pricing with Amazon data
+            setItemPricing(prevPricing => {
+              const updated = { ...prevPricing };
+              Object.entries(amazonPricingData).forEach(([itemId, data]: [string, any]) => {
+                updated[itemId] = {
+                  ...updated[itemId],
+                  pricing: {
+                    ...updated[itemId]?.pricing,
+                    ...data.pricing
+                  }
+                };
+              });
+              return updated;
+            });
           }
         } catch (error) {
-          console.error('Error fetching batch pricing:', error);
+          console.error('Error fetching progressive pricing:', error);
           // Fallback to individual pricing if batch fails
           wishlist.items.forEach((item: any) => {
             if (item.id && !itemPricing[item.id]) {
@@ -232,9 +262,9 @@ export default function WishlistDetail() {
         }
       };
       
-      fetchBatchPricing();
+      fetchProgressivePricing();
     }
-  }, [wishlist?.items, id, itemPricing]); // Added itemPricing to deps to prevent re-fetching
+  }, [wishlist?.items, id]); // Removed itemPricing from deps to allow progressive updates
 
   // SEO Configuration - Dynamic based on wishlist data
   useSEO({
