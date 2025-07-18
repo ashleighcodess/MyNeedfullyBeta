@@ -252,12 +252,7 @@ export default function AboutUs() {
               </h2>
               
               
-              <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
-                We created a platform that makes it easy for individuals in need to create 
-                wishlists of essential items, and for others to directly fulfill wishes. By 
-                connecting people in crisis with those who want to help, we enable 
-                communities to provide targeted, meaningful support.
-              </p>
+              
               <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
                 Our dream is a world where no one faces crisis alone, where communities 
                 respond effectively to individuals needs, and where the path to recovery is 
