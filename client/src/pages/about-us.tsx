@@ -253,11 +253,7 @@ export default function AboutUs() {
               
               
               
-              <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
-                Our dream is a world where no one faces crisis alone, where communities 
-                respond effectively to individuals needs, and where the path to recovery is 
-                made smoother through direct, tangible support.
-              </p>
+              
               
               
             </div>
