@@ -70,7 +70,13 @@ export default function Resources() {
       icon: Home,
       resources: [
         { name: "HUD Housing Assistance", phone: "(800) 569-4287", website: "https://www.hud.gov" },
-        { name: "Homeless Shelter Directory", phone: "211", website: "https://www.homelessshelterdirectory.org" }
+        { name: "Homeless Shelter Directory", phone: "211", website: "https://www.homelessshelterdirectory.org" },
+        { name: "National Call Center for Homeless Veterans", phone: "(877) 424-3838", website: "https://www.va.gov/homeless/nationalcallcenter.asp" },
+        { name: "United Way 2-1-1", phone: "2-1-1", website: "https://www.211.org/" },
+        { name: "National Coalition for the Homeless", phone: "(202) 462-4822", website: "https://nationalhomeless.org/" },
+        { name: "Salvation Army – Housing & Homeless Services", phone: "(800) 725-2769", website: "https://www.salvationarmyusa.org/usn/" },
+        { name: "Catholic Charities USA – Housing Assistance", phone: "(703) 549-1390", website: "https://www.catholiccharitiesusa.org/" },
+        { name: "Continuum of Care (CoC) Homeless Assistance Programs – HUD", phone: "(202) 708-1112", website: "https://www.hudexchange.info/programs/coc/" }
       ]
     },
     food: {
