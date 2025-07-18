@@ -953,29 +953,21 @@ export default function WishlistDetail() {
                           {/* Show retailer buttons only for authenticated users */}
                           {user && !item.isFulfilled && (
                             <div className="space-y-2">
-                            {/* Amazon */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
-                                <div>
-                                  <div className="text-xs font-medium text-gray-900">Amazon</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {!itemPricing[item.id]?.pricing ? (
-                                      <Skeleton className="h-4 w-16" />
-                                    ) : (
-                                      <>
-                                        {formatPrice(getRetailerPrice(item.id, 'amazon'))}
-                                        {itemPricing[item.id]?.pricing?.amazon?.available && (
-                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                        )}
-                                      </>
-                                    )}
+                            {/* Amazon - Only show when pricing is available */}
+                            {itemPricing[item.id]?.pricing?.amazon?.available && (
+                              <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
+                                <div className="flex items-center space-x-2">
+                                  <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
+                                  <div>
+                                    <div className="text-xs font-medium text-gray-900">Amazon</div>
+                                    <div className="text-sm font-bold text-gray-900">
+                                      {formatPrice(getRetailerPrice(item.id, 'amazon'))}
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.amazon?.link) {
+                                <button 
+                                  onClick={() => {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
@@ -985,44 +977,29 @@ export default function WishlistDetail() {
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
-                                  }
-                                }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available}
-                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.amazon?.available
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                    : 'bg-coral text-white hover:bg-coral/90'
-                                }`}
-                              >
-                                {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? <Skeleton className="h-4 w-12" /> :
-                                 !itemPricing[item.id]?.pricing?.amazon?.available ? 'Unavailable' : 'View'}
-                              </button>
-                            </div>
+                                  }}
+                                  className="py-2 px-4 rounded text-sm font-medium transition-colors bg-coral text-white hover:bg-coral/90"
+                                >
+                                  View
+                                </button>
+                              </div>
+                            )}
 
-                            {/* Target */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
-                                <div>
-                                  <div className="text-xs font-medium text-gray-900">Target</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {!itemPricing[item.id]?.pricing ? (
-                                      <Skeleton className="h-4 w-16" />
-                                    ) : (
-                                      <>
-                                        {formatPrice(getRetailerPrice(item.id, 'target'))}
-                                        {itemPricing[item.id]?.pricing?.target?.available && (
-                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                        )}
-                                      </>
-                                    )}
+                            {/* Target - Only show when pricing is available */}
+                            {itemPricing[item.id]?.pricing?.target?.available && (
+                              <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
+                                <div className="flex items-center space-x-2">
+                                  <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
+                                  <div>
+                                    <div className="text-xs font-medium text-gray-900">Target</div>
+                                    <div className="text-sm font-bold text-gray-900">
+                                      {formatPrice(getRetailerPrice(item.id, 'target'))}
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.target?.link) {
+                                <button 
+                                  onClick={() => {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: getRetailerPrice(item.id, 'target') || 'Price not available',
@@ -1032,44 +1009,29 @@ export default function WishlistDetail() {
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
-                                  }
-                                }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available}
-                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.target?.available
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                    : 'bg-coral text-white hover:bg-coral/90'
-                                }`}
-                              >
-                                {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? <Skeleton className="h-4 w-12" /> :
-                                 !itemPricing[item.id]?.pricing?.target?.available ? 'Unavailable' : 'View'}
-                              </button>
-                            </div>
+                                  }}
+                                  className="py-2 px-4 rounded text-sm font-medium transition-colors bg-coral text-white hover:bg-coral/90"
+                                >
+                                  View
+                                </button>
+                              </div>
+                            )}
 
-                            {/* Walmart */}
-                            <div className="flex items-center justify-between p-2 bg-white rounded-lg border">
-                              <div className="flex items-center space-x-2">
-                                <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
-                                <div>
-                                  <div className="text-xs font-medium text-gray-900">Walmart</div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    {!itemPricing[item.id]?.pricing ? (
-                                      <Skeleton className="h-4 w-16" />
-                                    ) : (
-                                      <>
-                                        {formatPrice(getRetailerPrice(item.id, 'walmart'))}
-                                        {itemPricing[item.id]?.pricing?.walmart?.available && (
-                                          <span className="ml-2 text-xs text-green-600">Live Price</span>
-                                        )}
-                                      </>
-                                    )}
+                            {/* Walmart - Only show when pricing is available */}
+                            {itemPricing[item.id]?.pricing?.walmart?.available && (
+                              <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
+                                <div className="flex items-center space-x-2">
+                                  <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
+                                  <div>
+                                    <div className="text-xs font-medium text-gray-900">Walmart</div>
+                                    <div className="text-sm font-bold text-gray-900">
+                                      {formatPrice(getRetailerPrice(item.id, 'walmart'))}
+                                      <span className="ml-2 text-xs text-green-600">Live Price</span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              <button 
-                                onClick={() => {
-                                  if (!item.isFulfilled && itemPricing[item.id]?.pricing?.walmart?.link) {
+                                <button 
+                                  onClick={() => {
                                     setSelectedProduct({
                                       title: item.title,
                                       price: getRetailerPrice(item.id, 'walmart') || 'Price not available',
@@ -1079,20 +1041,13 @@ export default function WishlistDetail() {
                                       itemId: item.id
                                     });
                                     setShowPurchaseModal(true);
-                                  }
-                                }}
-                                disabled={item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available}
-                                className={`py-2 px-4 rounded text-sm font-medium transition-colors ${
-                                  item.isFulfilled || !itemPricing[item.id]?.pricing?.walmart?.available
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                                    : 'bg-coral text-white hover:bg-coral/90'
-                                }`}
-                              >
-                                {item.isFulfilled ? 'Fulfilled' : 
-                                 !itemPricing[item.id]?.pricing ? <Skeleton className="h-4 w-12" /> :
-                                 !itemPricing[item.id]?.pricing?.walmart?.available ? 'Unavailable' : 'View'}
-                              </button>
-                            </div>
+                                  }}
+                                  className="py-2 px-4 rounded text-sm font-medium transition-colors bg-coral text-white hover:bg-coral/90"
+                                >
+                                  View
+                                </button>
+                              </div>
+                            )}
                             </div>
                           )}
                         </div>
