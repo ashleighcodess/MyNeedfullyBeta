@@ -269,16 +269,7 @@ export default function AboutUs() {
                 made smoother through direct, tangible support.
               </p>
               
-              <div className="pt-4">
-                <Link href="/browse">
-                  <Button 
-                    size="lg" 
-                    className="bg-white text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-8 py-3 transform transition-all duration-300 hover:scale-105 hover:shadow-lg font-just-sans font-medium"
-                  >
-                    Support A Needs List
-                  </Button>
-                </Link>
-              </div>
+              
             </div>
             
             <div className="flex justify-center lg:justify-end animate-slide-in-right mt-24" data-image-section>
