@@ -248,9 +248,7 @@ export default function AboutUs() {
               </div>
               
               <h2 className="text-3xl md:text-4xl text-navy mb-8 animate-slide-up font-just-sans leading-tight">
-                Our <span className="font-bold">Dream</span> Is To Transform<br />
-                The Way To <span className="font-bold">Fulfill Wishes</span><br />
-                Of <span className="font-bold">People</span> In <span className="font-bold">Need</span>.
+                Our <span className="font-bold">vision</span> is a world where no one faces their crisis alone, where <span className="font-bold">communities</span> meet individual needs with compassion, and recovery is eased by direct and meaningful <span className="font-bold">support.</span>
               </h2>
               
               <p className="text-gray-700 leading-relaxed transform transition-all duration-500 hover:translate-x-2 font-just-sans">
