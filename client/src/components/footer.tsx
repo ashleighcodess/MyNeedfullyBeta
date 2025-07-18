@@ -24,6 +24,7 @@ export default function Footer() {
   const getHelp = [
     { href: "/resources", label: "Resources" },
     { href: "/faq", label: "FAQ" },
+    { href: "/contact-us", label: "Contact Us" },
   ];
 
   return (
