@@ -34,7 +34,9 @@ export class SerpAPIService {
         page: 1,                  // First page only
         no_cache: false,          // Use cache when available (1hr)
         output: 'json',           // Structured format
-        sort: 'best_match'        // Fastest processing
+        sort: 'best_match',       // Fastest processing
+        max_page: 1,              // Only get first page
+        safe: 'off'               // Faster processing
       };
 
       const response = await getJson(params);
@@ -95,7 +97,7 @@ export class SerpAPIService {
     try {
       console.log(`Searching Target with SerpAPI for: "${query}"`);
       
-      // Strategy: Direct Target shopping search without site operator
+      // Strategy: Optimized Target shopping search with only required fields
       const params = {
         api_key: this.apiKey,
         engine: 'google_shopping',
@@ -104,8 +106,12 @@ export class SerpAPIService {
         google_domain: 'google.com',
         gl: 'us',
         hl: 'en',
-        num: Math.min(limit, 40).toString(),
-        tbs: 'mr:1,merchagg:m2' // Shopping-specific parameters
+        num: Math.min(limit, 20).toString(), // Reduced from 40 to 20 for speed
+        tbs: 'mr:1,merchagg:m2', // Shopping-specific parameters
+        output: 'json',
+        no_cache: false, // Use cache when available
+        safe: 'off', // Faster processing
+        filter: '0' // Include all results for speed
       };
 
       const url = `https://serpapi.com/search.json`;
@@ -174,27 +180,9 @@ export class SerpAPIService {
           // Extract snippet for description
           const snippet = result.snippet || '';
           
-          // Debug: Show Target result structure
+          // Minimal debug logging for performance
           if (index === 0) {
-            console.log(`🔍 Target result fields: ${Object.keys(result).join(', ')}`);
-            console.log(`📸 Target image URL: ${imageUrl} | Price extracted: ${extractedPrice}`);
-            console.log(`🔗 Target product link: ${resultLink}`);
-            console.log(`🔍 Target snippet: ${snippet.substring(0, 100)}...`);
-            console.log(`🏪 MERCHANT LINK CHECK - merchant_link exists: ${!!result.merchant_link}`);
-            if (result.merchant_link) {
-              console.log(`🏪 MERCHANT LINK VALUE: ${result.merchant_link}`);
-            }
-            console.log(`🔍 COMPLETE TARGET RESULT STRUCTURE:`, JSON.stringify(result, null, 2));
-            // Check for other potential direct link fields
-            console.log(`🔗 LINK FIELD ANALYSIS:`);
-            console.log(`   - product_link: ${result.product_link}`);
-            console.log(`   - merchant_link: ${result.merchant_link || 'NOT FOUND'}`);
-            console.log(`   - link: ${result.link || 'NOT FOUND'}`);
-            console.log(`   - url: ${result.url || 'NOT FOUND'}`);
-            console.log(`   - direct_link: ${result.direct_link || 'NOT FOUND'}`);
-            console.log(`   - merchant_url: ${result.merchant_url || 'NOT FOUND'}`);
-            console.log(`   - target_url: ${result.target_url || 'NOT FOUND'}`);
-            console.log(`   - source_url: ${result.source_url || 'NOT FOUND'}`);
+            console.log(`🔗 Target first product: ${resultTitle.substring(0, 50)}... | ${extractedPrice}`);
           }
 
           return {
