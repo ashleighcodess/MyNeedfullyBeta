@@ -16,6 +16,28 @@ import { emailService } from "./email-service";
 // Import security and performance middleware
 import { validateDataIntegrity, verifyUserOwnership, checkRateLimit, sanitizeLogData, backupUserFile } from "./data-security";
 import cors from "cors";
+
+// In-memory cache for batch pricing optimization (10-minute TTL)
+const pricingCache = new Map<string, { data: any; timestamp: number }>();
+
+// Pricing cache helper functions
+const PRICING_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const pricingCacheHelpers = {
+  set: (key: string, data: any, ttl: number = PRICING_CACHE_TTL) => {
+    pricingCache.set(key, { data, timestamp: Date.now() + ttl });
+  },
+  get: (key: string) => {
+    const cached = pricingCache.get(key);
+    if (cached && cached.timestamp > Date.now()) {
+      return cached.data;
+    }
+    if (cached) {
+      pricingCache.delete(key); // Clean up expired cache
+    }
+    return null;
+  },
+  clear: () => pricingCache.clear()
+};
 import {
   insertWishlistSchema,
   insertWishlistItemSchema,
@@ -3125,7 +3147,205 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get pricing for a specific wishlist item
+  // BATCH PRICING ENDPOINT - Get pricing for all items in a wishlist (PERFORMANCE OPTIMIZED)
+  app.get('/api/wishlist/:wishlistId/pricing', async (req, res) => {
+    try {
+      const wishlistId = parseInt(req.params.wishlistId);
+      
+      // Validate wishlist ID
+      if (isNaN(wishlistId)) {
+        return res.status(400).json({ message: "Invalid wishlist ID" });
+      }
+
+      // Check cache first (10-minute server-side caching)
+      const cacheKey = `pricing_${wishlistId}`;
+      const cachedResult = pricingCacheHelpers.get(cacheKey);
+      if (cachedResult) {
+        console.log(`💰 Cache HIT for wishlist ${wishlistId} - returning cached pricing`);
+        return res.json(cachedResult);
+      }
+
+      console.log(`💰 Cache MISS for wishlist ${wishlistId} - fetching fresh pricing`);
+
+      // Get wishlist with all items
+      const wishlist = await storage.getWishlistWithItems(wishlistId);
+      if (!wishlist) {
+        return res.status(404).json({ message: "Wishlist not found" });
+      }
+
+      // Helper functions
+      const optimizeSearchQuery = (title: string) => {
+        let optimized = title
+          .replace(/\(Select for More Options\)/gi, '')
+          .replace(/\(.*?\)/g, '')
+          .replace(/,.*$/, '')
+          .replace(/\b(size|count|pack|oz|lb|lbs|ml|ct)\s+\d+.*$/gi, '')
+          .replace(/\b\d+\s*(size|count|pack|oz|lb|lbs|ml|ct)\b/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        if (title.toLowerCase().includes('pampers cruisers')) {
+          optimized = 'Pampers Cruisers Diapers';
+        }
+        return optimized;
+      };
+
+      const isAmazonUrl = (url: string) => url && url.includes('amazon.com');
+      const isWalmartUrl = (url: string) => url && url.includes('walmart.com');
+      const isTargetUrl = (url: string) => url && url.includes('target.com');
+
+      const rainforestService = getRainforestAPIService();
+      const serpService = getSerpAPIService();
+
+      // Batch process all items
+      const itemPricingResults = {};
+      const allPromises = [];
+
+      console.log(`💰 Batch pricing for ${wishlist.items.length} items in wishlist ${wishlistId}`);
+
+      // Create pricing promises for all items
+      wishlist.items.forEach(item => {
+        const optimizedQuery = optimizeSearchQuery(item.title);
+        
+        const itemPricing = {
+          amazon: { 
+            available: false, 
+            price: item.price, 
+            link: isAmazonUrl(item.productUrl) ? item.productUrl : null,
+            image: item.imageUrl || null
+          },
+          walmart: { 
+            available: false, 
+            price: item.price, 
+            link: isWalmartUrl(item.productUrl) ? item.productUrl : null,
+            image: item.imageUrl || null
+          },
+          target: { 
+            available: false, 
+            price: item.price, 
+            link: isTargetUrl(item.productUrl) ? item.productUrl : null,
+            image: item.imageUrl || null
+          }
+        };
+
+        // Amazon search promise
+        if (rainforestService) {
+          const amazonPromise = (async () => {
+            try {
+              const titleProducts = await rainforestService.searchProducts(optimizedQuery);
+              if (titleProducts && titleProducts.length > 0) {
+                const product = titleProducts[0];
+                if (product.link && isAmazonUrl(product.link)) {
+                  return {
+                    itemId: item.id,
+                    retailer: 'amazon',
+                    pricing: {
+                      available: true,
+                      price: product.price?.value || item.price,
+                      link: product.link,
+                      image: product.image || item.imageUrl || null
+                    }
+                  };
+                }
+              }
+            } catch (error) {
+              console.log(`Amazon pricing error for item ${item.id}:`, error);
+            }
+            return { itemId: item.id, retailer: 'amazon', pricing: itemPricing.amazon };
+          })();
+          allPromises.push(amazonPromise);
+        }
+
+        // Walmart search promise
+        if (serpService) {
+          const walmartPromise = (async () => {
+            try {
+              const walmartResults = await serpService.searchWalmart(optimizedQuery, '60602', 1);
+              if (walmartResults && walmartResults.length > 0) {
+                const walmartProduct = walmartResults[0];
+                const walmartLink = walmartProduct.product_url && isWalmartUrl(walmartProduct.product_url) 
+                  ? walmartProduct.product_url : null;
+                if (walmartLink) {
+                  return {
+                    itemId: item.id,
+                    retailer: 'walmart',
+                    pricing: {
+                      available: true,
+                      price: walmartProduct.price || item.price,
+                      link: walmartLink,
+                      image: walmartProduct.thumbnail || item.imageUrl || null
+                    }
+                  };
+                }
+              }
+            } catch (error) {
+              console.log(`Walmart pricing error for item ${item.id}:`, error);
+            }
+            return { itemId: item.id, retailer: 'walmart', pricing: itemPricing.walmart };
+          })();
+          allPromises.push(walmartPromise);
+
+          // Target search promise
+          const targetPromise = (async () => {
+            try {
+              const targetResults = await serpService.searchTarget(optimizedQuery, '10001', 1);
+              if (targetResults && targetResults.length > 0) {
+                const targetProduct = targetResults[0];
+                const targetLink = targetProduct.product_url || null;
+                if (targetLink && targetProduct.price) {
+                  return {
+                    itemId: item.id,
+                    retailer: 'target',
+                    pricing: {
+                      available: true,
+                      price: targetProduct.price,
+                      link: targetLink,
+                      image: targetProduct.image_url || targetProduct.thumbnail || item.imageUrl || null
+                    }
+                  };
+                }
+              }
+            } catch (error) {
+              console.log(`Target pricing error for item ${item.id}:`, error);
+            }
+            return { itemId: item.id, retailer: 'target', pricing: itemPricing.target };
+          })();
+          allPromises.push(targetPromise);
+        }
+
+        // Initialize item pricing structure
+        itemPricingResults[item.id] = { pricing: itemPricing };
+      });
+
+      // Execute all pricing API calls in parallel
+      const startTime = Date.now();
+      const results = await Promise.allSettled(allPromises);
+      const endTime = Date.now();
+      
+      console.log(`💰 Batch pricing completed in ${endTime - startTime}ms for ${wishlist.items.length} items`);
+
+      // Process results and update pricing
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled' && result.value) {
+          const { itemId, retailer, pricing } = result.value;
+          if (itemPricingResults[itemId] && itemPricingResults[itemId].pricing) {
+            itemPricingResults[itemId].pricing[retailer] = pricing;
+          }
+        }
+      });
+
+      // Cache the results for 10 minutes
+      pricingCacheHelpers.set(cacheKey, itemPricingResults);
+      console.log(`💰 Cached pricing results for wishlist ${wishlistId}`);
+
+      res.json(itemPricingResults);
+    } catch (error) {
+      console.error("Error fetching batch pricing:", error);
+      res.status(500).json({ message: "Failed to fetch batch pricing" });
+    }
+  });
+
+  // Get pricing for a specific wishlist item (LEGACY - Individual calls)
   app.get('/api/items/:id/pricing', async (req, res) => {
     try {
       const itemId = parseInt(req.params.id);
