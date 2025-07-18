@@ -52,10 +52,10 @@ export function ShareModal({
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodeURIComponent(`${title} - ${description}`)}`,
     },
     {
-      name: "Twitter",
+      name: "X",
       icon: Twitter,
-      color: "bg-blue-400 hover:bg-blue-500",
-      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${title} - Help support this needs list!`)}&url=${encodedUrl}`,
+      color: "bg-black hover:bg-gray-800",
+      url: `https://x.com/intent/tweet?text=${encodeURIComponent(`${title} - Help support this needs list!`)}&url=${encodedUrl}`,
     },
     {
       name: "LinkedIn",
