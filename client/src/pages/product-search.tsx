@@ -339,10 +339,10 @@ export default function ProductSearch() {
     return null;
   }, [popularProducts]);
 
-  // Fetch user's wishlists ONLY when actually needed (not on page load)
+  // Fetch user's wishlists for authenticated users
   const { data: userWishlists } = useQuery({
-    queryKey: [`/api/users/${user?.id}/wishlists`],
-    enabled: false, // Disable automatic fetching - will be enabled manually when needed
+    queryKey: ['/api/user/wishlists'],
+    enabled: !!isAuthenticated, // Only fetch when user is authenticated
   });
 
 
