@@ -16,7 +16,7 @@ import {
   Mail,
   Copy,
   Share2,
-  Instagram,
+  MessageSquare,
 } from "lucide-react";
 
 interface ShareModalProps {
@@ -71,10 +71,10 @@ export function ShareModal({
       url: `https://wa.me/?text=${encodedShareText}`,
     },
     {
-      name: "Instagram",
-      icon: Instagram,
-      color: "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600",
-      url: "instagram",
+      name: "Reddit",
+      icon: MessageSquare,
+      color: "bg-orange-600 hover:bg-orange-700",
+      url: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodeURIComponent(`${title} - Help support this needs list!`)}`,
     },
     {
       name: "Email",
@@ -84,31 +84,13 @@ export function ShareModal({
     },
   ];
 
-  const handleSocialShare = async (platform: typeof socialPlatforms[0]) => {
+  const handleSocialShare = (platform: typeof socialPlatforms[0]) => {
     // Call the onShare callback to increment share count
     if (onShare) {
       onShare();
     }
 
-    // Handle Instagram specially
-    if (platform.name === "Instagram") {
-      try {
-        await navigator.clipboard.writeText(shareText);
-        toast({
-          title: "Content Copied for Instagram!",
-          description: "Text copied to clipboard. Open Instagram app to create a post/story and paste the content.",
-        });
-      } catch (error) {
-        toast({
-          title: "Instagram Sharing",
-          description: "Copy the link below and share it manually on Instagram.",
-          variant: "destructive",
-        });
-      }
-      return;
-    }
-
-    // Open the sharing URL for other platforms
+    // Open the sharing URL
     window.open(platform.url, '_blank', 'width=600,height=400');
     
     toast({
