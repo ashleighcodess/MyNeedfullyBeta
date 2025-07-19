@@ -422,27 +422,27 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-warm-bg">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Community illustration background */}
+      <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Community illustration background - reduced on mobile */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 sm:opacity-80 md:opacity-100"
           style={{ backgroundImage: `url(${heroImagePath})` }}
         />
         
-        {/* Overlay for text readability */}
-        <div className="absolute inset-0 hero-overlay" />
+        {/* Enhanced overlay for better mobile text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/60 sm:from-white/40 sm:via-white/20 sm:to-white/40" />
         
         {/* Smooth transition overlay to white space below */}
         <div className="absolute bottom-0 left-0 right-0 h-20 md:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20 md:py-32">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 md:py-24 lg:py-32">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-navy mb-8 sm:mb-10 md:mb-12 leading-tight hero-text-shadow font-just-sans">
             A Registry for Hardships,
-            <span className="text-coral"> Relief and Recovery</span>
+            <span className="text-coral block sm:inline"> Relief and Recovery</span>
           </h1>
           
-          <p className="text-sm sm:text-base md:text-xl text-gray-800 mb-8 md:mb-12 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans">
             Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
           </p>
         </div>

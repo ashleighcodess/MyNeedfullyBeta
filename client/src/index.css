@@ -164,8 +164,21 @@
   }
   
   .hero-text-shadow {
-    text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8), 
-                 0 1px 4px rgba(255, 255, 255, 0.6);
+    text-shadow: 0 3px 12px rgba(255, 255, 255, 0.95), 
+                 0 2px 8px rgba(255, 255, 255, 0.85),
+                 0 1px 4px rgba(255, 255, 255, 0.75),
+                 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Enhanced mobile hero styling */
+  @media (max-width: 640px) {
+    .hero-text-shadow {
+      text-shadow: 0 4px 16px rgba(255, 255, 255, 0.98), 
+                   0 3px 12px rgba(255, 255, 255, 0.9),
+                   0 2px 8px rgba(255, 255, 255, 0.8),
+                   0 1px 4px rgba(255, 255, 255, 0.7),
+                   0 0 24px rgba(255, 255, 255, 0.7);
+    }
   }
   
   .line-clamp-3 {
