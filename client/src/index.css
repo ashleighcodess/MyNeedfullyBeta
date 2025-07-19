@@ -312,6 +312,25 @@
     animation: wobble-in-right 2.5s ease-in-out forwards;
   }
 
+  /* Mobile Layout Stability */
+  @media (max-width: 768px) {
+    * {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+    
+    body {
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    .animate-wobble-in-right,
+    .animate-float,
+    .animate-float-delayed {
+      animation: none;
+    }
+  }
+
   /* Recent Acts of Kindness Floating Animations */
   @keyframes float {
     0%, 100% {

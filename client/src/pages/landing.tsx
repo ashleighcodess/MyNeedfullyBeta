@@ -422,7 +422,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-warm-bg">
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-0">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Community illustration background */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -433,30 +433,27 @@ export default function Landing() {
         <div className="absolute inset-0 hero-overlay" />
         
         {/* Smooth transition overlay to white space below */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
-        
-        {/* Spacer to push content higher */}
-        <div className="h-16 md:h-24"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-20 md:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20 md:py-32">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-navy mb-4 md:mb-6 leading-tight hero-text-shadow">
             A Registry for Hardships,
             <span className="text-coral"> Relief and Recovery</span>
           </h1>
           
-          <p className="text-base md:text-xl text-gray-800 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium pb-[180px]">
+          <p className="text-sm sm:text-base md:text-xl text-gray-800 mb-8 md:mb-12 max-w-xl mx-auto leading-relaxed hero-text-shadow font-medium">
             Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
           </p>
         </div>
         
         {/* Seamless gradient transition overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-orange-50/30 to-orange-100/60 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-20 md:h-32 bg-gradient-to-b from-transparent via-orange-50/30 to-orange-100/60 pointer-events-none"></div>
       </section>
       {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
-        className="py-12 md:py-20 relative bg-cover bg-center bg-no-repeat -mt-16 md:-mt-32 pt-16 md:pt-32"
+        className="py-12 md:py-20 relative bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${warmBackgroundImage})`,
           backgroundSize: 'cover',
@@ -474,8 +471,8 @@ export default function Landing() {
                 : 'opacity-0 transform translate-y-8'
             }`}
           >
-            <h2 className="text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
             
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mb-6 md:mb-8">
@@ -485,13 +482,13 @@ export default function Landing() {
                     <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5" />
                     <Input 
                       placeholder={searchPlaceholder}
-                      className="pl-10 md:pl-12 py-3 md:py-4 text-base md:text-lg border-0 focus:ring-2 focus:ring-coral/50"
+                      className="pl-8 sm:pl-10 md:pl-12 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg border-0 focus:ring-2 focus:ring-coral/50"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
-                  <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg whitespace-nowrap rounded-xl">
-                    <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                  <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg whitespace-nowrap rounded-xl">
+                    <Search className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
                     Search Needs
                   </Button>
                 </form>
@@ -499,20 +496,20 @@ export default function Landing() {
             </div>
 
             {/* Quick Actions */}
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center max-w-lg mx-auto">
               <Button 
                 variant="outline" 
-                className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg shadow-lg w-full sm:w-auto"
+                className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
                 onClick={() => setLocation('/products')}
               >
-                <Search className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                <Search className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
                 Browse Products
               </Button>
               <Button 
-                className="bg-navy text-white hover:bg-navy/90 rounded-full px-6 md:px-8 py-3 md:py-4 text-base md:text-lg shadow-lg w-full sm:w-auto"
+                className="bg-navy text-white hover:bg-navy/90 rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
                 onClick={handleCreateList}
               >
-                <Plus className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                <Plus className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
                 {isAuthenticated ? "Create Needs List" : "Get Started"}
               </Button>
             </div>
@@ -832,8 +829,8 @@ export default function Landing() {
       <section id="browse" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">Featured Needs</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Real families and organizations who need your support right now</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4">Featured Needs</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Real families and organizations who need your support right now</p>
           </div>
 
           <div className="space-y-8">
@@ -846,7 +843,7 @@ export default function Landing() {
                     <img 
                       src={featuredWishlists[0].imageUrl} 
                       alt={featuredWishlists[0].title}
-                      className="w-full h-64 lg:h-full object-cover"
+                      className="w-full h-48 sm:h-56 md:h-64 lg:h-full object-cover"
                     />
                     <div className="absolute top-4 left-4">
                       <Badge className={getUrgencyColor(featuredWishlists[0].urgencyLevel)}>
@@ -856,13 +853,13 @@ export default function Landing() {
                   </div>
                   
                   {/* Content section */}
-                  <CardContent className="p-8 flex flex-col justify-center">
+                  <CardContent className="p-4 sm:p-6 md:p-8 flex flex-col justify-center">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-gray-500">{featuredWishlists[0].completionPercentage}% Complete</span>
+                      <span className="text-xs sm:text-sm text-gray-500">{featuredWishlists[0].completionPercentage}% Complete</span>
                     </div>
                     
-                    <h3 className="text-2xl font-semibold text-navy mb-4">{featuredWishlists[0].title}</h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{featuredWishlists[0].description}</p>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-navy mb-4">{featuredWishlists[0].title}</h3>
+                    <p className="text-sm sm:text-base text-gray-600 mb-6 leading-relaxed">{featuredWishlists[0].description}</p>
                     
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center text-sm text-gray-500">
@@ -942,16 +939,16 @@ export default function Landing() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-navy mb-4">Common Needs</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Jumpstart Your Needs List</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4">Common Needs</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Jumpstart Your Needs List</p>
           </div>
 
           {/* Search and Filter Bar */}
-          <div className="flex flex-col md:flex-row gap-4 mb-12 max-w-4xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 max-w-4xl mx-auto px-4 sm:px-0">
             <div className="flex-1 relative">
               <select 
                 id="category-select"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
               >
                 <option value="">Select Categories</option>
                 <option value="emergency">Emergency Supplies</option>
@@ -966,7 +963,7 @@ export default function Landing() {
             <div className="flex-1 relative">
               <select 
                 id="price-select"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-coral focus:border-coral appearance-none"
               >
                 <option value="">Price Range</option>
                 <option value="0-25">$0 - $25</option>
@@ -977,7 +974,7 @@ export default function Landing() {
             </div>
             
             <Button 
-              className="bg-coral text-white hover:bg-coral/90 px-8 py-3 rounded-lg"
+              className="bg-coral text-white hover:bg-coral/90 px-4 sm:px-6 md:px-8 py-2 sm:py-3 text-sm sm:text-base rounded-lg whitespace-nowrap"
               onClick={() => {
                 const category = (document.getElementById('category-select') as HTMLSelectElement)?.value || 'emergency';
                 const priceRange = (document.getElementById('price-select') as HTMLSelectElement)?.value || '';
