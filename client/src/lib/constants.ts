@@ -7,7 +7,7 @@ import doordashLogo from "@/assets/doordash-logo.svg";
 import instacartLogo from "@/assets/instacart-logo.svg";
 import lowesLogo from "@/assets/lowes-logo.svg";
 import homeDepotLogo from "@/assets/home-depot-logo.svg";
-import goldbellyLogo from "@/assets/goldbelly-logo.svg";
+import goldbellyGiftCard from "@assets/Goldbelly_1753302855104.png";
 
 // NEEDS LIST CATEGORIES (for crisis-related needs lists)
 export const NEEDS_LIST_CATEGORIES = [
@@ -61,7 +61,7 @@ export const GIFT_CARDS = [
     id: "goldbelly",
     name: "Goldbelly Gift Card",
     retailer: "Goldbelly", 
-    image: goldbellyLogo,
+    image: goldbellyGiftCard,
     url: "https://www.goldbelly.com/restaurants/goldbelly-gift-cards/gift-card?ref=merchant&ref-id=492",
     description: "Gourmet food delivery from America's best restaurants"
   },
