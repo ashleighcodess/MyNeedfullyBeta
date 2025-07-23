@@ -1423,7 +1423,8 @@ export default function WishlistDetail() {
           wishlistOwner={{
             firstName: wishlist?.user?.firstName || 'User',
             lastName: wishlist?.user?.lastName,
-            shippingAddress: wishlist?.shippingAddress
+            shippingAddress: wishlist?.shippingAddress,
+            email: wishlist?.user?.email
           }}
           onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
           itemId={selectedProduct.itemId}
