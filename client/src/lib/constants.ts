@@ -1,5 +1,5 @@
 // Import asset images
-import uberEatsLogo from "@assets/Screenshot 2025-07-23 at 1.01.53 PM_1753290117208.png";
+import uberEatsLogo from "@/assets/uber-eats-logo.svg";
 
 // NEEDS LIST CATEGORIES (for crisis-related needs lists)
 export const NEEDS_LIST_CATEGORIES = [
