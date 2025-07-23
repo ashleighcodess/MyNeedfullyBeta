@@ -235,22 +235,34 @@ export default function PurchaseConfirmationModal({
     <div 
       className="fixed inset-0 flex items-center justify-center"
       style={{ 
-        zIndex: 9999,
+        zIndex: 999999,
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)'
       }}
     >
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/80" 
+        className="absolute inset-0 bg-black/80" 
         onClick={onClose}
+        style={{ zIndex: 1 }}
       />
       
       {/* Modal Content */}
-      <div className="relative bg-white rounded-2xl shadow-xl border-0 p-0 w-[90vw] sm:w-full max-w-md max-h-[70vh] overflow-y-auto">
+      <div 
+        className="relative bg-white rounded-2xl shadow-xl border-0 p-0 w-[90vw] sm:w-full max-w-md max-h-[70vh] overflow-y-auto"
+        style={{ 
+          zIndex: 2,
+          minHeight: '200px',
+          minWidth: '300px',
+          backgroundColor: 'red',
+          display: 'block',
+          border: '5px solid blue'
+        }}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
