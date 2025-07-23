@@ -223,16 +223,7 @@ export default function PurchaseConfirmationModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
       <DialogContent 
-        className="fixed left-[50%] top-[50%] z-[9999] w-[96vw] max-w-md translate-x-[-50%] translate-y-[-50%] border bg-white p-0 shadow-2xl rounded-2xl max-h-[92vh] overflow-y-auto sm:max-h-[85vh] sm:w-[500px]"
-        style={{
-          position: 'fixed !important',
-          left: '50% !important',
-          top: '50% !important',
-          transform: 'translate(-50%, -50%) !important',
-          zIndex: 9999,
-          backgroundColor: 'white',
-          borderRadius: '16px'
-        }}
+        className="sm:max-w-md max-w-sm w-[95vw] sm:w-full bg-white rounded-2xl shadow-xl border-0 p-0 max-h-[90vh] overflow-y-auto"
       >
         <div className="relative p-3 sm:p-6">
           {/* Header */}
