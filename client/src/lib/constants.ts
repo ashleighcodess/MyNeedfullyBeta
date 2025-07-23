@@ -1,6 +1,6 @@
 // Import asset images
 import uberEatsLogo from "@assets/Eats-02_1753291542136.png";
-import walmartGiftCard from "@assets/walmart-gift-card.jpeg";
+import walmartGiftCard from "@/assets/walmart-gift-card.jpeg";
 import walmartLogo from "@/assets/walmart-logo.svg";
 import amazonLogo from "@/assets/amazon-logo.svg";
 import doordashLogo from "@/assets/doordash-logo.svg";
