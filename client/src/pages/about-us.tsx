@@ -372,49 +372,7 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* How It Works */}
-        <div 
-          className="mb-8 relative bg-cover bg-center bg-no-repeat rounded-2xl overflow-hidden"
-          data-how-it-works-section
-          style={{ 
-            backgroundImage: `url(${howItWorksBackground})`,
-            minHeight: '500px'
-          }}
-        >
-          <div className="absolute inset-0 bg-white/85"></div>
-          <div className="relative z-10 p-8 md:p-12">
-            <h2 className={`text-3xl font-bold text-navy text-center mb-4 font-just-sans transition-all duration-700 ${howItWorksVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              How MyNeedfully Works
-            </h2>
-            <p className={`text-lg text-gray-600 text-center mb-12 font-just-sans transition-all duration-700 delay-200 ${howItWorksVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              A Simple Process To Connect People In Need With Those Who Want To Help.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {howItWorks.map((step, index) => (
-                <Card 
-                  key={index} 
-                  className={`text-center bg-white/90 backdrop-blur-sm transform transition-all duration-700 hover:scale-105 hover:shadow-xl ${
-                    howItWorksVisible 
-                      ? 'opacity-100 translate-y-0' 
-                      : 'opacity-0 translate-y-12'
-                  }`}
-                  style={{ 
-                    transitionDelay: howItWorksVisible ? `${400 + index * 200}ms` : '0ms' 
-                  }}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-center mx-auto mb-4">
-                      <step.icon className={`h-8 w-8 ${step.color} transition-all duration-300`} />
-                    </div>
-                    <h3 className="text-lg font-semibold text-navy mb-3 font-just-sans">{step.title}</h3>
-                    <p className="text-gray-600 text-sm font-just-sans">{step.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
+
 
         {/* Mission Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
