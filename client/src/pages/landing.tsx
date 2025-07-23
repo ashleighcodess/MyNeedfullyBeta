@@ -438,8 +438,8 @@ export default function Landing() {
         {/* Hero Content */}
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 md:py-24 lg:py-32">
           {/* MyNeedfully Logo */}
-          <div className="mb-8 sm:mb-10 md:mb-12">
-            <img src={logoPath} alt="MyNeedfully Logo" className="h-16 sm:h-20 md:h-24 lg:h-28 w-auto mx-auto" />
+          <div className="mb-6 sm:mb-8 md:mb-10">
+            <img src={logoPath} alt="MyNeedfully Logo" className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto mx-auto" />
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-navy mb-8 sm:mb-10 md:mb-12 leading-tight hero-text-shadow font-just-sans">
