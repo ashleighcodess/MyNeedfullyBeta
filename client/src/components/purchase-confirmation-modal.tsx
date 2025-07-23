@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -38,6 +38,31 @@ export default function PurchaseConfirmationModal({
   const [isPurchased, setIsPurchased] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
+
+  // Body scroll lock when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      
+      return () => {
+        // Restore body scroll
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   // Check if this product is a gift card
   const isGiftCard = GIFT_CARDS.find(gc => {
@@ -207,7 +232,17 @@ export default function PurchaseConfirmationModal({
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ zIndex: 10000 }}>
+    <div 
+      className="fixed inset-0 flex items-center justify-center"
+      style={{ 
+        zIndex: 9999,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }}
+    >
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/80" 
