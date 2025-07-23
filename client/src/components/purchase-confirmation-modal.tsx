@@ -227,11 +227,24 @@ export default function PurchaseConfirmationModal({
   };
 
   // Debug logging
-  console.log('PurchaseConfirmationModal render:', { isOpen, product: product?.title });
+  console.log('PurchaseConfirmationModal render:', { 
+    isOpen, 
+    product: product?.title,
+    isPurchased,
+    isGiftCard: !!isGiftCard,
+    wishlistOwner: {
+      firstName: wishlistOwner?.firstName,
+      email: wishlistOwner?.email,
+      hasShippingAddress: !!wishlistOwner?.shippingAddress
+    }
+  });
   console.log('Portal target (document.body):', document.body);
   console.log('Portal target children count:', document.body.children.length);
 
-  if (!isOpen || !product) return null;
+  if (!isOpen || !product) {
+    console.log('Modal early return:', { isOpen, hasProduct: !!product });
+    return null;
+  }
 
   return createPortal(
     <div 
