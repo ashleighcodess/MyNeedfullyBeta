@@ -239,7 +239,7 @@ export default function PurchaseConfirmationModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
@@ -247,7 +247,7 @@ export default function PurchaseConfirmationModal({
       />
       
       {/* Modal Content */}
-      <div className="relative z-[101] w-[95vw] max-w-[425px] bg-white rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="relative z-[101] w-full max-w-[425px] bg-white rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto mx-auto">
         {/* Close Button */}
         <button
           onClick={onClose}

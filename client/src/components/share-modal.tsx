@@ -1,11 +1,4 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +11,7 @@ import {
   Copy,
   Share2,
   MessageSquare,
+  X,
 } from "lucide-react";
 
 interface ShareModalProps {
@@ -161,19 +155,27 @@ export function ShareModal({
     });
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="fixed left-[50%] top-[50%] z-[60] w-[95vw] max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg max-h-[90vh] overflow-y-auto">
-        <DialogTitle className="sr-only">Share Needs List</DialogTitle>
-        <DialogDescription className="sr-only">
-          Share {title} with your network to help support this needs list
-        </DialogDescription>
-        <DialogHeader>
-          <DialogTitle className="flex items-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => onOpenChange(false)}
+      />
+      <div className="relative z-[101] w-full max-w-md bg-white rounded-lg shadow-xl max-h-[90vh] overflow-y-auto p-6">
+        <button
+          onClick={() => onOpenChange(false)}
+          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <div className="mb-6">
+          <h2 className="flex items-center text-lg font-semibold text-navy mb-2">
             <Share2 className="mr-2 h-5 w-5 text-coral" />
             Share Needs List
-          </DialogTitle>
-        </DialogHeader>
+          </h2>
+        </div>
 
         <div className="space-y-6">
           {/* Preview */}
@@ -245,7 +247,7 @@ export function ShareModal({
             </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }

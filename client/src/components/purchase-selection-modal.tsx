@@ -3,10 +3,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 import { Badge } from "@/components/ui/badge";
 import ThankYouNote from "@/components/thank-you-note";
-import { Gift, ShoppingCart, Calendar, MapPin, User, Heart } from "lucide-react";
+import { Gift, ShoppingCart, Calendar, MapPin, User, Heart, X } from "lucide-react";
 
 interface PurchaseSelectionModalProps {
   isOpen: boolean;
@@ -42,18 +42,24 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
 
   if (showThankYouForm && selectedPurchase) {
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="fixed left-[50%] top-[50%] z-[60] w-[95vw] max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg max-h-[90vh] overflow-y-auto">
-          <DialogTitle className="sr-only">Create Thank You Note</DialogTitle>
-          <DialogDescription className="sr-only">
-            Send a thank you note for your purchase of {selectedPurchase?.itemTitle}
-          </DialogDescription>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={onClose}
+        />
+        <div className="relative z-[101] w-full max-w-md bg-white rounded-lg shadow-xl max-h-[90vh] overflow-y-auto p-6">
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <div className="mb-6">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-navy">
               <Heart className="h-5 w-5 text-coral" />
               Create Thank You Note
-            </DialogTitle>
-          </DialogHeader>
+            </h2>
+          </div>
           <div className="mb-4 p-4 bg-gray-50 rounded-lg">
             <div className="text-sm text-gray-600 mb-1">Thanking recipient for:</div>
             <div className="font-medium text-navy">{selectedPurchase.itemTitle}</div>
@@ -66,24 +72,30 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             donationId={selectedPurchase.id}
             onSent={handleThankYouSent}
           />
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="fixed left-[50%] top-[50%] z-[60] w-[95vw] max-w-2xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg max-h-[80vh] overflow-y-auto">
-        <DialogTitle className="sr-only">Purchase Selection</DialogTitle>
-        <DialogDescription className="sr-only">
-          Select a purchase to write a thank you note for
-        </DialogDescription>
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div className="relative z-[101] w-full max-w-2xl bg-white rounded-lg shadow-xl max-h-[80vh] overflow-y-auto p-6">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <div className="mb-6">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-navy">
             <Gift className="h-5 w-5 text-coral" />
             Select a Purchase to Thank
-          </DialogTitle>
-        </DialogHeader>
+          </h2>
+        </div>
         
         {isLoading ? (
           <div className="text-center py-8">
@@ -171,7 +183,7 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             </div>
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
