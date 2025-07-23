@@ -1,5 +1,12 @@
 // Import asset images
-import uberEatsLogo from "@/assets/uber-eats-logo.svg";
+import uberEatsLogo from "@assets/Eats-02_1753291542136.png";
+import walmartLogo from "@/assets/walmart-logo.svg";
+import amazonLogo from "@/assets/amazon-logo.svg";
+import doordashLogo from "@/assets/doordash-logo.svg";
+import instacartLogo from "@/assets/instacart-logo.svg";
+import lowesLogo from "@/assets/lowes-logo.svg";
+import homeDepotLogo from "@/assets/home-depot-logo.svg";
+import goldbellyLogo from "@/assets/goldbelly-logo.svg";
 
 // NEEDS LIST CATEGORIES (for crisis-related needs lists)
 export const NEEDS_LIST_CATEGORIES = [
@@ -45,7 +52,7 @@ export const GIFT_CARDS = [
     id: "walmart",
     name: "Walmart Gift Card", 
     retailer: "Walmart",
-    image: "/api/placeholder/300/200",
+    image: walmartLogo,
     url: "https://www.walmart.com/ip/Basic-Blue-Yellow-Spark-Walmart-Gift-Card/654950389?classType=REGULAR&athbdg=L1200",
     description: "General merchandise gift cards for everyday essentials"
   },
@@ -53,7 +60,7 @@ export const GIFT_CARDS = [
     id: "goldbelly",
     name: "Goldbelly Gift Card",
     retailer: "Goldbelly", 
-    image: "/api/placeholder/300/200",
+    image: goldbellyLogo,
     url: "https://www.goldbelly.com/restaurants/goldbelly-gift-cards/gift-card?ref=merchant&ref-id=492",
     description: "Gourmet food delivery from America's best restaurants"
   },
@@ -61,7 +68,7 @@ export const GIFT_CARDS = [
     id: "lowes",
     name: "Lowe's Gift Card",
     retailer: "Lowe's",
-    image: "/api/placeholder/300/200", 
+    image: lowesLogo, 
     url: "https://www.buyatab.com/custom/lowes/?page=egift",
     description: "Home improvement and hardware store gift cards"
   },
@@ -69,7 +76,7 @@ export const GIFT_CARDS = [
     id: "instacart",
     name: "Instacart Gift Card",
     retailer: "Instacart",
-    image: "/api/placeholder/300/200",
+    image: instacartLogo,
     url: "https://instacart.launchgiftcards.com/?utm_campaign=launch&utm_source=instacart&utm_medium=gift_card_landing_page_us&utm_term=95C5A1B4-6ec9-48fd-902a-a0ce307268e9",
     description: "Grocery delivery gift cards for fresh food and essentials"
   },
@@ -77,7 +84,7 @@ export const GIFT_CARDS = [
     id: "home-depot", 
     name: "Home Depot Gift Card",
     retailer: "Home Depot",
-    image: "/api/placeholder/300/200",
+    image: homeDepotLogo,
     url: "https://www.homedepot.com/gift-cards/p/Home-Depot-Crate-Gift-Card/53L1QLAXWKVF06WJ8DLHBYT6S8/RH6VN7060A1LR3FWD0WJKNVBV8?price=15",
     description: "Home improvement and building supplies gift cards"
   },
@@ -85,7 +92,7 @@ export const GIFT_CARDS = [
     id: "amazon",
     name: "Amazon Gift Card",
     retailer: "Amazon", 
-    image: "/api/placeholder/300/200",
+    image: amazonLogo,
     url: "https://www.amazon.com/Amazon-eGift-Card-Bright-Balloons-Animated/dp/B09LQTPHSG?pf_rd_p=99fab157-bf8f-49e0-bf0d-b6c3011af88f&pf_rd_r=WESJEPWBQM9BD1CP9RV5&ref_=US_GC_AGC_P1_25_STND_B09LQTPHSG&th=1",
     description: "Universal gift cards for millions of products online"
   },
@@ -93,7 +100,7 @@ export const GIFT_CARDS = [
     id: "doordash",
     name: "DoorDash Gift Card",
     retailer: "DoorDash",
-    image: "/api/placeholder/300/200", 
+    image: doordashLogo, 
     url: "https://www.doordash.com/gift-cards",
     description: "Food delivery gift cards from thousands of restaurants"
   }
