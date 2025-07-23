@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { GIFT_CARDS } from '@/lib/constants';
 
@@ -237,28 +236,40 @@ export default function PurchaseConfirmationModal({
   };
 
   // Always return the modal structure - don't use conditional returns with hooks
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
-      <DialogContent className="fixed left-[50%] top-[50%] z-[60] w-[95vw] max-w-[425px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl max-h-[90vh] overflow-y-auto"
-      >
-        <DialogTitle className="sr-only">Purchase Confirmation</DialogTitle>
-        <DialogDescription className="sr-only">
-          Complete your purchase of {product?.title || 'this item'}
-        </DialogDescription>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      
+      {/* Modal Content */}
+      <div className="relative z-[101] w-[95vw] max-w-[425px] bg-white rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        
         {renderModalContent()}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 
   function renderModalContent() {
     return (
       <div className="relative p-4 sm:p-6">
           {/* Header */}
-          <DialogHeader className="text-center mb-3 sm:mb-6">
-            <DialogTitle className="text-base sm:text-xl font-semibold text-gray-800">
+          <div className="text-center mb-3 sm:mb-6">
+            <h2 className="text-base sm:text-xl font-semibold text-gray-800">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </DialogTitle>
-          </DialogHeader>
+            </h2>
+          </div>
 
           {!isPurchased ? (
             <>
