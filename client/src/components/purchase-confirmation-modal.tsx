@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
 import { useToast } from '@/hooks/use-toast';
 import { GIFT_CARDS } from '@/lib/constants';
 
@@ -200,16 +200,34 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!fixed !top-[50%] !left-[50%] !-translate-x-1/2 !-translate-y-1/2 !z-[9999] !m-0 max-w-md bg-white rounded-2xl shadow-xl border-0 p-0 w-[90vw] sm:w-full max-h-[70vh] overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/80" 
+        onClick={onClose}
+      />
+      
+      {/* Modal Content */}
+      <div className="relative bg-white rounded-2xl shadow-xl border-0 p-0 w-[90vw] sm:w-full max-w-md max-h-[70vh] overflow-y-auto">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 focus:outline-none z-10"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </button>
+
         <div className="relative p-4 sm:p-6">
           {/* Header */}
-          <DialogHeader className="text-center mb-4 sm:mb-6">
-            <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </DialogTitle>
-          </DialogHeader>
+            </h2>
+          </div>
 
           {!isPurchased ? (
             <>
@@ -343,7 +361,7 @@ export default function PurchaseConfirmationModal({
             </div>
           )}
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
