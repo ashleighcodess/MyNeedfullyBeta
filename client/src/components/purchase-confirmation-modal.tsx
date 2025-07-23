@@ -282,7 +282,27 @@ export default function PurchaseConfirmationModal({
           <span className="sr-only">Close</span>
         </button>
 
-        <div className="relative p-4 sm:p-6">
+        {/* Highly visible test element */}
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          right: '10px',
+          height: '50px',
+          backgroundColor: 'red',
+          color: 'white',
+          fontSize: '20px',
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 999999,
+          border: '5px solid yellow'
+        }}>
+          MODAL CONTENT IS HERE! isPurchased: {isPurchased.toString()}
+        </div>
+
+        <div className="relative p-4 sm:p-6" style={{ marginTop: '60px' }}>
           {/* Header */}
           <div className="text-center mb-4 sm:mb-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
