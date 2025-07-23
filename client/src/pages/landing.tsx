@@ -447,20 +447,20 @@ export default function Landing() {
           </p>
           
           {/* CTA Buttons under tagline */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center max-w-md sm:max-w-2xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto">
             <Button 
-              className="bg-coral text-white hover:bg-coral/90 rounded-full px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-lg sm:text-xl md:text-2xl shadow-2xl w-full sm:w-auto font-semibold"
+              className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
               onClick={handleCreateList}
             >
-              <Plus className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+              <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Create a Needs List
             </Button>
             <Button 
               variant="outline" 
-              className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-lg sm:text-xl md:text-2xl shadow-2xl w-full sm:w-auto font-semibold"
+              className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
               onClick={() => setLocation('/browse')}
             >
-              <Search className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+              <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Search for a Needs List
             </Button>
           </div>
