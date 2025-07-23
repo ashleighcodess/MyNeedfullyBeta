@@ -983,7 +983,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Out of the Box Needs - Emergency Products */}
+      {/* ARCHIVED: Common Needs Section - Hidden but preserved for future restoration */}
+      {/* 
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -991,7 +992,6 @@ export default function Landing() {
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Jumpstart Your Needs List</p>
           </div>
 
-          {/* Search and Filter Bar */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 max-w-4xl mx-auto px-4 sm:px-0">
             <div className="flex-1 relative">
               <select 
@@ -1044,9 +1044,7 @@ export default function Landing() {
             </Button>
           </div>
 
-          {/* Emergency Product Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Food Product Card */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
@@ -1078,7 +1076,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Clothes Product Card */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
@@ -1110,7 +1107,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Baby Essentials Product Card */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
@@ -1142,7 +1138,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Crisis Hygiene Product Card */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer bg-white">
               <div className="relative h-48">
                 <img 
@@ -1175,7 +1170,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Call to Action */}
           <div className="text-center mt-12">
             <Button 
               className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white px-8 py-4 text-lg rounded-full transition-all duration-300"
@@ -1186,6 +1180,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      */
 
       {/* What Do People Use MyNeedfully For? - Hidden in production until ready to launch */}
       {import.meta.env.VITE_SHOW_CATEGORY_SECTION !== 'false' && (

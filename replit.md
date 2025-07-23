@@ -103,6 +103,7 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 
 ```
 Changelog:
+- July 23, 2025: COMMON NEEDS SECTION ARCHIVED - removed "Common Needs" section from landing page but preserved complete code in comments for future restoration, includes search filters, category dropdowns, and 4 product cards (Emergency Food, Clothing, Baby Essentials, Hygiene Kit), streamlined landing page flow while maintaining restoration capability
 - July 23, 2025: NAVIGATION MENU REORDERING COMPLETED - restructured main navigation order with "About Us" as first menu item, "Find Needs Lists" as second, and "Create Needs List" remaining in third position for improved user flow and information hierarchy
 - July 23, 2025: ABOUT US PAGE LAYOUT OPTIMIZATION COMPLETED - reorganized personal story section from side-by-side layout to centered single-column design for better visual balance with increased text content, removed redundant "How It Works" section to eliminate duplication with landing page, streamlined page flow from story to mission to call-to-action for focused user experience
 - July 23, 2025: ABOUT US TRANSPARENCY SECTION ADDED - implemented comprehensive for-profit company disclosure paragraph in About Us page explaining affiliate marketing business model, Amazon Associate program participation, commission structure with no additional user cost, positioned after platform description for complete transparency while maintaining mission-focused messaging with care and integrity emphasis
