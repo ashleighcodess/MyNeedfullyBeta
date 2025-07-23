@@ -1,3 +1,6 @@
+// Import asset images
+import uberEatsLogo from "@assets/Screenshot 2025-07-23 at 1.01.53 PM_1753290117208.png";
+
 // NEEDS LIST CATEGORIES (for crisis-related needs lists)
 export const NEEDS_LIST_CATEGORIES = [
   { value: "disaster_recovery", label: "Disaster Recovery", icon: "fas fa-home" },
@@ -34,7 +37,7 @@ export const GIFT_CARDS = [
     id: "uber-eats",
     name: "Uber Eats",
     retailer: "Uber Eats",
-    image: "@assets/Screenshot 2025-07-23 at 1.01.53 PM_1753290117208.png",
+    image: uberEatsLogo,
     url: "https://gifts.uber.com/?uclick_id=cac951b6-fd24-438a-93b3-ee520da16515",
     description: "Food delivery gift cards for meals from local restaurants"
   },
