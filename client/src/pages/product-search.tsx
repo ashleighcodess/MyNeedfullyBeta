@@ -1049,10 +1049,20 @@ export default function ProductSearch() {
                 {GIFT_CARDS.map((giftCard, index) => (
                   <Card key={giftCard.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="relative">
-                      <div className="w-full h-40 sm:h-48 flex flex-col items-center justify-center bg-gradient-to-br from-coral/10 to-navy/10">
-                        <Gift className="h-12 w-12 text-coral mb-2" />
-                        <span className="text-lg font-bold text-navy">{giftCard.retailer}</span>
-                        <span className="text-sm text-gray-600">Gift Card</span>
+                      <div className="w-full h-40 sm:h-48 flex items-center justify-center bg-gradient-to-br from-coral/10 to-navy/10 p-4">
+                        {giftCard.image ? (
+                          <img 
+                            src={giftCard.image} 
+                            alt={`${giftCard.retailer} logo`}
+                            className="max-w-full max-h-full object-contain"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center">
+                            <Gift className="h-12 w-12 text-coral mb-2" />
+                            <span className="text-lg font-bold text-navy">{giftCard.retailer}</span>
+                            <span className="text-sm text-gray-600">Gift Card</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     
