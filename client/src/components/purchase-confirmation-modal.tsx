@@ -231,7 +231,7 @@ export default function PurchaseConfirmationModal({
   console.log('Portal target (document.body):', document.body);
   console.log('Portal target children count:', document.body.children.length);
 
-  if (!isOpen) return null;
+  if (!isOpen || !product) return null;
 
   return createPortal(
     <div 
@@ -253,35 +253,11 @@ export default function PurchaseConfirmationModal({
         backgroundColor: 'rgba(0, 0, 0, 0.8)'
       }}
     >
-      {/* Test element to verify portal works */}
-      <div style={{
-        position: 'absolute',
-        top: '50px',
-        left: '50px',
-        width: '300px',
-        height: '200px',
-        backgroundColor: 'lime',
-        border: '10px solid magenta',
-        zIndex: 1000000,
-        fontSize: '24px',
-        color: 'black',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        PORTAL TEST - CAN YOU SEE THIS?
-      </div>
-      
       {/* Modal Content */}
       <div 
         className="relative bg-white rounded-2xl shadow-xl border-0 p-0 w-[90vw] sm:w-full max-w-md max-h-[70vh] overflow-y-auto"
         style={{ 
-          zIndex: 2,
-          minHeight: '200px',
-          minWidth: '300px',
-          backgroundColor: 'red',
-          display: 'block',
-          border: '5px solid blue'
+          zIndex: 2
         }}
       >
         {/* Close Button */}
