@@ -76,6 +76,13 @@ export default function PurchaseConfirmationModal({
     };
   }, [isOpen]);
 
+  // Force scroll to top when modal opens on mobile
+  React.useEffect(() => {
+    if (isOpen && isMobile) {
+      window.scrollTo(0, 0);
+    }
+  }, [isOpen, isMobile]);
+
   // Check if this is a gift card
   const isGiftCard = () => {
     return GIFT_CARDS.some(giftCard => 
@@ -241,13 +248,6 @@ export default function PurchaseConfirmationModal({
   if (!isOpen) {
     return null;
   }
-
-  // Force scroll to top when modal opens on mobile
-  React.useEffect(() => {
-    if (isOpen && isMobile) {
-      window.scrollTo(0, 0);
-    }
-  }, [isOpen, isMobile]);
 
   // Desktop modal (with mobile fallback in DialogContent)
   return (
