@@ -47,21 +47,31 @@ export default function PurchaseConfirmationModal({
   // Handle body scroll lock for mobile
   React.useEffect(() => {
     if (isOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
+      document.body.style.top = `-${scrollY}px`;
       document.body.setAttribute('data-modal-open', 'true');
     } else {
+      // Restore scroll position
+      const scrollY = document.body.style.top;
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.width = '';
+      document.body.style.top = '';
       document.body.removeAttribute('data-modal-open');
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      }
     }
     
     return () => {
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.width = '';
+      document.body.style.top = '';
       document.body.removeAttribute('data-modal-open');
     };
   }, [isOpen]);
@@ -232,41 +242,24 @@ export default function PurchaseConfirmationModal({
     return null;
   }
 
-  // Mobile fallback modal
-  if (isMobile && isOpen) {
-    return (
-      <>
-        {/* Mobile Overlay */}
-        <div 
-          className="fixed inset-0 bg-black/50 z-[100]" 
-          onClick={onClose}
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
-        />
-        
-        {/* Mobile Modal Content */}
-        <div 
-          className="fixed z-[101] bg-white rounded-2xl shadow-xl overflow-hidden"
-          style={{
-            position: 'fixed',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 'calc(100vw - 2rem)',
-            maxWidth: '425px',
-            maxHeight: '90vh',
-            overflowY: 'auto'
-          }}
-        >
-          {renderModalContent()}
-        </div>
-      </>
-    );
-  }
+  // Force scroll to top when modal opens on mobile
+  React.useEffect(() => {
+    if (isOpen && isMobile) {
+      window.scrollTo(0, 0);
+    }
+  }, [isOpen, isMobile]);
 
-  // Desktop modal
+  // Desktop modal (with mobile fallback in DialogContent)
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
-      <DialogContent className="fixed left-[50%] top-[50%] z-50 w-[95vw] max-w-[425px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl">
+      <DialogContent className="fixed z-50 w-[95vw] max-w-[425px] gap-4 border bg-white p-0 shadow-lg rounded-2xl" 
+        style={{
+          left: '50%',
+          top: isMobile ? '20px' : '50%',
+          transform: isMobile ? 'translateX(-50%)' : 'translate(-50%, -50%)',
+          maxHeight: isMobile ? 'calc(100vh - 40px)' : '90vh',
+          overflowY: 'auto'
+        }}>
         {renderModalContent()}
       </DialogContent>
     </Dialog>
