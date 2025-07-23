@@ -493,26 +493,7 @@ export default function Landing() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
             
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto mb-6 md:mb-8">
-              <Card className="p-2 shadow-xl">
-                <form onSubmit={handleNeedsListSearch} className="flex flex-col md:flex-row gap-2">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5" />
-                    <Input 
-                      placeholder={searchPlaceholder}
-                      className="pl-8 sm:pl-10 md:pl-12 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg border-0 focus:ring-2 focus:ring-coral/50"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                  <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg whitespace-nowrap rounded-xl">
-                    <Search className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
-                    Search Needs
-                  </Button>
-                </form>
-              </Card>
-            </div>
+
 
             {/* Quick Actions */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center max-w-lg mx-auto">
@@ -726,6 +707,27 @@ export default function Landing() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-navy mb-4">Your Journey To Fulfill Someone's Need</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps to make a meaningful difference in someone's life</p>
+            
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto mt-8 mb-6 md:mb-8">
+              <Card className="p-2 shadow-xl">
+                <form onSubmit={handleNeedsListSearch} className="flex flex-col md:flex-row gap-2">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5" />
+                    <Input 
+                      placeholder={searchPlaceholder}
+                      className="pl-8 sm:pl-10 md:pl-12 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg border-0 focus:ring-2 focus:ring-coral/50"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <Button type="submit" className="bg-coral text-white hover:bg-coral/90 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg whitespace-nowrap rounded-xl">
+                    <Search className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
+                    Search Needs
+                  </Button>
+                </form>
+              </Card>
+            </div>
           </div>
           
           <div className="relative" ref={journeyRef}>
