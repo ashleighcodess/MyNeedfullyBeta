@@ -997,7 +997,7 @@ export default function WishlistDetail() {
                                       });
                                       setShowPurchaseModal(true);
                                     }}
-                                    className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
+                                    className="w-full py-3 px-4 bg-coral hover:bg-coral/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                                   >
                                     <Gift className="w-4 h-4 mr-2" />
                                     Buy {isGiftCard.retailer} Gift Card
