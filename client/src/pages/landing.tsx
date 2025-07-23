@@ -983,8 +983,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ARCHIVED: Common Needs Section - Hidden but preserved for future restoration */}
-      {/* 
+{/* ARCHIVED: Common Needs Section - Hidden but preserved for future restoration 
+      
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -1180,7 +1180,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      */
+      
+      */}
 
       {/* What Do People Use MyNeedfully For? - Hidden in production until ready to launch */}
       {import.meta.env.VITE_SHOW_CATEGORY_SECTION !== 'false' && (
