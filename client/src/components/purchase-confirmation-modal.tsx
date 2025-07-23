@@ -201,10 +201,13 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  // Debug logging
+  console.log('PurchaseConfirmationModal render:', { isOpen, product: product?.title });
+
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ zIndex: 10000 }}>
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/80" 
