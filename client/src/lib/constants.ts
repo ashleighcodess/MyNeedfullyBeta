@@ -5,7 +5,7 @@ import walmartLogo from "@/assets/walmart-logo.svg";
 import amazonLogo from "@/assets/amazon-logo.svg";
 import doordashLogo from "@/assets/doordash-logo.svg";
 import instacartLogo from "@/assets/instacart-logo.svg";
-import lowesLogo from "@/assets/lowes-logo.svg";
+import lowesGiftCard from "@assets/Lowes_1753302929681.png";
 import homeDepotLogo from "@/assets/home-depot-logo.svg";
 import goldbellyGiftCard from "@assets/Goldbelly_1753302855104.png";
 
@@ -69,7 +69,7 @@ export const GIFT_CARDS = [
     id: "lowes",
     name: "Lowe's Gift Card",
     retailer: "Lowe's",
-    image: lowesLogo, 
+    image: lowesGiftCard, 
     url: "https://www.buyatab.com/custom/lowes/?page=egift",
     description: "Home improvement and hardware store gift cards"
   },
