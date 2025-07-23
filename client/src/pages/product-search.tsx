@@ -1054,7 +1054,7 @@ export default function ProductSearch() {
                           <img 
                             src={giftCard.image} 
                             alt={`${giftCard.retailer} logo`}
-                            className="max-w-full max-h-full object-contain"
+                            className="w-full h-full object-contain"
                           />
                         ) : (
                           <div className="flex flex-col items-center">
