@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import ThankYouNote from "@/components/thank-you-note";
 import { Gift, ShoppingCart, Calendar, MapPin, User, Heart } from "lucide-react";
@@ -24,7 +24,7 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
   });
 
   // Filter out donations where user has already sent thank you notes
-  const availablePurchases = userDonations?.filter((donation: any) => {
+  const availablePurchases = (userDonations as any[])?.filter((donation: any) => {
     // You could add logic here to check if a thank you note was already sent for this donation
     return donation.status === 'completed' || donation.status === 'fulfilled';
   }) || [];
@@ -43,7 +43,11 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
   if (showThankYouForm && selectedPurchase) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="fixed left-[50%] top-[50%] z-50 w-[95vw] max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg max-h-[90vh] overflow-y-auto">
+          <DialogTitle className="sr-only">Create Thank You Note</DialogTitle>
+          <DialogDescription className="sr-only">
+            Send a thank you note for your purchase of {selectedPurchase?.itemTitle}
+          </DialogDescription>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Heart className="h-5 w-5 text-coral" />
@@ -69,7 +73,11 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="fixed left-[50%] top-[50%] z-50 w-[95vw] max-w-2xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg max-h-[80vh] overflow-y-auto">
+        <DialogTitle className="sr-only">Purchase Selection</DialogTitle>
+        <DialogDescription className="sr-only">
+          Select a purchase to write a thank you note for
+        </DialogDescription>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Gift className="h-5 w-5 text-coral" />
