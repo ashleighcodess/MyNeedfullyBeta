@@ -591,6 +591,21 @@ export default function Landing() {
 
         </div>
       </section>
+
+      {/* How We Sustain the Platform Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-navy mb-6 font-just-sans">How We Sustain the Platform</h2>
+            <div className="bg-white rounded-lg p-6 sm:p-8 shadow-sm border border-gray-200">
+              <p className="text-gray-700 text-base sm:text-lg leading-relaxed font-just-sans font-light">
+                All product links on MyNeedfully are affiliate links. This means we may earn a small commission when items are purchased at no extra cost to you. As an Amazon Associate, we earn from qualifying purchases.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* About Us Section */}
       <section ref={aboutRef} className="py-20 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
