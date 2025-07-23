@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+// Removed Dialog import - using needs list selection modal without Dialog component
 
 import { PRODUCT_CATEGORIES, GIFT_CARDS } from "@/lib/constants";
 import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
@@ -1126,67 +1126,81 @@ export default function ProductSearch() {
 
 
 
-      {/* Needs List Selection Modal */}
-      <Dialog open={showNeedsListModal} onOpenChange={setShowNeedsListModal}>
-        <DialogContent className="sm:max-w-md max-h-[80vh] flex flex-col">
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="text-lg font-bold text-navy">Choose Needs List</DialogTitle>
-            <DialogDescription className="text-sm text-gray-600">
-              Select which needs list to add this item to:
-            </DialogDescription>
-          </DialogHeader>
+      {/* Needs List Selection Modal - Custom Implementation */}
+      {showNeedsListModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50" 
+            onClick={() => {
+              setShowNeedsListModal(false);
+              setSelectedProduct(null);
+            }}
+          />
           
-          <div className="flex-1 space-y-3 overflow-y-auto pr-2">
-            {userWishlists && Array.isArray(userWishlists) && userWishlists.map((needsList: WishlistWithItemCount) => (
-              <div
-                key={needsList.id}
-                onClick={() => {
-                  addToWishlistMutation.mutate({ 
-                    product: selectedProduct, 
-                    targetWishlistId: needsList.id.toString() 
-                  });
-                }}
-                className={`
-                  w-full p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-sm
-                  ${addingProductId === (selectedProduct?.asin || selectedProduct?.product_id) 
-                    ? 'border-gray-300 bg-gray-50 cursor-not-allowed' 
-                    : 'border-gray-200 hover:border-coral bg-white hover:bg-coral/5'
-                  }
-                `}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <Heart className="h-3 w-3 text-coral flex-shrink-0" />
-                      <div className="font-semibold text-navy text-sm truncate">{needsList.title}</div>
+          {/* Modal Content */}
+          <div className="relative bg-white rounded-lg shadow-xl mx-4 w-full max-w-md max-h-[80vh] flex flex-col">
+            {/* Header */}
+            <div className="flex-shrink-0 p-6 border-b">
+              <h2 className="text-lg font-bold text-navy">Choose Needs List</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Select which needs list to add this item to:
+              </p>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1 space-y-3 overflow-y-auto p-6">
+              {userWishlists && Array.isArray(userWishlists) && userWishlists.map((needsList: WishlistWithItemCount) => (
+                <div
+                  key={needsList.id}
+                  onClick={() => {
+                    addToWishlistMutation.mutate({ 
+                      product: selectedProduct, 
+                      targetWishlistId: needsList.id.toString() 
+                    });
+                  }}
+                  className={`
+                    w-full p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-sm
+                    ${addingProductId === (selectedProduct?.asin || selectedProduct?.product_id) 
+                      ? 'border-gray-300 bg-gray-50 cursor-not-allowed' 
+                      : 'border-gray-200 hover:border-coral bg-white hover:bg-coral/5'
+                    }
+                  `}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <Heart className="h-3 w-3 text-coral flex-shrink-0" />
+                        <div className="font-semibold text-navy text-sm truncate">{needsList.title}</div>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1 line-clamp-2">
+                        {needsList.description}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-600 mt-1 line-clamp-2">
-                      {needsList.description}
+                    <div className="ml-3 flex-shrink-0">
+                      <ChevronDown className="h-4 w-4 text-gray-400 transform rotate-[-90deg]" />
                     </div>
-
-                  </div>
-                  <div className="ml-3 flex-shrink-0">
-                    <ChevronDown className="h-4 w-4 text-gray-400 transform rotate-[-90deg]" />
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            
+            {/* Footer */}
+            <div className="flex justify-end space-x-2 p-6 pt-3 border-t flex-shrink-0">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowNeedsListModal(false);
+                  setSelectedProduct(null);
+                }}
+                className="px-4 text-sm"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
-          
-          <div className="flex justify-end space-x-2 pt-3 border-t flex-shrink-0">
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setShowNeedsListModal(false);
-                setSelectedProduct(null);
-              }}
-              className="px-4 text-sm"
-            >
-              Cancel
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
     </div>
   );
