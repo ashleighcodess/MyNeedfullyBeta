@@ -612,3 +612,29 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Mobile Modal Fixes */
+@media (max-width: 768px) {
+  [data-radix-portal] {
+    z-index: 99999 !important;
+  }
+  
+  [data-radix-dialog-overlay] {
+    position: fixed !important;
+    inset: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 99998 !important;
+  }
+  
+  [data-radix-dialog-content] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 99999 !important;
+    width: 95vw !important;
+    max-width: 28rem !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+}

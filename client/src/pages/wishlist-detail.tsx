@@ -1454,24 +1454,29 @@ export default function WishlistDetail() {
       )}
 
       {/* Purchase Confirmation Modal */}
-      {selectedProduct && (
-        <PurchaseConfirmationModal
-          isOpen={showPurchaseModal}
-          onClose={() => {
-            setShowPurchaseModal(false);
-            setSelectedProduct(null);
-          }}
-          product={selectedProduct}
-          wishlistOwner={{
-            firstName: wishlist?.user?.firstName || 'User',
-            lastName: wishlist?.user?.lastName,
-            shippingAddress: wishlist?.shippingAddress,
-            email: wishlist?.user?.email
-          }}
-          onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
-          itemId={selectedProduct.itemId}
-        />
-      )}
+      <PurchaseConfirmationModal
+        isOpen={showPurchaseModal && selectedProduct !== null}
+        onClose={() => {
+          console.log('Modal closing'); // Debug log
+          setShowPurchaseModal(false);
+          setSelectedProduct(null);
+        }}
+        product={selectedProduct || {
+          title: '',
+          price: '',
+          link: '',
+          retailer: 'amazon' as const,
+          image: ''
+        }}
+        wishlistOwner={{
+          firstName: wishlist?.user?.firstName || 'User',
+          lastName: wishlist?.user?.lastName,
+          shippingAddress: wishlist?.shippingAddress,
+          email: wishlist?.user?.email
+        }}
+        onPurchaseConfirm={() => selectedProduct && fulfillItemMutation.mutate(selectedProduct.itemId)}
+        itemId={selectedProduct?.itemId || 0}
+      />
 
       {/* Share Modal */}
       {wishlist && (

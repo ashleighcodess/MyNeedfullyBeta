@@ -38,6 +38,9 @@ export default function PurchaseConfirmationModal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
 
+  // Debug logging for mobile
+  console.log('PurchaseConfirmationModal rendered:', { isOpen, product: product?.title });
+
   // Check if this is a gift card
   const isGiftCard = () => {
     return GIFT_CARDS.some(giftCard => 
@@ -200,9 +203,22 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0">
+    <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
+      <DialogContent 
+        className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 w-[95vw] sm:w-auto max-h-[90vh] overflow-y-auto"
+        style={{ 
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 9999
+        }}
+      >
         <div className="relative p-6">
           {/* Header */}
           <DialogHeader className="text-center mb-6">
