@@ -982,11 +982,21 @@ export default function WishlistDetail() {
                             });
 
                             if (isGiftCard) {
-                              // Gift card display: Single red button, no pricing
+                              // Gift card display: Single red button, no pricing - show purchase modal first
                               return (
                                 <div className="text-center py-2">
                                   <button 
-                                    onClick={() => window.open(isGiftCard.url, '_blank')}
+                                    onClick={() => {
+                                      setSelectedProduct({
+                                        title: item.title,
+                                        price: '', // No price display for gift cards
+                                        link: isGiftCard.url,
+                                        retailer: isGiftCard.retailer.toLowerCase() as 'amazon' | 'walmart' | 'target',
+                                        image: item.imageUrl,
+                                        itemId: item.id
+                                      });
+                                      setShowPurchaseModal(true);
+                                    }}
                                     className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                                   >
                                     <Gift className="w-4 h-4 mr-2" />
