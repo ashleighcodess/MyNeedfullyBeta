@@ -202,42 +202,42 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0">
-        <div className="relative p-6">
+      <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto">
+        <div className="relative p-4 sm:p-6">
           {/* Header */}
-          <DialogHeader className="text-center mb-6">
-            <DialogTitle className="text-xl font-semibold text-gray-800">
+          <DialogHeader className="text-center mb-4 sm:mb-6">
+            <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </DialogTitle>
           </DialogHeader>
 
           {!isPurchased ? (
             <>
-              {/* Content Section */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                {/* Left Side - Purchase Instructions */}
+              {/* Content Section - Responsive Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                {/* Purchase Instructions */}
                 <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-coral-50 rounded-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-coral-600" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-coral-50 rounded-full flex items-center justify-center">
+                    <Package className="h-6 w-6 sm:h-8 sm:w-8 text-coral-600" />
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed px-2">
                     After purchase, return to MyNeedfully and click{' '}
                     <span className="font-semibold text-coral-600">I've Purchased This</span>
                   </p>
                 </div>
 
-                {/* Right Side - Shipping Address or Email */}
+                {/* Shipping Address or Email */}
                 <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-blue-50 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-blue-50 rounded-full flex items-center justify-center">
                     {isGiftCard ? (
-                      <Mail className="h-8 w-8 text-blue-600" />
+                      <Mail className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                     ) : (
-                      <MapPin className="h-8 w-8 text-blue-600" />
+                      <MapPin className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                     )}
                   </div>
                   <button
                     onClick={() => setShowShippingAddress(!showShippingAddress)}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors px-2"
                   >
                     {isGiftCard 
                       ? `Need ${wishlistOwner.firstName}'s email address?`
@@ -249,37 +249,39 @@ export default function PurchaseConfirmationModal({
 
               {/* Shipping Address or Email Display */}
               {showShippingAddress && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg border">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-800">
+                    <h4 className="font-medium text-gray-800 text-sm sm:text-base">
                       {isGiftCard ? 'Email Address:' : 'Shipping Address:'}
                     </h4>
                     <Button
                       onClick={isGiftCard ? copyEmailToClipboard : copyAddressToClipboard}
                       variant="outline"
                       size="sm"
-                      className="h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
+                      className="h-7 sm:h-8 px-2 sm:px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
                     >
                       {copiedAddress ? (
                         <>
                           <Check className="h-3 w-3 mr-1" />
-                          Copied!
+                          <span className="hidden sm:inline">Copied!</span>
+                          <span className="sm:hidden">✓</span>
                         </>
                       ) : (
                         <>
                           <Copy className="h-3 w-3 mr-1" />
-                          Copy
+                          <span className="hidden sm:inline">Copy</span>
+                          <span className="sm:hidden">📋</span>
                         </>
                       )}
                     </Button>
                   </div>
-                  <div className="text-sm text-gray-600 whitespace-pre-line font-mono bg-white p-3 rounded border">
+                  <div className="text-xs sm:text-sm text-gray-600 whitespace-pre-line font-mono bg-white p-2 sm:p-3 rounded border">
                     {isGiftCard 
                       ? (wishlistOwner.email || 'No email provided')
                       : formatShippingAddress(wishlistOwner.shippingAddress)
                     }
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs text-gray-500 mt-2 leading-relaxed">
                     {copiedAddress 
                       ? (isGiftCard 
                           ? "Email copied to clipboard! Use this email address when purchasing the gift card."
@@ -295,10 +297,10 @@ export default function PurchaseConfirmationModal({
               )}
 
               {/* Action Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <Button
                   onClick={handleContinueToRetailer}
-                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-3 rounded-lg font-medium"
+                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Continue to {getRetailerName()}
@@ -307,7 +309,7 @@ export default function PurchaseConfirmationModal({
                 <Button
                   onClick={handlePurchaseConfirmation}
                   variant="outline"
-                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-3 rounded-lg font-medium"
+                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base"
                 >
                   <Check className="h-4 w-4 mr-2" />
                   I've Purchased This
@@ -315,11 +317,11 @@ export default function PurchaseConfirmationModal({
               </div>
 
               {/* Footer */}
-              <div className="mt-6 text-center space-y-2">
+              <div className="mt-4 sm:mt-6 text-center space-y-1 sm:space-y-2 px-2">
                 <p className="text-xs text-gray-500">
                   MyNeedfully may earn a commission on purchases
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 leading-relaxed">
                   This site is protected by reCAPTCHA and the Google{' '}
                   <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and{' '}
                   <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> apply.
@@ -328,14 +330,14 @@ export default function PurchaseConfirmationModal({
             </>
           ) : (
             /* Purchase Confirmation */
-            <div className="text-center py-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <Check className="h-10 w-10 text-green-600" />
+            <div className="text-center py-6 sm:py-8 px-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <Check className="h-8 w-8 sm:h-10 sm:w-10 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-green-800 mb-2">
+              <h3 className="text-base sm:text-lg font-semibold text-green-800 mb-2">
                 Item Marked as Purchased!
               </h3>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 Thank you for supporting {wishlistOwner.firstName}. This item will be marked as fulfilled.
               </p>
             </div>
