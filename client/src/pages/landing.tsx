@@ -442,9 +442,28 @@ export default function Landing() {
             <span className="text-coral block sm:inline"> Relief and Recovery</span>
           </h1>
           
-          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans mb-8 sm:mb-10 md:mb-12">
             Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
           </p>
+          
+          {/* CTA Buttons under tagline */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center max-w-md sm:max-w-2xl mx-auto">
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 rounded-full px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-lg sm:text-xl md:text-2xl shadow-2xl w-full sm:w-auto font-semibold"
+              onClick={handleCreateList}
+            >
+              <Plus className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+              Create a Needs List
+            </Button>
+            <Button 
+              variant="outline" 
+              className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-lg sm:text-xl md:text-2xl shadow-2xl w-full sm:w-auto font-semibold"
+              onClick={() => setLocation('/browse')}
+            >
+              <Search className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+              Search for a Needs List
+            </Button>
+          </div>
         </div>
         
         {/* Seamless gradient transition overlay */}
