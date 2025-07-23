@@ -223,12 +223,20 @@ export default function PurchaseConfirmationModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
       <DialogContent 
-        className="w-[95vw] max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 max-h-[85vh] overflow-y-auto sm:max-h-[90vh]"
+        className="w-[96vw] max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 max-h-[92vh] overflow-y-auto sm:max-h-[85vh] sm:w-[500px]"
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          margin: '0',
+          zIndex: 9999
+        }}
       >
-        <div className="relative p-4 sm:p-6">
+        <div className="relative p-3 sm:p-6">
           {/* Header */}
-          <DialogHeader className="text-center mb-4 sm:mb-6">
-            <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800">
+          <DialogHeader className="text-center mb-3 sm:mb-6">
+            <DialogTitle className="text-base sm:text-xl font-semibold text-gray-800">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </DialogTitle>
           </DialogHeader>
@@ -236,7 +244,7 @@ export default function PurchaseConfirmationModal({
           {!isPurchased ? (
             <>
               {/* Content Section */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-8">
                 {/* Top/Left Side - Purchase Instructions */}
                 <div className="text-center">
                   <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-coral-50 rounded-full flex items-center justify-center">
@@ -259,7 +267,7 @@ export default function PurchaseConfirmationModal({
                   </div>
                   <button
                     onClick={() => setShowShippingAddress(!showShippingAddress)}
-                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors px-2 py-1 rounded"
+                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors px-3 py-2 rounded-lg min-h-[44px] flex items-center justify-center"
                   >
                     {isGiftCard() 
                       ? `Need ${wishlistOwner.firstName}'s email address?`
@@ -271,7 +279,7 @@ export default function PurchaseConfirmationModal({
 
               {/* Address/Email Display */}
               {showShippingAddress && (isGiftCard() ? wishlistOwner.email : wishlistOwner.shippingAddress) && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg border">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-medium text-gray-800">
                       {isGiftCard() ? 'Email Address:' : 'Shipping Address:'}
@@ -280,7 +288,7 @@ export default function PurchaseConfirmationModal({
                       onClick={isGiftCard() ? copyEmailToClipboard : copyAddressToClipboard}
                       variant="outline"
                       size="sm"
-                      className="h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
+                      className="h-9 sm:h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700 min-h-[36px]"
                     >
                       {copiedAddress ? (
                         <>
@@ -316,10 +324,10 @@ export default function PurchaseConfirmationModal({
               )}
 
               {/* Action Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <Button
                   onClick={handleContinueToRetailer}
-                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base"
+                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-3 sm:py-3 rounded-lg font-medium text-sm sm:text-base min-h-[48px] flex items-center justify-center"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Continue to {getRetailerName()}
@@ -328,7 +336,7 @@ export default function PurchaseConfirmationModal({
                 <Button
                   onClick={handlePurchaseConfirmation}
                   variant="outline"
-                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base"
+                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-3 sm:py-3 rounded-lg font-medium text-sm sm:text-base min-h-[48px] flex items-center justify-center"
                 >
                   <Check className="h-4 w-4 mr-2" />
                   I've Purchased This

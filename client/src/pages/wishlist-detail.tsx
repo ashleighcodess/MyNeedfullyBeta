@@ -57,8 +57,7 @@ export default function WishlistDetail() {
   const id = params?.id as string;
   const { user } = useAuth();
   
-  // Debug logging for mobile
-  console.log('WishlistDetail component loaded:', { id, params, userAgent: navigator.userAgent });
+
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -604,10 +603,6 @@ export default function WishlistDetail() {
 
   return (
     <div className="min-h-screen bg-warm-bg" style={{ minHeight: '100vh', width: '100%' }}>
-      {/* Mobile Debug Indicator */}
-      <div className="block md:hidden p-2 bg-red-500 text-white text-xs">
-        Mobile Debug: Page Loaded - ID: {id}
-      </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
