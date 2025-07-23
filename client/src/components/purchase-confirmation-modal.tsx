@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
+import { useState } from 'react';
+import { X, Package, MapPin, ExternalLink, Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { GIFT_CARDS } from '@/lib/constants';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -14,25 +13,15 @@ interface PurchaseConfirmationModalProps {
     link: string;
     retailer: 'amazon' | 'walmart' | 'target';
     image?: string;
-    itemId: number;
   };
   wishlistOwner: {
     firstName: string;
     lastName?: string;
     shippingAddress?: string | object;
-    email?: string;
   };
   onPurchaseConfirm: () => void;
   itemId: number;
 }
-
-// Check if item is a gift card
-const isGiftCard = (title: string): boolean => {
-  return GIFT_CARDS.some(giftCard => 
-    title.toLowerCase().includes(giftCard.name.toLowerCase()) ||
-    title.toLowerCase().includes('gift card')
-  );
-};
 
 export default function PurchaseConfirmationModal({
   isOpen,
@@ -47,32 +36,92 @@ export default function PurchaseConfirmationModal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
 
-  if (!isOpen || !product) return null;
+  const getRetailerName = () => {
+    switch (product.retailer) {
+      case 'amazon': return 'Amazon';
+      case 'walmart': return 'Walmart';
+      case 'target': return 'Target';
+      default: return 'the retailer';
+    }
+  };
 
-  const copyAddressToClipboard = async () => {
-    const shippingAddress = wishlistOwner.shippingAddress;
-    if (!shippingAddress) return;
+  const handleContinueToRetailer = () => {
+    console.log('Opening retailer URL:', product.link);
+    console.log('Product data:', product);
     
-    let addressText = '';
-    if (typeof shippingAddress === 'object') {
-      const addr = shippingAddress as any;
-      addressText = [
-        addr.fullName,
-        addr.addressLine1,
-        addr.addressLine2,
-        `${addr.city}, ${addr.state} ${addr.zipCode}`,
-        addr.country
-      ].filter(Boolean).join('\n');
-    } else {
-      addressText = shippingAddress;
+    // Ensure we have a valid URL
+    if (!product.link || product.link === '#') {
+      console.error('Invalid product link:', product.link);
+      return;
     }
     
+    window.open(product.link, '_blank');
+  };
+
+  const handlePurchaseConfirmation = () => {
+    setIsPurchased(true);
+    onPurchaseConfirm();
+    setTimeout(() => {
+      onClose();
+      setIsPurchased(false);
+    }, 2000);
+  };
+
+  const formatShippingAddress = (address: string | object) => {
+    // Handle undefined/null case
+    if (!address) {
+      return 'No shipping address provided';
+    }
+
+    // Handle both object and string formats
+    if (typeof address === 'object' && address !== null) {
+      const addr = address as any;
+      const lines = [];
+      if (addr.fullName) lines.push(addr.fullName);
+      if (addr.addressLine1) lines.push(addr.addressLine1);
+      if (addr.addressLine2) lines.push(addr.addressLine2);
+      
+      const cityStateZip = [addr.city, addr.state, addr.zipCode].filter(Boolean).join(', ');
+      if (cityStateZip) lines.push(cityStateZip);
+      
+      if (addr.country) lines.push(addr.country);
+      
+      return lines.length > 0 ? lines.join('\n') : 'Address information incomplete';
+    }
+    
+    // Parse the shipping address if it's in JSON format
+    try {
+      const parsed = JSON.parse(address as string);
+      const lines = [];
+      if (parsed.fullName) lines.push(parsed.fullName);
+      if (parsed.streetNumber || parsed.route) {
+        lines.push(`${parsed.streetNumber || ''} ${parsed.route || ''}`.trim());
+      }
+      if (parsed.addressLine1) lines.push(parsed.addressLine1);
+      if (parsed.addressLine2) lines.push(parsed.addressLine2);
+      
+      const cityStateZip = [parsed.city, parsed.state, parsed.zipCode].filter(Boolean).join(', ');
+      if (cityStateZip) lines.push(cityStateZip);
+      
+      if (parsed.country) lines.push(parsed.country);
+      
+      return lines.length > 0 ? lines.join('\n') : 'Address information incomplete';
+    } catch {
+      return address as string || 'Address format error';
+    }
+  };
+
+  const copyAddressToClipboard = async () => {
+    const addressText = formatShippingAddress(wishlistOwner.shippingAddress);
     try {
       await navigator.clipboard.writeText(addressText);
+      setCopiedAddress(true);
       toast({
-        title: "Address copied to clipboard!",
-        description: "Use this address for shipping during checkout.",
+        title: "Address Copied!",
+        description: "Shipping address has been copied to your clipboard",
+        duration: 2000,
       });
+      setTimeout(() => setCopiedAddress(false), 2000);
     } catch (err) {
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
@@ -82,180 +131,144 @@ export default function PurchaseConfirmationModal({
       textArea.select();
       try {
         document.execCommand('copy');
+        setCopiedAddress(true);
         toast({
-          title: "Address copied to clipboard!",
-          description: "Use this address for shipping during checkout.",
+          title: "Address Copied!",
+          description: "Shipping address has been copied to your clipboard",
+          duration: 2000,
         });
+        setTimeout(() => setCopiedAddress(false), 2000);
       } catch (fallbackErr) {
-        console.error('Fallback: Copying text command was unsuccessful', fallbackErr);
+        toast({
+          title: "Copy Failed",
+          description: "Unable to copy address. Please copy manually.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
       document.body.removeChild(textArea);
     }
-  };
-
-  const copyEmailToClipboard = async () => {
-    const email = wishlistOwner.email;
-    if (!email) return;
-    
-    try {
-      await navigator.clipboard.writeText(email);
-      toast({
-        title: "Email copied to clipboard!",
-        description: "Use it for gift card delivery during checkout.",
-      });
-    } catch (err) {
-      // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = email;
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      try {
-        document.execCommand('copy');
-        toast({
-          title: "Email copied to clipboard!",
-          description: "Use it for gift card delivery during checkout.",
-        });
-      } catch (fallbackErr) {
-        console.error('Fallback: Copying text command was unsuccessful', fallbackErr);
-      }
-      document.body.removeChild(textArea);
-    }
-  };
-
-  const giftCardMode = isGiftCard(product.title);
-
-  const handleBuyClick = () => {
-    // Open retailer URL in new tab
-    window.open(product.link, '_blank');
-    
-    // Show address/email section after clicking buy
-    setShowShippingAddress(true);
-  };
-
-  const handlePurchaseConfirm = () => {
-    setIsPurchased(true);
-    onPurchaseConfirm();
-    
-    toast({
-      title: "Thank you for your generosity!",
-      description: "The recipient has been notified of your purchase.",
-    });
-    
-    // Close modal after short delay
-    setTimeout(() => {
-      onClose();
-      setIsPurchased(false);
-      setShowShippingAddress(false);
-    }, 2000);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Purchase Item</DialogTitle>
-          <DialogDescription className="sr-only">
-            Purchase this item from the retailer
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0">
+        <div className="relative p-6">
+          {/* Header */}
+          <DialogHeader className="text-center mb-6">
+            <DialogTitle className="text-xl font-semibold text-gray-800">
+              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Product Info */}
-          <div className="flex items-start space-x-4">
-            {product.image && (
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-16 h-16 object-contain rounded-lg"
-              />
-            )}
-            <div className="flex-1">
-              <h3 className="font-semibold text-navy text-base line-clamp-2">
-                {product.title}
-              </h3>
-              <p className="text-coral font-bold text-lg mt-1">{product.price}</p>
-              <p className="text-sm text-gray-600 mt-1">
-                For: {wishlistOwner.firstName} {wishlistOwner.lastName}
-              </p>
-            </div>
-          </div>
-
-          {/* Buy Button */}
-          {!showShippingAddress && (
-            <Button
-              onClick={handleBuyClick}
-              className="w-full bg-coral hover:bg-coral-dark text-white flex items-center justify-center gap-2"
-              size="lg"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Buy at {product.retailer.charAt(0).toUpperCase() + product.retailer.slice(1)}
-            </Button>
-          )}
-
-          {/* Address/Email Section - Show after Buy clicked */}
-          {showShippingAddress && !isPurchased && (
+          {!isPurchased ? (
             <>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    {giftCardMode ? (
-                      <Mail className="h-5 w-5 text-blue-600 mr-2" />
-                    ) : (
-                      <MapPin className="h-5 w-5 text-blue-600 mr-2" />
-                    )}
-                    <span className="font-medium text-blue-900">
-                      {giftCardMode ? 'Email for Gift Card Delivery:' : 'Shipping Address:'}
-                    </span>
+              {/* Content Section */}
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                {/* Left Side - Purchase Instructions */}
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-coral-50 rounded-full flex items-center justify-center">
+                    <Package className="h-8 w-8 text-coral-600" />
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={giftCardMode ? copyEmailToClipboard : copyAddressToClipboard}
-                    className={`text-xs ${copiedAddress ? 'bg-green-100 text-green-700' : ''}`}
-                  >
-                    {copiedAddress ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
-                    {copiedAddress ? 'Copied!' : 'Copy'}
-                  </Button>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    After purchase, return to MyNeedfully and click{' '}
+                    <span className="font-semibold text-coral-600">I've Purchased This</span>
+                  </p>
                 </div>
-                
-                <div className="text-sm text-gray-800 bg-white p-3 rounded border whitespace-pre-wrap">
-                  {giftCardMode ? wishlistOwner.email : (
-                    typeof wishlistOwner.shippingAddress === 'object' 
-                      ? Object.values(wishlistOwner.shippingAddress).filter(Boolean).join('\n')
-                      : wishlistOwner.shippingAddress
-                  )}
+
+                {/* Right Side - Shipping Address */}
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-blue-50 rounded-full flex items-center justify-center">
+                    <MapPin className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <button
+                    onClick={() => setShowShippingAddress(!showShippingAddress)}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  >
+                    Need {wishlistOwner.firstName}'s shipping address?
+                  </button>
                 </div>
               </div>
 
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-4">
-                  {giftCardMode 
-                    ? 'Use the email above for gift card delivery during checkout'
-                    : 'Use the address above for shipping during checkout'
-                  }
-                </p>
-                
+              {/* Shipping Address Display */}
+              {showShippingAddress && wishlistOwner.shippingAddress && (
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-800">Shipping Address:</h4>
+                    <Button
+                      onClick={copyAddressToClipboard}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
+                    >
+                      {copiedAddress ? (
+                        <>
+                          <Check className="h-3 w-3 mr-1" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <div className="text-sm text-gray-600 whitespace-pre-line font-mono bg-white p-3 rounded border">
+                    {formatShippingAddress(wishlistOwner.shippingAddress)}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    {copiedAddress 
+                      ? "Address copied to clipboard! Paste it during checkout on the retailer's website."
+                      : "Click 'Copy' above to copy this address for checkout on the retailer's website."
+                    }
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
                 <Button
-                  onClick={handlePurchaseConfirm}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                  onClick={handleContinueToRetailer}
+                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-3 rounded-lg font-medium"
                 >
-                  <Package className="h-4 w-4 mr-2" />
-                  I've Completed the Purchase
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Continue to {getRetailerName()}
+                </Button>
+
+                <Button
+                  onClick={handlePurchaseConfirmation}
+                  variant="outline"
+                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-3 rounded-lg font-medium"
+                >
+                  <Check className="h-4 w-4 mr-2" />
+                  I've Purchased This
                 </Button>
               </div>
-            </>
-          )}
 
-          {/* Success State */}
-          {isPurchased && (
-            <div className="text-center py-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Check className="h-8 w-8 text-green-600" />
+              {/* Footer */}
+              <div className="mt-6 text-center space-y-2">
+                <p className="text-xs text-gray-500">
+                  MyNeedfully may earn a commission on purchases
+                </p>
+                <p className="text-xs text-gray-400">
+                  This site is protected by reCAPTCHA and the Google{' '}
+                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and{' '}
+                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> apply.
+                </p>
               </div>
-              <h3 className="font-semibold text-green-700 mb-2">Purchase Confirmed!</h3>
-              <p className="text-sm text-gray-600">
-                The recipient will be notified of your generous support.
+            </>
+          ) : (
+            /* Purchase Confirmation */
+            <div className="text-center py-8">
+              <div className="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <Check className="h-10 w-10 text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-green-800 mb-2">
+                Item Marked as Purchased!
+              </h3>
+              <p className="text-gray-600">
+                Thank you for supporting {wishlistOwner.firstName}. This item will be marked as fulfilled.
               </p>
             </div>
           )}

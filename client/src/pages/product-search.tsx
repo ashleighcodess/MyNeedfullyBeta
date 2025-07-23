@@ -1112,10 +1112,7 @@ export default function ProductSearch() {
                             Adding...
                           </>
                         ) : (
-                          <>
-                            <Plus className="mr-2 h-3 w-3" />
-                            Add to Needs List
-                          </>
+                          "Add to Needs List"
                         )}
                       </Button>
                     </CardContent>

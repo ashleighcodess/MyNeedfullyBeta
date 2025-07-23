@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -48,10 +53,10 @@ export function ShareModal({
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodeURIComponent(`${title} - ${description}`)}`,
     },
     {
-      name: "Twitter",
+      name: "X",
       icon: Twitter,
-      color: "bg-blue-400 hover:bg-blue-500",
-      url: `https://twitter.com/intent/tweet?text=${encodedShareText}`,
+      color: "bg-black hover:bg-gray-800",
+      url: `https://x.com/intent/tweet?text=${encodeURIComponent(`${title} - Help support this needs list!`)}&url=${encodedUrl}`,
     },
     {
       name: "LinkedIn",
@@ -61,18 +66,32 @@ export function ShareModal({
     },
     {
       name: "WhatsApp",
-      icon: MessageSquare,
-      color: "bg-green-600 hover:bg-green-700",
+      icon: MessageCircle,
+      color: "bg-green-500 hover:bg-green-600",
       url: `https://wa.me/?text=${encodedShareText}`,
+    },
+    {
+      name: "Reddit",
+      icon: MessageSquare,
+      color: "bg-orange-600 hover:bg-orange-700",
+      url: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodeURIComponent(`${title} - Help support this needs list!`)}`,
+    },
+    {
+      name: "Email",
+      icon: Mail,
+      color: "bg-gray-600 hover:bg-gray-700",
+      url: `mailto:?subject=${encodedTitle}&body=${encodedShareText}`,
     },
   ];
 
   const handleSocialShare = (platform: typeof socialPlatforms[0]) => {
-    window.open(platform.url, '_blank', 'noopener,noreferrer');
-    
+    // Call the onShare callback to increment share count
     if (onShare) {
       onShare();
     }
+
+    // Open the sharing URL
+    window.open(platform.url, '_blank', 'width=600,height=400');
     
     toast({
       title: "Shared!",
@@ -86,65 +105,52 @@ export function ShareModal({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       
+      // Call the onShare callback to increment share count
       if (onShare) {
         onShare();
       }
       
       toast({
-        title: "Link copied!",
+        title: "Link Copied",
         description: "The needs list link has been copied to your clipboard.",
       });
-    } catch (err) {
-      console.error('Failed to copy: ', err);
+    } catch (error) {
       toast({
-        title: "Copy failed",
-        description: "Unable to copy link. Please try again.",
+        title: "Copy Failed",
+        description: "Failed to copy link. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const handleEmailShare = () => {
-    const subject = encodeURIComponent(`Help Support: ${title}`);
-    const body = encodeURIComponent(shareText);
-    const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
-    
-    window.location.href = mailtoUrl;
-    
-    if (onShare) {
-      onShare();
-    }
-    
-    toast({
-      title: "Opening Email",
-      description: "Your email client will open with the needs list details.",
-    });
-  };
-
   const handleNativeShare = async () => {
-    try {
-      await navigator.share({
-        title: title,
-        text: description,
-        url: url,
-      });
-      
-      if (onShare) {
-        onShare();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: description,
+          url: url,
+        });
+        
+        // Call the onShare callback to increment share count
+        if (onShare) {
+          onShare();
+        }
+      } catch (error) {
+        // User canceled or error occurred, don't show error toast
+        console.log('Native sharing canceled or failed');
       }
-      
-      toast({
-        title: "Shared!",
-        description: "Thanks for sharing this needs list.",
-      });
-    } catch (err) {
-      console.error('Error sharing:', err);
     }
   };
 
   const handleSMS = () => {
-    const smsText = encodeURIComponent(shareText);
-    const smsUrl = `sms:?body=${smsText}`;
+    const smsBody = encodeURIComponent(`${title}\n\n${description}\n\nSupport this needs list: ${url}`);
+    const smsUrl = `sms:?body=${smsBody}`;
+    
+    // Call the onShare callback to increment share count
+    if (onShare) {
+      onShare();
+    }
     
     window.location.href = smsUrl;
     
@@ -156,17 +162,12 @@ export function ShareModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
-        className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md"
-      >
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <Share2 className="mr-2 h-5 w-5 text-coral" />
             Share Needs List
           </DialogTitle>
-          <DialogDescription className="sr-only">
-            Share this needs list with others to help spread the word
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -209,16 +210,6 @@ export function ShareModal({
                   Share via Device
                 </Button>
               )}
-
-              {/* Email */}
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={handleEmailShare}
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Send via Email
-              </Button>
 
               {/* SMS */}
               <Button
