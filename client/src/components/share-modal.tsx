@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -11,7 +12,6 @@ import {
   Copy,
   Share2,
   MessageSquare,
-  X,
 } from "lucide-react";
 
 interface ShareModalProps {
@@ -48,10 +48,10 @@ export function ShareModal({
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodeURIComponent(`${title} - ${description}`)}`,
     },
     {
-      name: "X",
+      name: "Twitter",
       icon: Twitter,
-      color: "bg-black hover:bg-gray-800",
-      url: `https://x.com/intent/tweet?text=${encodeURIComponent(`${title} - Help support this needs list!`)}&url=${encodedUrl}`,
+      color: "bg-blue-400 hover:bg-blue-500",
+      url: `https://twitter.com/intent/tweet?text=${encodedShareText}`,
     },
     {
       name: "LinkedIn",
@@ -61,32 +61,18 @@ export function ShareModal({
     },
     {
       name: "WhatsApp",
-      icon: MessageCircle,
-      color: "bg-green-500 hover:bg-green-600",
-      url: `https://wa.me/?text=${encodedShareText}`,
-    },
-    {
-      name: "Reddit",
       icon: MessageSquare,
-      color: "bg-orange-600 hover:bg-orange-700",
-      url: `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodeURIComponent(`${title} - Help support this needs list!`)}`,
-    },
-    {
-      name: "Email",
-      icon: Mail,
-      color: "bg-gray-600 hover:bg-gray-700",
-      url: `mailto:?subject=${encodedTitle}&body=${encodedShareText}`,
+      color: "bg-green-600 hover:bg-green-700",
+      url: `https://wa.me/?text=${encodedShareText}`,
     },
   ];
 
   const handleSocialShare = (platform: typeof socialPlatforms[0]) => {
-    // Call the onShare callback to increment share count
+    window.open(platform.url, '_blank', 'noopener,noreferrer');
+    
     if (onShare) {
       onShare();
     }
-
-    // Open the sharing URL
-    window.open(platform.url, '_blank', 'width=600,height=400');
     
     toast({
       title: "Shared!",
@@ -100,52 +86,65 @@ export function ShareModal({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       
-      // Call the onShare callback to increment share count
       if (onShare) {
         onShare();
       }
       
       toast({
-        title: "Link Copied",
+        title: "Link copied!",
         description: "The needs list link has been copied to your clipboard.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error('Failed to copy: ', err);
       toast({
-        title: "Copy Failed",
-        description: "Failed to copy link. Please try again.",
+        title: "Copy failed",
+        description: "Unable to copy link. Please try again.",
         variant: "destructive",
       });
     }
   };
 
+  const handleEmailShare = () => {
+    const subject = encodeURIComponent(`Help Support: ${title}`);
+    const body = encodeURIComponent(shareText);
+    const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
+    
+    window.location.href = mailtoUrl;
+    
+    if (onShare) {
+      onShare();
+    }
+    
+    toast({
+      title: "Opening Email",
+      description: "Your email client will open with the needs list details.",
+    });
+  };
+
   const handleNativeShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: title,
-          text: description,
-          url: url,
-        });
-        
-        // Call the onShare callback to increment share count
-        if (onShare) {
-          onShare();
-        }
-      } catch (error) {
-        // User canceled or error occurred, don't show error toast
-        console.log('Native sharing canceled or failed');
+    try {
+      await navigator.share({
+        title: title,
+        text: description,
+        url: url,
+      });
+      
+      if (onShare) {
+        onShare();
       }
+      
+      toast({
+        title: "Shared!",
+        description: "Thanks for sharing this needs list.",
+      });
+    } catch (err) {
+      console.error('Error sharing:', err);
     }
   };
 
   const handleSMS = () => {
-    const smsBody = encodeURIComponent(`${title}\n\n${description}\n\nSupport this needs list: ${url}`);
-    const smsUrl = `sms:?body=${smsBody}`;
-    
-    // Call the onShare callback to increment share count
-    if (onShare) {
-      onShare();
-    }
+    const smsText = encodeURIComponent(shareText);
+    const smsUrl = `sms:?body=${smsText}`;
     
     window.location.href = smsUrl;
     
@@ -155,27 +154,20 @@ export function ShareModal({
     });
   };
 
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={() => onOpenChange(false)}
-      />
-      <div className="relative z-[101] w-full max-w-md bg-white rounded-lg shadow-xl max-h-[90vh] overflow-y-auto p-6">
-        <button
-          onClick={() => onOpenChange(false)}
-          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
-        >
-          <X className="h-4 w-4" />
-        </button>
-        <div className="mb-6">
-          <h2 className="flex items-center text-lg font-semibold text-navy mb-2">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent 
+        className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md"
+      >
+        <DialogHeader>
+          <DialogTitle className="flex items-center">
             <Share2 className="mr-2 h-5 w-5 text-coral" />
             Share Needs List
-          </h2>
-        </div>
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Share this needs list with others to help spread the word
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="space-y-6">
           {/* Preview */}
@@ -218,6 +210,16 @@ export function ShareModal({
                 </Button>
               )}
 
+              {/* Email */}
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={handleEmailShare}
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Send via Email
+              </Button>
+
               {/* SMS */}
               <Button
                 variant="outline"
@@ -247,7 +249,7 @@ export function ShareModal({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

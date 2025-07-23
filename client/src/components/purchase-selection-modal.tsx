@@ -3,10 +3,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import ThankYouNote from "@/components/thank-you-note";
-import { Gift, ShoppingCart, Calendar, MapPin, User, Heart, X } from "lucide-react";
+import { Gift, ShoppingCart, Calendar, MapPin, User, Heart } from "lucide-react";
 
 interface PurchaseSelectionModalProps {
   isOpen: boolean;
@@ -42,24 +42,19 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
 
   if (showThankYouForm && selectedPurchase) {
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={onClose}
-        />
-        <div className="relative z-[101] w-full max-w-md bg-white rounded-lg shadow-xl max-h-[90vh] overflow-y-auto p-6">
-          <button
-            onClick={onClose}
-            className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
-          >
-            <X className="h-4 w-4" />
-          </button>
-          <div className="mb-6">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-navy">
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent 
+          className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md"
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
               <Heart className="h-5 w-5 text-coral" />
               Create Thank You Note
-            </h2>
-          </div>
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              Send a thank you message to the recipient
+            </DialogDescription>
+          </DialogHeader>
           <div className="mb-4 p-4 bg-gray-50 rounded-lg">
             <div className="text-sm text-gray-600 mb-1">Thanking recipient for:</div>
             <div className="font-medium text-navy">{selectedPurchase.itemTitle}</div>
@@ -72,30 +67,27 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             donationId={selectedPurchase.id}
             onSent={handleThankYouSent}
           />
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     );
   }
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      <div className="relative z-[101] w-full max-w-2xl bg-white rounded-lg shadow-xl max-h-[80vh] overflow-y-auto p-6">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 z-[102]"
-        >
-          <X className="h-4 w-4" />
-        </button>
-        <div className="mb-6">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-navy">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent 
+        className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-2xl max-h-[80vh] overflow-y-auto"
+      >
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
             <Gift className="h-5 w-5 text-coral" />
             Select a Purchase to Thank
-          </h2>
-        </div>
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Choose a purchase to send a thank you note for
+          </DialogDescription>
+        </DialogHeader>
         
         {isLoading ? (
           <div className="text-center py-8">
@@ -127,41 +119,39 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
               {availablePurchases.map((purchase: any) => (
                 <Card 
                   key={purchase.id} 
-                  className="cursor-pointer hover:shadow-md transition-all border hover:border-coral/30"
+                  className="cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => handleSelectPurchase(purchase)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Gift className="h-4 w-4 text-coral" />
-                          <h4 className="font-semibold text-navy line-clamp-1">
-                            {purchase.itemTitle}
-                          </h4>
-                        </div>
-                        
-                        <div className="space-y-1 text-sm text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            <span>
-                              For: {purchase.recipientFirstName} {purchase.recipientLastName}
-                            </span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            <span>{purchase.wishlistLocation}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                              {new Date(purchase.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
-                            </span>
+                        <div className="flex items-start space-x-3">
+                          <Gift className="h-5 w-5 text-coral mt-1 flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-medium text-navy mb-1 line-clamp-2">
+                              {purchase.itemTitle}
+                            </h4>
+                            
+                            <div className="flex items-center text-sm text-gray-600 mb-1">
+                              <User className="h-4 w-4 mr-1" />
+                              <span>For: {purchase.recipientFirstName} {purchase.recipientLastName}</span>
+                            </div>
+                            
+                            <div className="flex items-center text-sm text-gray-600 mb-1">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              <span>{purchase.recipientLocation}</span>
+                            </div>
+                            
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              <span>
+                                {new Date(purchase.createdAt).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -183,7 +173,7 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             </div>
           </div>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
