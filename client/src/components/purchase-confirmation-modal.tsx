@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -202,7 +203,7 @@ export default function PurchaseConfirmationModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       {/* Backdrop */}
       <div 
@@ -362,6 +363,7 @@ export default function PurchaseConfirmationModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
