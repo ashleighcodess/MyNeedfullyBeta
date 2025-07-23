@@ -37,19 +37,31 @@ export default function PurchaseConfirmationModal({
   const [isPurchased, setIsPurchased] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
+  
+  // Mobile detection
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   // Debug logging for mobile
-  console.log('PurchaseConfirmationModal rendered:', { isOpen, product: product?.title });
+  console.log('PurchaseConfirmationModal rendered:', { isOpen, product: product?.title, isMobile });
   
   // Handle body scroll lock for mobile
   React.useEffect(() => {
     if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
       document.body.setAttribute('data-modal-open', 'true');
     } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
       document.body.removeAttribute('data-modal-open');
     }
     
     return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
       document.body.removeAttribute('data-modal-open');
     };
   }, [isOpen]);
@@ -220,10 +232,49 @@ export default function PurchaseConfirmationModal({
     return null;
   }
 
+  // Mobile fallback modal
+  if (isMobile && isOpen) {
+    return (
+      <>
+        {/* Mobile Overlay */}
+        <div 
+          className="fixed inset-0 bg-black/50 z-[100]" 
+          onClick={onClose}
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+        
+        {/* Mobile Modal Content */}
+        <div 
+          className="fixed z-[101] bg-white rounded-2xl shadow-xl overflow-hidden"
+          style={{
+            position: 'fixed',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 'calc(100vw - 2rem)',
+            maxWidth: '425px',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}
+        >
+          {renderModalContent()}
+        </div>
+      </>
+    );
+  }
+
+  // Desktop modal
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
-      <DialogContent className="sm:max-w-md p-0 bg-white rounded-2xl border-0">
-        <div className="relative p-3 sm:p-6">
+      <DialogContent className="fixed left-[50%] top-[50%] z-50 w-[95vw] max-w-[425px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl">
+        {renderModalContent()}
+      </DialogContent>
+    </Dialog>
+  );
+
+  function renderModalContent() {
+    return (
+      <div className="relative p-4 sm:p-6">
           {/* Header */}
           <DialogHeader className="text-center mb-3 sm:mb-6">
             <DialogTitle className="text-base sm:text-xl font-semibold text-gray-800">
@@ -360,7 +411,6 @@ export default function PurchaseConfirmationModal({
             </div>
           )}
         </div>
-      </DialogContent>
-    </Dialog>
-  );
+    );
+  }
 }

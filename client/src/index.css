@@ -692,10 +692,26 @@
 /* General modal improvements */
 [data-radix-dialog-overlay] {
   animation: fadeIn 0.2s ease-out;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 50 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 [data-radix-dialog-content] {
-  animation: modalSlideIn 0.2s ease-out;
+  position: fixed !important;
+  z-index: 51 !important;
+}
+
+/* Mobile-specific modal fixes */
+@media (max-width: 640px) {
+  [data-radix-dialog-content] {
+    width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
 }
 
 @keyframes modalSlideIn {
