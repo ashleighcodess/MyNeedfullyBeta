@@ -714,15 +714,15 @@
   [data-radix-dialog-overlay] {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 50 !important;
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    z-index: 9998 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
   }
   
   [data-radix-dialog-content] {
     position: fixed !important;
     left: 50% !important;
     top: 50% !important;
-    z-index: 51 !important;
+    z-index: 9999 !important;
     transform: translate(-50%, -50%) !important;
     width: 95vw !important;
     max-width: 400px !important;
@@ -730,5 +730,8 @@
     background: white !important;
     border-radius: 16px !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
