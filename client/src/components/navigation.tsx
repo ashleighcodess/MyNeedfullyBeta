@@ -340,15 +340,15 @@ export default function Navigation() {
                 </div>
               )}
 
-              {/* Create Needs List Button for signed-out users */}
+              {/* Create Needs List Link for signed-out users */}
               {!user && (
-                <Button 
-                  className="bg-coral text-white hover:bg-coral/90 px-4 py-2 text-sm font-medium"
+                <div 
+                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer text-gray-700 hover:text-coral hover:bg-coral/5"
                   onClick={() => window.location.href = "/signup"}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Needs List
-                </Button>
+                  <Plus className="h-4 w-4" />
+                  <span>Create Needs List</span>
+                </div>
               )}
 
               {/* User Menu or Login Button */}
