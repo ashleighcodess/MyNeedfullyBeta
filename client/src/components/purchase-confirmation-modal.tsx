@@ -1,14 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Heart, MapPin, Calendar, User, MessageCircle, Gift, Mail } from 'lucide-react';
-import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { GIFT_CARDS } from '@/lib/constants';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -47,14 +42,12 @@ export default function PurchaseConfirmationModal({
   onPurchaseConfirm,
   itemId
 }: PurchaseConfirmationModalProps) {
+  const [showShippingAddress, setShowShippingAddress] = useState(false);
+  const [isPurchased, setIsPurchased] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
-  const [thankYouMessage, setThankYouMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleConfirmPurchase = () => {
-    onPurchaseConfirm();
-    onClose();
-  };
+  if (!isOpen || !product) return null;
 
   const copyAddressToClipboard = async () => {
     const shippingAddress = wishlistOwner.shippingAddress;
@@ -130,122 +123,142 @@ export default function PurchaseConfirmationModal({
     }
   };
 
-  const giftCardMode = isGiftCard(product?.title || '');
+  const giftCardMode = isGiftCard(product.title);
+
+  const handleBuyClick = () => {
+    // Open retailer URL in new tab
+    window.open(product.link, '_blank');
+    
+    // Show address/email section after clicking buy
+    setShowShippingAddress(true);
+  };
+
+  const handlePurchaseConfirm = () => {
+    setIsPurchased(true);
+    onPurchaseConfirm();
+    
+    toast({
+      title: "Thank you for your generosity!",
+      description: "The recipient has been notified of your purchase.",
+    });
+    
+    // Close modal after short delay
+    setTimeout(() => {
+      onClose();
+      setIsPurchased(false);
+      setShowShippingAddress(false);
+    }, 2000);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
-        className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md"
-      >
+      <DialogContent className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Purchase Confirmation</DialogTitle>
+          <DialogTitle>Purchase Item</DialogTitle>
           <DialogDescription className="sr-only">
-            Confirm your purchase and copy the necessary information for checkout
+            Purchase this item from the retailer
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Item Preview */}
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <Gift className="h-8 w-8 text-coral mr-2" />
-              <h3 className="text-lg font-semibold text-navy">Ready to Purchase</h3>
-            </div>
-            
-            {product?.image && (
-              <img 
-                src={product.image} 
+        <div className="space-y-4">
+          {/* Product Info */}
+          <div className="flex items-start space-x-4">
+            {product.image && (
+              <img
+                src={product.image}
                 alt={product.title}
-                className="w-20 h-20 object-contain mx-auto mb-3 rounded"
+                className="w-16 h-16 object-contain rounded-lg"
               />
             )}
-            
-            <h4 className="font-medium text-navy mb-1 line-clamp-2">
-              {product?.title}
-            </h4>
-            
-            {product?.price && (
-              <p className="text-lg font-bold text-coral mb-2">
-                {product.price}
+            <div className="flex-1">
+              <h3 className="font-semibold text-navy text-base line-clamp-2">
+                {product.title}
+              </h3>
+              <p className="text-coral font-bold text-lg mt-1">{product.price}</p>
+              <p className="text-sm text-gray-600 mt-1">
+                For: {wishlistOwner.firstName} {wishlistOwner.lastName}
               </p>
-            )}
-            
-            <p className="text-sm text-gray-600">
-              For: {wishlistOwner.firstName} {wishlistOwner.lastName}
-            </p>
-          </div>
-
-          {/* Address/Email Section */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center">
-                {giftCardMode ? (
-                  <Mail className="h-4 w-4 text-gray-600 mr-2" />
-                ) : (
-                  <MapPin className="h-4 w-4 text-gray-600 mr-2" />
-                )}
-                <span className="text-sm font-medium text-gray-700">
-                  {giftCardMode ? 'Email for Gift Card Delivery:' : 'Shipping Address:'}
-                </span>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={giftCardMode ? copyEmailToClipboard : copyAddressToClipboard}
-                className="text-xs"
-              >
-                Copy
-              </Button>
             </div>
-            <p className="text-sm text-gray-800 whitespace-pre-wrap">
-              {giftCardMode ? wishlistOwner.email : (
-                typeof wishlistOwner.shippingAddress === 'object' 
-                  ? JSON.stringify(wishlistOwner.shippingAddress, null, 2)
-                  : wishlistOwner.shippingAddress
-              )}
-            </p>
           </div>
 
-          {/* Thank You Message */}
-          <div className="space-y-2">
-            <Label htmlFor="thankYouMessage" className="flex items-center">
-              <Heart className="h-4 w-4 text-coral mr-2" />
-              Optional Message to Recipient
-            </Label>
-            <Textarea
-              id="thankYouMessage"
-              placeholder="Write a kind message to let them know you're thinking of them..."
-              value={thankYouMessage}
-              onChange={(e) => setThankYouMessage(e.target.value)}
-              className="min-h-[80px]"
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex space-x-3">
+          {/* Buy Button */}
+          {!showShippingAddress && (
             <Button
-              variant="outline"
-              onClick={onClose}
-              className="flex-1"
-              disabled={isSubmitting}
+              onClick={handleBuyClick}
+              className="w-full bg-coral hover:bg-coral-dark text-white flex items-center justify-center gap-2"
+              size="lg"
             >
-              Cancel
+              <ExternalLink className="h-4 w-4" />
+              Buy at {product.retailer.charAt(0).toUpperCase() + product.retailer.slice(1)}
             </Button>
-            <Button
-              onClick={handleConfirmPurchase}
-              className="flex-1 bg-coral hover:bg-coral-dark text-white"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Confirming...' : 'Confirm Purchase'}
-            </Button>
-          </div>
+          )}
 
-          {/* Instructions */}
-          <div className="text-xs text-gray-500 text-center space-y-1">
-            <p>1. Click "Confirm Purchase" to mark this item as bought</p>
-            <p>2. {giftCardMode ? 'Use the copied email' : 'Use the copied address'} when checking out at the retailer</p>
-            <p>3. The recipient will be notified of your generous support</p>
-          </div>
+          {/* Address/Email Section - Show after Buy clicked */}
+          {showShippingAddress && !isPurchased && (
+            <>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center">
+                    {giftCardMode ? (
+                      <Mail className="h-5 w-5 text-blue-600 mr-2" />
+                    ) : (
+                      <MapPin className="h-5 w-5 text-blue-600 mr-2" />
+                    )}
+                    <span className="font-medium text-blue-900">
+                      {giftCardMode ? 'Email for Gift Card Delivery:' : 'Shipping Address:'}
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={giftCardMode ? copyEmailToClipboard : copyAddressToClipboard}
+                    className={`text-xs ${copiedAddress ? 'bg-green-100 text-green-700' : ''}`}
+                  >
+                    {copiedAddress ? <Check className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
+                    {copiedAddress ? 'Copied!' : 'Copy'}
+                  </Button>
+                </div>
+                
+                <div className="text-sm text-gray-800 bg-white p-3 rounded border whitespace-pre-wrap">
+                  {giftCardMode ? wishlistOwner.email : (
+                    typeof wishlistOwner.shippingAddress === 'object' 
+                      ? Object.values(wishlistOwner.shippingAddress).filter(Boolean).join('\n')
+                      : wishlistOwner.shippingAddress
+                  )}
+                </div>
+              </div>
+
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-4">
+                  {giftCardMode 
+                    ? 'Use the email above for gift card delivery during checkout'
+                    : 'Use the address above for shipping during checkout'
+                  }
+                </p>
+                
+                <Button
+                  onClick={handlePurchaseConfirm}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                >
+                  <Package className="h-4 w-4 mr-2" />
+                  I've Completed the Purchase
+                </Button>
+              </div>
+            </>
+          )}
+
+          {/* Success State */}
+          {isPurchased && (
+            <div className="text-center py-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Check className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="font-semibold text-green-700 mb-2">Purchase Confirmed!</h3>
+              <p className="text-sm text-gray-600">
+                The recipient will be notified of your generous support.
+              </p>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
