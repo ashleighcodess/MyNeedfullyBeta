@@ -228,28 +228,49 @@ export default function PurchaseConfirmationModal({
 
   // Debug logging
   console.log('PurchaseConfirmationModal render:', { isOpen, product: product?.title });
+  console.log('Portal target (document.body):', document.body);
+  console.log('Portal target children count:', document.body.children.length);
 
   if (!isOpen) return null;
 
   return createPortal(
     <div 
-      className="fixed inset-0 flex items-center justify-center"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
       style={{ 
-        zIndex: 999999,
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
+        zIndex: 999999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.8)'
       }}
     >
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/80" 
-        onClick={onClose}
-        style={{ zIndex: 1 }}
-      />
+      {/* Test element to verify portal works */}
+      <div style={{
+        position: 'absolute',
+        top: '50px',
+        left: '50px',
+        width: '300px',
+        height: '200px',
+        backgroundColor: 'lime',
+        border: '10px solid magenta',
+        zIndex: 1000000,
+        fontSize: '24px',
+        color: 'black',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        PORTAL TEST - CAN YOU SEE THIS?
+      </div>
       
       {/* Modal Content */}
       <div 
