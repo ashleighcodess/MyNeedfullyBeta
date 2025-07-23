@@ -708,3 +708,27 @@
     transform: translate(-50%, -50%);
   }
 }
+
+/* Critical Mobile Dialog Fixes */
+@media (max-width: 768px) {
+  [data-radix-dialog-overlay] {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 50 !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  [data-radix-dialog-content] {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    z-index: 51 !important;
+    transform: translate(-50%, -50%) !important;
+    width: 95vw !important;
+    max-width: 400px !important;
+    max-height: 90vh !important;
+    background: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  }
+}

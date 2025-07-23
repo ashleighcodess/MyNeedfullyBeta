@@ -222,16 +222,9 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
+      <div className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
       <DialogContent 
-        className="w-[96vw] max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 max-h-[92vh] overflow-y-auto sm:max-h-[85vh] sm:w-[500px]"
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          margin: '0',
-          zIndex: 9999
-        }}
+        className="fixed left-[50%] top-[50%] z-50 grid w-[96vw] max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl max-h-[92vh] overflow-y-auto sm:max-h-[85vh] sm:w-[500px]"
       >
         <div className="relative p-3 sm:p-6">
           {/* Header */}
