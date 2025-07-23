@@ -138,7 +138,7 @@ export default function PurchaseConfirmationModal({
         className="left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-md"
       >
         <DialogHeader>
-          <DialogTitle className="sr-only">Purchase Confirmation</DialogTitle>
+          <DialogTitle>Purchase Confirmation</DialogTitle>
           <DialogDescription className="sr-only">
             Confirm your purchase and copy the necessary information for checkout
           </DialogDescription>
