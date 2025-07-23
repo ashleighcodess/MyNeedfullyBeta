@@ -615,26 +615,62 @@
 
 /* Mobile Modal Fixes */
 @media (max-width: 768px) {
+  /* Ensure modal portals are properly positioned */
   [data-radix-portal] {
-    z-index: 99999 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 50 !important;
+    pointer-events: none !important;
   }
   
+  /* Modal overlay styling */
   [data-radix-dialog-overlay] {
     position: fixed !important;
     inset: 0 !important;
     background-color: rgba(0, 0, 0, 0.5) !important;
-    z-index: 99998 !important;
+    z-index: 50 !important;
+    pointer-events: auto !important;
   }
   
+  /* Modal content styling */
   [data-radix-dialog-content] {
     position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    z-index: 99999 !important;
+    z-index: 51 !important;
     width: 95vw !important;
     max-width: 28rem !important;
-    max-height: 90vh !important;
+    max-height: 85vh !important;
     overflow-y: auto !important;
+    pointer-events: auto !important;
+    /* Ensure it's visible */
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Prevent body scroll when modal is open */
+  body[data-modal-open] {
+    overflow: hidden !important;
+  }
+}
+
+/* General modal improvements */
+[data-radix-dialog-overlay] {
+  animation: fadeIn 0.2s ease-out;
+}
+
+[data-radix-dialog-content] {
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
   }
 }

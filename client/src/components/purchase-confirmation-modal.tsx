@@ -40,6 +40,19 @@ export default function PurchaseConfirmationModal({
 
   // Debug logging for mobile
   console.log('PurchaseConfirmationModal rendered:', { isOpen, product: product?.title });
+  
+  // Handle body scroll lock for mobile
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.setAttribute('data-modal-open', 'true');
+    } else {
+      document.body.removeAttribute('data-modal-open');
+    }
+    
+    return () => {
+      document.body.removeAttribute('data-modal-open');
+    };
+  }, [isOpen]);
 
   // Check if this is a gift card
   const isGiftCard = () => {
@@ -210,19 +223,12 @@ export default function PurchaseConfirmationModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
       <DialogContent 
-        className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 w-[95vw] sm:w-auto max-h-[90vh] overflow-y-auto"
-        style={{ 
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 9999
-        }}
+        className="w-[95vw] max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 max-h-[85vh] overflow-y-auto sm:max-h-[90vh]"
       >
-        <div className="relative p-6">
+        <div className="relative p-4 sm:p-6">
           {/* Header */}
-          <DialogHeader className="text-center mb-6">
-            <DialogTitle className="text-xl font-semibold text-gray-800">
+          <DialogHeader className="text-center mb-4 sm:mb-6">
+            <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </DialogTitle>
           </DialogHeader>
@@ -230,30 +236,30 @@ export default function PurchaseConfirmationModal({
           {!isPurchased ? (
             <>
               {/* Content Section */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                {/* Left Side - Purchase Instructions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                {/* Top/Left Side - Purchase Instructions */}
                 <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-coral-50 rounded-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-coral-600" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-coral-50 rounded-full flex items-center justify-center">
+                    <Package className="h-6 w-6 sm:h-8 sm:w-8 text-coral-600" />
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                     After purchase, return to MyNeedfully and click{' '}
                     <span className="font-semibold text-coral-600">I've Purchased This</span>
                   </p>
                 </div>
 
-                {/* Right Side - Shipping Address or Email */}
+                {/* Bottom/Right Side - Shipping Address or Email */}
                 <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-blue-50 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-blue-50 rounded-full flex items-center justify-center">
                     {isGiftCard() ? (
-                      <Mail className="h-8 w-8 text-blue-600" />
+                      <Mail className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                     ) : (
-                      <MapPin className="h-8 w-8 text-blue-600" />
+                      <MapPin className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                     )}
                   </div>
                   <button
                     onClick={() => setShowShippingAddress(!showShippingAddress)}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                    className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors px-2 py-1 rounded"
                   >
                     {isGiftCard() 
                       ? `Need ${wishlistOwner.firstName}'s email address?`
@@ -313,7 +319,7 @@ export default function PurchaseConfirmationModal({
               <div className="space-y-3">
                 <Button
                   onClick={handleContinueToRetailer}
-                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-3 rounded-lg font-medium"
+                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Continue to {getRetailerName()}
@@ -322,7 +328,7 @@ export default function PurchaseConfirmationModal({
                 <Button
                   onClick={handlePurchaseConfirmation}
                   variant="outline"
-                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-3 rounded-lg font-medium"
+                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base"
                 >
                   <Check className="h-4 w-4 mr-2" />
                   I've Purchased This
@@ -330,7 +336,7 @@ export default function PurchaseConfirmationModal({
               </div>
 
               {/* Footer */}
-              <div className="mt-6 text-center space-y-2">
+              <div className="mt-4 sm:mt-6 text-center space-y-1 sm:space-y-2">
                 <p className="text-xs text-gray-500">
                   MyNeedfully may earn a commission on purchases
                 </p>
