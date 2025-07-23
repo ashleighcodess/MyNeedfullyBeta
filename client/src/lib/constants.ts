@@ -34,7 +34,7 @@ export const GIFT_CARDS = [
     id: "uber-eats",
     name: "Uber Eats",
     retailer: "Uber Eats",
-    image: "https://brand.uber.com/d/4YRwkQaXMgFz/logos/show/eyJpZCI6MzkwNzksInNjb3BlIjoiYXNzZXQ6dmlldyIsInRpbWVzdGFtcCI6IjE3NTMyODk5NjIifQ:postmates:bbJjJ4L3BE81iJV75oJf54kJMGFMl_6ShBQ6WA9VG9U",
+    image: "@assets/Screenshot 2025-07-23 at 1.01.53 PM_1753290117208.png",
     url: "https://gifts.uber.com/?uclick_id=cac951b6-fd24-438a-93b3-ee520da16515",
     description: "Food delivery gift cards for meals from local restaurants"
   },
