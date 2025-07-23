@@ -276,8 +276,18 @@ export default function Navigation() {
                           </p>
                         </div>
                         <Button 
-                          variant="default" 
-                          className="w-full bg-coral text-white hover:bg-coral/90 py-3 text-base font-semibold"
+                          className="w-full bg-coral text-white hover:bg-coral/90 py-3 text-base font-semibold mb-3"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            window.location.href = "/signup";
+                          }}
+                        >
+                          <Plus className="mr-2 h-4 w-4" />
+                          Create Needs List
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full py-3 text-base font-semibold"
                           onClick={() => {
                             setMobileMenuOpen(false);
                             window.location.href = "/signup";
@@ -328,6 +338,17 @@ export default function Navigation() {
                     )}
                   </Button>
                 </div>
+              )}
+
+              {/* Create Needs List Button for signed-out users */}
+              {!user && (
+                <Button 
+                  className="bg-coral text-white hover:bg-coral/90 px-4 py-2 text-sm font-medium"
+                  onClick={() => window.location.href = "/signup"}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Needs List
+                </Button>
               )}
 
               {/* User Menu or Login Button */}
@@ -404,6 +425,7 @@ export default function Navigation() {
                 </DropdownMenu>
               ) : (
                 <Button 
+                  variant="outline"
                   onClick={() => window.location.href = "/login"}
                 >
                   Sign In
