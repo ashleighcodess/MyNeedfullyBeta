@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { GIFT_CARDS } from '@/lib/constants';
 
@@ -38,23 +38,29 @@ export default function PurchaseConfirmationModal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
   
-  // Mobile detection
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // Mobile detection - moved to avoid conditional calls
+  const isMobile = React.useMemo(() => {
+    return typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  }, []);
 
-  // Debug logging for mobile
-  console.log('PurchaseConfirmationModal rendered:', { isOpen, product: product?.title, isMobile });
-  
-  // Handle body scroll lock for mobile
+  // Handle body scroll lock for mobile - always called
   React.useEffect(() => {
-    if (isOpen) {
-      // Save current scroll position
-      const scrollY = window.scrollY;
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.setAttribute('data-modal-open', 'true');
-    } else {
+    if (!isOpen) return;
+    
+    // Save current scroll position
+    const scrollY = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.setAttribute('data-modal-open', 'true');
+    
+    // Force scroll to top for mobile
+    if (isMobile) {
+      window.scrollTo(0, 0);
+    }
+
+    return () => {
       // Restore scroll position
       const scrollY = document.body.style.top;
       document.body.style.overflow = '';
@@ -65,22 +71,7 @@ export default function PurchaseConfirmationModal({
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
       }
-    }
-    
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
-      document.body.removeAttribute('data-modal-open');
     };
-  }, [isOpen]);
-
-  // Force scroll to top when modal opens on mobile
-  React.useEffect(() => {
-    if (isOpen && isMobile) {
-      window.scrollTo(0, 0);
-    }
   }, [isOpen, isMobile]);
 
   // Check if this is a gift card
@@ -245,21 +236,23 @@ export default function PurchaseConfirmationModal({
     }
   };
 
-  if (!isOpen) {
-    return null;
-  }
-
-  // Desktop modal (with mobile fallback in DialogContent)
+  // Always return the modal structure - don't use conditional returns with hooks
   return (
     <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
-      <DialogContent className="fixed z-50 w-[95vw] max-w-[425px] gap-4 border bg-white p-0 shadow-lg rounded-2xl" 
+      <DialogContent 
+        className="fixed z-50 w-[95vw] max-w-[425px] gap-4 border bg-white p-0 shadow-lg rounded-2xl" 
         style={{
           left: '50%',
           top: isMobile ? '20px' : '50%',
           transform: isMobile ? 'translateX(-50%)' : 'translate(-50%, -50%)',
           maxHeight: isMobile ? 'calc(100vh - 40px)' : '90vh',
           overflowY: 'auto'
-        }}>
+        }}
+      >
+        <DialogTitle className="sr-only">Purchase Confirmation</DialogTitle>
+        <DialogDescription className="sr-only">
+          Complete your purchase of {product?.title || 'this item'}
+        </DialogDescription>
         {renderModalContent()}
       </DialogContent>
     </Dialog>
