@@ -2,7 +2,7 @@
 import uberEatsLogo from "@assets/Eats-02_1753291542136.png";
 import walmartGiftCard from "@assets/Walmart_1753302749513.png";
 import walmartLogo from "@/assets/walmart-logo.svg";
-import amazonLogo from "@/assets/amazon-logo.svg";
+import amazonGiftCard from "@assets/Amazon_1753303232132.png";
 import doordashLogo from "@/assets/doordash-logo.svg";
 import instacartGiftCard from "@assets/Instacart_1753302991471.png";
 import lowesGiftCard from "@assets/Lowes_1753302929681.png";
@@ -93,7 +93,7 @@ export const GIFT_CARDS = [
     id: "amazon",
     name: "Amazon Gift Card",
     retailer: "Amazon", 
-    image: amazonLogo,
+    image: amazonGiftCard,
     url: "https://www.amazon.com/Amazon-eGift-Card-Bright-Balloons-Animated/dp/B09LQTPHSG?pf_rd_p=99fab157-bf8f-49e0-bf0d-b6c3011af88f&pf_rd_r=WESJEPWBQM9BD1CP9RV5&ref_=US_GC_AGC_P1_25_STND_B09LQTPHSG&th=1",
     description: "Universal gift cards for millions of products online"
   },

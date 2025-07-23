@@ -103,6 +103,7 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 
 ```
 Changelog:
+- July 23, 2025: AMAZON GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Amazon gift card image featuring classic dark navy background with white "amazon" text and signature orange smile arrow, maintaining professional e-commerce leader branding identity
 - July 23, 2025: HOME DEPOT GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Home Depot gift card image featuring signature orange background with wooden crate packaging and red ribbon bow, maintaining professional home improvement retailer branding identity
 - July 23, 2025: INSTACART GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Instacart gift card image featuring clean cream background with iconic green carrot logo and dark green "instacart" branding, maintaining professional grocery delivery service identity
 - July 23, 2025: LOWES GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Lowe's gift card image featuring clean white background with classic blue Lowe's house logo and "Gift Card" text, maintaining professional home improvement retailer branding
