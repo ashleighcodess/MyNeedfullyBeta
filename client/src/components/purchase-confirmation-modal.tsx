@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { X, Package, MapPin, ExternalLink, Check, Copy } from 'lucide-react';
+import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { GIFT_CARDS } from '@/lib/constants';
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ interface PurchaseConfirmationModalProps {
     firstName: string;
     lastName?: string;
     shippingAddress?: string | object;
+    email?: string;
   };
   onPurchaseConfirm: () => void;
   itemId: number;
@@ -35,6 +37,14 @@ export default function PurchaseConfirmationModal({
   const [isPurchased, setIsPurchased] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
+
+  // Check if this is a gift card
+  const isGiftCard = () => {
+    return GIFT_CARDS.some(giftCard => 
+      product.title?.toLowerCase().includes(giftCard.name.toLowerCase()) ||
+      product.title?.toLowerCase().includes('gift card')
+    );
+  };
 
   const getRetailerName = () => {
     switch (product.retailer) {
@@ -150,6 +160,46 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  const copyEmailToClipboard = async () => {
+    const emailText = wishlistOwner.email || 'No email provided';
+    
+    try {
+      await navigator.clipboard.writeText(emailText);
+      setCopiedAddress(true);
+      toast({
+        title: "Email Copied!",
+        description: "Email address has been copied to your clipboard",
+        duration: 2000,
+      });
+      setTimeout(() => setCopiedAddress(false), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = emailText;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopiedAddress(true);
+        toast({
+          title: "Email Copied!",
+          description: "Email address has been copied to your clipboard",
+          duration: 2000,
+        });
+        setTimeout(() => setCopiedAddress(false), 2000);
+      } catch (fallbackErr) {
+        toast({
+          title: "Copy Failed",
+          description: "Unable to copy email. Please copy manually.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0">
@@ -176,27 +226,36 @@ export default function PurchaseConfirmationModal({
                   </p>
                 </div>
 
-                {/* Right Side - Shipping Address */}
+                {/* Right Side - Shipping Address or Email */}
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto mb-3 bg-blue-50 rounded-full flex items-center justify-center">
-                    <MapPin className="h-8 w-8 text-blue-600" />
+                    {isGiftCard() ? (
+                      <Mail className="h-8 w-8 text-blue-600" />
+                    ) : (
+                      <MapPin className="h-8 w-8 text-blue-600" />
+                    )}
                   </div>
                   <button
                     onClick={() => setShowShippingAddress(!showShippingAddress)}
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
                   >
-                    Need {wishlistOwner.firstName}'s shipping address?
+                    {isGiftCard() 
+                      ? `Need ${wishlistOwner.firstName}'s email address?`
+                      : `Need ${wishlistOwner.firstName}'s shipping address?`
+                    }
                   </button>
                 </div>
               </div>
 
-              {/* Shipping Address Display */}
-              {showShippingAddress && wishlistOwner.shippingAddress && (
+              {/* Address/Email Display */}
+              {showShippingAddress && (isGiftCard() ? wishlistOwner.email : wishlistOwner.shippingAddress) && (
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-800">Shipping Address:</h4>
+                    <h4 className="font-medium text-gray-800">
+                      {isGiftCard() ? 'Email Address:' : 'Shipping Address:'}
+                    </h4>
                     <Button
-                      onClick={copyAddressToClipboard}
+                      onClick={isGiftCard() ? copyEmailToClipboard : copyAddressToClipboard}
                       variant="outline"
                       size="sm"
                       className="h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
@@ -215,13 +274,21 @@ export default function PurchaseConfirmationModal({
                     </Button>
                   </div>
                   <div className="text-sm text-gray-600 whitespace-pre-line font-mono bg-white p-3 rounded border">
-                    {formatShippingAddress(wishlistOwner.shippingAddress)}
+                    {isGiftCard() 
+                      ? (wishlistOwner.email || 'No email provided')
+                      : formatShippingAddress(wishlistOwner.shippingAddress)
+                    }
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    {copiedAddress 
-                      ? "Address copied to clipboard! Paste it during checkout on the retailer's website."
-                      : "Click 'Copy' above to copy this address for checkout on the retailer's website."
-                    }
+                    {isGiftCard() ? (
+                      copiedAddress 
+                        ? "Email copied to clipboard! Use it for gift card delivery during checkout."
+                        : "Click 'Copy' above to copy this email for gift card delivery."
+                    ) : (
+                      copiedAddress 
+                        ? "Address copied to clipboard! Paste it during checkout on the retailer's website."
+                        : "Click 'Copy' above to copy this address for checkout on the retailer's website."
+                    )}
                   </p>
                 </div>
               )}
