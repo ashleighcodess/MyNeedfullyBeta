@@ -103,6 +103,7 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 
 ```
 Changelog:
+- July 23, 2025: INSTACART GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Instacart gift card image featuring clean cream background with iconic green carrot logo and dark green "instacart" branding, maintaining professional grocery delivery service identity
 - July 23, 2025: LOWES GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Lowe's gift card image featuring clean white background with classic blue Lowe's house logo and "Gift Card" text, maintaining professional home improvement retailer branding
 - July 23, 2025: GOLDBELLY GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Goldbelly gift card image featuring blue background with food illustrations and "YOU GOT A GIFT CARD!" messaging, maintaining professional branding consistency across gift cards section
 - July 23, 2025: GIFT CARD IMAGE SIZING STANDARDIZED - updated gift card display styling to ensure uniform dimensions across all gift cards using w-full h-full object-contain, creating consistent visual presentation for Walmart, Uber Eats, and all other gift card images in the Gift Cards section

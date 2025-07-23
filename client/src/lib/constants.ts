@@ -4,7 +4,7 @@ import walmartGiftCard from "@assets/Walmart_1753302749513.png";
 import walmartLogo from "@/assets/walmart-logo.svg";
 import amazonLogo from "@/assets/amazon-logo.svg";
 import doordashLogo from "@/assets/doordash-logo.svg";
-import instacartLogo from "@/assets/instacart-logo.svg";
+import instacartGiftCard from "@assets/Instacart_1753302991471.png";
 import lowesGiftCard from "@assets/Lowes_1753302929681.png";
 import homeDepotLogo from "@/assets/home-depot-logo.svg";
 import goldbellyGiftCard from "@assets/Goldbelly_1753302855104.png";
@@ -77,7 +77,7 @@ export const GIFT_CARDS = [
     id: "instacart",
     name: "Instacart Gift Card",
     retailer: "Instacart",
-    image: instacartLogo,
+    image: instacartGiftCard,
     url: "https://instacart.launchgiftcards.com/?utm_campaign=launch&utm_source=instacart&utm_medium=gift_card_landing_page_us&utm_term=95C5A1B4-6ec9-48fd-902a-a0ce307268e9",
     description: "Grocery delivery gift cards for fresh food and essentials"
   },
