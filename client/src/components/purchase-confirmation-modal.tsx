@@ -13,25 +13,22 @@ import { GIFT_CARDS } from '@/lib/constants';
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  item: {
-    id: number;
+  product: {
     title: string;
-    price?: string;
+    price: string;
+    link: string;
+    retailer: 'amazon' | 'walmart' | 'target';
     image?: string;
-    link?: string;
-    quantity?: number;
+    itemId: number;
   };
-  wishlist: {
-    id: number;
-    title: string;
+  wishlistOwner: {
     firstName: string;
-    lastName: string;
-    shippingAddress: string;
-    location: string;
+    lastName?: string;
+    shippingAddress?: string | object;
+    email?: string;
   };
-  user: {
-    email: string;
-  };
+  onPurchaseConfirm: () => void;
+  itemId: number;
 }
 
 // Check if item is a gift card
@@ -45,47 +42,40 @@ const isGiftCard = (title: string): boolean => {
 export default function PurchaseConfirmationModal({
   isOpen,
   onClose,
-  item,
-  wishlist,
-  user
+  product,
+  wishlistOwner,
+  onPurchaseConfirm,
+  itemId
 }: PurchaseConfirmationModalProps) {
   const { toast } = useToast();
   const [thankYouMessage, setThankYouMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fulfillMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest('POST', `/api/wishlist/${wishlist.id}/items/${item.id}/fulfill`, {
-        supporterMessage: thankYouMessage,
-        retailerUrl: item.link,
-        purchasePrice: item.price
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Purchase Confirmed!",
-        description: "The item has been marked as purchased. The recipient will be notified.",
-      });
-      onClose();
-    },
-    onError: (error) => {
-      console.error('Error fulfilling item:', error);
-      toast({
-        title: "Error",
-        description: "Failed to confirm purchase. Please try again.",
-        variant: "destructive",
-      });
-    }
-  });
-
   const handleConfirmPurchase = () => {
-    setIsSubmitting(true);
-    fulfillMutation.mutate();
+    onPurchaseConfirm();
+    onClose();
   };
 
   const copyAddressToClipboard = async () => {
+    const shippingAddress = wishlistOwner.shippingAddress;
+    if (!shippingAddress) return;
+    
+    let addressText = '';
+    if (typeof shippingAddress === 'object') {
+      const addr = shippingAddress as any;
+      addressText = [
+        addr.fullName,
+        addr.addressLine1,
+        addr.addressLine2,
+        `${addr.city}, ${addr.state} ${addr.zipCode}`,
+        addr.country
+      ].filter(Boolean).join('\n');
+    } else {
+      addressText = shippingAddress;
+    }
+    
     try {
-      await navigator.clipboard.writeText(wishlist.shippingAddress);
+      await navigator.clipboard.writeText(addressText);
       toast({
         title: "Address copied to clipboard!",
         description: "Use this address for shipping during checkout.",
@@ -93,7 +83,7 @@ export default function PurchaseConfirmationModal({
     } catch (err) {
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
-      textArea.value = wishlist.shippingAddress;
+      textArea.value = addressText;
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
@@ -111,8 +101,11 @@ export default function PurchaseConfirmationModal({
   };
 
   const copyEmailToClipboard = async () => {
+    const email = wishlistOwner.email;
+    if (!email) return;
+    
     try {
-      await navigator.clipboard.writeText(user.email);
+      await navigator.clipboard.writeText(email);
       toast({
         title: "Email copied to clipboard!",
         description: "Use it for gift card delivery during checkout.",
@@ -120,7 +113,7 @@ export default function PurchaseConfirmationModal({
     } catch (err) {
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
-      textArea.value = user.email;
+      textArea.value = email;
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
@@ -137,7 +130,7 @@ export default function PurchaseConfirmationModal({
     }
   };
 
-  const giftCardMode = isGiftCard(item.title);
+  const giftCardMode = isGiftCard(product?.title || '');
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -159,26 +152,26 @@ export default function PurchaseConfirmationModal({
               <h3 className="text-lg font-semibold text-navy">Ready to Purchase</h3>
             </div>
             
-            {item.image && (
+            {product?.image && (
               <img 
-                src={item.image} 
-                alt={item.title}
+                src={product.image} 
+                alt={product.title}
                 className="w-20 h-20 object-contain mx-auto mb-3 rounded"
               />
             )}
             
             <h4 className="font-medium text-navy mb-1 line-clamp-2">
-              {item.title}
+              {product?.title}
             </h4>
             
-            {item.price && (
+            {product?.price && (
               <p className="text-lg font-bold text-coral mb-2">
-                {item.price}
+                {product.price}
               </p>
             )}
             
             <p className="text-sm text-gray-600">
-              For: {wishlist.firstName} {wishlist.lastName}
+              For: {wishlistOwner.firstName} {wishlistOwner.lastName}
             </p>
           </div>
 
@@ -205,7 +198,11 @@ export default function PurchaseConfirmationModal({
               </Button>
             </div>
             <p className="text-sm text-gray-800 whitespace-pre-wrap">
-              {giftCardMode ? user.email : wishlist.shippingAddress}
+              {giftCardMode ? wishlistOwner.email : (
+                typeof wishlistOwner.shippingAddress === 'object' 
+                  ? JSON.stringify(wishlistOwner.shippingAddress, null, 2)
+                  : wishlistOwner.shippingAddress
+              )}
             </p>
           </div>
 
@@ -237,9 +234,9 @@ export default function PurchaseConfirmationModal({
             <Button
               onClick={handleConfirmPurchase}
               className="flex-1 bg-coral hover:bg-coral-dark text-white"
-              disabled={isSubmitting || fulfillMutation.isPending}
+              disabled={isSubmitting}
             >
-              {isSubmitting || fulfillMutation.isPending ? 'Confirming...' : 'Confirm Purchase'}
+              {isSubmitting ? 'Confirming...' : 'Confirm Purchase'}
             </Button>
           </div>
 
