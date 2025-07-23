@@ -359,8 +359,12 @@ export default function AboutUs() {
                 MyNeedfully was born from personal experience. After a devastating house fire, we were overwhelmed by the kindness of friends, family, and co-workers who wanted to help. But we quickly realized how difficult it was to organize donations, communicate our needs, and navigate the recovery process. Around the same time, we faced another tragedy in the loss of a beloved family member to pancreatic cancer. Once again, our community stepped up, but the process of receiving support felt scattered and overwhelming. We knew there had to be a better way. We created MyNeedfully to simplify giving, connect communities, and provide a dignified way for people in crisis to ask for and receive exactly what they need when they need it most.
               </p>
               
-              <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
+              <p className="text-lg text-gray-700 mb-6 font-just-sans leading-relaxed">
                 This platform makes it easy for individuals to create a list of essential and specialty needs, and for others to directly fulfill these needs. By connecting people in need with those who want to help, we enable communities to provide meaningful support in an efficient manner.
+              </p>
+              
+              <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
+                MyNeedfully is a for-profit company. To sustain our platform and keep it free to use, we participate in affiliate marketing programs. This means that when supporters purchase items through needs lists, we may earn a small commission–at no additional cost to the user. As an Amazon Associate, we earn from qualifying purchases. This affiliate model helps us maintain and grow MyNeedfully while continuing to serve individuals and communities with care and integrity.
               </p>
             </div>
           </div>
