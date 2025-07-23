@@ -3,7 +3,7 @@ import uberEatsLogo from "@assets/Eats-02_1753291542136.png";
 import walmartGiftCard from "@assets/Walmart_1753302749513.png";
 import walmartLogo from "@/assets/walmart-logo.svg";
 import amazonGiftCard from "@assets/Amazon_1753303232132.png";
-import doordashLogo from "@/assets/doordash-logo.svg";
+import doordashGiftCard from "@assets/doordash_1753303649839.png";
 import instacartGiftCard from "@assets/Instacart_1753302991471.png";
 import lowesGiftCard from "@assets/Lowes_1753302929681.png";
 import homeDepotGiftCard from "@assets/Home Depot_1753303159959.png";
@@ -101,7 +101,7 @@ export const GIFT_CARDS = [
     id: "doordash",
     name: "DoorDash Gift Card",
     retailer: "DoorDash",
-    image: doordashLogo, 
+    image: doordashGiftCard, 
     url: "https://www.doordash.com/gift-cards",
     description: "Food delivery gift cards from thousands of restaurants"
   }
