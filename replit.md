@@ -103,6 +103,7 @@ MyNeedfully is a full-stack web application that enables people in need to creat
 
 ```
 Changelog:
+- July 23, 2025: GIFT CARD DETECTION BUG FIXED - corrected critical gift card detection logic that was incorrectly matching retailers (Home Depot showing as Uber Eats) by implementing precise string matching that requires both retailer name AND "gift card" in title, preventing false positive matches between different retailers
 - July 23, 2025: GIFT CARD SPECIAL DISPLAY LOGIC IMPLEMENTED - gift cards in needs lists now display with no pricing information and single red "Buy [Retailer] Gift Card" button that opens directly to the specific retailer's official gift card website, while regular products continue showing multiple retailer pricing options, gift card detection uses title matching with GIFT_CARDS constant for accurate identification
 - July 23, 2025: DOORDASH GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic DoorDash gift card image featuring clean white background with red DoorDash logo and "YOUR DOOR TO MORE" messaging with "Food. Retail. Essentials. Delivered." tagline, maintaining professional food delivery service branding
 - July 23, 2025: AMAZON GIFT CARD BRANDING UPDATED - replaced generic SVG logo with authentic Amazon gift card image featuring classic dark navy background with white "amazon" text and signature orange smile arrow, maintaining professional e-commerce leader branding identity

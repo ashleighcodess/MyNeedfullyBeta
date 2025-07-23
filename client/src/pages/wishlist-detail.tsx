@@ -971,11 +971,15 @@ export default function WishlistDetail() {
                           {/* Show retailer buttons only for authenticated users */}
                           {user && !item.isFulfilled && (() => {
                             // Check if this item is a gift card by matching the title with GIFT_CARDS data
-                            const isGiftCard = GIFT_CARDS.find(gc => 
-                              item.title?.toLowerCase().includes(gc.name.toLowerCase()) ||
-                              item.title?.toLowerCase().includes(gc.retailer.toLowerCase()) ||
-                              item.title?.toLowerCase().includes('gift card')
-                            );
+                            const isGiftCard = GIFT_CARDS.find(gc => {
+                              const itemTitle = item.title?.toLowerCase() || '';
+                              const retailerName = gc.retailer.toLowerCase();
+                              
+                              // More precise matching - check if the item title contains the specific retailer name
+                              // and also contains "gift card" or is specifically a gift card product
+                              return (itemTitle.includes(retailerName) && itemTitle.includes('gift card')) ||
+                                     itemTitle === gc.name.toLowerCase();
+                            });
 
                             if (isGiftCard) {
                               // Gift card display: Single red button, no pricing
