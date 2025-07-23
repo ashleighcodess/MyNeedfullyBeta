@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
-import { PRODUCT_CATEGORIES } from "@/lib/constants";
+import { PRODUCT_CATEGORIES, GIFT_CARDS } from "@/lib/constants";
 import myneedfullyLogo from "@assets/Logo_6_1751682106924.png";
 import amazonLogo from "@assets/amazon_1751644244382.png";
 import walmartLogo from "@assets/walmart_1751644244383.png";
@@ -50,7 +50,8 @@ import {
   Gamepad2,
   Car,
   BookOpen,
-  Grid3X3
+  Grid3X3,
+  Gift
 } from "lucide-react";
 
 // Helper function to get retailer logo
@@ -81,6 +82,7 @@ const CategoryIcon = ({ iconName, className }: { iconName: string; className?: s
     Car,
     BookOpen,
     Grid3X3,
+    Gift,
   };
   
   const IconComponent = iconMap[iconName];
@@ -155,6 +157,11 @@ export default function ProductSearch() {
   // State for needs list selection modal
   const [showNeedsListModal, setShowNeedsListModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  
+  // State for gift cards
+  const [showGiftCards, setShowGiftCards] = useState(false);
+  const [selectedGiftCard, setSelectedGiftCard] = useState<any>(null);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
 
   // Handle adding to needs list with authentication check
   const handleAddToNeedsList = (product: any) => {
@@ -746,6 +753,18 @@ export default function ProductSearch() {
                 }}
                 onClick={() => {
                   console.log('Category clicked:', category.label);
+                  
+                  // Handle Gift Cards category specially
+                  if (category.value === 'gift_cards') {
+                    setShowGiftCards(true);
+                    setActiveSearch(''); // Clear regular search results
+                    setCategory(category.value);
+                    setShowCategories(false);
+                    return;
+                  }
+                  
+                  // Regular category handling
+                  setShowGiftCards(false);
                   setSearchQuery(category.label);
                   setDebouncedQuery(category.label);
                   setActiveSearch(category.label);
@@ -1016,7 +1035,137 @@ export default function ProductSearch() {
             )}
           </div>
         )}
+
+        {/* Gift Cards Section */}
+        {showGiftCards && (
+          <div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold text-navy">Gift Cards</h3>
+                  <p className="text-sm text-gray-600">Select a gift card to purchase for your needs list</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                {GIFT_CARDS.map((giftCard, index) => (
+                  <Card key={giftCard.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="relative">
+                      <div className="w-full h-40 sm:h-48 flex flex-col items-center justify-center bg-gradient-to-br from-coral/10 to-navy/10">
+                        <Gift className="h-12 w-12 text-coral mb-2" />
+                        <span className="text-lg font-bold text-navy">{giftCard.retailer}</span>
+                        <span className="text-sm text-gray-600">Gift Card</span>
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-3 sm:p-4">
+                      <h3 className="font-semibold text-navy mb-2 text-xs sm:text-sm">
+                        {giftCard.name}
+                      </h3>
+                      
+                      <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                        {giftCard.description}
+                      </p>
+
+                      <Button
+                        onClick={() => {
+                          setSelectedGiftCard(giftCard);
+                          setShowGiftCardModal(true);
+                        }}
+                        className="w-full bg-coral text-white hover:bg-coral/90 text-xs sm:text-sm"
+                        disabled={addingProductId === giftCard.id}
+                      >
+                        {addingProductId === giftCard.id ? (
+                          <>
+                            <Package className="mr-2 h-3 w-3 animate-spin" />
+                            Adding...
+                          </>
+                        ) : (
+                          "View Gift Card"
+                        )}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Gift Card Purchase Modal */}
+      <Dialog open={showGiftCardModal} onOpenChange={setShowGiftCardModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-navy">
+              You are heading to {selectedGiftCard?.retailer}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-600">
+              Choose your next action:
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3">
+            <Button
+              onClick={() => {
+                if (selectedGiftCard?.url) {
+                  window.open(selectedGiftCard.url, '_blank');
+                }
+                setShowGiftCardModal(false);
+              }}
+              className="w-full bg-coral text-white hover:bg-coral/90"
+            >
+              Continue to {selectedGiftCard?.retailer}
+            </Button>
+            
+            <Button
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate('/signup');
+                  return;
+                }
+                
+                // Handle "I've purchased this item" functionality
+                if (selectedGiftCard) {
+                  const giftCardProduct = {
+                    title: selectedGiftCard.name,
+                    description: selectedGiftCard.description,
+                    retailer: selectedGiftCard.retailer,
+                    asin: selectedGiftCard.id,
+                    id: selectedGiftCard.id,
+                    link: selectedGiftCard.url,
+                    image: selectedGiftCard.image
+                  };
+                  
+                  // If user has multiple needs lists, show selection modal
+                  if (userWishlists && Array.isArray(userWishlists) && userWishlists.length > 1) {
+                    setSelectedProduct(giftCardProduct);
+                    setShowNeedsListModal(true);
+                    setShowGiftCardModal(false);
+                    return;
+                  }
+                  
+                  // Otherwise add directly to first available wishlist
+                  addToWishlistMutation.mutate({ product: giftCardProduct });
+                }
+                setShowGiftCardModal(false);
+              }}
+              variant="outline"
+              className="w-full border-coral text-coral hover:bg-coral/10"
+            >
+              I've purchased this item
+            </Button>
+            
+            <Button
+              onClick={() => setShowGiftCardModal(false)}
+              variant="ghost"
+              className="w-full text-gray-500 hover:text-gray-700"
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Needs List Selection Modal */}
       <Dialog open={showNeedsListModal} onOpenChange={setShowNeedsListModal}>
