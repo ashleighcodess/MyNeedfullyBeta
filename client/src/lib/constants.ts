@@ -6,7 +6,7 @@ import amazonLogo from "@/assets/amazon-logo.svg";
 import doordashLogo from "@/assets/doordash-logo.svg";
 import instacartGiftCard from "@assets/Instacart_1753302991471.png";
 import lowesGiftCard from "@assets/Lowes_1753302929681.png";
-import homeDepotLogo from "@/assets/home-depot-logo.svg";
+import homeDepotGiftCard from "@assets/Home Depot_1753303159959.png";
 import goldbellyGiftCard from "@assets/Goldbelly_1753302855104.png";
 
 // NEEDS LIST CATEGORIES (for crisis-related needs lists)
@@ -85,7 +85,7 @@ export const GIFT_CARDS = [
     id: "home-depot", 
     name: "Home Depot Gift Card",
     retailer: "Home Depot",
-    image: homeDepotLogo,
+    image: homeDepotGiftCard,
     url: "https://www.homedepot.com/gift-cards/p/Home-Depot-Crate-Gift-Card/53L1QLAXWKVF06WJ8DLHBYT6S8/RH6VN7060A1LR3FWD0WJKNVBV8?price=15",
     description: "Home improvement and building supplies gift cards"
   },
