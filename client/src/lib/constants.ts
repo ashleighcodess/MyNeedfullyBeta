@@ -1,5 +1,6 @@
 // Import asset images
 import uberEatsLogo from "@assets/Eats-02_1753291542136.png";
+import walmartGiftCard from "@assets/walmart-gift-card.jpeg";
 import walmartLogo from "@/assets/walmart-logo.svg";
 import amazonLogo from "@/assets/amazon-logo.svg";
 import doordashLogo from "@/assets/doordash-logo.svg";
@@ -52,7 +53,7 @@ export const GIFT_CARDS = [
     id: "walmart",
     name: "Walmart Gift Card", 
     retailer: "Walmart",
-    image: walmartLogo,
+    image: walmartGiftCard,
     url: "https://www.walmart.com/ip/Basic-Blue-Yellow-Spark-Walmart-Gift-Card/654950389?classType=REGULAR&athbdg=L1200",
     description: "General merchandise gift cards for everyday essentials"
   },
