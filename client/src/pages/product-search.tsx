@@ -113,7 +113,7 @@ export default function ProductSearch() {
   useSEO({
     title: "Product Search - MyNeedfully",
     description: "Search for products across Amazon, Walmart, and Target to add to your needs list.",
-    keywords: ["product search", "amazon", "walmart", "target", "needs list"],
+    keywords: "product search, amazon, walmart, target, needs list",
     canonical: "/products"
   });
   
@@ -160,8 +160,6 @@ export default function ProductSearch() {
   
   // State for gift cards
   const [showGiftCards, setShowGiftCards] = useState(false);
-  const [selectedGiftCard, setSelectedGiftCard] = useState<any>(null);
-  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
 
   // Handle adding to needs list with authentication check
   const handleAddToNeedsList = (product: any) => {
@@ -792,7 +790,7 @@ export default function ProductSearch() {
                 
                 {/* Subtle selection indicator */}
                 <div className={`absolute inset-0 rounded-xl border-2 transition-all duration-300 ${
-                  category.value === category ? 'border-coral bg-coral/10' : 'border-transparent'
+                  category.value === category.value ? 'border-coral bg-coral/10' : 'border-transparent'
                 }`}></div>
               </div>
             ))}
@@ -1069,8 +1067,31 @@ export default function ProductSearch() {
 
                       <Button
                         onClick={() => {
-                          setSelectedGiftCard(giftCard);
-                          setShowGiftCardModal(true);
+                          if (!isAuthenticated) {
+                            navigate('/signup');
+                            return;
+                          }
+                          
+                          // Convert gift card to product format
+                          const giftCardProduct = {
+                            title: giftCard.name,
+                            description: giftCard.description,
+                            retailer: giftCard.retailer,
+                            asin: giftCard.id,
+                            id: giftCard.id,
+                            link: giftCard.url,
+                            image: giftCard.image
+                          };
+                          
+                          // If user has multiple needs lists, show selection modal
+                          if (userWishlists && Array.isArray(userWishlists) && userWishlists.length > 1) {
+                            setSelectedProduct(giftCardProduct);
+                            setShowNeedsListModal(true);
+                            return;
+                          }
+                          
+                          // Otherwise add directly to first available wishlist
+                          addToWishlistMutation.mutate({ product: giftCardProduct });
                         }}
                         className="w-full bg-coral text-white hover:bg-coral/90 text-xs sm:text-sm"
                         disabled={addingProductId === giftCard.id}
@@ -1081,7 +1102,7 @@ export default function ProductSearch() {
                             Adding...
                           </>
                         ) : (
-                          "View Gift Card"
+                          "Add to Needs List"
                         )}
                       </Button>
                     </CardContent>
@@ -1093,79 +1114,7 @@ export default function ProductSearch() {
         )}
       </div>
 
-      {/* Gift Card Purchase Modal */}
-      <Dialog open={showGiftCardModal} onOpenChange={setShowGiftCardModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-navy">
-              You are heading to {selectedGiftCard?.retailer}
-            </DialogTitle>
-            <DialogDescription className="text-sm text-gray-600">
-              Choose your next action:
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-3">
-            <Button
-              onClick={() => {
-                if (selectedGiftCard?.url) {
-                  window.open(selectedGiftCard.url, '_blank');
-                }
-                setShowGiftCardModal(false);
-              }}
-              className="w-full bg-coral text-white hover:bg-coral/90"
-            >
-              Continue to {selectedGiftCard?.retailer}
-            </Button>
-            
-            <Button
-              onClick={() => {
-                if (!isAuthenticated) {
-                  navigate('/signup');
-                  return;
-                }
-                
-                // Handle "I've purchased this item" functionality
-                if (selectedGiftCard) {
-                  const giftCardProduct = {
-                    title: selectedGiftCard.name,
-                    description: selectedGiftCard.description,
-                    retailer: selectedGiftCard.retailer,
-                    asin: selectedGiftCard.id,
-                    id: selectedGiftCard.id,
-                    link: selectedGiftCard.url,
-                    image: selectedGiftCard.image
-                  };
-                  
-                  // If user has multiple needs lists, show selection modal
-                  if (userWishlists && Array.isArray(userWishlists) && userWishlists.length > 1) {
-                    setSelectedProduct(giftCardProduct);
-                    setShowNeedsListModal(true);
-                    setShowGiftCardModal(false);
-                    return;
-                  }
-                  
-                  // Otherwise add directly to first available wishlist
-                  addToWishlistMutation.mutate({ product: giftCardProduct });
-                }
-                setShowGiftCardModal(false);
-              }}
-              variant="outline"
-              className="w-full border-coral text-coral hover:bg-coral/10"
-            >
-              I've purchased this item
-            </Button>
-            
-            <Button
-              onClick={() => setShowGiftCardModal(false)}
-              variant="ghost"
-              className="w-full text-gray-500 hover:text-gray-700"
-            >
-              Cancel
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       {/* Needs List Selection Modal */}
       <Dialog open={showNeedsListModal} onOpenChange={setShowNeedsListModal}>
@@ -1204,13 +1153,7 @@ export default function ProductSearch() {
                     <div className="text-xs text-gray-600 mt-1 line-clamp-2">
                       {needsList.description}
                     </div>
-                    <div className="flex items-center space-x-3 mt-2">
-                      {needsList.urgency && (
-                        <Badge variant="outline" className="text-xs border-coral text-coral px-1 py-0">
-                          {needsList.urgency}
-                        </Badge>
-                      )}
-                    </div>
+
                   </div>
                   <div className="ml-3 flex-shrink-0">
                     <ChevronDown className="h-4 w-4 text-gray-400 transform rotate-[-90deg]" />
