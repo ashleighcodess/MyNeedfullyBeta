@@ -653,6 +653,40 @@
   body[data-modal-open] {
     overflow: hidden !important;
   }
+  
+  /* Mobile viewport fixes */
+  .min-h-screen {
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+  }
+  
+  /* Ensure content is visible on mobile */
+  main, .main-content, #root {
+    width: 100% !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Force minimum dimensions on mobile */
+  .min-h-screen {
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+    width: 100% !important;
+  }
+  
+  /* Mobile-specific container fixes */
+  @media (max-width: 768px) {
+    body {
+      overflow-x: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .bg-warm-bg {
+      background-color: #fffbf7 !important;
+      min-height: 100vh !important;
+      width: 100% !important;
+    }
+  }
 }
 
 /* General modal improvements */

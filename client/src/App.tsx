@@ -15,7 +15,8 @@ const BrowseWishlists = lazy(() => import("@/pages/browse-wishlists").catch(() =
 const MyNeedsLists = lazy(() => import("@/pages/my-needs-lists").catch(() => ({ default: () => <div>Error loading My Lists page</div> })));
 const CreateNeedsList = lazy(() => import("@/pages/create-wishlist").catch(() => ({ default: () => <div>Error loading Create page</div> })));
 const EditWishlist = lazy(() => import("@/pages/edit-wishlist").catch(() => ({ default: () => <div>Error loading Edit page</div> })));
-const WishlistDetail = lazy(() => import("@/pages/wishlist-detail").catch(() => ({ default: () => <div>Error loading Detail page</div> })));
+import WishlistDetailDirect from "@/pages/wishlist-detail";
+const WishlistDetail = WishlistDetailDirect;
 const ProductSearch = lazy(() => import("@/pages/product-search").catch(() => ({ default: () => <div>Error loading Product Search page</div> })));
 const Profile = lazy(() => import("@/pages/profile").catch(() => ({ default: () => <div>Error loading Profile page</div> })));
 const EditProfile = lazy(() => import("@/pages/edit-profile").catch(() => ({ default: () => <div>Error loading Edit Profile page</div> })));
