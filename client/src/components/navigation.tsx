@@ -59,9 +59,10 @@ export default function Navigation() {
   const navigationItems = [
     { href: "/my-needs-lists", label: "My Needs Lists", icon: List, dataTip: "my-needs-lists", requiresAuth: true },
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
+    { href: "/about-us", label: "About Us", icon: User, dataTip: null, hideWhenAuthenticated: true },
+    { href: "/signup", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresSignup: true },
     { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
-    { href: "/about-us", label: "About Us", icon: User, dataTip: null, hideWhenAuthenticated: true },
   ];
 
   const isActiveLink = (href: string) => {
@@ -79,7 +80,11 @@ export default function Navigation() {
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navigationItems.filter(item => (!item.requiresAuth || user) && (!item.hideWhenAuthenticated || !user)).map((item) => (
+            {navigationItems.filter(item => 
+              (!item.requiresAuth || user) && 
+              (!item.hideWhenAuthenticated || !user) &&
+              (!item.requiresSignup || !user)
+            ).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}
@@ -337,17 +342,6 @@ export default function Navigation() {
                       </Badge>
                     )}
                   </Button>
-                </div>
-              )}
-
-              {/* Create Needs List Link for signed-out users */}
-              {!user && (
-                <div 
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer text-gray-700 hover:text-coral hover:bg-coral/5"
-                  onClick={() => window.location.href = "/signup"}
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Create Needs List</span>
                 </div>
               )}
 
