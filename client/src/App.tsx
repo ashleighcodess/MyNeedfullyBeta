@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 // import { useWebSocket } from "@/lib/websocket";
-import { useEffect, Suspense, lazy, ErrorBoundary } from "react";
+import { useEffect, Suspense, lazy } from "react";
 
 // Lazy load pages to prevent import errors from breaking the app
 const Landing = lazy(() => import("@/pages/landing").catch(() => ({ default: () => <div>Error loading Landing page</div> })));
