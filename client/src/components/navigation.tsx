@@ -50,6 +50,20 @@ export default function Navigation() {
     };
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [mobileMenuOpen]);
+
   const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;
 
   const handleLogout = () => {
