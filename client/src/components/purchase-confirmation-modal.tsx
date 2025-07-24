@@ -202,7 +202,7 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-white rounded-2xl shadow-xl border-0 p-0">
         <div className="relative p-4 sm:p-6">
           {/* Header */}
           <DialogHeader className="text-center mb-4 sm:mb-6">
