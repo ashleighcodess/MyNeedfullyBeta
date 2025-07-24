@@ -195,84 +195,111 @@ export default function Navigation() {
             )}
             
             {/* Always show hamburger menu on small screens */}
-            <div className="block sm:hidden">
+            <div className="block lg:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button size="sm" className="bg-coral text-white border-2 border-coral hover:bg-coral/90 p-2">
                     <Menu className="h-4 w-4" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-72 sm:w-80">
-                  <div className="flex flex-col space-y-3 mt-6">
-                    {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
-                      <Link key={item.href} href={item.href}>
-                        <Button 
-                          variant="ghost" 
-                          className={`w-full justify-start text-sm ${
-                            isActiveLink(item.href) ? 'text-coral bg-coral/10' : ''
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          <item.icon className="mr-2 h-4 w-4" />
-                          {item.label}
-                        </Button>
-                      </Link>
-                    ))}
+                <SheetContent side="right" className="w-[85vw] max-w-[320px] p-0 overflow-y-auto fixed inset-y-0 right-0 h-full">
+                  <div className="flex flex-col h-full">
+                    {/* Header */}
+                    <div className="p-4 border-b">
+                      <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
+                    </div>
                     
-                    {user ? (
-                      <div className="border-t pt-4">
-                        <Link href="/profile">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <User className="mr-2 h-4 w-4" />
-                            Dashboard
-                          </Button>
-                        </Link>
-                        <Link href="/quick-actions">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <Zap className="mr-2 h-4 w-4" />
-                            Quick Actions
-                          </Button>
-                        </Link>
-                        <Link href="/my-needs-lists">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <Heart className="mr-2 h-4 w-4" />
-                            My Needs Lists
-                          </Button>
-                        </Link>
-                        <Link href="/settings">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
-                          </Button>
-                        </Link>
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-50"
-                          onClick={handleLogout}
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Sign Out
-                        </Button>
+                    {/* Navigation Items */}
+                    <div className="flex-1 overflow-y-auto p-4">
+                      <div className="flex flex-col space-y-2">
+                        {navigationItems.filter(item => 
+                          (!item.requiresAuth || user) && 
+                          (!item.hideWhenAuthenticated || !user) &&
+                          (!item.requiresSignup || !user)
+                        ).map((item) => (
+                          <Link key={item.href} href={item.href}>
+                            <Button 
+                              variant="ghost" 
+                              className={`w-full justify-start text-sm ${
+                                isActiveLink(item.href) ? 'text-coral bg-coral/10' : ''
+                              }`}
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <item.icon className="mr-2 h-4 w-4" />
+                              {item.label}
+                            </Button>
+                          </Link>
+                        ))}
                       </div>
-                    ) : (
-                      <div className="border-t pt-4">
-                        <div className="text-center mb-4">
+                        
+                        {user ? (
+                          <>
+                            <div className="border-t mt-4 pt-4">
+                              <Link href="/profile">
+                                <Button 
+                                  variant="ghost" 
+                                  className="w-full justify-start text-sm"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <User className="mr-2 h-4 w-4" />
+                                  Dashboard
+                                </Button>
+                              </Link>
+                              <Link href="/quick-actions">
+                                <Button 
+                                  variant="ghost" 
+                                  className="w-full justify-start text-sm"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <Zap className="mr-2 h-4 w-4" />
+                                  Quick Actions
+                                </Button>
+                              </Link>
+                              <Link href="/my-needs-lists">
+                                <Button 
+                                  variant="ghost" 
+                                  className="w-full justify-start text-sm"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <Heart className="mr-2 h-4 w-4" />
+                                  My Needs Lists
+                                </Button>
+                              </Link>
+                              <Link href="/settings">
+                                <Button 
+                                  variant="ghost" 
+                                  className="w-full justify-start text-sm"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <Settings className="mr-2 h-4 w-4" />
+                                  Settings
+                                </Button>
+                              </Link>
+                              {user?.userType === 'admin' && (
+                                <Link href="/admin">
+                                  <Button 
+                                    variant="ghost" 
+                                    className="w-full justify-start text-sm"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                  >
+                                    <Shield className="mr-2 h-4 w-4" />
+                                    Admin
+                                  </Button>
+                                </Link>
+                              )}
+                              <Button 
+                                variant="ghost" 
+                                className="w-full justify-start text-red-600 hover:text-red-600 hover:bg-red-50 text-sm mt-2"
+                                onClick={handleLogout}
+                              >
+                                <LogOut className="mr-2 h-4 w-4" />
+                                Sign Out
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="border-t mt-4 pt-4">
+                            <div className="text-center mb-4">
                           <p className="text-sm text-gray-600 mb-2">
                             Ready to connect hearts and fulfill needs?
                           </p>
@@ -314,8 +341,9 @@ export default function Navigation() {
                             </button>
                           </p>
                         </div>
-                      </div>
-                    )}
+                            </div>
+                          )}
+                    </div>
                   </div>
                 </SheetContent>
               </Sheet>
