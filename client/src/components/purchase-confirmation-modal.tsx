@@ -149,150 +149,157 @@ export default function PurchaseConfirmationModal({
   useEffect(() => {
     if (!isOpen || !product) return;
 
-    // Create modal element
-    const modalElement = document.createElement('div');
-    modalElement.id = 'purchase-modal-overlay';
-    modalElement.style.cssText = `
+    // Create side drawer overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'side-drawer-overlay';
+    overlay.style.cssText = `
       position: fixed !important;
       top: 0 !important;
       left: 0 !important;
       right: 0 !important;
       bottom: 0 !important;
       z-index: 999999 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: flex-end !important;
+      background-color: rgba(0, 0, 0, 0.5) !important;
     `;
 
-    // Create backdrop
-    const backdrop = document.createElement('div');
-    backdrop.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-    `;
-    backdrop.onclick = onClose;
-
-    // Create drawer
+    // Create side drawer
     const drawer = document.createElement('div');
     drawer.style.cssText = `
-      background-color: white;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 -10px 25px -3px rgba(0, 0, 0, 0.1);
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      z-index: 1000000;
-    `;
-
-    // Add drawer handle
-    const handle = document.createElement('div');
-    handle.style.cssText = `
-      width: 48px;
-      height: 4px;
-      background-color: #d1d5db;
-      border-radius: 9999px;
-      margin: 0 auto 16px auto;
+      position: fixed !important;
+      top: 0 !important;
+      right: 0 !important;
+      width: 400px !important;
+      max-width: 90vw !important;
+      height: 100vh !important;
+      background-color: white !important;
+      box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1) !important;
+      padding: 24px !important;
+      overflow-y: auto !important;
+      z-index: 1000000 !important;
+      transform: translateX(0) !important;
     `;
 
     // Add close button
     const closeButton = document.createElement('button');
-    closeButton.innerHTML = '×';
+    closeButton.innerHTML = '✕';
     closeButton.style.cssText = `
       position: absolute;
       right: 16px;
       top: 16px;
       background: transparent;
       border: none;
-      font-size: 24px;
+      font-size: 20px;
       cursor: pointer;
-      opacity: 0.7;
-      z-index: 10;
+      color: #666;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     `;
     closeButton.onclick = onClose;
 
+    // Add title
+    const title = document.createElement('h2');
+    title.textContent = 'Purchase Confirmation';
+    title.style.cssText = `
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: #1f2937;
+    `;
+
     // Add content
-    drawer.appendChild(handle);
-    drawer.appendChild(closeButton);
-    
-    // Add main content
     const content = document.createElement('div');
     content.innerHTML = `
-      <p style="margin-bottom: 16px; font-size: 14px; color: #6b7280;">
+      <p style="margin-bottom: 16px; font-size: 14px; color: #6b7280; line-height: 1.5;">
         After purchase, return to MyNeedfully and click
         <span style="color: #dc2626; font-weight: 600;"> I've Purchased This</span>.
       </p>
     `;
-    drawer.appendChild(content);
 
-    modalElement.appendChild(backdrop);
-    modalElement.appendChild(drawer);
-    document.body.appendChild(modalElement);
+    // Add address if available
+    if (wishlistOwner?.shippingAddress) {
+      const addressDiv = document.createElement('div');
+      addressDiv.style.cssText = `
+        margin: 16px 0;
+        padding: 12px;
+        background-color: #f9fafb;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      `;
+      
+      const addressTitle = document.createElement('h3');
+      addressTitle.textContent = 'Shipping Address';
+      addressTitle.style.cssText = `
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #374151;
+      `;
+      
+      const address = wishlistOwner.shippingAddress;
+      const addressText = document.createElement('p');
+      addressText.textContent = `${address.addressLine1}, ${address.city}, ${address.state} ${address.zipCode}`;
+      addressText.style.cssText = `
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.4;
+      `;
+      
+      addressDiv.appendChild(addressTitle);
+      addressDiv.appendChild(addressText);
+      content.appendChild(addressDiv);
+    }
+
+    // Add purchase button
+    const purchaseButton = document.createElement('button');
+    purchaseButton.textContent = 'Proceed to Purchase';
+    purchaseButton.style.cssText = `
+      width: 100%;
+      background-color: #f97316;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+    `;
+    purchaseButton.onclick = () => {
+      onProceedToPurchase();
+      onClose();
+    };
+
+    drawer.appendChild(closeButton);
+    drawer.appendChild(title);
+    drawer.appendChild(content);
+    drawer.appendChild(purchaseButton);
+
+    overlay.onclick = (e) => {
+      if (e.target === overlay) onClose();
+    };
+
+    overlay.appendChild(drawer);
+    document.body.appendChild(overlay);
 
     // Cleanup function
     return () => {
-      if (document.body.contains(modalElement)) {
-        document.body.removeChild(modalElement);
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
       }
     };
-  }, [isOpen, product, onClose]);
+  }, [isOpen, product, onClose, onProceedToPurchase, wishlistOwner]);
 
   if (!isOpen || !product) {
     console.log('Modal early return:', { isOpen, hasProduct: !!product });
     return null;
   }
 
-  return (
-    <>
-      {/* Desktop Implementation - keep existing */}
-      <div 
-        className="hidden sm:flex"
-        style={{
-          position: 'fixed',
-          top: '0',
-          left: '0',
-          right: '0',
-          bottom: '0',
-          zIndex: '99999',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        {/* Backdrop */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)'
-          }}
-          onClick={onClose}
-        />
-
-        {/* Modal */}
-        <div 
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: '24px',
-            boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1)',
-            maxHeight: '90vh',
-            maxWidth: '500px',
-            width: '90%',
-            overflowY: 'auto',
-            position: 'relative',
-            zIndex: '100000'
-          }}
-        >
+  // The modal is now handled entirely by useEffect DOM manipulation
+  return null;
           {/* Mobile Drawer Handle */}
           <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4" />
           
