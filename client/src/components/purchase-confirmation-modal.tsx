@@ -41,28 +41,7 @@ export default function PurchaseConfirmationModal({
     }
   };
 
-  const formatShippingAddress = (address: any) => {
-    if (!address) return 'Address not available';
-    
-    // Handle string format
-    if (typeof address === 'string') {
-      return address;
-    }
-    
-    // Handle object format
-    if (typeof address === 'object') {
-      const parts = [];
-      if (address.street) parts.push(address.street);
-      if (address.city) parts.push(address.city);
-      if (address.state) parts.push(address.state);
-      if (address.zipCode || address.zip) parts.push(address.zipCode || address.zip);
-      if (address.country) parts.push(address.country);
-      
-      return parts.length > 0 ? parts.join(', ') : 'Address not available';
-    }
-    
-    return 'Address not available';
-  };
+
   
   const getRetailerName = () => {
     if (!product?.link) {
@@ -170,11 +149,11 @@ export default function PurchaseConfirmationModal({
     <div 
       className="modal-overlay"
       style={{
-        position: 'fixed !important',
-        top: '0px !important',
-        left: '0px !important',
-        right: '0px !important',
-        bottom: '0px !important',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         zIndex: 999999,
         display: 'block',
         pointerEvents: 'auto'
@@ -198,10 +177,10 @@ export default function PurchaseConfirmationModal({
       <div 
         className="sm:hidden mobile-drawer"
         style={{
-          position: 'fixed !important',
-          bottom: '0px !important',
-          left: '0px !important',
-          right: '0px !important',
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
           backgroundColor: 'white',
           borderTopLeftRadius: '1rem',
           borderTopRightRadius: '1rem',
