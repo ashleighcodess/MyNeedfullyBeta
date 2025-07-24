@@ -60,7 +60,7 @@ export default function Navigation() {
     { href: "/about-us", label: "About Us", icon: User, dataTip: null, hideWhenAuthenticated: true },
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
     { href: "/signup", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresSignup: true },
-    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true, hideWhenNotAuthenticated: true },
+    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", requiresAuth: true },
     { href: "/my-needs-lists", label: "My Needs Lists", icon: List, dataTip: "my-needs-lists", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
   ];
@@ -83,8 +83,7 @@ export default function Navigation() {
             {navigationItems.filter(item => 
               (!item.requiresAuth || user) && 
               (!item.hideWhenAuthenticated || !user) &&
-              (!item.requiresSignup || !user) &&
-              (!item.hideWhenNotAuthenticated || user)
+              (!item.requiresSignup || !user)
             ).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
@@ -205,12 +204,7 @@ export default function Navigation() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 sm:w-80">
                   <div className="flex flex-col space-y-3 mt-6">
-                    {navigationItems.filter(item => 
-                      (!item.requiresAuth || user) &&
-                      (!item.hideWhenAuthenticated || !user) &&
-                      (!item.requiresSignup || !user) &&
-                      (!item.hideWhenNotAuthenticated || user)
-                    ).map((item) => (
+                    {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
                       <Link key={item.href} href={item.href}>
                         <Button 
                           variant="ghost" 
