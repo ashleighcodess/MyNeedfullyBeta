@@ -152,89 +152,31 @@ export default function PurchaseConfirmationModal({
   }
 
   return createPortal(
-    <div 
-      className="modal-overlay"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 999999,
-        display: 'block',
-        pointerEvents: 'auto'
-      }}
-    >
+    <div className="fixed inset-0 z-[9999] flex flex-col justify-end">
       {/* Backdrop */}
       <div 
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          zIndex: 1
-        }}
       />
       
       {/* Mobile Bottom Drawer */}
-      <div 
-        className="sm:hidden mobile-drawer"
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          borderTopLeftRadius: '1rem',
-          borderTopRightRadius: '1rem',
-          zIndex: 999999,
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1)',
-          transform: 'translateY(0) !important',
-          transition: 'transform 0.3s ease-out'
-        }}
-      >
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-xl z-[10000] max-h-[90vh] overflow-y-auto">
         {/* Mobile Drawer Handle */}
-        <div style={{
-          width: '3rem',
-          height: '0.25rem',
-          backgroundColor: '#d1d5db',
-          borderRadius: '9999px',
-          margin: '0.5rem auto 1rem auto'
-        }} />
+        <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-2 mb-4" />
         
         {/* Mobile Content */}
-        <div style={{ padding: '1rem' }}>
+        <div className="p-4">
           {/* Close Button for Mobile */}
           <button
             onClick={onClose}
-            style={{
-              position: 'absolute',
-              right: '1rem',
-              top: '1rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              opacity: 0.7,
-              zIndex: 10
-            }}
+            className="absolute right-4 top-4 bg-transparent border-none cursor-pointer opacity-70 z-10 hover:opacity-100"
           >
             <X className="h-4 w-4" />
           </button>
 
           {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ 
-              fontSize: '1.125rem', 
-              fontWeight: 600, 
-              color: '#374151',
-              margin: 0,
-              padding: '0 0.5rem'
-            }}>
+          <div className="text-center mb-6">
+            <h2 className="text-lg font-semibold text-gray-700 m-0 px-2">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </h2>
           </div>
@@ -417,42 +359,12 @@ export default function PurchaseConfirmationModal({
       </div>
 
       {/* Desktop Modal */}
-      <div 
-        className="hidden sm:flex"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 2
-        }}
-      >
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '1rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-          width: '100%',
-          maxWidth: '28rem',
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          position: 'relative'
-        }}>
+      <div className="hidden sm:flex fixed inset-0 items-center justify-center z-[10000]">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto relative">
           {/* Close Button for Desktop */}
           <button
             onClick={onClose}
-            style={{
-              position: 'absolute',
-              right: '1rem',
-              top: '1rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              opacity: 0.7,
-              zIndex: 10
-            }}
+            className="absolute right-4 top-4 bg-transparent border-none cursor-pointer opacity-70 z-10 hover:opacity-100"
           >
             <X className="h-4 w-4" />
           </button>
