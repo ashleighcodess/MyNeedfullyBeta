@@ -95,12 +95,18 @@ export default function PurchaseConfirmationModal({
       console.log('Parsed address object:', addr);
       
       // Handle different address field names
-      const street = addr.street || addr.address1 || addr.line1 || addr.streetAddress || '';
+      const street = addr.street || addr.address1 || addr.line1 || addr.streetAddress || addr.addressLine1 || '';
+      const street2 = addr.addressLine2 || addr.address2 || '';
       const city = addr.city || '';
       const state = addr.state || addr.stateProvince || '';
       const zip = addr.zipCode || addr.zip || addr.postalCode || '';
       
-      const formatted = `${street}, ${city}, ${state} ${zip}`.replace(/,\s*,/g, ',').replace(/^\s*,|,\s*$/g, '');
+      console.log('Address field values:', { street, street2, city, state, zip });
+      
+      // Build address parts array, filtering out empty values
+      const addressParts = [street, street2, city, `${state} ${zip}`.trim()].filter(part => part && part.trim());
+      const formatted = addressParts.join(', ');
+      console.log('Address parts:', addressParts);
       console.log('Formatted address:', formatted);
       
       return formatted || 'Address format error';
@@ -614,30 +620,7 @@ export default function PurchaseConfirmationModal({
                   </p>
                 </div>
 
-                {/* Footer */}
-                <div style={{ 
-                  marginTop: '1.5rem', 
-                  textAlign: 'center',
-                  padding: '0 0.5rem'
-                }}>
-                  <p style={{ 
-                    fontSize: '0.75rem', 
-                    color: '#9ca3af',
-                    margin: '0 0 0.5rem 0'
-                  }}>
-                    MyNeedfully may earn a commission on purchases
-                  </p>
-                  <p style={{ 
-                    fontSize: '0.75rem', 
-                    color: '#d1d5db',
-                    lineHeight: 1.5,
-                    margin: 0
-                  }}>
-                    This site is protected by reCAPTCHA and the Google{' '}
-                    <a href="#" style={{ color: '#2563eb', textDecoration: 'none' }}>Privacy Policy</a> and{' '}
-                    <a href="#" style={{ color: '#2563eb', textDecoration: 'none' }}>Terms of Service</a> apply.
-                  </p>
-                </div>
+
               </>
             ) : (
               /* Purchase Confirmation for Desktop */
