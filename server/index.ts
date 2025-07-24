@@ -45,10 +45,29 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')
   immutable: true,
   index: false, // Don't serve directory listings
   setHeaders: (res, filePath) => {
+    // Add CORS headers for images
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    
     // Add aggressive caching for images
     if (/\.(jpg|jpeg|png|gif|webp|avif|svg)$/i.test(filePath)) {
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       res.setHeader('Vary', 'Accept-Encoding');
+      // Add content type header for better compatibility
+      const ext = path.extname(filePath).toLowerCase();
+      const contentTypes: Record<string, string> = {
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.png': 'image/png',
+        '.gif': 'image/gif',
+        '.webp': 'image/webp',
+        '.avif': 'image/avif',
+        '.svg': 'image/svg+xml'
+      };
+      if (contentTypes[ext]) {
+        res.setHeader('Content-Type', contentTypes[ext]);
+      }
     }
   }
 }));

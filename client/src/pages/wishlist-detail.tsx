@@ -482,41 +482,102 @@ export default function WishlistDetail() {
     
     // Ensure storyImages is an array and not a string
     if (Array.isArray(storyImages)) {
-      return storyImages;
+      // Ensure each image path is properly formatted with full URL
+      return storyImages.map(img => {
+        // If already a full URL, return as is
+        if (img.startsWith('http://') || img.startsWith('https://')) {
+          return img;
+        }
+        // If relative path, ensure it starts with /
+        if (!img.startsWith('/')) {
+          return `/${img}`;
+        }
+        return img;
+      });
     }
     
     // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
     if (typeof storyImages === 'string' && storyImages.startsWith('{') && storyImages.endsWith('}')) {
       const innerString = storyImages.slice(1, -1);
-      return innerString ? innerString.split(',').map(img => img.trim().replace(/"/g, '')) : [];
+      const images = innerString ? innerString.split(',').map(img => img.trim().replace(/"/g, '')) : [];
+      
+      // Ensure each image path is properly formatted
+      return images.map(img => {
+        if (img.startsWith('http://') || img.startsWith('https://')) {
+          return img;
+        }
+        if (!img.startsWith('/')) {
+          return `/${img}`;
+        }
+        return img;
+      });
     }
     
     return [];
   };
 
-  // Preload story images for faster loading
+  // Preload story images for faster loading with better mobile support
   useEffect(() => {
     if (wishlist) {
       const storyImages = getStoryImages();
+      const imageLoadPromises: Promise<void>[] = [];
       
-      // Add preload link tags to HTML head for priority loading
+      // Use IntersectionObserver for mobile-friendly lazy loading fallback
+      const isMobile = window.innerWidth <= 768;
+      
       storyImages.forEach((imagePath: string, index: number) => {
+        // Only preload first 2 images on mobile to save bandwidth
+        if (isMobile && index > 1) return;
+        
         // Create preload link for critical images
         const link = document.createElement('link');
         link.rel = 'preload';
         link.href = imagePath;
         link.as = 'image';
+        link.crossOrigin = 'anonymous'; // Add CORS support
+        
         if (index === 0) {
           link.setAttribute('fetchpriority', 'high'); // Highest priority for featured image
         }
+        
+        // Add error handling for preload links
+        link.onerror = () => {
+          console.error(`Failed to preload image: ${imagePath}`);
+          setImageErrors(prev => ({...prev, [index]: true}));
+        };
+        
         document.head.appendChild(link);
         
-        // Also preload via Image constructor for browser cache
-        const img = new Image();
-        img.src = imagePath;
-        if (index === 0) {
-          (img as any).fetchpriority = 'high';
-        }
+        // Also preload via Image constructor with promise tracking
+        const imagePromise = new Promise<void>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous'; // Add CORS support
+          
+          img.onload = () => {
+            console.log(`Successfully preloaded image ${index + 1}: ${imagePath}`);
+            resolve();
+          };
+          
+          img.onerror = () => {
+            console.error(`Failed to load image ${index + 1}: ${imagePath}`);
+            setImageErrors(prev => ({...prev, [index]: true}));
+            resolve(); // Resolve anyway to not block other images
+          };
+          
+          // Set source after event handlers
+          img.src = imagePath;
+          
+          if (index === 0 && 'fetchPriority' in img) {
+            (img as any).fetchPriority = 'high';
+          }
+        });
+        
+        imageLoadPromises.push(imagePromise);
+      });
+      
+      // Log when all images are loaded
+      Promise.all(imageLoadPromises).then(() => {
+        console.log('All story images preloading completed');
       });
       
       // Cleanup function to remove preload links when component unmounts
@@ -666,7 +727,27 @@ export default function WishlistDetail() {
                         alt={wishlist.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="eager"
-                        onError={() => setImageErrors(prev => ({...prev, 0: true}))}
+                        decoding="async"
+                        fetchpriority="high"
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          const img = e.target as HTMLImageElement;
+                          const originalSrc = img.src;
+                          console.error('Featured image failed to load:', originalSrc);
+                          
+                          // Try alternative paths if the initial load fails
+                          if (originalSrc.includes('/uploads/') && !originalSrc.includes('/public/uploads/')) {
+                            // Try with /public prefix
+                            const publicPath = originalSrc.replace('/uploads/', '/public/uploads/');
+                            console.log('Trying alternative path:', publicPath);
+                            img.src = publicPath;
+                          } else {
+                            setImageErrors(prev => ({...prev, 0: true}));
+                          }
+                        }}
+                        onLoad={() => {
+                          console.log('Featured image loaded successfully');
+                        }}
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                         <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
@@ -729,7 +810,26 @@ export default function WishlistDetail() {
                                 alt={`Story image ${index + 1}`}
                                 className="w-full h-48 object-cover hover:shadow-md transition-all duration-300 transform hover:scale-105"
                                 loading={index < 3 ? "eager" : "lazy"}
-                                onError={() => setImageErrors(prev => ({...prev, [index]: true}))}
+                                decoding="async"
+                                crossOrigin="anonymous"
+                                onError={(e) => {
+                                  const img = e.target as HTMLImageElement;
+                                  const originalSrc = img.src;
+                                  console.error(`Gallery image ${index + 1} failed to load:`, originalSrc);
+                                  
+                                  // Try alternative paths if the initial load fails
+                                  if (originalSrc.includes('/uploads/') && !originalSrc.includes('/public/uploads/')) {
+                                    // Try with /public prefix
+                                    const publicPath = originalSrc.replace('/uploads/', '/public/uploads/');
+                                    console.log(`Trying alternative path for gallery image ${index + 1}:`, publicPath);
+                                    img.src = publicPath;
+                                  } else {
+                                    setImageErrors(prev => ({...prev, [index]: true}));
+                                  }
+                                }}
+                                onLoad={() => {
+                                  console.log(`Gallery image ${index + 1} loaded successfully`);
+                                }}
                               />
                               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
                                 <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
