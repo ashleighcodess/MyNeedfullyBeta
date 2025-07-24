@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -168,6 +169,9 @@ export function ShareModal({
             <Share2 className="mr-2 h-5 w-5 text-coral" />
             Share Needs List
           </DialogTitle>
+          <DialogDescription>
+            Share this needs list on social media, via messaging apps, or copy the link to help spread awareness and gather support.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
