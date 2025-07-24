@@ -40,28 +40,94 @@ export default function PurchaseConfirmationModal({
       });
     }
   };
+
+  const formatShippingAddress = (address: any) => {
+    if (!address) return 'Address not available';
+    
+    // Handle string format
+    if (typeof address === 'string') {
+      return address;
+    }
+    
+    // Handle object format
+    if (typeof address === 'object') {
+      const parts = [];
+      if (address.street) parts.push(address.street);
+      if (address.city) parts.push(address.city);
+      if (address.state) parts.push(address.state);
+      if (address.zipCode || address.zip) parts.push(address.zipCode || address.zip);
+      if (address.country) parts.push(address.country);
+      
+      return parts.length > 0 ? parts.join(', ') : 'Address not available';
+    }
+    
+    return 'Address not available';
+  };
   
   const getRetailerName = () => {
-    if (!product?.link) return 'Retailer';
+    if (!product?.link) {
+      console.log('No product link found for retailer detection');
+      return 'Retailer';
+    }
+    
+    console.log('Detecting retailer from link:', product.link);
     
     if (product.link.includes('amazon.com')) return 'Amazon';
     if (product.link.includes('walmart.com')) return 'Walmart';
     if (product.link.includes('target.com')) return 'Target';
+    if (product.link.includes('uber')) return 'Uber Eats';
+    if (product.link.includes('doordash')) return 'DoorDash';
+    if (product.link.includes('instacart')) return 'Instacart';
+    if (product.link.includes('goldbelly')) return 'Goldbelly';
+    if (product.link.includes('homedepot')) return 'Home Depot';
+    if (product.link.includes('lowes')) return 'Lowe\'s';
+    
+    // If no retailer detected, check if it's a gift card
+    if (isGiftCard && product.title) {
+      if (product.title.toLowerCase().includes('walmart')) return 'Walmart';
+      if (product.title.toLowerCase().includes('amazon')) return 'Amazon';
+      if (product.title.toLowerCase().includes('uber')) return 'Uber Eats';
+      if (product.title.toLowerCase().includes('doordash')) return 'DoorDash';
+      if (product.title.toLowerCase().includes('instacart')) return 'Instacart';
+      if (product.title.toLowerCase().includes('goldbelly')) return 'Goldbelly';
+      if (product.title.toLowerCase().includes('home depot')) return 'Home Depot';
+      if (product.title.toLowerCase().includes('lowes')) return 'Lowe\'s';
+    }
+    
     return 'Retailer';
   };
 
   const formatShippingAddress = (address: any) => {
-    if (!address) return 'No address provided';
+    console.log('Formatting shipping address:', address);
+    console.log('Address type:', typeof address);
+    
+    if (!address) {
+      console.log('No address provided');
+      return 'No address provided';
+    }
     
     if (typeof address === 'string') {
+      console.log('Address is string:', address);
       return address;
     }
     
     try {
       const addr = typeof address === 'string' ? JSON.parse(address) : address;
-      return `${addr.street}, ${addr.city}, ${addr.state} ${addr.zipCode}`;
+      console.log('Parsed address object:', addr);
+      
+      // Handle different address field names
+      const street = addr.street || addr.address1 || addr.line1 || addr.streetAddress || '';
+      const city = addr.city || '';
+      const state = addr.state || addr.stateProvince || '';
+      const zip = addr.zipCode || addr.zip || addr.postalCode || '';
+      
+      const formatted = `${street}, ${city}, ${state} ${zip}`.replace(/,\s*,/g, ',').replace(/^\s*,|,\s*$/g, '');
+      console.log('Formatted address:', formatted);
+      
+      return formatted || 'Address format error';
     } catch (error) {
       console.error('Error formatting address:', error);
+      console.log('Fallback to toString:', address?.toString());
       return address?.toString() || 'Address format error';
     }
   };
@@ -85,11 +151,12 @@ export default function PurchaseConfirmationModal({
     product: product?.title,
     isPurchased,
     isGiftCard: !!isGiftCard,
-    wishlistOwner: {
-      firstName: wishlistOwner?.firstName,
-      email: wishlistOwner?.email,
-      hasShippingAddress: !!wishlistOwner?.shippingAddress
-    }
+    wishlistOwner: wishlistOwner
+  });
+  console.log('Detailed wishlistOwner shippingAddress:', {
+    shippingAddress: wishlistOwner?.shippingAddress,
+    shippingAddressType: typeof wishlistOwner?.shippingAddress,
+    shippingAddressKeys: wishlistOwner?.shippingAddress ? Object.keys(wishlistOwner.shippingAddress) : null
   });
   console.log('Portal target (document.body):', document.body);
   console.log('Portal target children count:', document.body.children.length);
@@ -101,12 +168,13 @@ export default function PurchaseConfirmationModal({
 
   return createPortal(
     <div 
+      className="modal-overlay"
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        position: 'fixed !important',
+        top: '0px !important',
+        left: '0px !important',
+        right: '0px !important',
+        bottom: '0px !important',
         zIndex: 999999,
         display: 'block',
         pointerEvents: 'auto'
@@ -128,20 +196,20 @@ export default function PurchaseConfirmationModal({
       
       {/* Mobile Bottom Drawer */}
       <div 
-        className="sm:hidden"
+        className="sm:hidden mobile-drawer"
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          position: 'fixed !important',
+          bottom: '0px !important',
+          left: '0px !important',
+          right: '0px !important',
           backgroundColor: 'white',
           borderTopLeftRadius: '1rem',
           borderTopRightRadius: '1rem',
-          zIndex: 2,
-          maxHeight: '85vh',
+          zIndex: 999999,
+          maxHeight: '90vh',
           overflowY: 'auto',
           boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1)',
-          transform: 'translateY(0)',
+          transform: 'translateY(0) !important',
           transition: 'transform 0.3s ease-out'
         }}
       >
