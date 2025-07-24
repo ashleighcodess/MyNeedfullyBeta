@@ -1,4 +1,4 @@
-import { createPortal } from 'react-dom';
+import { useEffect } from 'react';
 import { X, ExternalLink, Check, Package, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -146,6 +146,103 @@ export default function PurchaseConfirmationModal({
   console.log('Portal target (document.body):', document.body);
   console.log('Portal target children count:', document.body.children.length);
 
+  useEffect(() => {
+    if (!isOpen || !product) return;
+
+    // Create modal element
+    const modalElement = document.createElement('div');
+    modalElement.id = 'purchase-modal-overlay';
+    modalElement.style.cssText = `
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      z-index: 999999 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+    `;
+
+    // Create backdrop
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    `;
+    backdrop.onclick = onClose;
+
+    // Create drawer
+    const drawer = document.createElement('div');
+    drawer.style.cssText = `
+      background-color: white;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 -10px 25px -3px rgba(0, 0, 0, 0.1);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1000000;
+    `;
+
+    // Add drawer handle
+    const handle = document.createElement('div');
+    handle.style.cssText = `
+      width: 48px;
+      height: 4px;
+      background-color: #d1d5db;
+      border-radius: 9999px;
+      margin: 0 auto 16px auto;
+    `;
+
+    // Add close button
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.style.cssText = `
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.7;
+      z-index: 10;
+    `;
+    closeButton.onclick = onClose;
+
+    // Add content
+    drawer.appendChild(handle);
+    drawer.appendChild(closeButton);
+    
+    // Add main content
+    const content = document.createElement('div');
+    content.innerHTML = `
+      <p style="margin-bottom: 16px; font-size: 14px; color: #6b7280;">
+        After purchase, return to MyNeedfully and click
+        <span style="color: #dc2626; font-weight: 600;"> I've Purchased This</span>.
+      </p>
+    `;
+    drawer.appendChild(content);
+
+    modalElement.appendChild(backdrop);
+    modalElement.appendChild(drawer);
+    document.body.appendChild(modalElement);
+
+    // Cleanup function
+    return () => {
+      if (document.body.contains(modalElement)) {
+        document.body.removeChild(modalElement);
+      }
+    };
+  }, [isOpen, product, onClose]);
+
   if (!isOpen || !product) {
     console.log('Modal early return:', { isOpen, hasProduct: !!product });
     return null;
@@ -153,9 +250,9 @@ export default function PurchaseConfirmationModal({
 
   return (
     <>
-      {/* Mobile Implementation */}
+      {/* Desktop Implementation - keep existing */}
       <div 
-        className="sm:hidden"
+        className="hidden sm:flex"
         style={{
           position: 'fixed',
           top: '0',
@@ -163,9 +260,8 @@ export default function PurchaseConfirmationModal({
           right: '0',
           bottom: '0',
           zIndex: '99999',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end'
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
         {/* Backdrop */}
@@ -182,15 +278,16 @@ export default function PurchaseConfirmationModal({
           onClick={onClose}
         />
 
-        {/* Drawer */}
+        {/* Modal */}
         <div 
           style={{
             backgroundColor: 'white',
-            borderTopLeftRadius: '12px',
-            borderTopRightRadius: '12px',
+            borderRadius: '12px',
             padding: '24px',
-            boxShadow: '0 -10px 25px -3px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1)',
             maxHeight: '90vh',
+            maxWidth: '500px',
+            width: '90%',
             overflowY: 'auto',
             position: 'relative',
             zIndex: '100000'
