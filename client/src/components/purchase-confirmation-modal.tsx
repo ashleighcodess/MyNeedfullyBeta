@@ -206,25 +206,9 @@ export default function PurchaseConfirmationModal({
   if (!isOpen) return null;
   
   return (
-    <>
-      {/* Test div to see if anything renders */}
-      <div style={{
-        position: 'fixed',
-        top: '20px',
-        left: '20px',
-        right: '20px',
-        backgroundColor: 'red',
-        color: 'white',
-        padding: '20px',
-        zIndex: 999999,
-        fontSize: '16px'
-      }}>
-        TEST: Purchase Modal Should Be Visible
-      </div>
-      
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent>
-          <div className="p-6 bg-white">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <div className="p-6 bg-white">
           {/* Header */}
           <DialogHeader className="text-center mb-4 sm:mb-6">
             <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
