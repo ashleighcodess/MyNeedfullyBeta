@@ -618,17 +618,25 @@
   /* Ensure dialogs stay within viewport on mobile */
   [role="dialog"] {
     position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
+    top: 1rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    transform: none !important;
     max-width: calc(100vw - 2rem) !important;
     max-height: calc(100vh - 2rem) !important;
     margin: 0 !important;
+    overflow-y: auto !important;
   }
   
   /* Ensure dialog overlay covers full screen */
   [data-radix-dialog-overlay] {
     position: fixed !important;
     inset: 0 !important;
+    z-index: 50 !important;
+  }
+  
+  /* Ensure dialog content is above overlay */
+  [data-radix-dialog-content] {
+    z-index: 51 !important;
   }
 }
