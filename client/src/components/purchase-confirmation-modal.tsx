@@ -247,68 +247,53 @@ export default function PurchaseConfirmationModal({
   }
 
   return createPortal(
-    <div 
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
-      style={{ 
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 999999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)'
-      }}
-    >
-      {/* Modal Content */}
+    <>
+      {/* Backdrop */}
       <div 
-        className="relative bg-white rounded-2xl shadow-xl border-0 p-0 w-[90vw] sm:w-full max-w-md max-h-[70vh] overflow-y-auto"
-        style={{ 
-          zIndex: 2
-        }}
+        onClick={onClose}
+        className="fixed inset-0 z-[999] bg-black bg-opacity-50"
+      />
+      
+      {/* Modal Content - Desktop centered, Mobile bottom drawer */}
+      <div 
+        className={`
+          fixed z-[1000] bg-white shadow-xl
+          sm:inset-0 sm:flex sm:items-center sm:justify-center
+          max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:rounded-t-2xl
+          max-sm:transform max-sm:transition-transform max-sm:duration-300
+          max-sm:max-h-[85vh] max-sm:overflow-y-auto
+        `}
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 focus:outline-none z-10"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </button>
+        {/* Desktop Modal */}
+        <div className="
+          sm:relative sm:bg-white sm:rounded-2xl sm:shadow-xl 
+          sm:w-full sm:max-w-md sm:max-h-[80vh] sm:overflow-y-auto
+          max-sm:w-full
+        ">
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 focus:outline-none z-10"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
 
-        <div className="relative p-4 sm:p-6">
-          {/* Header */}
-          <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
-              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </h2>
-          </div>
+          {/* Mobile Drawer Handle */}
+          <div className="sm:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4 mt-2" />
 
-          {!isPurchased ? (
-            <>
-              {/* Simple test content first */}
-              <div style={{ 
-                padding: '20px', 
-                backgroundColor: 'lightblue', 
-                border: '2px solid blue',
-                margin: '10px 0'
-              }}>
-                <h3 style={{ color: 'black', fontSize: '18px', fontWeight: 'bold' }}>
-                  SIMPLE TEST CONTENT - Product: {product.title}
-                </h3>
-                <p style={{ color: 'black', fontSize: '14px' }}>
-                  Retailer: {getRetailerName()}, isPurchased: {isPurchased.toString()}
-                </p>
-              </div>
-              
-              {/* Content Section - Responsive Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="relative p-4 sm:p-6">
+            {/* Header */}
+            <div className="text-center mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
+                {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
+              </h2>
+            </div>
+
+            {!isPurchased ? (
+              <>
+                {/* Content Section - Responsive Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {/* Purchase Instructions */}
                 <div className="text-center">
                   <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 bg-coral-50 rounded-full flex items-center justify-center">
@@ -436,9 +421,10 @@ export default function PurchaseConfirmationModal({
               </p>
             </div>
           )}
+          </div>
         </div>
       </div>
-    </div>,
+    </>,
     document.body
   );
 }
