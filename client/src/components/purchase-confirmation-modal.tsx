@@ -152,21 +152,21 @@ export default function PurchaseConfirmationModal({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex flex-col justify-end">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
-      {/* Mobile Bottom Drawer */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-xl z-[10000] max-h-[90vh] overflow-y-auto">
-        {/* Mobile Drawer Handle */}
-        <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-2 mb-4" />
-        
-        {/* Mobile Content */}
-        <div className="p-4">
-          {/* Close Button for Mobile */}
+    <>
+      {/* Mobile Implementation */}
+      <div className="sm:hidden fixed inset-0 z-[9999] flex flex-col justify-end">
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={onClose}
+        />
+
+        {/* Drawer */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl p-6 shadow-xl z-[10000] max-h-[90vh] overflow-y-auto">
+          {/* Mobile Drawer Handle */}
+          <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4" />
+          
+          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute right-4 top-4 bg-transparent border-none cursor-pointer opacity-70 z-10 hover:opacity-100"
@@ -174,40 +174,13 @@ export default function PurchaseConfirmationModal({
             <X className="h-4 w-4" />
           </button>
 
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-700 m-0 px-2">
-              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </h2>
-          </div>
-
           {!isPurchased ? (
             <>
-              {/* Purchase Instructions */}
-              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                <div style={{
-                  width: '3rem',
-                  height: '3rem',
-                  margin: '0 auto 0.75rem auto',
-                  backgroundColor: '#fef2f2',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <Package className="h-6 w-6 text-coral-600" />
-                </div>
-                <p style={{ 
-                  fontSize: '0.875rem', 
-                  color: '#6b7280',
-                  lineHeight: 1.5,
-                  margin: 0,
-                  padding: '0 0.5rem'
-                }}>
-                  After purchase, return to MyNeedfully and click{' '}
-                  <span style={{ fontWeight: 600, color: '#dc2626' }}>I've Purchased This</span>
-                </p>
-              </div>
+              {/* Content for mobile */}
+              <p className="mb-4 text-sm text-gray-600">
+                After purchase, return to MyNeedfully and click
+                <span className="text-red-500 font-semibold"> I've Purchased This</span>.
+              </p>
 
               {/* Address Display */}
               {(wishlistOwner.shippingAddress || isGiftCard) && (
@@ -570,7 +543,7 @@ export default function PurchaseConfirmationModal({
           </div>
         </div>
       </div>
-    </div>,
+    </>,
     document.body
   );
 }
