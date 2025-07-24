@@ -162,7 +162,7 @@ export default function PurchaseConfirmationModal({
         />
 
         {/* Drawer */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl p-6 shadow-xl z-[10000] max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-t-xl p-6 shadow-xl max-h-[90vh] overflow-y-auto">
           {/* Mobile Drawer Handle */}
           <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4" />
           
