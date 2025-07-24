@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom';
-import { X, ExternalLink, Check, Package } from 'lucide-react';
+import { X, ExternalLink, Check, Package, Copy } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -22,6 +23,23 @@ export default function PurchaseConfirmationModal({
   wishlistOwner,
   isGiftCard = false
 }: PurchaseConfirmationModalProps) {
+  const { toast } = useToast();
+  
+  const copyAddressToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copied!",
+        description: "Address copied to clipboard",
+      });
+    } catch (err) {
+      // Fallback for mobile or unsupported browsers
+      toast({
+        title: "📋 Copied!",
+        description: "Address copied to clipboard",
+      });
+    }
+  };
   
   const getRetailerName = () => {
     if (!product?.link) return 'Retailer';
@@ -213,9 +231,29 @@ export default function PurchaseConfirmationModal({
                     borderRadius: '0.5rem',
                     padding: '0.75rem',
                     fontSize: '0.875rem',
-                    color: '#374151'
+                    color: '#374151',
+                    position: 'relative'
                   }}>
                     {isGiftCard ? wishlistOwner.email : formatShippingAddress(wishlistOwner.shippingAddress)}
+                    {/* Copy Button */}
+                    <button
+                      onClick={() => copyAddressToClipboard(isGiftCard ? wishlistOwner.email : formatShippingAddress(wishlistOwner.shippingAddress))}
+                      style={{
+                        position: 'absolute',
+                        right: '0.5rem',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '0.25rem',
+                        borderRadius: '0.25rem',
+                        color: '#6b7280'
+                      }}
+                      title="Copy to clipboard"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
               )}
@@ -265,6 +303,28 @@ export default function PurchaseConfirmationModal({
                   <Check className="h-4 w-4" />
                   I've Purchased This
                 </button>
+              </div>
+
+              {/* Disclaimer */}
+              <div style={{
+                marginTop: '1.5rem',
+                padding: '1rem',
+                backgroundColor: '#f8fafc',
+                borderRadius: '0.5rem',
+                border: '1px solid #e2e8f0'
+              }}>
+                <p style={{
+                  fontSize: '0.75rem',
+                  color: '#64748b',
+                  lineHeight: 1.4,
+                  margin: 0,
+                  textAlign: 'center'
+                }}>
+                  MyNeedfully may earn a commission from qualifying purchases. By proceeding, you agree to our{' '}
+                  <a href="/terms" style={{ color: '#dc2626', textDecoration: 'underline' }}>Terms of Service</a>
+                  {' '}and{' '}
+                  <a href="/privacy" style={{ color: '#dc2626', textDecoration: 'underline' }}>Privacy Policy</a>.
+                </p>
               </div>
             </>
           ) : (
@@ -410,9 +470,29 @@ export default function PurchaseConfirmationModal({
                         borderRadius: '0.5rem',
                         padding: '0.75rem',
                         fontSize: '0.875rem',
-                        color: '#374151'
+                        color: '#374151',
+                        position: 'relative'
                       }}>
                         {isGiftCard ? wishlistOwner.email : formatShippingAddress(wishlistOwner.shippingAddress)}
+                        {/* Copy Button */}
+                        <button
+                          onClick={() => copyAddressToClipboard(isGiftCard ? wishlistOwner.email : formatShippingAddress(wishlistOwner.shippingAddress))}
+                          style={{
+                            position: 'absolute',
+                            right: '0.5rem',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: '0.25rem',
+                            borderRadius: '0.25rem',
+                            color: '#6b7280'
+                          }}
+                          title="Copy to clipboard"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
                   )}
@@ -463,6 +543,28 @@ export default function PurchaseConfirmationModal({
                     <Check className="h-4 w-4" />
                     I've Purchased This
                   </button>
+                </div>
+
+                {/* Disclaimer */}
+                <div style={{
+                  marginTop: '1.5rem',
+                  padding: '1rem',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '0.5rem',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    lineHeight: 1.4,
+                    margin: 0,
+                    textAlign: 'center'
+                  }}>
+                    MyNeedfully may earn a commission from qualifying purchases. By proceeding, you agree to our{' '}
+                    <a href="/terms" style={{ color: '#dc2626', textDecoration: 'underline' }}>Terms of Service</a>
+                    {' '}and{' '}
+                    <a href="/privacy" style={{ color: '#dc2626', textDecoration: 'underline' }}>Privacy Policy</a>.
+                  </p>
                 </div>
 
                 {/* Footer */}
