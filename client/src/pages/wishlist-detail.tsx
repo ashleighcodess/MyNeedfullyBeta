@@ -652,17 +652,18 @@ export default function WishlistDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-4 sm:space-y-0">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2 leading-tight pr-4">{wishlist.title}</h1>
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-600">
+          <div className="space-y-4">
+            {/* Title and basic info */}
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-3">{wishlist.title}</h1>
+              <div className="flex flex-wrap gap-2 text-sm text-gray-600">
                 <div className="flex items-center">
                   <MapPin className="mr-1 h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">{wishlist.location}</span>
+                  <span>{wishlist.location}</span>
                 </div>
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">Created {new Date(wishlist.createdAt).toLocaleDateString()}</span>
+                  <span>Created {new Date(wishlist.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1 h-4 w-4 flex-shrink-0" />
@@ -671,16 +672,17 @@ export default function WishlistDetail() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+            {/* Urgency badge and actions */}
+            <div className="flex flex-wrap items-center gap-2">
               <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
                 {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
               </Badge>
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap gap-2">
                 {isOwner && (
                   <>
                     <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
-                      <Edit className="mr-1 sm:mr-2 h-4 w-4" />
-                      <span className="hidden sm:inline">Edit</span>
+                      <Edit className="h-4 w-4 mr-1" />
+                      Edit
                     </Button>
                     <Button 
                       variant="outline" 
@@ -693,16 +695,14 @@ export default function WishlistDetail() {
                       disabled={deleteWishlistMutation.isPending}
                       className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
                     >
-                      <Trash2 className="mr-1 sm:mr-2 h-4 w-4" />
-                      <span className="hidden sm:inline">
-                        {deleteWishlistMutation.isPending ? 'Archiving...' : 'Archive'}
-                      </span>
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      {deleteWishlistMutation.isPending ? 'Archiving...' : 'Archive'}
                     </Button>
                   </>
                 )}
                 <Button variant="outline" size="sm" onClick={shareWishlist}>
-                  <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
-                  <span className="hidden sm:inline">Share</span>
+                  <Share2 className="h-4 w-4 mr-1" />
+                  Share
                 </Button>
               </div>
             </div>
@@ -710,13 +710,13 @@ export default function WishlistDetail() {
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Featured Image */}
             {getStoryImages().length > 0 && (
               <div className="mb-8">
-                <div className="relative h-80 w-full rounded-lg overflow-hidden">
+                <div className="relative h-64 sm:h-80 w-full rounded-lg overflow-hidden">
                   {!imageErrors[0] ? (
                     <div 
                       className="cursor-pointer group h-full w-full"
@@ -794,7 +794,7 @@ export default function WishlistDetail() {
                 {getStoryImages().length > 0 && (
                   <>
                     <Separator className="my-4" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                       {getStoryImages().map((imagePath: string, index: number) => (
                         <div 
                           key={index} 
@@ -899,11 +899,12 @@ export default function WishlistDetail() {
                         return (a.quantityFulfilled >= a.quantity ? 1 : 0) - (b.quantityFulfilled >= b.quantity ? 1 : 0);
                       })
                       .map((item: any) => (
-                      <div key={item.id} className={`flex flex-col sm:flex-row bg-white rounded-lg border overflow-hidden ${
+                      <div key={item.id} className={`bg-white rounded-lg border overflow-hidden ${
                         item.isFulfilled ? 'border-gray-300 opacity-60' : 'border-gray-200'
                       }`}>
-                        {/* Product Image */}
-                        <div className="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 relative sm:m-4">
+                        <div className="flex flex-col">
+                          {/* Product Image - Mobile First */}
+                          <div className="w-full h-48 sm:h-56 relative">
                           {(() => {
                             // Prioritize live pricing API images over database asset paths
                             const liveImage = itemPricing[item.id]?.pricing?.amazon?.image || 
@@ -939,10 +940,10 @@ export default function WishlistDetail() {
                               </div>
                             </div>
                           )}
-                        </div>
-                        
-                        {/* Product Info */}
-                        <div className="flex-1 flex flex-col justify-between p-4 sm:pr-6">
+                          </div>
+                          
+                          {/* Product Content Container */}
+                          <div className="p-4">
                           <div className="flex-1">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 space-y-2 sm:space-y-0">
                               <div className="flex-1">
@@ -1045,10 +1046,10 @@ export default function WishlistDetail() {
                           )}
                         </div>
 
-                        {/* Buying Options - Mobile responsive */}
-                        <div className={`px-4 py-3 flex flex-col justify-center w-full sm:w-[280px] sm:flex-shrink-0 ${
-                          item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
-                        }`}>
+                            {/* Buying Options - Mobile responsive */}
+                            <div className={`mt-4 rounded-lg p-4 ${
+                              item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
+                            }`}>
                           <h4 className={`font-medium text-sm mb-2 text-center ${
                             item.isFulfilled ? 'text-gray-500' : 'text-gray-900'
                           }`}>
@@ -1207,6 +1208,8 @@ export default function WishlistDetail() {
                               </div>
                             );
                           })()}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1230,8 +1233,8 @@ export default function WishlistDetail() {
             </Card>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar - Stacks below main content on mobile */}
+          <div className="lg:col-span-1 space-y-6">
             {/* Creator Info */}
             <Card>
               <CardHeader>
