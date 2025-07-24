@@ -282,27 +282,7 @@ export default function PurchaseConfirmationModal({
           <span className="sr-only">Close</span>
         </button>
 
-        {/* Highly visible test element */}
-        <div style={{
-          position: 'absolute',
-          top: '10px',
-          left: '10px',
-          right: '10px',
-          height: '50px',
-          backgroundColor: 'red',
-          color: 'white',
-          fontSize: '20px',
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 999999,
-          border: '5px solid yellow'
-        }}>
-          MODAL CONTENT IS HERE! isPurchased: {isPurchased.toString()}
-        </div>
-
-        <div className="relative p-4 sm:p-6" style={{ marginTop: '60px' }}>
+        <div className="relative p-4 sm:p-6">
           {/* Header */}
           <div className="text-center mb-4 sm:mb-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
@@ -312,6 +292,21 @@ export default function PurchaseConfirmationModal({
 
           {!isPurchased ? (
             <>
+              {/* Simple test content first */}
+              <div style={{ 
+                padding: '20px', 
+                backgroundColor: 'lightblue', 
+                border: '2px solid blue',
+                margin: '10px 0'
+              }}>
+                <h3 style={{ color: 'black', fontSize: '18px', fontWeight: 'bold' }}>
+                  SIMPLE TEST CONTENT - Product: {product.title}
+                </h3>
+                <p style={{ color: 'black', fontSize: '14px' }}>
+                  Retailer: {getRetailerName()}, isPurchased: {isPurchased.toString()}
+                </p>
+              </div>
+              
               {/* Content Section - Responsive Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {/* Purchase Instructions */}
