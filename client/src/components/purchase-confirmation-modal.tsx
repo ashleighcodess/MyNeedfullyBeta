@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X, Package, MapPin, ExternalLink, Check, Copy, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { GIFT_CARDS } from '@/lib/constants';
 
@@ -200,15 +200,39 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  // Add debug logging to check if component is rendering
+  console.log("PurchaseConfirmationModal - isOpen:", isOpen, "product:", product);
+  
+  if (!isOpen) return null;
+  
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white rounded-2xl shadow-xl border-0 p-0">
-        <div className="relative p-4 sm:p-6">
+    <>
+      {/* Test div to see if anything renders */}
+      <div style={{
+        position: 'fixed',
+        top: '20px',
+        left: '20px',
+        right: '20px',
+        backgroundColor: 'red',
+        color: 'white',
+        padding: '20px',
+        zIndex: 999999,
+        fontSize: '16px'
+      }}>
+        TEST: Purchase Modal Should Be Visible
+      </div>
+      
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent>
+          <div className="p-6 bg-white">
           {/* Header */}
           <DialogHeader className="text-center mb-4 sm:mb-6">
             <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Purchase confirmation modal for {product.title}
+            </DialogDescription>
           </DialogHeader>
 
           {!isPurchased ? (
