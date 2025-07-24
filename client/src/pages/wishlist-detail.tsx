@@ -55,8 +55,8 @@ import walmartLogo from "@assets/walmart_1751644244383.png";
 import { GIFT_CARDS } from "@/lib/constants";
 
 export default function WishlistDetail() {
-  const params = useParams();
-  const id = params?.id as string;
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -188,7 +188,7 @@ export default function WishlistDetail() {
     };
   });
 
-  const { data: wishlist, isLoading } = useQuery({
+  const { data: wishlist, isLoading } = useQuery<any>({
     queryKey: [`/api/wishlists/${id}`],
     enabled: !!id,
   });
@@ -1399,8 +1399,9 @@ export default function WishlistDetail() {
             shippingAddress: wishlist?.shippingAddress,
             email: wishlist?.user?.email
           }}
-          onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
-          itemId={selectedProduct.itemId}
+          isPurchased={false}
+          onProceedToPurchase={() => console.log('Proceed to purchase')}
+          onMarkPurchased={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
         />
       )}
 
