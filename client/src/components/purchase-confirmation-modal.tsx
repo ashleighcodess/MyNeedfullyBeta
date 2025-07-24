@@ -151,7 +151,7 @@ export default function PurchaseConfirmationModal({
     return null;
   }
 
-  return createPortal(
+  return (
     <>
       {/* Mobile Implementation */}
       <div className="sm:hidden fixed inset-0 z-[9999] flex flex-col justify-end">
@@ -543,7 +543,6 @@ export default function PurchaseConfirmationModal({
           </div>
         </div>
       </div>
-    </>,
-    document.body
+    </>
   );
 }
