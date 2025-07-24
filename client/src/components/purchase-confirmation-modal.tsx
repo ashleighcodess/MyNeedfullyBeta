@@ -154,15 +154,48 @@ export default function PurchaseConfirmationModal({
   return (
     <>
       {/* Mobile Implementation */}
-      <div className="sm:hidden fixed inset-0 z-[9999] flex flex-col justify-end">
+      <div 
+        className="sm:hidden"
+        style={{
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          right: '0',
+          bottom: '0',
+          zIndex: '99999',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end'
+        }}
+      >
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)'
+          }}
           onClick={onClose}
         />
 
         {/* Drawer */}
-        <div className="bg-white rounded-t-xl p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+        <div 
+          style={{
+            backgroundColor: 'white',
+            borderTopLeftRadius: '12px',
+            borderTopRightRadius: '12px',
+            padding: '24px',
+            boxShadow: '0 -10px 25px -3px rgba(0, 0, 0, 0.1)',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            position: 'relative',
+            zIndex: '100000'
+          }}
+        >
           {/* Mobile Drawer Handle */}
           <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4" />
           
