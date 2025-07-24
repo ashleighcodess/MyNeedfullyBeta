@@ -162,7 +162,7 @@ export function ShareModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-[95vw] sm:w-full max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <Share2 className="mr-2 h-5 w-5 text-coral" />

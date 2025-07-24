@@ -612,3 +612,23 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Mobile Modal Fixes */
+@media (max-width: 640px) {
+  /* Ensure dialogs stay within viewport on mobile */
+  [role="dialog"] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: calc(100vh - 2rem) !important;
+    margin: 0 !important;
+  }
+  
+  /* Ensure dialog overlay covers full screen */
+  [data-radix-dialog-overlay] {
+    position: fixed !important;
+    inset: 0 !important;
+  }
+}
