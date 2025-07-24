@@ -10,7 +10,7 @@
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Ensure all modals work properly on mobile */
+  /* CRITICAL: Force all modals to center properly on mobile */
   @media (max-width: 768px) {
     /* Fix all Radix UI dialogs and modals on mobile */
     [data-radix-dialog-overlay] {
@@ -18,36 +18,59 @@
       inset: 0 !important;
       z-index: 50 !important;
       background-color: rgba(0, 0, 0, 0.8) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
     
     [data-radix-dialog-content] {
-      position: fixed !important;
+      position: relative !important;
       z-index: 51 !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      transform: none !important;
+      margin: 1rem !important;
       max-height: calc(100vh - 2rem) !important;
       max-width: calc(100vw - 2rem) !important;
+      width: 100% !important;
       overflow-y: auto !important;
       -webkit-overflow-scrolling: touch !important;
     }
     
-    /* Sheet specific fixes */
-    [data-state="open"][data-side="right"] {
+    /* Sheet specific fixes - keep sheets on the side */
+    [data-radix-dialog-overlay] [data-state="open"][data-side="right"] {
+      position: fixed !important;
+      top: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      left: auto !important;
       transform: translateX(0) !important;
       width: 85vw !important;
       max-width: 320px !important;
+      margin: 0 !important;
     }
     
-    [data-state="open"][data-side="left"] {
+    [data-radix-dialog-overlay] [data-state="open"][data-side="left"] {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      right: auto !important;
       transform: translateX(0) !important;
       width: 85vw !important;
       max-width: 320px !important;
+      margin: 0 !important;
     }
     
     /* Purchase confirmation modal specific fixes */
     .purchase-modal-content {
-      position: fixed !important;
-      top: 50% !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+      margin: 1rem !important;
       max-height: 90vh !important;
       overflow-y: auto !important;
     }
