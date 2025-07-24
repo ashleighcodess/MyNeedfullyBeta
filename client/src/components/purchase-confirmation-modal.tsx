@@ -38,6 +38,14 @@ export default function PurchaseConfirmationModal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
 
+  // Add fallback for wishlistOwner to prevent crashes
+  const safeWishlistOwner = {
+    firstName: wishlistOwner?.firstName || 'User',
+    lastName: wishlistOwner?.lastName || '',
+    shippingAddress: wishlistOwner?.shippingAddress || null,
+    email: wishlistOwner?.email || ''
+  };
+
   // Check if this product is a gift card
   const isGiftCard = GIFT_CARDS.find(gc => {
     const productTitle = product.title?.toLowerCase() || '';
@@ -123,7 +131,7 @@ export default function PurchaseConfirmationModal({
   };
 
   const copyAddressToClipboard = async () => {
-    const addressText = formatShippingAddress(wishlistOwner.shippingAddress);
+    const addressText = formatShippingAddress(safeWishlistOwner.shippingAddress);
     try {
       await navigator.clipboard.writeText(addressText);
       setCopiedAddress(true);
@@ -162,7 +170,7 @@ export default function PurchaseConfirmationModal({
   };
 
   const copyEmailToClipboard = async () => {
-    const email = wishlistOwner.email || 'No email provided';
+    const email = safeWishlistOwner.email || 'No email provided';
     try {
       await navigator.clipboard.writeText(email);
       setCopiedAddress(true);
@@ -214,7 +222,7 @@ export default function PurchaseConfirmationModal({
             <DialogTitle className="text-lg sm:text-xl font-semibold text-gray-800 px-2">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </DialogTitle>
-            <DialogDescription className="sr-only">
+            <DialogDescription className="text-sm text-gray-600 px-2 mt-2">
               Purchase confirmation modal for {product.title}
             </DialogDescription>
           </DialogHeader>
@@ -248,8 +256,8 @@ export default function PurchaseConfirmationModal({
                     className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors px-2"
                   >
                     {isGiftCard 
-                      ? `Need ${wishlistOwner.firstName}'s email address?`
-                      : `Need ${wishlistOwner.firstName}'s shipping address?`
+                      ? `Need ${safeWishlistOwner.firstName}'s email address?`
+                      : `Need ${safeWishlistOwner.firstName}'s shipping address?`
                     }
                   </button>
                 </div>

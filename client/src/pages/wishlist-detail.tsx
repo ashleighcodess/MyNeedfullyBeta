@@ -728,7 +728,7 @@ export default function WishlistDetail() {
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="eager"
                         decoding="async"
-                        fetchpriority="high"
+                        fetchPriority="high"
                         crossOrigin="anonymous"
                         onError={(e) => {
                           const img = e.target as HTMLImageElement;
@@ -1211,7 +1211,6 @@ export default function WishlistDetail() {
                             </div>
                           </div>
                         </div>
-                      </div>
                     ))}
                   </div>
                 ) : (
