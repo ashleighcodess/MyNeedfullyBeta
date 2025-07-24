@@ -51,7 +51,6 @@ const QuickActions = lazy(() => import("@/pages/quick-actions").catch(() => ({ d
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions").catch(() => ({ default: () => <div>Error loading Terms page</div> })));
 const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy").catch(() => ({ default: () => <div>Error loading Privacy page</div> })));
 const CookiesPolicy = lazy(() => import("@/pages/cookies-policy").catch(() => ({ default: () => <div>Error loading Cookies page</div> })));
-const MobileTest = lazy(() => import("@/pages/mobile-test").catch(() => ({ default: () => <div>Error loading Mobile Test page</div> })));
 
 // Component to handle scroll-to-top on route changes
 function ScrollToTop() {
@@ -206,9 +205,6 @@ function Router() {
                 {/* Dashboard route for authenticated users */}
                 <Route path="/dashboard" component={DashboardRoute} />
                 <Route path="/quick-actions" component={QuickActions} />
-                
-                {/* Mobile test page */}
-                <Route path="/mobile-test" component={MobileTest} />
                 
                 <Route component={NotFound} />
               </Switch>
