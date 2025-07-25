@@ -97,13 +97,28 @@ export default function MobileNavigation() {
             
             {/* Mobile Navigation */}
             <div className="flex md:hidden items-center space-x-1 sm:space-x-2">
+              {/* TEST: Always show red button */}
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="relative p-2 h-9 w-9 bg-red-500 hover:bg-red-600 text-white"
+                  onClick={() => {
+                    alert("TEST: Mobile button clicked!");
+                  }}
+                  style={{ zIndex: 9999 }}
+                >
+                  TEST
+                </Button>
+              </div>
+              
               {/* Mobile Notifications */}
               {user && (
                 <div className="relative">
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="relative p-2 h-9 w-9 bg-red-500 hover:bg-red-600"
+                    className="relative p-2 h-9 w-9 bg-blue-500 hover:bg-blue-600"
                     onClick={() => {
                       alert("Notification bell clicked! Opening panel...");
                       setNotificationCenterOpen(true);
