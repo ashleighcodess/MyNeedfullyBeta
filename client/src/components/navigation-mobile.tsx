@@ -21,6 +21,9 @@ export default function MobileNavigation() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
+  
+  // Debug logging for notification center state
+  console.log('MobileNavigation - notificationCenterOpen:', notificationCenterOpen);
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
@@ -69,7 +72,12 @@ export default function MobileNavigation() {
                     variant="ghost" 
                     size="sm" 
                     className="relative p-2 h-9 w-9"
-                    onClick={() => setNotificationCenterOpen(true)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('Mobile notification bell clicked');
+                      setNotificationCenterOpen(true);
+                    }}
                   >
                     <Bell className="h-4 w-4" />
                     {unreadCount > 0 && (
