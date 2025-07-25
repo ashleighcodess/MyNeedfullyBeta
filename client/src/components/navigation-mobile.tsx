@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -104,7 +104,10 @@ export default function MobileNavigation() {
                     variant="ghost" 
                     size="sm" 
                     className="relative p-2 h-9 w-9"
-                    onClick={() => setNotificationCenterOpen(true)}
+                    onClick={() => {
+                      console.log("Mobile notification bell clicked!");
+                      setNotificationCenterOpen(true);
+                    }}
                   >
                     <Bell className="h-4 w-4" />
                     {unreadCount > 0 && (
@@ -262,7 +265,10 @@ export default function MobileNavigation() {
                     variant="ghost" 
                     size="sm" 
                     className="relative"
-                    onClick={() => setNotificationCenterOpen(true)}
+                    onClick={() => {
+                      console.log("Second notification bell clicked!");
+                      setNotificationCenterOpen(true);
+                    }}
                   >
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
