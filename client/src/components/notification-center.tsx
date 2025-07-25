@@ -4,7 +4,7 @@ import { Bell, Check, Heart, Gift, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -124,9 +124,6 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
                 </Button>
               )}
             </DialogTitle>
-            <DialogDescription>
-              Stay updated on your needs lists, donations, and thank you messages from the community.
-            </DialogDescription>
           </DialogHeader>
 
           <div className="overflow-y-auto max-h-96">

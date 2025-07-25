@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import ThankYouNote from "@/components/thank-you-note";
 import { Gift, ShoppingCart, Calendar, MapPin, User, Heart } from "lucide-react";
@@ -24,7 +24,7 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
   });
 
   // Filter out donations where user has already sent thank you notes
-  const availablePurchases = (userDonations as any[])?.filter((donation: any) => {
+  const availablePurchases = userDonations?.filter((donation: any) => {
     // You could add logic here to check if a thank you note was already sent for this donation
     return donation.status === 'completed' || donation.status === 'fulfilled';
   }) || [];
@@ -49,9 +49,6 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
               <Heart className="h-5 w-5 text-coral" />
               Create Thank You Note
             </DialogTitle>
-            <DialogDescription>
-              Send a heartfelt thank you message to show your appreciation for their support.
-            </DialogDescription>
           </DialogHeader>
           <div className="mb-4 p-4 bg-gray-50 rounded-lg">
             <div className="text-sm text-gray-600 mb-1">Thanking recipient for:</div>
@@ -78,9 +75,6 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             <Gift className="h-5 w-5 text-coral" />
             Select a Purchase to Thank
           </DialogTitle>
-          <DialogDescription>
-            Choose a purchase you've made to send a thank you note to the recipient.
-          </DialogDescription>
         </DialogHeader>
         
         {isLoading ? (

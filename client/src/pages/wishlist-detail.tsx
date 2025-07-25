@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -482,102 +482,41 @@ export default function WishlistDetail() {
     
     // Ensure storyImages is an array and not a string
     if (Array.isArray(storyImages)) {
-      // Ensure each image path is properly formatted with full URL
-      return storyImages.map(img => {
-        // If already a full URL, return as is
-        if (img.startsWith('http://') || img.startsWith('https://')) {
-          return img;
-        }
-        // If relative path, ensure it starts with /
-        if (!img.startsWith('/')) {
-          return `/${img}`;
-        }
-        return img;
-      });
+      return storyImages;
     }
     
     // Handle PostgreSQL array format: {"/uploads/file1.jpg","/uploads/file2.jpg"}
     if (typeof storyImages === 'string' && storyImages.startsWith('{') && storyImages.endsWith('}')) {
       const innerString = storyImages.slice(1, -1);
-      const images = innerString ? innerString.split(',').map(img => img.trim().replace(/"/g, '')) : [];
-      
-      // Ensure each image path is properly formatted
-      return images.map(img => {
-        if (img.startsWith('http://') || img.startsWith('https://')) {
-          return img;
-        }
-        if (!img.startsWith('/')) {
-          return `/${img}`;
-        }
-        return img;
-      });
+      return innerString ? innerString.split(',').map(img => img.trim().replace(/"/g, '')) : [];
     }
     
     return [];
   };
 
-  // Preload story images for faster loading with better mobile support
+  // Preload story images for faster loading
   useEffect(() => {
     if (wishlist) {
       const storyImages = getStoryImages();
-      const imageLoadPromises: Promise<void>[] = [];
       
-      // Use IntersectionObserver for mobile-friendly lazy loading fallback
-      const isMobile = window.innerWidth <= 768;
-      
+      // Add preload link tags to HTML head for priority loading
       storyImages.forEach((imagePath: string, index: number) => {
-        // Only preload first 2 images on mobile to save bandwidth
-        if (isMobile && index > 1) return;
-        
         // Create preload link for critical images
         const link = document.createElement('link');
         link.rel = 'preload';
         link.href = imagePath;
         link.as = 'image';
-        link.crossOrigin = 'anonymous'; // Add CORS support
-        
         if (index === 0) {
           link.setAttribute('fetchpriority', 'high'); // Highest priority for featured image
         }
-        
-        // Add error handling for preload links
-        link.onerror = () => {
-          console.error(`Failed to preload image: ${imagePath}`);
-          setImageErrors(prev => ({...prev, [index]: true}));
-        };
-        
         document.head.appendChild(link);
         
-        // Also preload via Image constructor with promise tracking
-        const imagePromise = new Promise<void>((resolve) => {
-          const img = new Image();
-          img.crossOrigin = 'anonymous'; // Add CORS support
-          
-          img.onload = () => {
-            console.log(`Successfully preloaded image ${index + 1}: ${imagePath}`);
-            resolve();
-          };
-          
-          img.onerror = () => {
-            console.error(`Failed to load image ${index + 1}: ${imagePath}`);
-            setImageErrors(prev => ({...prev, [index]: true}));
-            resolve(); // Resolve anyway to not block other images
-          };
-          
-          // Set source after event handlers
-          img.src = imagePath;
-          
-          if (index === 0 && 'fetchPriority' in img) {
-            (img as any).fetchPriority = 'high';
-          }
-        });
-        
-        imageLoadPromises.push(imagePromise);
-      });
-      
-      // Log when all images are loaded
-      Promise.all(imageLoadPromises).then(() => {
-        console.log('All story images preloading completed');
+        // Also preload via Image constructor for browser cache
+        const img = new Image();
+        img.src = imagePath;
+        if (index === 0) {
+          (img as any).fetchpriority = 'high';
+        }
       });
       
       // Cleanup function to remove preload links when component unmounts
@@ -652,18 +591,17 @@ export default function WishlistDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
-          <div className="space-y-4">
-            {/* Title and basic info */}
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-3">{wishlist.title}</h1>
-              <div className="flex flex-wrap gap-2 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-4 sm:space-y-0">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2 leading-tight pr-4">{wishlist.title}</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-600">
                 <div className="flex items-center">
                   <MapPin className="mr-1 h-4 w-4 flex-shrink-0" />
-                  <span>{wishlist.location}</span>
+                  <span className="truncate">{wishlist.location}</span>
                 </div>
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-4 w-4 flex-shrink-0" />
-                  <span>Created {new Date(wishlist.createdAt).toLocaleDateString()}</span>
+                  <span className="truncate">Created {new Date(wishlist.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center">
                   <Eye className="mr-1 h-4 w-4 flex-shrink-0" />
@@ -672,17 +610,16 @@ export default function WishlistDetail() {
               </div>
             </div>
             
-            {/* Urgency badge and actions */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
               <Badge className={getUrgencyColor(wishlist.urgencyLevel)}>
                 {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
               </Badge>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex items-center space-x-2">
                 {isOwner && (
                   <>
                     <Button variant="outline" size="sm" onClick={() => navigate(`/edit-wishlist/${wishlist.id}`)}>
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
+                      <Edit className="mr-1 sm:mr-2 h-4 w-4" />
+                      <span className="hidden sm:inline">Edit</span>
                     </Button>
                     <Button 
                       variant="outline" 
@@ -695,14 +632,16 @@ export default function WishlistDetail() {
                       disabled={deleteWishlistMutation.isPending}
                       className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
                     >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      {deleteWishlistMutation.isPending ? 'Archiving...' : 'Archive'}
+                      <Trash2 className="mr-1 sm:mr-2 h-4 w-4" />
+                      <span className="hidden sm:inline">
+                        {deleteWishlistMutation.isPending ? 'Archiving...' : 'Archive'}
+                      </span>
                     </Button>
                   </>
                 )}
                 <Button variant="outline" size="sm" onClick={shareWishlist}>
-                  <Share2 className="h-4 w-4 mr-1" />
-                  Share
+                  <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Share</span>
                 </Button>
               </div>
             </div>
@@ -710,13 +649,13 @@ export default function WishlistDetail() {
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Featured Image */}
             {getStoryImages().length > 0 && (
               <div className="mb-8">
-                <div className="relative h-64 sm:h-80 w-full rounded-lg overflow-hidden">
+                <div className="relative h-80 w-full rounded-lg overflow-hidden">
                   {!imageErrors[0] ? (
                     <div 
                       className="cursor-pointer group h-full w-full"
@@ -727,27 +666,7 @@ export default function WishlistDetail() {
                         alt={wishlist.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="eager"
-                        decoding="async"
-                        fetchPriority="high"
-                        crossOrigin="anonymous"
-                        onError={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          const originalSrc = img.src;
-                          console.error('Featured image failed to load:', originalSrc);
-                          
-                          // Try alternative paths if the initial load fails
-                          if (originalSrc.includes('/uploads/') && !originalSrc.includes('/public/uploads/')) {
-                            // Try with /public prefix
-                            const publicPath = originalSrc.replace('/uploads/', '/public/uploads/');
-                            console.log('Trying alternative path:', publicPath);
-                            img.src = publicPath;
-                          } else {
-                            setImageErrors(prev => ({...prev, 0: true}));
-                          }
-                        }}
-                        onLoad={() => {
-                          console.log('Featured image loaded successfully');
-                        }}
+                        onError={() => setImageErrors(prev => ({...prev, 0: true}))}
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                         <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-10 w-10" />
@@ -794,7 +713,7 @@ export default function WishlistDetail() {
                 {getStoryImages().length > 0 && (
                   <>
                     <Separator className="my-4" />
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {getStoryImages().map((imagePath: string, index: number) => (
                         <div 
                           key={index} 
@@ -810,26 +729,7 @@ export default function WishlistDetail() {
                                 alt={`Story image ${index + 1}`}
                                 className="w-full h-48 object-cover hover:shadow-md transition-all duration-300 transform hover:scale-105"
                                 loading={index < 3 ? "eager" : "lazy"}
-                                decoding="async"
-                                crossOrigin="anonymous"
-                                onError={(e) => {
-                                  const img = e.target as HTMLImageElement;
-                                  const originalSrc = img.src;
-                                  console.error(`Gallery image ${index + 1} failed to load:`, originalSrc);
-                                  
-                                  // Try alternative paths if the initial load fails
-                                  if (originalSrc.includes('/uploads/') && !originalSrc.includes('/public/uploads/')) {
-                                    // Try with /public prefix
-                                    const publicPath = originalSrc.replace('/uploads/', '/public/uploads/');
-                                    console.log(`Trying alternative path for gallery image ${index + 1}:`, publicPath);
-                                    img.src = publicPath;
-                                  } else {
-                                    setImageErrors(prev => ({...prev, [index]: true}));
-                                  }
-                                }}
-                                onLoad={() => {
-                                  console.log(`Gallery image ${index + 1} loaded successfully`);
-                                }}
+                                onError={() => setImageErrors(prev => ({...prev, [index]: true}))}
                               />
                               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-lg flex items-center justify-center">
                                 <Eye className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-8 w-8" />
@@ -899,12 +799,11 @@ export default function WishlistDetail() {
                         return (a.quantityFulfilled >= a.quantity ? 1 : 0) - (b.quantityFulfilled >= b.quantity ? 1 : 0);
                       })
                       .map((item: any) => (
-                      <div key={item.id} className={`bg-white rounded-lg border overflow-hidden ${
+                      <div key={item.id} className={`flex flex-col sm:flex-row bg-white rounded-lg border overflow-hidden ${
                         item.isFulfilled ? 'border-gray-300 opacity-60' : 'border-gray-200'
                       }`}>
-                        <div className="flex flex-col">
-                          {/* Product Image - Mobile First */}
-                          <div className="w-full h-48 sm:h-56 relative">
+                        {/* Product Image */}
+                        <div className="w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 relative sm:m-4">
                           {(() => {
                             // Prioritize live pricing API images over database asset paths
                             const liveImage = itemPricing[item.id]?.pricing?.amazon?.image || 
@@ -940,10 +839,10 @@ export default function WishlistDetail() {
                               </div>
                             </div>
                           )}
-                          </div>
-                          
-                          {/* Product Content Container */}
-                          <div className="p-4">
+                        </div>
+                        
+                        {/* Product Info */}
+                        <div className="flex-1 flex flex-col justify-between p-4 sm:pr-6">
                           <div className="flex-1">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 space-y-2 sm:space-y-0">
                               <div className="flex-1">
@@ -1046,10 +945,10 @@ export default function WishlistDetail() {
                           )}
                         </div>
 
-                            {/* Buying Options - Mobile responsive */}
-                            <div className={`mt-4 rounded-lg p-4 ${
-                              item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
-                            }`}>
+                        {/* Buying Options - Mobile responsive */}
+                        <div className={`px-4 py-3 flex flex-col justify-center w-full sm:w-[280px] sm:flex-shrink-0 ${
+                          item.isFulfilled ? 'bg-gray-50' : 'bg-red-50'
+                        }`}>
                           <h4 className={`font-medium text-sm mb-2 text-center ${
                             item.isFulfilled ? 'text-gray-500' : 'text-gray-900'
                           }`}>
@@ -1083,22 +982,12 @@ export default function WishlistDetail() {
                             });
 
                             if (isGiftCard) {
-                              // Gift card display: Single red button, no pricing - show purchase modal first
+                              // Gift card display: Single red button, no pricing
                               return (
                                 <div className="text-center py-2">
                                   <button 
-                                    onClick={() => {
-                                      setSelectedProduct({
-                                        title: item.title,
-                                        price: '', // No price display for gift cards
-                                        link: isGiftCard.url,
-                                        retailer: isGiftCard.retailer.toLowerCase() as 'amazon' | 'walmart' | 'target',
-                                        image: item.imageUrl,
-                                        itemId: item.id
-                                      });
-                                      setShowPurchaseModal(true);
-                                    }}
-                                    className="w-full py-3 px-4 bg-coral hover:bg-coral/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
+                                    onClick={() => window.open(isGiftCard.url, '_blank')}
+                                    className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                                   >
                                     <Gift className="w-4 h-4 mr-2" />
                                     Buy {isGiftCard.retailer} Gift Card
@@ -1208,9 +1097,8 @@ export default function WishlistDetail() {
                               </div>
                             );
                           })()}
-                            </div>
-                          </div>
                         </div>
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -1232,8 +1120,8 @@ export default function WishlistDetail() {
             </Card>
           </div>
 
-          {/* Sidebar - Stacks below main content on mobile */}
-          <div className="lg:col-span-1 space-y-6">
+          {/* Sidebar */}
+          <div className="space-y-6">
             {/* Creator Info */}
             <Card>
               <CardHeader>
@@ -1399,9 +1287,6 @@ export default function WishlistDetail() {
                         <Heart className="mr-2 h-5 w-5 text-coral" />
                         All Recent Activity
                       </DialogTitle>
-                      <DialogDescription>
-                        View all recent activity and engagement on this needs list including donations, shares, and updates.
-                      </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
                       {activitiesLoading ? (
@@ -1538,8 +1423,7 @@ export default function WishlistDetail() {
           wishlistOwner={{
             firstName: wishlist?.user?.firstName || 'User',
             lastName: wishlist?.user?.lastName,
-            shippingAddress: wishlist?.shippingAddress,
-            email: wishlist?.user?.email
+            shippingAddress: wishlist?.shippingAddress
           }}
           onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
           itemId={selectedProduct.itemId}

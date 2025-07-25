@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -163,15 +162,12 @@ export function ShareModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] overflow-y-auto">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <Share2 className="mr-2 h-5 w-5 text-coral" />
             Share Needs List
           </DialogTitle>
-          <DialogDescription>
-            Share this needs list on social media, via messaging apps, or copy the link to help spread awareness and gather support.
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
