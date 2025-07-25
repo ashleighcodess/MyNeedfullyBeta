@@ -208,6 +208,12 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
       {showThankYouNote && (
         <Dialog open={!!showThankYouNote} onOpenChange={() => setShowThankYouNote(null)}>
           <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="sr-only">Send Thank You Note</DialogTitle>
+              <DialogDescription className="sr-only">
+                Create and send a thank you message to a supporter
+              </DialogDescription>
+            </DialogHeader>
             <ThankYouNote
               toUserId={showThankYouNote.supporterId}
               donationId={showThankYouNote.donationId}
