@@ -430,11 +430,7 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={notificationCenterOpen}
-        onClose={() => setNotificationCenterOpen(false)}
-      />
+      {/* Notification Center - Temporarily disabled to prevent Dialog conflicts on mobile */}
     </nav>
   );
 }
