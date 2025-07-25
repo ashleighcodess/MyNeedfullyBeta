@@ -75,10 +75,6 @@ export default function MobileNavigation() {
                       console.log('Mobile notification clicked, opening modal...');
                       setNotificationCenterOpen(true);
                     }}
-                    onTouchEnd={() => {
-                      console.log('Mobile notification touched, opening modal...');
-                      setNotificationCenterOpen(true);
-                    }}
                   >
                     <Bell className="h-4 w-4" />
                     {unreadCount > 0 && (
@@ -342,18 +338,23 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Simple Overlay Test - bypassing Dialog component */}
-      {true && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-4">
-            <h2 className="text-lg font-bold mb-4">Raw Overlay Test</h2>
-            <p className="mb-4">This bypasses the Dialog component entirely. If you see this, the issue is with Dialog specifically.</p>
-            <Button onClick={() => setNotificationCenterOpen(false)} className="bg-coral text-white px-4 py-2 rounded">
-              Close Test
+      {/* Fixed Dialog with proper accessibility */}
+      <Dialog open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
+        <DialogContent className="sm:max-w-md" aria-describedby="notification-description">
+          <DialogHeader>
+            <DialogTitle>Notifications</DialogTitle>
+            <DialogDescription id="notification-description">
+              View your recent notifications and updates
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-4">
+            <p>Accessibility-compliant notification modal is now working!</p>
+            <Button onClick={() => setNotificationCenterOpen(false)} className="mt-4">
+              Close
             </Button>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
       
       {/* Debug info - always show */}
       <div className="fixed bottom-4 left-4 bg-red-500 text-white p-2 text-xs z-[9999] rounded">
