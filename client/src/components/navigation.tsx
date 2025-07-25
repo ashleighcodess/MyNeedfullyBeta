@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Shield } from "lucide-react";
 import logoPath from "@assets/Logo_1 copy_1751749982849.png";
 import NotificationCenter from "./notification-center";
@@ -217,6 +217,10 @@ export default function Navigation() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[85vw] max-w-[320px] p-0 overflow-y-auto fixed inset-y-0 right-0 h-full">
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Navigate through the MyNeedfully platform to browse needs lists, create your own, or access your account settings.
+                  </SheetDescription>
                   <div className="flex flex-col h-full">
                     {/* Header */}
                     <div className="p-4 border-b">
