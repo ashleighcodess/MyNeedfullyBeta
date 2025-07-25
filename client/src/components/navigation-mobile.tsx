@@ -14,7 +14,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Home } from "lucide-react";
 import logoPath from "@assets/Logo_5_1751660244282.png";
-import NotificationCenter from "./notification-center";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function MobileNavigation() {
   const { user } = useAuth();
@@ -342,11 +342,23 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={notificationCenterOpen} 
-        onClose={() => setNotificationCenterOpen(false)} 
-      />
+      {/* Simple Test Modal */}
+      <Dialog open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Test Notification Modal</DialogTitle>
+            <DialogDescription>
+              This is a simple test to see if modals are working at all.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-4">
+            <p>If you can see this, the modal system is working!</p>
+            <Button onClick={() => setNotificationCenterOpen(false)} className="mt-4">
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
       
       {/* Debug info */}
       {user && (
