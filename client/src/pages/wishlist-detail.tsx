@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -1287,6 +1287,9 @@ export default function WishlistDetail() {
                         <Heart className="mr-2 h-5 w-5 text-coral" />
                         All Recent Activity
                       </DialogTitle>
+                      <DialogDescription className="text-sm text-gray-600">
+                        Complete history of activity on this needs list
+                      </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
                       {activitiesLoading ? (

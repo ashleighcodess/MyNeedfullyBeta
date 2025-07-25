@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X, Package, MapPin, ExternalLink, Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface PurchaseConfirmationModalProps {
@@ -159,6 +159,12 @@ export default function PurchaseConfirmationModal({
             <DialogTitle className="text-xl font-semibold text-gray-800">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
             </DialogTitle>
+            <DialogDescription className="text-sm text-gray-600 mt-2">
+              {isPurchased 
+                ? "Your purchase will help someone in need" 
+                : "Complete your purchase and return here to confirm"
+              }
+            </DialogDescription>
           </DialogHeader>
 
           {!isPurchased ? (
