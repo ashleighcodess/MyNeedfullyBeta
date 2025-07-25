@@ -105,7 +105,7 @@ export default function MobileNavigation() {
                     size="sm" 
                     className="relative p-2 h-9 w-9"
                     onClick={() => {
-                      console.log("Mobile notification bell clicked!");
+                      alert("Notification bell clicked! Opening panel...");
                       setNotificationCenterOpen(true);
                     }}
                   >
