@@ -342,23 +342,18 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Simple Test Modal - forced open */}
-      <Dialog open={true} onOpenChange={setNotificationCenterOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Test Notification Modal</DialogTitle>
-            <DialogDescription>
-              This is a simple test to see if modals are working at all.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="p-4">
-            <p>If you can see this, the modal system is working!</p>
-            <Button onClick={() => setNotificationCenterOpen(false)} className="mt-4">
-              Close
+      {/* Simple Overlay Test - bypassing Dialog component */}
+      {true && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-4">
+            <h2 className="text-lg font-bold mb-4">Raw Overlay Test</h2>
+            <p className="mb-4">This bypasses the Dialog component entirely. If you see this, the issue is with Dialog specifically.</p>
+            <Button onClick={() => setNotificationCenterOpen(false)} className="bg-coral text-white px-4 py-2 rounded">
+              Close Test
             </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
       
       {/* Debug info - always show */}
       <div className="fixed bottom-4 left-4 bg-red-500 text-white p-2 text-xs z-[9999] rounded">
