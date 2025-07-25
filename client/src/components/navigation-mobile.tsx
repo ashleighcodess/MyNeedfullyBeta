@@ -12,17 +12,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Home } from "lucide-react";
+import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Home, Check, Gift, X } from "lucide-react";
 import logoPath from "@assets/Logo_5_1751660244282.png";
-import NotificationCenter from "@/components/notification-center";
+import { formatDistanceToNow } from "date-fns";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MobileNavigation() {
   const { user } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
-  
-
+  const { toast } = useToast();
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
@@ -30,6 +31,38 @@ export default function MobileNavigation() {
     refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
     retry: false,
   });
+
+  const markAsReadMutation = useMutation({
+    mutationFn: (notificationId: number) =>
+      apiRequest('POST', `/api/notifications/${notificationId}/read`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+    },
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('POST', '/api/notifications/mark-all-read'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      toast({
+        title: "All notifications marked as read",
+      });
+    },
+  });
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'item_fulfilled':
+        return <Gift className="h-4 w-4 text-green-600" />;
+      case 'purchase_confirmed':
+        return <Check className="h-4 w-4 text-blue-600" />;
+      case 'thank_you_received':
+        return <Heart className="h-4 w-4 text-coral" />;
+      default:
+        return <Bell className="h-4 w-4 text-gray-600" />;
+    }
+  };
 
   const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;
 
@@ -335,11 +368,81 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Notification Center */}
-      <NotificationCenter 
-        isOpen={notificationCenterOpen} 
-        onClose={() => setNotificationCenterOpen(false)} 
-      />
+      {/* Mobile Notification Panel */}
+      <Sheet open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
+        <SheetContent side="right" className="w-full sm:w-96 overflow-y-auto">
+          <div className="flex items-center justify-between pb-4 border-b">
+            <div className="flex items-center">
+              <Bell className="mr-2 h-5 w-5" />
+              <h2 className="text-lg font-semibold">Notifications</h2>
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="ml-2">
+                  {unreadCount}
+                </Badge>
+              )}
+            </div>
+            {unreadCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => markAllAsReadMutation.mutate()}
+                disabled={markAllAsReadMutation.isPending}
+              >
+                Mark all read
+              </Button>
+            )}
+          </div>
+          
+          <div className="py-4">
+            {notifications && notifications.length > 0 ? (
+              <div className="space-y-3">
+                {notifications.map((notification: any) => (
+                  <div
+                    key={notification.id}
+                    className={`p-3 rounded-lg border ${
+                      notification.isRead ? 'bg-gray-50' : 'bg-white shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 mt-1">
+                        {getNotificationIcon(notification.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">
+                          {notification.title}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {notification.message}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-2">
+                          {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 flex space-x-1">
+                        {!notification.isRead && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => markAsReadMutation.mutate(notification.id)}
+                            disabled={markAsReadMutation.isPending}
+                          >
+                            <Check className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">No notifications yet</p>
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
       
 
     </>
