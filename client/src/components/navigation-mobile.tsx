@@ -342,8 +342,8 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Simple Test Modal */}
-      <Dialog open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
+      {/* Simple Test Modal - forced open */}
+      <Dialog open={true} onOpenChange={setNotificationCenterOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Test Notification Modal</DialogTitle>
@@ -360,12 +360,10 @@ export default function MobileNavigation() {
         </DialogContent>
       </Dialog>
       
-      {/* Debug info */}
-      {user && (
-        <div className="fixed bottom-4 left-4 bg-black text-white p-2 text-xs z-50 rounded">
-          Modal state: {notificationCenterOpen ? 'OPEN' : 'CLOSED'}
-        </div>
-      )}
+      {/* Debug info - always show */}
+      <div className="fixed bottom-4 left-4 bg-red-500 text-white p-2 text-xs z-[9999] rounded">
+        Debug: User={user ? 'YES' : 'NO'}, Modal={notificationCenterOpen ? 'OPEN' : 'CLOSED'}
+      </div>
     </>
   );
 }
