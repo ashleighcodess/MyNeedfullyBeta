@@ -42,12 +42,15 @@ const DialogContent = React.forwardRef<
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-        // Mobile-first positioning - centered
-        "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] max-w-[calc(100vw-2rem)]",
+        // Mobile-first positioning - centered and constrained to viewport
+        "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
+        "max-w-[calc(100vw-2rem)] min-w-[280px]",
+        // Mobile viewport constraints - ensure modals stay within screen bounds
+        "inset-x-4 max-h-[calc(100vh-4rem)]",
         // Desktop positioning - centered
-        "sm:max-w-lg",
-        // Ensure modal stays within viewport
-        "max-h-[calc(100vh-2rem)] overflow-y-auto",
+        "sm:max-w-lg sm:inset-x-auto",
+        // Ensure modal stays within viewport with scrolling if needed
+        "overflow-y-auto",
         // Rounded corners on larger screens
         "rounded-lg sm:rounded-lg",
         className
