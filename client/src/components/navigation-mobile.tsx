@@ -103,11 +103,12 @@ export default function MobileNavigation() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="relative p-2 h-9 w-9"
+                    className="relative p-2 h-9 w-9 bg-red-500 hover:bg-red-600"
                     onClick={() => {
                       alert("Notification bell clicked! Opening panel...");
                       setNotificationCenterOpen(true);
                     }}
+                    style={{ zIndex: 9999 }}
                   >
                     <Bell className="h-4 w-4" />
                     {unreadCount > 0 && (
