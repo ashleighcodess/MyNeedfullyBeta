@@ -14,7 +14,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Home } from "lucide-react";
 import logoPath from "@assets/Logo_5_1751660244282.png";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import NotificationCenter from "@/components/notification-center";
 
 export default function MobileNavigation() {
   const { user } = useAuth();
@@ -335,23 +335,11 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Notification Modal with proper accessibility */}
-      <Dialog open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Notifications</DialogTitle>
-            <DialogDescription>
-              View your recent notifications and updates
-            </DialogDescription>
-          </DialogHeader>
-          <div className="p-4">
-            <p>Notification modal is now working!</p>
-            <Button onClick={() => setNotificationCenterOpen(false)} className="mt-4">
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Notification Center */}
+      <NotificationCenter 
+        isOpen={notificationCenterOpen} 
+        onClose={() => setNotificationCenterOpen(false)} 
+      />
       
 
     </>
