@@ -71,10 +71,7 @@ export default function MobileNavigation() {
                     variant="ghost" 
                     size="sm" 
                     className="relative p-2 h-9 w-9"
-                    onClick={() => {
-                      console.log('Mobile notification clicked, opening modal...');
-                      setNotificationCenterOpen(true);
-                    }}
+                    onClick={() => setNotificationCenterOpen(true)}
                   >
                     <Bell className="h-4 w-4" />
                     {unreadCount > 0 && (
@@ -338,17 +335,17 @@ export default function MobileNavigation() {
         </div>
       </nav>
       
-      {/* Fixed Dialog with proper accessibility */}
+      {/* Notification Modal with proper accessibility */}
       <Dialog open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
-        <DialogContent className="sm:max-w-md" aria-describedby="notification-description">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Notifications</DialogTitle>
-            <DialogDescription id="notification-description">
+            <DialogDescription>
               View your recent notifications and updates
             </DialogDescription>
           </DialogHeader>
           <div className="p-4">
-            <p>Accessibility-compliant notification modal is now working!</p>
+            <p>Notification modal is now working!</p>
             <Button onClick={() => setNotificationCenterOpen(false)} className="mt-4">
               Close
             </Button>
@@ -356,10 +353,7 @@ export default function MobileNavigation() {
         </DialogContent>
       </Dialog>
       
-      {/* Debug info - always show */}
-      <div className="fixed bottom-4 left-4 bg-red-500 text-white p-2 text-xs z-[9999] rounded">
-        Debug: User={user ? 'YES' : 'NO'}, Modal={notificationCenterOpen ? 'OPEN' : 'CLOSED'}
-      </div>
+
     </>
   );
 }
