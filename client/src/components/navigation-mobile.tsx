@@ -22,8 +22,7 @@ export default function MobileNavigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   
-  // Debug logging for notification center state
-  console.log('MobileNavigation - notificationCenterOpen:', notificationCenterOpen);
+
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
@@ -72,10 +71,12 @@ export default function MobileNavigation() {
                     variant="ghost" 
                     size="sm" 
                     className="relative p-2 h-9 w-9"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      console.log('Mobile notification bell clicked');
+                    onClick={() => {
+                      console.log('Mobile notification clicked, opening modal...');
+                      setNotificationCenterOpen(true);
+                    }}
+                    onTouchEnd={() => {
+                      console.log('Mobile notification touched, opening modal...');
                       setNotificationCenterOpen(true);
                     }}
                   >
@@ -346,6 +347,13 @@ export default function MobileNavigation() {
         isOpen={notificationCenterOpen} 
         onClose={() => setNotificationCenterOpen(false)} 
       />
+      
+      {/* Debug info */}
+      {user && (
+        <div className="fixed bottom-4 left-4 bg-black text-white p-2 text-xs z-50 rounded">
+          Modal state: {notificationCenterOpen ? 'OPEN' : 'CLOSED'}
+        </div>
+      )}
     </>
   );
 }
