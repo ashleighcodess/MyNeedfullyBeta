@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Package, MapPin, ExternalLink, Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 
 interface PurchaseConfirmationModalProps {
@@ -33,8 +34,20 @@ export default function PurchaseConfirmationModal({
 }: PurchaseConfirmationModalProps) {
   const [showShippingAddress, setShowShippingAddress] = useState(false);
   const [isPurchased, setIsPurchased] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const getRetailerName = () => {
     switch (product.retailer) {
