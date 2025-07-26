@@ -107,23 +107,32 @@ export default function Navigation() {
             {user && (
               <div className="flex items-center space-x-2 sm:hidden">
                 {/* Mobile Notifications */}
-                <div className="relative">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="relative"
-                    onClick={() => setNotificationCenterOpen(true)}
-                  >
-                    <Bell className="h-5 w-5" />
-                    {unreadCount > 0 && (
-                      <Badge 
-                        variant="destructive" 
-                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </Button>
+                <div
+                  className="relative p-3 h-12 w-12 rounded-md hover:bg-gray-100 touch-manipulation cursor-pointer flex items-center justify-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    alert("Mobile notification bell clicked! Opening panel...");
+                    setNotificationCenterOpen(true);
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    alert("Mobile touch detected! Opening panel...");
+                    setNotificationCenterOpen(true);
+                  }}
+                  style={{ 
+                    WebkitTapHighlightColor: 'rgba(0,0,0,0.1)',
+                    WebkitUserSelect: 'none',
+                    userSelect: 'none',
+                    zIndex: 9999
+                  }}
+                >
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
                 </div>
                 
                 {/* Mobile User Avatar */}
@@ -323,14 +332,17 @@ export default function Navigation() {
 
             {/* Desktop navigation items */}
             <div className="hidden sm:flex items-center space-x-4">
-              {/* Notifications */}
+              {/* Desktop Notifications */}
               {user && (
                 <div className="relative" data-tip="notifications">
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     className="relative"
-                    onClick={() => setNotificationCenterOpen(true)}
+                    onClick={() => {
+                      alert("Desktop notification bell clicked! Opening panel...");
+                      setNotificationCenterOpen(true);
+                    }}
                   >
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
@@ -430,7 +442,59 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Notification Center - Temporarily disabled to prevent Dialog conflicts on mobile */}
+      {/* Notification Center Sheet */}
+      <Sheet open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
+        <SheetContent side="right" className="w-full sm:w-96 overflow-y-auto">
+          <div className="flex items-center justify-between pb-4 border-b">
+            <div className="flex items-center">
+              <Bell className="mr-2 h-5 w-5" />
+              <h2 className="text-lg font-semibold">Notifications</h2>
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="ml-2">
+                  {unreadCount}
+                </Badge>
+              )}
+            </div>
+          </div>
+          
+          <div className="py-4">
+            {notifications && notifications.length > 0 ? (
+              <div className="space-y-3">
+                {notifications.map((notification: any) => (
+                  <div
+                    key={notification.id}
+                    className={`p-3 rounded-lg border ${
+                      notification.isRead ? 'bg-gray-50' : 'bg-white shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <Bell className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">
+                          {notification.title}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {notification.message}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-2">
+                          {new Date(notification.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">No notifications yet</p>
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </nav>
   );
 }
