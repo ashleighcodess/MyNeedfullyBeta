@@ -97,45 +97,27 @@ export default function MobileNavigation() {
             
             {/* Mobile Navigation */}
             <div className="flex md:hidden items-center space-x-1 sm:space-x-2">
-              {/* TEST: Always show red button */}
-              <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="relative p-2 h-9 w-9 bg-red-500 hover:bg-red-600 text-white"
-                  onClick={() => {
-                    alert("TEST: Mobile button clicked!");
-                  }}
-                  style={{ zIndex: 9999 }}
-                >
-                  TEST
-                </Button>
-              </div>
-              
               {/* Mobile Notifications */}
               {user && (
-                <div className="relative">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="relative p-2 h-9 w-9 bg-blue-500 hover:bg-blue-600"
-                    onClick={() => {
-                      alert("Notification bell clicked! Opening panel...");
-                      setNotificationCenterOpen(true);
-                    }}
-                    style={{ zIndex: 9999 }}
-                  >
-                    <Bell className="h-4 w-4" />
-                    {unreadCount > 0 && (
-                      <Badge 
-                        variant="destructive" 
-                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
-                      >
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </div>
+                <button
+                  className="relative p-2 h-9 w-9 rounded-md hover:bg-gray-100 touch-manipulation"
+                  onClick={() => {
+                    alert("Notification bell clicked! Opening panel...");
+                    setNotificationCenterOpen(true);
+                  }}
+                  style={{ 
+                    WebkitTapHighlightColor: 'transparent',
+                    cursor: 'pointer',
+                    zIndex: 9999
+                  }}
+                >
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
               )}
 
               {/* Mobile User Avatar */}
