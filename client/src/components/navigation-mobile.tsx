@@ -99,25 +99,33 @@ export default function MobileNavigation() {
             <div className="flex md:hidden items-center space-x-1 sm:space-x-2">
               {/* Mobile Notifications */}
               {user && (
-                <button
-                  className="relative p-2 h-9 w-9 rounded-md hover:bg-gray-100 touch-manipulation"
-                  onClick={() => {
+                <div
+                  className="relative p-3 h-12 w-12 rounded-md hover:bg-gray-100 touch-manipulation cursor-pointer flex items-center justify-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     alert("Notification bell clicked! Opening panel...");
                     setNotificationCenterOpen(true);
                   }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    alert("Touch detected! Opening panel...");
+                    setNotificationCenterOpen(true);
+                  }}
                   style={{ 
-                    WebkitTapHighlightColor: 'transparent',
-                    cursor: 'pointer',
+                    WebkitTapHighlightColor: 'rgba(0,0,0,0.1)',
+                    WebkitUserSelect: 'none',
+                    userSelect: 'none',
                     zIndex: 9999
                   }}
                 >
-                  <Bell className="h-4 w-4" />
+                  <Bell className="h-5 w-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
-                </button>
+                </div>
               )}
 
               {/* Mobile User Avatar */}
