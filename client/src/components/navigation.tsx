@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription, SheetHeader } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Shield } from "lucide-react";
 import logoPath from "@assets/Logo_1 copy_1751749982849.png";
 import NotificationCenter from "./notification-center";
@@ -112,12 +112,10 @@ export default function Navigation() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    alert("Mobile notification bell clicked! Opening panel...");
                     setNotificationCenterOpen(true);
                   }}
                   onTouchStart={(e) => {
                     e.preventDefault();
-                    alert("Mobile touch detected! Opening panel...");
                     setNotificationCenterOpen(true);
                   }}
                   style={{ 
@@ -339,10 +337,7 @@ export default function Navigation() {
                     variant="ghost" 
                     size="sm" 
                     className="relative"
-                    onClick={() => {
-                      alert("Desktop notification bell clicked! Opening panel...");
-                      setNotificationCenterOpen(true);
-                    }}
+                    onClick={() => setNotificationCenterOpen(true)}
                   >
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
@@ -445,17 +440,20 @@ export default function Navigation() {
       {/* Notification Center Sheet */}
       <Sheet open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
         <SheetContent side="right" className="w-full sm:w-96 overflow-y-auto">
-          <div className="flex items-center justify-between pb-4 border-b">
-            <div className="flex items-center">
+          <SheetHeader>
+            <SheetTitle className="flex items-center">
               <Bell className="mr-2 h-5 w-5" />
-              <h2 className="text-lg font-semibold">Notifications</h2>
+              Notifications
               {unreadCount > 0 && (
                 <Badge variant="destructive" className="ml-2">
                   {unreadCount}
                 </Badge>
               )}
-            </div>
-          </div>
+            </SheetTitle>
+            <SheetDescription>
+              View and manage your notifications
+            </SheetDescription>
+          </SheetHeader>
           
           <div className="py-4">
             {notifications && notifications.length > 0 ? (
