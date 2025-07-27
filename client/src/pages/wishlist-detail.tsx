@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import ProductCard from "@/components/product-card";
 
 import PurchaseConfirmationModal from "@/components/purchase-confirmation-modal";
+import GiftCardPurchaseModal from "@/components/gift-card-purchase-modal";
 import { ShareModal } from "@/components/share-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,7 +67,9 @@ export default function WishlistDetail() {
   const [itemPricing, setItemPricing] = useState<Record<string, any>>({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedGiftCard, setSelectedGiftCard] = useState<any>(null);
   const [showAllActivity, setShowAllActivity] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [imageErrors, setImageErrors] = useState<{[key: number]: boolean}>({});
@@ -1090,7 +1093,13 @@ export default function WishlistDetail() {
                               return (
                                 <div className="text-center py-2">
                                   <button 
-                                    onClick={() => window.open(isGiftCard.url, '_blank')}
+                                    onClick={() => {
+                                      setSelectedGiftCard({
+                                        ...isGiftCard,
+                                        itemId: item.id
+                                      });
+                                      setShowGiftCardModal(true);
+                                    }}
                                     className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                                   >
                                     <Gift className="w-4 h-4 mr-2" />
@@ -1431,6 +1440,25 @@ export default function WishlistDetail() {
           }}
           onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
           itemId={selectedProduct.itemId}
+        />
+      )}
+
+      {/* Gift Card Purchase Modal */}
+      {selectedGiftCard && (
+        <GiftCardPurchaseModal
+          isOpen={showGiftCardModal}
+          onClose={() => {
+            setShowGiftCardModal(false);
+            setSelectedGiftCard(null);
+          }}
+          giftCard={selectedGiftCard}
+          wishlistOwner={{
+            firstName: wishlist?.user?.firstName || 'User',
+            lastName: wishlist?.user?.lastName,
+            email: wishlist?.user?.email
+          }}
+          onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedGiftCard.itemId)}
+          itemId={selectedGiftCard.itemId}
         />
       )}
 
