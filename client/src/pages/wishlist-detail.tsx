@@ -594,6 +594,18 @@ export default function WishlistDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
+          {/* Back Button */}
+          <div className="mb-4">
+            <Button
+              onClick={() => navigate('/browse')}
+              variant="ghost"
+              className="text-gray-600 hover:text-navy hover:bg-gray-100 p-2 -ml-2"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back to Browse
+            </Button>
+          </div>
+          
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-4 sm:space-y-0">
             <div className="flex-1">
               <h1 className="text-2xl sm:text-3xl font-bold text-navy mb-2 leading-tight pr-4">{wishlist.title}</h1>
