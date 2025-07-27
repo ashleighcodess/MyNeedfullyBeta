@@ -312,6 +312,7 @@ export default function PurchaseConfirmationModal({
             </div>
           )}
         </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
