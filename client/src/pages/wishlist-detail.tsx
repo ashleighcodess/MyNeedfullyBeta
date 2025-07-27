@@ -45,6 +45,7 @@ import {
   ImageOff
 } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl, generateWishlistStructuredData, generateOgImage } from "@/lib/seo";
+import Navigation from "@/components/navigation";
 
 // Retailer logos
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -587,7 +588,7 @@ export default function WishlistDetail() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      
+      <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
