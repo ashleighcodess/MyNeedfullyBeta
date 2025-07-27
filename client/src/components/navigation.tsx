@@ -252,16 +252,7 @@ export default function Navigation() {
                             Quick Actions
                           </Button>
                         </Link>
-                        <Link href="/my-needs-lists">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <Heart className="mr-2 h-4 w-4" />
-                            My Needs Lists
-                          </Button>
-                        </Link>
+
                         <Link href="/settings">
                           <Button 
                             variant="ghost" 
