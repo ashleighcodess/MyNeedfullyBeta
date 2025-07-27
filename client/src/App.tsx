@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 // import { useWebSocket } from "@/lib/websocket";
 import { useEffect, Suspense, lazy } from "react";
+import Navigation from "@/components/navigation";
 
 // Lazy load pages to prevent import errors from breaking the app
 const Landing = lazy(() => import("@/pages/landing").catch(() => ({ default: () => <div>Error loading Landing page</div> })));
@@ -46,7 +47,7 @@ const SupportResources = lazy(() => import("@/pages/support-resources").catch(()
 const ContactUs = lazy(() => import("@/pages/contact-us").catch(() => ({ default: () => <div>Error loading Contact Us page</div> })));
 const Footer = lazy(() => import("@/components/footer").catch(() => ({ default: () => <div></div> })));
 const QuickTips = lazy(() => import("@/components/quick-tips").catch(() => ({ default: () => <div></div> })));
-const Navigation = lazy(() => import("@/components/navigation").catch(() => ({ default: () => <div></div> })));
+
 const QuickActions = lazy(() => import("@/pages/quick-actions").catch(() => ({ default: () => <div>Error loading Quick Actions page</div> })));
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions").catch(() => ({ default: () => <div>Error loading Terms page</div> })));
 const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy").catch(() => ({ default: () => <div>Error loading Privacy page</div> })));
