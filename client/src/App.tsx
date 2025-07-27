@@ -126,8 +126,6 @@ function Router() {
   // Don't block the entire app for auth loading - most features work without auth
   // Individual components can handle their own auth requirements
 
-  console.log('Router component rendering...');
-
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
@@ -266,8 +264,6 @@ function App() {
     };
   }, []);
 
-  console.log('App component rendering...');
-  
   try {
     return (
       <QueryClientProvider client={queryClient}>

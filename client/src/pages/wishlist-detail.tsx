@@ -643,25 +643,7 @@ export default function WishlistDetail() {
                   <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">Share</span>
                 </Button>
-                {/* Temporary test button for modal */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    setSelectedProduct({
-                      title: "Test Product",
-                      price: "$19.99",
-                      link: "https://amazon.com",
-                      retailer: 'amazon',
-                      image: "",
-                      itemId: 1
-                    });
-                    setShowPurchaseModal(true);
-                  }}
-                  className="bg-red-500 text-white hover:bg-red-600"
-                >
-                  Test Modal
-                </Button>
+
               </div>
             </div>
           </div>
