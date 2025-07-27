@@ -126,6 +126,8 @@ function Router() {
   // Don't block the entire app for auth loading - most features work without auth
   // Individual components can handle their own auth requirements
 
+  console.log('Router component rendering...');
+
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
@@ -264,6 +266,8 @@ function App() {
     };
   }, []);
 
+  console.log('App component rendering...');
+  
   try {
     return (
       <QueryClientProvider client={queryClient}>
@@ -280,7 +284,7 @@ function App() {
       <div className="min-h-screen bg-white p-8 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-coral mb-4">MyNeedfully</h1>
-          <p className="text-gray-600">Loading application...</p>
+          <p className="text-gray-600">App Error: {error?.message || 'Unknown error'}</p>
         </div>
       </div>
     );
