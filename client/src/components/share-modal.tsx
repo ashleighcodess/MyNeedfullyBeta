@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { createPortal } from "react-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -155,36 +161,18 @@ export function ShareModal({
     });
   };
 
-  if (!open) return null;
-
-  const modalContent = (
-    <>
-      {/* Overlay */}
-      <div 
-        className="fixed inset-0 bg-black/50 z-[9998]" 
-        onClick={() => onOpenChange(false)}
-      />
-      
-      {/* Modal Content */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto p-6">
-        {/* Close button */}
-        <button 
-          onClick={() => onOpenChange(false)}
-          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-        >
-          ✕
-        </button>
-        
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold leading-none tracking-tight mb-2 flex items-center">
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center">
             <Share2 className="mr-2 h-5 w-5 text-coral" />
             Share Needs List
-          </h2>
-          <p className="text-sm text-gray-600">
+          </DialogTitle>
+          <DialogDescription className="text-sm text-gray-600">
             Share this needs list with others to help spread awareness and support
-          </p>
-        </div>
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="space-y-6">
           {/* Preview */}
@@ -256,9 +244,7 @@ export function ShareModal({
             </div>
           </div>
         </div>
-      </div>
-    </>
+      </DialogContent>
+    </Dialog>
   );
-
-  return createPortal(modalContent, document.body);
 }

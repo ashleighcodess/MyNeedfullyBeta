@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Package, MapPin, Check, Copy } from "lucide-react";
@@ -163,38 +169,18 @@ export default function PurchaseConfirmationModal({
     }
   };
 
-  if (!isOpen) return null;
-
-  const modalContent = (
-    <>
-      {/* Custom Overlay */}
-      <div 
-        className="fixed inset-0 bg-black/50 z-[9998]" 
-        onClick={onClose}
-        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
-      />
-      
-      {/* Custom Modal Content */}
-      <div 
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-lg shadow-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto"
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 9999,
-          backgroundColor: 'white',
-          visibility: 'visible',
-          opacity: 1
-        }}
-      >
-        {/* Close button */}
-        <button 
-          onClick={onClose}
-          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 z-10"
-        >
-          ✕
-        </button>
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-coral" />
+            Purchase Confirmation
+          </DialogTitle>
+          <DialogDescription>
+            Your purchase is ready to be completed
+          </DialogDescription>
+        </DialogHeader>
         
         {/* Content */}
         <div className="p-6">
@@ -326,11 +312,7 @@ export default function PurchaseConfirmationModal({
             </div>
           )}
         </div>
-        </div>
-      </div>
-    </>
+      </DialogContent>
+    </Dialog>
   );
-
-  // Use createPortal to render modal at document root
-  return createPortal(modalContent, document.body);
 }
