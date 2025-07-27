@@ -81,8 +81,7 @@ export default function Navigation() {
           <div className="hidden lg:flex items-center space-x-8">
             {navigationItems.filter(item => 
               (!item.requiresAuth || user) && 
-              (!item.hideWhenAuthenticated || !user) &&
-              (!item.requiresSignup || !user)
+              (!item.hideWhenAuthenticated || !user)
             ).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
