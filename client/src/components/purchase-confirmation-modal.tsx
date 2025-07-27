@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// Using custom modal implementation instead of shadcn Dialog
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Package, MapPin, Check, Copy } from "lucide-react";
@@ -165,18 +165,23 @@ export default function PurchaseConfirmationModal({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <>
       {/* Custom Overlay */}
       <div 
         className="fixed inset-0 bg-black/50 z-[9998]" 
         onClick={onClose}
+        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
       />
       
       {/* Custom Modal Content */}
       <div 
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-lg shadow-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto"
         style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           zIndex: 9999,
           backgroundColor: 'white',
           visibility: 'visible',
@@ -325,4 +330,7 @@ export default function PurchaseConfirmationModal({
       </div>
     </>
   );
+
+  // Use createPortal to render modal at document root
+  return createPortal(modalContent, document.body);
 }

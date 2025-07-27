@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import ThankYouNote from "@/components/thank-you-note";
 import { Gift, ShoppingCart, Calendar, MapPin, User, Heart } from "lucide-react";
