@@ -55,9 +55,81 @@ import walmartLogo from "@assets/walmart_1751644244383.png";
 // Import gift cards data
 import { GIFT_CARDS } from "@/lib/constants";
 
+// Type definitions for the wishlist data
+interface WishlistUser {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  profileImageUrl: string | null;
+  email: string | null;
+  isVerified: boolean;
+}
+
+interface WishlistItem {
+  id: number;
+  title: string;
+  description: string | null;
+  imageUrl: string | null;
+  price: string | null;
+  productUrl: string | null;
+  retailer: string | null;
+  quantity: number;
+  quantityFulfilled: number;
+  isFulfilled: boolean;
+  fulfilledBy: string | null;
+  fulfilledAt: string | null;
+}
+
+interface ShippingAddress {
+  fullName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country?: string;
+}
+
+interface Wishlist {
+  id: number;
+  userId: string;
+  title: string;
+  description: string;
+  story: string | null;
+  storyImages: string[] | null;
+  category: string;
+  urgencyLevel: string;
+  status: string;
+  location: string | null;
+  shippingAddress: ShippingAddress | string | null;
+  totalItems: number;
+  fulfilledItems: number;
+  viewCount: number;
+  shareCount: number;
+  createdAt: string;
+  items: WishlistItem[];
+  user: WishlistUser;
+}
+
+// Helper function to handle shipping address parsing
+const parseShippingAddress = (address: ShippingAddress | string | null): ShippingAddress | null => {
+  if (!address) return null;
+  
+  if (typeof address === 'string') {
+    try {
+      const parsed = JSON.parse(address);
+      return parsed as ShippingAddress;
+    } catch {
+      return null;
+    }
+  }
+  
+  return address;
+};
+
 export default function WishlistDetail() {
-  const params = useParams();
-  const id = params?.id as string;
+  const params = useParams<{ id: string }>();
+  const id = params.id;
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -177,7 +249,7 @@ export default function WishlistDetail() {
   });
 
   // Format activities data for display - API returns pre-formatted data
-  const recentActivities = (recentActivitiesData || []).map((activity: any, index: number) => {
+  const recentActivities = (recentActivitiesData as any[] || []).map((activity: any, index: number) => {
     // Create a readable message from the activity data
     const activityMessage = `${activity.supporter} ${activity.action} ${activity.item}`;
     
@@ -191,7 +263,7 @@ export default function WishlistDetail() {
     };
   });
 
-  const { data: wishlist, isLoading } = useQuery({
+  const { data: wishlist, isLoading } = useQuery<Wishlist>({
     queryKey: [`/api/wishlists/${id}`],
     enabled: !!id,
   });
@@ -200,7 +272,7 @@ export default function WishlistDetail() {
   useEffect(() => {
     if (wishlist?.items && Array.isArray(wishlist.items) && wishlist.items.length > 0 && id) {
       // Check if we already have pricing data to avoid refetching
-      const hasAllPricing = wishlist.items.every((item: any) => itemPricing[item.id]?.pricing);
+      const hasAllPricing = wishlist.items.every((item) => itemPricing[item.id]?.pricing);
       if (hasAllPricing) {
         console.log('💰 Already have pricing data, skipping fetch');
         return;
@@ -221,12 +293,13 @@ export default function WishlistDetail() {
             // Update pricing with Target/Walmart data immediately
             setItemPricing(prevPricing => {
               const updated = { ...prevPricing };
-              Object.entries(fastPricingData).forEach(([itemId, data]: [string, any]) => {
+              Object.entries(fastPricingData).forEach(([itemId, data]) => {
+                const typedData = data as any;
                 updated[itemId] = {
                   ...updated[itemId],
                   pricing: {
                     ...updated[itemId]?.pricing,
-                    ...data.pricing
+                    ...typedData.pricing
                   }
                 };
               });
@@ -246,13 +319,14 @@ export default function WishlistDetail() {
             console.log('💰 Amazon data received:', amazonPricingData);
             setItemPricing(prevPricing => {
               const updated = { ...prevPricing };
-              Object.entries(amazonPricingData).forEach(([itemId, data]: [string, any]) => {
+              Object.entries(amazonPricingData).forEach(([itemId, data]) => {
+                const typedData = data as any;
                 console.log(`💰 Merging Amazon data for item ${itemId}:`, data);
                 updated[itemId] = {
                   ...updated[itemId],
                   pricing: {
                     ...updated[itemId]?.pricing,
-                    ...data.pricing
+                    ...typedData.pricing
                   }
                 };
               });
@@ -263,7 +337,7 @@ export default function WishlistDetail() {
         } catch (error) {
           console.error('Error fetching progressive pricing:', error);
           // Fallback to individual pricing if batch fails
-          wishlist.items.forEach((item: any) => {
+          wishlist.items.forEach((item) => {
             if (item.id && !itemPricing[item.id]) {
               fetchItemPricing(item.id);
             }
@@ -417,7 +491,9 @@ export default function WishlistDetail() {
   const copyAddress = async () => {
     if (!wishlist?.shippingAddress) return;
     
-    const address = wishlist.shippingAddress;
+    const address = parseShippingAddress(wishlist.shippingAddress);
+    if (!address) return;
+    
     const fullAddress = [
       address.fullName,
       address.addressLine1,
@@ -1285,43 +1361,48 @@ export default function WishlistDetail() {
             </Card>
 
             {/* Shipping Address */}
-            {(isOwner || user) && wishlist.shippingAddress && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <MapPin className="mr-2 h-5 w-5 text-coral" />
-                      Shipping Address
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={copyAddress}
-                      className="h-8 w-8 p-0"
-                    >
-                      {copiedAddress ? (
-                        <Check className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
+            {(isOwner || user) && wishlist.shippingAddress && (() => {
+              const parsedAddress = parseShippingAddress(wishlist.shippingAddress);
+              if (!parsedAddress) return null;
+              
+              return (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <MapPin className="mr-2 h-5 w-5 text-coral" />
+                        Shipping Address
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={copyAddress}
+                        className="h-8 w-8 p-0"
+                      >
+                        {copiedAddress ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm space-y-1">
+                      <div className="font-medium">{parsedAddress.fullName}</div>
+                      <div>{parsedAddress.addressLine1}</div>
+                      {parsedAddress.addressLine2 && (
+                        <div>{parsedAddress.addressLine2}</div>
                       )}
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm space-y-1">
-                    <div className="font-medium">{wishlist.shippingAddress.fullName}</div>
-                    <div>{wishlist.shippingAddress.addressLine1}</div>
-                    {wishlist.shippingAddress.addressLine2 && (
-                      <div>{wishlist.shippingAddress.addressLine2}</div>
-                    )}
-                    <div>
-                      {wishlist.shippingAddress.city}, {wishlist.shippingAddress.state} {wishlist.shippingAddress.zipCode}
+                      <div>
+                        {parsedAddress.city}, {parsedAddress.state} {parsedAddress.zipCode}
+                      </div>
+                      {parsedAddress.country && <div>{parsedAddress.country}</div>}
                     </div>
-                    <div>{wishlist.shippingAddress.country}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              );
+            })()}
 
             {/* Action Buttons - Removed per user request */}
 
