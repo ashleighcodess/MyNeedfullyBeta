@@ -1467,4 +1467,4 @@ export default function WishlistDetail() {
   );
 }
 
-export default WishlistDetail;
+
