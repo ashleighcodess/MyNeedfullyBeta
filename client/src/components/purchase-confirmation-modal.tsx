@@ -42,18 +42,8 @@ export default function PurchaseConfirmationModal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
 
-  // Background scroll lock when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  // Remove background scroll lock as it can interfere with modal positioning
+  // Radix UI handles this automatically
 
   const getRetailerName = () => {
     switch (product.retailer) {
@@ -170,7 +160,7 @@ export default function PurchaseConfirmationModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[95vw] sm:max-w-lg w-full mx-2 sm:mx-4">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
