@@ -36,6 +36,19 @@ export default function PurchaseConfirmationModal({
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
 
+  // Background scroll lock when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const getRetailerName = () => {
     switch (product.retailer) {
       case 'amazon': return 'Amazon';
@@ -152,7 +165,7 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-full max-w-md max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>
             {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
