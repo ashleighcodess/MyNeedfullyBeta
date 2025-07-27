@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogPortal, DialogOverlay, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Package, MapPin, Check, Copy } from "lucide-react";
@@ -165,24 +165,27 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-          </DialogTitle>
-          <DialogDescription>
-            {isPurchased 
-              ? "Your purchase will help someone in need" 
-              : "Complete your purchase and return here to confirm"
-            }
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="py-4">
-          {!isPurchased ? (
-            <>
-              {/* Content Section */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+      <DialogPortal>
+        <DialogOverlay className="fixed inset-0 bg-black/70 z-[99]" />
+        <DialogContent className="fixed inset-0 flex items-center justify-center p-4 z-[100] w-full h-full max-h-screen">
+          <div className="bg-white rounded-lg w-full max-w-lg mx-auto shadow-lg overflow-auto max-h-[90vh]">
+            <DialogHeader>
+              <DialogTitle>
+                {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
+              </DialogTitle>
+              <DialogDescription>
+                {isPurchased 
+                  ? "Your purchase will help someone in need" 
+                  : "Complete your purchase and return here to confirm"
+                }
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="py-4">
+              {!isPurchased ? (
+                <>
+                  {/* Content Section */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                 {/* Purchase Instructions */}
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto mb-3 bg-coral-50 rounded-full flex items-center justify-center">
@@ -292,9 +295,11 @@ export default function PurchaseConfirmationModal({
                 Thank you for supporting {wishlistOwner.firstName}. This item will be marked as fulfilled.
               </p>
             </div>
-          )}
-        </div>
-      </DialogContent>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </DialogPortal>
     </Dialog>
   );
 }
