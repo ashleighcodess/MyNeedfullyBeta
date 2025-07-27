@@ -1102,8 +1102,8 @@ export default function WishlistDetail() {
                             // Regular product display: Multiple retailers with pricing
                             return (
                               <div className="space-y-2">
-                                {/* Amazon - Only show when pricing is available */}
-                                {itemPricing[item.id]?.pricing?.amazon?.available && (
+                                {/* Amazon - Show button for testing, pricing optional */}
+                                {(itemPricing[item.id]?.pricing?.amazon?.available || true) && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
@@ -1134,8 +1134,8 @@ export default function WishlistDetail() {
                                   </div>
                                 )}
 
-                                {/* Target - Only show when pricing is available */}
-                                {itemPricing[item.id]?.pricing?.target?.available && (
+                                {/* Target - Show button for testing, pricing optional */}
+                                {(itemPricing[item.id]?.pricing?.target?.available || true) && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
@@ -1166,8 +1166,8 @@ export default function WishlistDetail() {
                                   </div>
                                 )}
 
-                                {/* Walmart - Only show when pricing is available */}
-                                {itemPricing[item.id]?.pricing?.walmart?.available && (
+                                {/* Walmart - Show button for testing, pricing optional */}
+                                {(itemPricing[item.id]?.pricing?.walmart?.available || true) && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
