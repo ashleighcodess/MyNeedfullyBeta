@@ -643,6 +643,25 @@ export default function WishlistDetail() {
                   <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">Share</span>
                 </Button>
+                {/* Temporary test button for modal */}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    setSelectedProduct({
+                      title: "Test Product",
+                      price: "$19.99",
+                      link: "https://amazon.com",
+                      retailer: 'amazon',
+                      image: "",
+                      itemId: 1
+                    });
+                    setShowPurchaseModal(true);
+                  }}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                >
+                  Test Modal
+                </Button>
               </div>
             </div>
           </div>
@@ -1102,15 +1121,15 @@ export default function WishlistDetail() {
                             // Regular product display: Multiple retailers with pricing
                             return (
                               <div className="space-y-2">
-                                {/* Amazon - Always show for testing */}
-                                {true && (
+                                {/* Amazon - Only show when pricing is available */}
+                                {itemPricing[item.id]?.pricing?.amazon?.available && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
                                       <div>
                                         <div className="text-xs font-medium text-gray-900">Amazon</div>
                                         <div className="text-sm font-bold text-gray-900">
-                                          {formatPrice(getRetailerPrice(item.id, 'amazon') || 'Loading...')}
+                                          {formatPrice(getRetailerPrice(item.id, 'amazon'))}
                                           <span className="ml-2 text-xs text-green-600">Live Price</span>
                                         </div>
                                       </div>
@@ -1120,7 +1139,7 @@ export default function WishlistDetail() {
                                         setSelectedProduct({
                                           title: item.title,
                                           price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
-                                          link: itemPricing[item.id]?.pricing?.amazon?.link || 'https://amazon.com',
+                                          link: itemPricing[item.id]?.pricing?.amazon?.link,
                                           retailer: 'amazon',
                                           image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
                                           itemId: item.id
