@@ -1466,3 +1466,5 @@ export default function WishlistDetail() {
     </div>
   );
 }
+
+export default WishlistDetail;
