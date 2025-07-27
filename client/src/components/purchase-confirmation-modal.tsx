@@ -221,7 +221,7 @@ export default function PurchaseConfirmationModal({
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-800 mb-2">Shipping Address:</h4>
                       <p className="text-sm text-gray-600 whitespace-pre-line">
-                        {getShippingAddress()}
+                        {formatShippingAddress(wishlistOwner.shippingAddress)}
                       </p>
                     </div>
                     <button
