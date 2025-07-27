@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription, SheetHeader } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Home, Check, Gift, X } from "lucide-react";
 import logoPath from "@assets/Logo_5_1751660244282.png";
 import { formatDistanceToNow } from "date-fns";
@@ -206,10 +206,13 @@ export default function MobileNavigation() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80 sm:w-96">
+                  <SheetHeader>
+                    <SheetTitle>Mobile Menu</SheetTitle>
+                    <SheetDescription>
+                      Navigate MyNeedfully and access your account options
+                    </SheetDescription>
+                  </SheetHeader>
                   <div className="flex flex-col space-y-1 mt-6">
-                    <div className="pb-4 mb-4 border-b">
-                      <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
-                    </div>
                     {navigationItems.filter(item => (!item.requiresAuth || user) && (!item.hideWhenAuthenticated || !user)).map((item) => (
                       <Link key={item.href} href={item.href}>
                         <Button 

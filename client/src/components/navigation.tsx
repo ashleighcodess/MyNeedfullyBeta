@@ -210,6 +210,12 @@ export default function Navigation() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-72 sm:w-80">
+                  <SheetHeader>
+                    <SheetTitle>Navigation Menu</SheetTitle>
+                    <SheetDescription>
+                      Access MyNeedfully features and account settings
+                    </SheetDescription>
+                  </SheetHeader>
                   <div className="flex flex-col space-y-3 mt-6">
                     {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
                       <Link key={item.href} href={item.href}>
