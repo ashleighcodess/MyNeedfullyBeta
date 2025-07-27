@@ -219,16 +219,15 @@ export default function Navigation() {
                   <div className="flex flex-col space-y-3 mt-6">
                     {navigationItems.filter(item => !item.requiresAuth || user).map((item) => (
                       <Link key={item.href} href={item.href}>
-                        <Button 
-                          variant="ghost" 
-                          className={`w-full justify-start text-sm ${
-                            isActiveLink(item.href) ? 'text-coral bg-coral/10' : ''
+                        <div 
+                          className={`w-full flex items-center justify-start text-sm px-3 py-2 rounded-md transition-colors cursor-pointer ${
+                            isActiveLink(item.href) ? 'text-coral bg-coral/10' : 'hover:bg-gray-50'
                           }`}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           <item.icon className="mr-2 h-4 w-4" />
                           {item.label}
-                        </Button>
+                        </div>
                       </Link>
                     ))}
                     
