@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
-import { X, Package, MapPin, ExternalLink, Check, Copy } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { useToast } from '@/hooks/use-toast';
-import MobileModal from '@/components/mobile-modal';
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Package, MapPin, Check, Copy } from "lucide-react";
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -35,20 +33,8 @@ export default function PurchaseConfirmationModal({
 }: PurchaseConfirmationModalProps) {
   const [showShippingAddress, setShowShippingAddress] = useState(false);
   const [isPurchased, setIsPurchased] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const getRetailerName = () => {
     switch (product.retailer) {
@@ -164,159 +150,27 @@ export default function PurchaseConfirmationModal({
     }
   };
 
-  // Mobile modal (below 640px)
-  if (isMobile) {
-    return (
-      <MobileModal isOpen={isOpen} onClose={onClose}>
-        <div className="relative p-6">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">
-              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </h2>
-            <p className="text-sm text-gray-600 mt-2">
-              {isPurchased 
-                ? "Your purchase will help someone in need" 
-                : "Complete your purchase and return here to confirm"
-              }
-            </p>
-          </div>
-
-          {!isPurchased ? (
-            <>
-              {/* Content Section */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                {/* Left Side - Purchase Instructions */}
-                <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-coral-50 rounded-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-coral-600" />
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    After purchase, return to MyNeedfully and click{' '}
-                    <span className="font-semibold text-coral-600">I've Purchased This</span>
-                  </p>
-                </div>
-
-                {/* Right Side - Shipping Address */}
-                <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-blue-50 rounded-full flex items-center justify-center">
-                    <MapPin className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Ship to {wishlistOwner.firstName}'s address
-                  </p>
-                  <button
-                    onClick={() => setShowShippingAddress(!showShippingAddress)}
-                    className="text-blue-600 text-xs hover:underline mt-1"
-                  >
-                    {showShippingAddress ? 'Hide' : 'Show'} Address
-                  </button>
-                </div>
-              </div>
-
-              {/* Shipping Address Display */}
-              {showShippingAddress && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-800 mb-2">Shipping Address:</h4>
-                      <p className="text-sm text-gray-600 whitespace-pre-line">
-                        {formatShippingAddress(wishlistOwner.shippingAddress)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={copyAddressToClipboard}
-                      className="ml-3 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-                      title="Copy address to clipboard"
-                    >
-                      {copiedAddress ? (
-                        <Check className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button 
-                  asChild 
-                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-3 rounded-xl text-lg font-semibold"
-                >
-                  <a 
-                    href={product.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    Buy on {getRetailerName()}
-                  </a>
-                </Button>
-                
-                <Button 
-                  onClick={handlePurchaseConfirmation}
-                  variant="outline"
-                  className="w-full border-2 border-coral-200 text-coral-700 hover:bg-coral-50 py-3 rounded-xl text-lg font-semibold"
-                >
-                  I've Purchased This
-                </Button>
-              </div>
-
-              {/* Footer */}
-              <div className="mt-6 text-center space-y-2">
-                <p className="text-xs text-gray-500">
-                  MyNeedfully may earn a commission on purchases
-                </p>
-                <p className="text-xs text-gray-400">
-                  This site is protected by reCAPTCHA and the Google{' '}
-                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and{' '}
-                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> apply.
-                </p>
-              </div>
-            </>
-          ) : (
-            /* Purchase Confirmation */
-            <div className="text-center py-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <Check className="h-10 w-10 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-green-800 mb-2">
-                Item Marked as Purchased!
-              </h3>
-              <p className="text-gray-600">
-                Thank you for supporting {wishlistOwner.firstName}. This item will be marked as fulfilled.
-              </p>
-            </div>
-          )}
-        </div>
-      </MobileModal>
-    );
-  }
-
-  // Desktop modal (640px and above)
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border-0 p-0 max-h-[90vh] overflow-y-auto sm:max-h-none">
-        <div className="relative p-6">
-          {/* Header */}
-          <DialogHeader className="text-center mb-6">
-            <DialogTitle className="text-xl font-semibold text-gray-800">
-              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </DialogTitle>
-            <DialogDescription className="text-sm text-gray-600 mt-2">
-              {isPurchased 
-                ? "Your purchase will help someone in need" 
-                : "Complete your purchase and return here to confirm"
-              }
-            </DialogDescription>
-          </DialogHeader>
-
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
+          </DialogTitle>
+          <DialogDescription>
+            {isPurchased 
+              ? "Your purchase will help someone in need" 
+              : "Complete your purchase and return here to confirm"
+            }
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="py-4">
           {!isPurchased ? (
             <>
               {/* Content Section */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                {/* Left Side - Purchase Instructions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                {/* Purchase Instructions */}
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto mb-3 bg-coral-50 rounded-full flex items-center justify-center">
                     <Package className="h-8 w-8 text-coral-600" />
@@ -327,72 +181,75 @@ export default function PurchaseConfirmationModal({
                   </p>
                 </div>
 
-                {/* Right Side - Shipping Address */}
+                {/* Shipping Address */}
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto mb-3 bg-blue-50 rounded-full flex items-center justify-center">
                     <MapPin className="h-8 w-8 text-blue-600" />
                   </div>
-                  <button
-                    onClick={() => setShowShippingAddress(!showShippingAddress)}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                  >
-                    Need {wishlistOwner.firstName}'s shipping address?
-                  </button>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Ship the item to the address below
+                  </p>
                 </div>
               </div>
 
-              {/* Shipping Address Display */}
-              {showShippingAddress && wishlistOwner.shippingAddress && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+              {/* Shipping Address */}
+              <div className="mb-8">
+                <div className="bg-gray-50 p-4 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-800">Shipping Address:</h4>
+                    <h3 className="font-semibold text-gray-900">Shipping Information</h3>
                     <Button
-                      onClick={copyAddressToClipboard}
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
-                      className="h-8 px-3 text-xs bg-white hover:bg-coral-50 border-coral-300 text-coral-600 hover:text-coral-700"
+                      onClick={() => setShowShippingAddress(!showShippingAddress)}
+                      className="text-coral-600 hover:text-coral-700"
                     >
-                      {copiedAddress ? (
-                        <>
-                          <Check className="h-3 w-3 mr-1" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-3 w-3 mr-1" />
-                          Copy
-                        </>
-                      )}
+                      {showShippingAddress ? 'Hide Address' : 'Show Address'}
                     </Button>
                   </div>
-                  <div className="text-sm text-gray-600 whitespace-pre-line font-mono bg-white p-3 rounded border">
-                    {formatShippingAddress(wishlistOwner.shippingAddress)}
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    {copiedAddress 
-                      ? "Address copied to clipboard! Paste it during checkout on the retailer's website."
-                      : "Click 'Copy' above to copy this address for checkout on the retailer's website."
-                    }
-                  </p>
+                  
+                  {showShippingAddress && (
+                    <div className="mt-3">
+                      <div className="text-sm text-gray-700 whitespace-pre-line bg-white p-3 rounded border">
+                        {formatShippingAddress(wishlistOwner.shippingAddress)}
+                      </div>
+                      <div className="mt-3 flex justify-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={copyAddressToClipboard}
+                          className="text-xs"
+                        >
+                          {copiedAddress ? (
+                            <>
+                              <Check className="w-4 h-4 mr-2" />
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copy Address
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-3">
+              {/* Action buttons */}
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                 <Button
                   onClick={handleContinueToRetailer}
-                  className="w-full bg-coral-600 hover:bg-coral-700 text-white py-3 rounded-lg font-medium"
+                  className="flex-1 bg-coral hover:bg-coral/90 text-white"
                 >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Continue to {getRetailerName()}
+                  Buy on {getRetailerName()}
                 </Button>
-
                 <Button
                   onClick={handlePurchaseConfirmation}
                   variant="outline"
-                  className="w-full border-coral-600 text-coral-600 hover:bg-coral-50 py-3 rounded-lg font-medium"
+                  className="flex-1 border-coral text-coral hover:bg-coral hover:text-white"
                 >
-                  <Check className="h-4 w-4 mr-2" />
                   I've Purchased This
                 </Button>
               </div>

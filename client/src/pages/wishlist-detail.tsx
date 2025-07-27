@@ -1102,15 +1102,15 @@ export default function WishlistDetail() {
                             // Regular product display: Multiple retailers with pricing
                             return (
                               <div className="space-y-2">
-                                {/* Amazon - Show button for testing, pricing optional */}
-                                {(itemPricing[item.id]?.pricing?.amazon?.available || true) && (
+                                {/* Amazon - Always show for testing */}
+                                {true && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={amazonLogo} alt="Amazon" className="w-5 h-5 rounded-full" />
                                       <div>
                                         <div className="text-xs font-medium text-gray-900">Amazon</div>
                                         <div className="text-sm font-bold text-gray-900">
-                                          {formatPrice(getRetailerPrice(item.id, 'amazon'))}
+                                          {formatPrice(getRetailerPrice(item.id, 'amazon') || 'Loading...')}
                                           <span className="ml-2 text-xs text-green-600">Live Price</span>
                                         </div>
                                       </div>
@@ -1120,7 +1120,7 @@ export default function WishlistDetail() {
                                         setSelectedProduct({
                                           title: item.title,
                                           price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
-                                          link: itemPricing[item.id]?.pricing?.amazon?.link,
+                                          link: itemPricing[item.id]?.pricing?.amazon?.link || 'https://amazon.com',
                                           retailer: 'amazon',
                                           image: itemPricing[item.id]?.pricing?.amazon?.image || item.imageUrl,
                                           itemId: item.id
@@ -1134,8 +1134,8 @@ export default function WishlistDetail() {
                                   </div>
                                 )}
 
-                                {/* Target - Show button for testing, pricing optional */}
-                                {(itemPricing[item.id]?.pricing?.target?.available || true) && (
+                                {/* Target - Only show when pricing is available */}
+                                {itemPricing[item.id]?.pricing?.target?.available && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={targetLogo} alt="Target" className="w-5 h-5 rounded-full" />
@@ -1166,8 +1166,8 @@ export default function WishlistDetail() {
                                   </div>
                                 )}
 
-                                {/* Walmart - Show button for testing, pricing optional */}
-                                {(itemPricing[item.id]?.pricing?.walmart?.available || true) && (
+                                {/* Walmart - Only show when pricing is available */}
+                                {itemPricing[item.id]?.pricing?.walmart?.available && (
                                   <div className="flex items-center justify-between p-2 bg-white rounded-lg border animate-fadeIn">
                                     <div className="flex items-center space-x-2">
                                       <img src={walmartLogo} alt="Walmart" className="w-5 h-5 rounded-full" />
