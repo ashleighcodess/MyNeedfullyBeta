@@ -184,29 +184,53 @@ function getRainforestAPIService(): RainforestAPIService | null {
   return rainforestAPIService;
 }
 
+// Helper function to extract user ID from request
+function getUserIdFromRequest(req: any): string | null {
+  if (req.user?.claims?.sub) {
+    // Replit OAuth format
+    return req.user.claims.sub;
+  } else if (req.user?.profile?.id) {
+    // Email/password or Google OAuth format
+    return req.user.profile.id;
+  }
+  return null;
+}
+
 // Helper functions for activity formatting
 function formatActivityMessage(activity: any): string {
-  const { eventType, data } = activity;
+  const { eventType, data, userFirstName, userLastName, userEmail } = activity;
+  
+  // Create user display name
+  let userName = 'Anonymous User';
+  if (userFirstName && userLastName) {
+    userName = `${userFirstName} ${userLastName}`;
+  } else if (userFirstName) {
+    userName = userFirstName;
+  } else if (userEmail) {
+    userName = userEmail.split('@')[0]; // Use email username part
+  }
   
   switch (eventType) {
     case 'item_added':
-      return `Added "${data.itemTitle}" to their needs list`;
+      return `${userName} added "${data.itemTitle}" to their needs list`;
     case 'wishlist_created':
-      return `Created a new needs list`;
+      return `${userName} created a new needs list`;
     case 'wishlist_view':
-      return `Viewed a needs list`;
+      return `${userName} viewed a needs list`;
     case 'product_search':
-      return `Searched for "${data.query}"`;
+      return `${userName} searched for "${data.query}"`;
+    case 'search':
+      return `${userName} searched needs lists`;
     case 'item_fulfilled':
-      return `Purchased "${data.itemTitle}" for someone in need`;
+      return `${userName} purchased "${data.itemTitle}" for someone in need`;
     case 'donation_made':
-      return `Made a donation of $${data.amount}`;
+      return `${userName} made a donation of $${data.amount}`;
     case 'thank_you_sent':
-      return `Sent a thank you note to ${data.recipientName}`;
+      return `${userName} sent a thank you note to ${data.recipientName}`;
     case 'user_registered':
-      return `Joined the community`;
+      return `${userName} joined the community`;
     default:
-      return `Performed an action`;
+      return `${userName} performed an action`;
   }
 }
 
@@ -1153,7 +1177,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/activity', isAuthenticated, async (req: any, res) => {
     try {
-      // Get recent activity from analytics_events with proper error handling
+      // Get recent activity from analytics_events with user data joined
       let recentActivity = [];
       
       try {
@@ -1162,9 +1186,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           eventType: analyticsEvents.eventType,
           userId: analyticsEvents.userId,
           data: analyticsEvents.data,
-          createdAt: analyticsEvents.createdAt
+          createdAt: analyticsEvents.createdAt,
+          userFirstName: users.firstName,
+          userLastName: users.lastName,
+          userEmail: users.email
         })
         .from(analyticsEvents)
+        .leftJoin(users, eq(analyticsEvents.userId, users.id))
         .orderBy(desc(analyticsEvents.createdAt))
         .limit(50);
       } catch (dbError) {
@@ -1607,7 +1635,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record analytics event
       await storage.recordEvent({
         eventType: "search",
-        userId: (req as any).user?.claims?.sub,
+        userId: getUserIdFromRequest(req),
         data: { query, category, urgencyLevel, location, status },
         userAgent: req.get('User-Agent'),
         ipAddress: req.ip,
@@ -1689,7 +1717,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record analytics event
       await storage.recordEvent({
         eventType: "wishlist_view",
-        userId: (req as any).user?.claims?.sub,
+        userId: getUserIdFromRequest(req),
         data: { wishlistId: id },
         userAgent: req.get('User-Agent'),
         ipAddress: req.ip,
@@ -3151,7 +3179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Record analytics event
       await storage.recordEvent({
         eventType: "product_search",
-        userId: (req as any).user?.claims?.sub,
+        userId: getUserIdFromRequest(req),
         data: { 
           query: query as string, 
           optimizedQuery,
