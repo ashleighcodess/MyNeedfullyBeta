@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogPortal, DialogOverlay, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+// Using custom modal implementation instead of shadcn Dialog
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Package, MapPin, Check, Copy } from "lucide-react";
@@ -163,20 +163,47 @@ export default function PurchaseConfirmationModal({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-full max-w-lg mx-auto shadow-lg overflow-auto max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle>
-            {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-          </DialogTitle>
-          <DialogDescription>
-            {isPurchased 
-              ? "Your purchase will help someone in need" 
-              : "Complete your purchase and return here to confirm"
-            }
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      {/* Custom Overlay */}
+      <div 
+        className="fixed inset-0 bg-black/50 z-[9998]" 
+        onClick={onClose}
+      />
+      
+      {/* Custom Modal Content */}
+      <div 
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-lg shadow-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto"
+        style={{
+          zIndex: 9999,
+          backgroundColor: 'white',
+          visibility: 'visible',
+          opacity: 1
+        }}
+      >
+        {/* Close button */}
+        <button 
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 z-10"
+        >
+          ✕
+        </button>
+        
+        {/* Content */}
+        <div className="p-6">
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold leading-none tracking-tight mb-2">
+              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
+            </h2>
+            <p className="text-sm text-gray-600">
+              {isPurchased 
+                ? "Your purchase will help someone in need" 
+                : "Complete your purchase and return here to confirm"
+              }
+            </p>
+          </div>
         
         <div className="py-4">
           {!isPurchased ? (
@@ -294,7 +321,8 @@ export default function PurchaseConfirmationModal({
             </div>
           )}
         </div>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </>
   );
 }
