@@ -165,8 +165,9 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="fixed inset-0 flex items-center justify-center p-4 z-[100] max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="fixed inset-0 flex items-center justify-center p-4 z-[100]">
+        <div className="bg-white rounded-lg max-w-lg max-h-[90vh] overflow-y-auto w-full p-6 shadow-lg">
+          <DialogHeader>
           <DialogTitle>
             {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
           </DialogTitle>
@@ -293,6 +294,7 @@ export default function PurchaseConfirmationModal({
               </p>
             </div>
           )}
+        </div>
         </div>
       </DialogContent>
     </Dialog>
