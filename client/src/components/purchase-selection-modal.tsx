@@ -41,18 +41,20 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
   };
 
   if (showThankYouForm && selectedPurchase) {
-    return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+    if (!isOpen) return null;
+    
+    const thankYouModalContent = (
+      <>
+        <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto p-6">
+          <button onClick={onClose} className="absolute right-4 top-4 text-gray-400 hover:text-gray-600">✕</button>
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold leading-none tracking-tight mb-2 flex items-center gap-2">
               <Heart className="h-5 w-5 text-coral" />
               Create Thank You Note
-            </DialogTitle>
-            <DialogDescription className="text-sm text-gray-600">
-              Send a heartfelt message to show your appreciation
-            </DialogDescription>
-          </DialogHeader>
+            </h2>
+            <p className="text-sm text-gray-600">Send a heartfelt message to show your appreciation</p>
+          </div>
           <div className="mb-4 p-4 bg-gray-50 rounded-lg">
             <div className="text-sm text-gray-600 mb-1">Thanking recipient for:</div>
             <div className="font-medium text-navy">{selectedPurchase.itemTitle}</div>
@@ -65,23 +67,27 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             donationId={selectedPurchase.id}
             onSent={handleThankYouSent}
           />
-        </DialogContent>
-      </Dialog>
+        </div>
+      </>
     );
+    
+    return createPortal(thankYouModalContent, document.body);
   }
 
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+  if (!isOpen) return null;
+
+  const modalContent = (
+    <>
+      <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-lg shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto p-6">
+        <button onClick={onClose} className="absolute right-4 top-4 text-gray-400 hover:text-gray-600">✕</button>
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold leading-none tracking-tight mb-2 flex items-center gap-2">
             <Gift className="h-5 w-5 text-coral" />
             Select a Purchase to Thank
-          </DialogTitle>
-          <DialogDescription className="text-sm text-gray-600">
-            Choose from your recent purchases to send a thank you note
-          </DialogDescription>
-        </DialogHeader>
+          </h2>
+          <p className="text-sm text-gray-600">Choose from your recent purchases to send a thank you note</p>
+        </div>
         
         {isLoading ? (
           <div className="text-center py-8">
@@ -169,7 +175,9 @@ export default function PurchaseSelectionModal({ isOpen, onClose }: PurchaseSele
             </div>
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   );
+
+  return createPortal(modalContent, document.body);
 }
