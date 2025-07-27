@@ -131,21 +131,27 @@ function Router() {
       <ScrollToTop />
       <NotificationHandler />
       
-      <Suspense fallback={
-        <div className="min-h-screen bg-warm-bg flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
-        </div>
-      }>
-        <Switch>
-          {/* Admin route with no header/footer */}
-          <Route path="/admin">
+      <Switch>
+        {/* Admin route with no header/footer */}
+        <Route path="/admin">
+          <Suspense fallback={
+            <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+            </div>
+          }>
             <AdminDashboard />
-          </Route>
-          
-          {/* All other routes with header and footer */}
-          <Route>
-            <Navigation />
-            <div className="flex-1">
+          </Suspense>
+        </Route>
+        
+        {/* All other routes with header and footer */}
+        <Route>
+          <Navigation />
+          <div className="flex-1">
+            <Suspense fallback={
+              <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+              </div>
+            }>
               <Switch>
                 {/* Public routes available to everyone */}
                 <Route path="/about-us" component={AboutUs} />
@@ -209,11 +215,11 @@ function Router() {
                 
                 <Route component={NotFound} />
               </Switch>
+            </Suspense>
             </div>
             <Footer />
           </Route>
         </Switch>
-      </Suspense>
     </div>
   );
 }
