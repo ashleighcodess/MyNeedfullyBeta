@@ -171,7 +171,7 @@ export default function PurchaseConfirmationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] sm:max-w-lg w-full mx-2 sm:mx-4">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="h-5 w-5 text-coral" />
@@ -183,7 +183,7 @@ export default function PurchaseConfirmationModal({
         </DialogHeader>
         
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="mb-6">
             <h2 className="text-lg font-semibold leading-none tracking-tight mb-2">
               {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}

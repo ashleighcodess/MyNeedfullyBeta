@@ -170,6 +170,38 @@
                  0 0 20px rgba(255, 255, 255, 0.6);
   }
   
+  /* Mobile modal optimizations */
+  .modal-content-mobile {
+    @apply max-w-[95vw] sm:max-w-lg;
+  }
+  
+  /* Ensure modals don't exceed viewport */
+  @supports (height: 100dvh) {
+    .modal-height-mobile {
+      max-height: calc(100dvh - 2rem);
+    }
+  }
+  
+  /* Fallback for browsers without dvh support */
+  @supports not (height: 100dvh) {
+    .modal-height-mobile {
+      max-height: calc(100vh - 2rem);
+    }
+  }
+  
+  /* Prevent horizontal overflow on mobile */
+  .modal-scroll-mobile {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  
+  /* Touch-friendly scrolling */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
   /* Enhanced mobile hero styling */
   @media (max-width: 640px) {
     .hero-text-shadow {

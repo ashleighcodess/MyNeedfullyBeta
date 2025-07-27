@@ -101,7 +101,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl mx-2 sm:mx-4">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <div className="flex items-center">
@@ -129,7 +129,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
             </DialogDescription>
           </DialogHeader>
 
-          <div className="overflow-y-auto max-h-96">
+          <div className="overflow-y-auto max-h-96 touch-scroll modal-scroll-mobile">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral"></div>
@@ -143,7 +143,7 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
                 </p>
               </div>
             ) : (
-              <div className="space-y-1">
+              <div className="space-y-1 px-1 sm:px-0">
                 {notifications.map((notification: Notification) => (
                   <div
                     key={notification.id}
