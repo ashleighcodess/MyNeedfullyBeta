@@ -244,7 +244,7 @@ export default function CookiesPolicy() {
               <p>
                 If you have any questions about our use of cookies or this Cookies Policy, please contact us at:
                 <br />
-                Email: privacy@myneedfully.com
+                Email: privacy@MyNeedfully.com
                 <br />
                 Website: myneedfully.app
               </p>

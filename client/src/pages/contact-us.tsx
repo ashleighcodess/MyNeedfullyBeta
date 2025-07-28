@@ -60,7 +60,7 @@ export default function ContactUs() {
       "help",
       "feedback",
       "questions",
-      "myneedfully support"
+      "MyNeedfully support"
     ]),
     canonical: generateCanonicalUrl("/contact-us"),
     structuredData: {
@@ -72,7 +72,7 @@ export default function ContactUs() {
       "mainEntity": {
         "@type": "Organization",
         "name": "MyNeedfully",
-        "email": "info@myneedfully.com",
+        "email": "info@MyNeedfully.com",
         "url": "https://myneedfully.app"
       }
     }
@@ -120,7 +120,7 @@ export default function ContactUs() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Email Us</h3>
-                  <p className="text-gray-600 font-medium">info@myneedfully.com</p>
+                  <p className="text-gray-600 font-medium">info@MyNeedfully.com</p>
                   <p className="text-sm text-gray-500 mt-1">We Typically Respond Within 24 Hours</p>
                 </div>
               </div>

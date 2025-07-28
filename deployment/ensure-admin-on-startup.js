@@ -8,7 +8,7 @@ const { neon } = require('@neondatabase/serverless');
 
 const ADMIN_EMAILS = [
   'ashleigh@elitewebdesign.us',
-  'info@myneedfully.com'
+  'info@MyNeedfully.com'
 ];
 
 async function ensureAdminAccess() {

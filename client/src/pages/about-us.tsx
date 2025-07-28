@@ -106,7 +106,7 @@ export default function AboutUs() {
     title: generatePageTitle("About Us - MyNeedfully's Mission to Help Communities"),
     description: generatePageDescription("Learn about MyNeedfully's mission to connect communities through crisis support. Discover how we help families in need through our transparent donation platform and generous supporters."),
     keywords: generateKeywords([
-      "about myneedfully",
+      "about MyNeedfully",
       "donation platform mission",
       "crisis support community",
       "helping families in need",

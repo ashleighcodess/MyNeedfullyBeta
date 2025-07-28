@@ -182,7 +182,7 @@ export default function TermsAndConditions() {
               <p>
                 If you have questions about these Terms and Conditions, please contact us at:
                 <br />
-                Email: legal@myneedfully.com
+                Email: legal@MyNeedfully.com
                 <br />
                 Website: myneedfully.app
               </p>

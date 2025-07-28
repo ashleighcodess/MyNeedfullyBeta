@@ -110,7 +110,7 @@ export default function FAQ() {
     title: generatePageTitle("FAQ - Frequently Asked Questions About MyNeedfully"),
     description: generatePageDescription("Get answers to common questions about using MyNeedfully's donation platform. Learn how to create needs lists, support families in crisis, and navigate our community support system."),
     keywords: generateKeywords([
-      "myneedfully faq",
+      "MyNeedfully faq",
       "donation platform help",
       "crisis support questions",
       "how to create needs list",
@@ -225,7 +225,7 @@ export default function FAQ() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a 
-                  href="mailto:support@myneedfully.com"
+                  href="mailto:support@MyNeedfully.com"
                   className="inline-flex items-center justify-center px-6 py-3 bg-coral text-white rounded-lg hover:bg-coral/90 transition-colors"
                 >
                   Contact Support

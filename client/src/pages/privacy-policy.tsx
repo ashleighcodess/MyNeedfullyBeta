@@ -164,7 +164,7 @@ export default function PrivacyPolicy() {
               </ul>
               
               <p className="mt-4">
-                To exercise these rights, contact us at privacy@myneedfully.com or through your account settings.
+                To exercise these rights, contact us at privacy@MyNeedfully.com or through your account settings.
               </p>
             </CardContent>
           </Card>
@@ -216,7 +216,7 @@ export default function PrivacyPolicy() {
               <p>
                 If you have any questions about this Privacy Policy or our data practices, please contact us at:
                 <br />
-                Email: privacy@myneedfully.com
+                Email: privacy@MyNeedfully.com
                 <br />
                 Website: myneedfully.app
               </p>

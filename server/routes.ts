@@ -458,7 +458,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Add computed isAdmin field based on email and userType
-      const adminEmails = ['ashleigh@elitewebdesign.us', 'info@myneedfully.com'];
+      const adminEmails = ['ashleigh@elitewebdesign.us', 'info@MyNeedfully.com'];
       const userWithAdmin = {
         ...user,
         isAdmin: user.userType === 'admin' || adminEmails.includes(user.email || '')
@@ -2336,7 +2336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', `attachment; filename="myneedfully-data-${new Date().toISOString().split('T')[0]}.json"`);
+      res.setHeader('Content-Disposition', `attachment; filename="MyNeedfully-data-${new Date().toISOString().split('T')[0]}.json"`);
       res.json(exportData);
     } catch (error) {
       console.error("Error exporting user data:", error);
@@ -3798,7 +3798,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send email notification to admin
       const adminEmailSent = await emailService.sendEmail({
-        to: 'info@myneedfully.com',
+        to: 'info@MyNeedfully.com',
         from: 'data@myneedfully.app',
         subject: `Contact Form Submission from ${fullName}`,
         html: `

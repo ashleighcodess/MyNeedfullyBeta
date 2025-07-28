@@ -34,7 +34,7 @@ export default function Home() {
     title: generatePageTitle("Dashboard - MyNeedfully Community Support"),
     description: generatePageDescription("Welcome to your MyNeedfully dashboard. Access quick actions to create needs lists, browse support opportunities, and manage your community involvement."),
     keywords: generateKeywords([
-      "myneedfully dashboard",
+      "MyNeedfully dashboard",
       "crisis support dashboard",
       "community help center",
       "needs list management",

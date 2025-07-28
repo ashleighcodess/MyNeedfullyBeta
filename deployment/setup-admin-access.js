@@ -10,7 +10,7 @@ const { Client } = require('pg');
 // Admin emails that should always have admin access
 const ADMIN_EMAILS = [
   'ashleigh@elitewebdesign.us',
-  'info@myneedfully.com'
+  'info@MyNeedfully.com'
 ];
 
 async function setupAdminAccess() {

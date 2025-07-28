@@ -77,7 +77,7 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
     if (!isAuthenticated) return;
     
     // Check if user has seen tips before
-    const seenTips = localStorage.getItem('myneedfully-tips-seen');
+    const seenTips = localStorage.getItem('MyNeedfully-tips-seen');
     if (!seenTips) {
       // Delay showing tips to let the page load
       const timer = setTimeout(() => {
@@ -111,14 +111,14 @@ export default function QuickTips({ onComplete }: QuickTipsProps) {
 
   const completeTour = () => {
     setIsActive(false);
-    localStorage.setItem('myneedfully-tips-seen', 'true');
+    localStorage.setItem('MyNeedfully-tips-seen', 'true');
     if (onComplete) {
       onComplete();
     }
   };
 
   const showTipsAgain = () => {
-    localStorage.removeItem('myneedfully-tips-seen');
+    localStorage.removeItem('MyNeedfully-tips-seen');
     setCurrentTipIndex(0);
     setIsActive(true);
     setHasSeenTips(false);

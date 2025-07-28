@@ -38,7 +38,7 @@ import bcrypt from "bcryptjs";
 // Admin emails that should automatically get admin privileges
 const ADMIN_EMAILS = [
   'ashleigh@elitewebdesign.us',
-  'info@myneedfully.com'
+  'info@MyNeedfully.com'
 ];
 
 // Helper function to check if an email should be automatically granted admin privileges
