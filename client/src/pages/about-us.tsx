@@ -213,10 +213,10 @@ export default function AboutUs() {
   ];
 
   const missionPoints = [
-    "We Create A Bridge Between People In Need And Those With Resources To Share.",
-    "We Facilitate Direct, Meaningful Assistance That Addresses Specific Needs.",
-    "We Empower Communities To Respond Effectively In Times Of Crisis.",
-    "We Believe In The Collective Power Of Small Acts Of Kindness."
+    "We create a bridge between people in need and those with resources to share.",
+    "We facilitate direct, meaningful assistance that addresses specific needs.",
+    "We empower communities to respond effectively in times of crisis.",
+    "We believe in the collective power of small acts of kindness."
   ];
 
 
