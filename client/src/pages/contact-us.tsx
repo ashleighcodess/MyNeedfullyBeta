@@ -108,9 +108,9 @@ export default function ContactUs() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* Left Side - Contact Info */}
           <div className="bg-white rounded-lg shadow-sm p-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6">Get In Touch</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">Get in touch</h1>
             <p className="text-gray-600 mb-8 leading-relaxed">
-              If You Have Any Questions, Concerns, Or Feedback About MyNeedfully, Please Don't Hesitate To Reach Out. We're Here To Support You.
+              If you have any questions, concerns, or feedback about MyNeedfully, please don't hesitate to reach out. We're here to support you.
             </p>
 
             <div className="space-y-6">
@@ -121,7 +121,7 @@ export default function ContactUs() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Email Us</h3>
                   <p className="text-gray-600 font-medium">info@MyNeedfully.com</p>
-                  <p className="text-sm text-gray-500 mt-1">We Typically Respond Within 24 Hours</p>
+                  <p className="text-sm text-gray-500 mt-1">We typically respond within 24 hours</p>
                 </div>
               </div>
             </div>
@@ -140,7 +140,7 @@ export default function ContactUs() {
                   type="text"
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  placeholder="Enter Your Name"
+                  placeholder="Enter your name"
                   className="bg-white border-0 text-gray-900 placeholder-gray-500"
                   required
                 />
@@ -156,7 +156,7 @@ export default function ContactUs() {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter Your Email"
+                  placeholder="Enter your email"
                   className="bg-white border-0 text-gray-900 placeholder-gray-500"
                   required
                 />
@@ -172,7 +172,7 @@ export default function ContactUs() {
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  placeholder="Enter Your Phone Number"
+                  placeholder="Enter your phone number"
                   className="bg-white border-0 text-gray-900 placeholder-gray-500"
                   required
                 />
@@ -187,7 +187,7 @@ export default function ContactUs() {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  placeholder="Type Message..."
+                  placeholder="Type message..."
                   rows={4}
                   className="bg-white border-0 text-gray-900 placeholder-gray-500 resize-none"
                   required
