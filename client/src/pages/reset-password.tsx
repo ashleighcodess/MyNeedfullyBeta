@@ -145,20 +145,6 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <img 
-              src="/myneedfully-logo.png" 
-              alt="MyNeedfully" 
-              className="h-10 w-10"
-            />
-            <h2 className="text-2xl font-bold text-gray-900">Reset Password</h2>
-          </div>
-          <p className="text-gray-600">
-            Enter your new password below
-          </p>
-        </div>
-
         <Card>
           <CardHeader>
             <CardTitle>Create New Password</CardTitle>
