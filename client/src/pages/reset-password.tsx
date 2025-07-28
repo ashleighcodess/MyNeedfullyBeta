@@ -146,11 +146,11 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
+          <div className="flex items-center justify-center space-x-3 mb-4">
             <img 
-              src="/attached_assets/Logo_5_1751660244282.png" 
+              src="/myneedfully-logo.png" 
               alt="MyNeedfully" 
-              className="h-8 w-8"
+              className="h-10 w-10"
             />
             <h2 className="text-2xl font-bold text-gray-900">Reset Password</h2>
           </div>
