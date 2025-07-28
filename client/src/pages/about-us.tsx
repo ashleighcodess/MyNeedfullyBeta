@@ -387,7 +387,7 @@ export default function AboutUs() {
           <div>
             <h2 className="text-3xl font-bold text-navy mb-6">Our Mission</h2>
             <p className="text-lg text-gray-700 mb-8">
-              MyNeedfully.Com Helps Individuals And Families In Crisis Receive The Support They Need From Their Community.
+              MyNeedfully.com helps individuals and families in crisis receive the support they need from their community.
             </p>
             
             <div className="space-y-4">
@@ -405,7 +405,7 @@ export default function AboutUs() {
         <Card className="mb-8 bg-gradient-to-r from-coral/10 to-coral/20">
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold text-navy mb-4">
-              Ready To Create A Needs List For Yourself Or Someone In Need?
+              Ready to create a needs list for yourself or someone in need?
             </h2>
             <Link href="/create">
               <Button size="lg" className="bg-coral hover:bg-coral/90">
