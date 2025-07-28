@@ -4187,9 +4187,21 @@ The MyNeedfully Team
         return res.status(400).json({ message: "Token and new password are required" });
       }
       
-      // Verify token
+      // Verify token exists
       const resetToken = await storage.getPasswordResetToken(token);
-      if (!resetToken || resetToken.expiresAt < new Date()) {
+      
+      if (!resetToken) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      
+      // Check if token is already used
+      if (resetToken.isUsed) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+      
+      // Check expiration
+      const now = new Date();
+      if (resetToken.expiresAt < now) {
         return res.status(400).json({ message: "Invalid or expired reset token" });
       }
       
@@ -4197,8 +4209,8 @@ The MyNeedfully Team
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       await storage.updateUser(resetToken.userId, { password: hashedPassword });
       
-      // Delete used token
-      await storage.deletePasswordResetToken(token);
+      // Mark token as used instead of deleting (for security audit)
+      await storage.markPasswordResetTokenAsUsed(token);
       
       res.json({ message: "Password reset successful" });
     } catch (error) {
