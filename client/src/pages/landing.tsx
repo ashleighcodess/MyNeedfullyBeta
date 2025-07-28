@@ -1389,7 +1389,7 @@ export default function Landing() {
               </h2>
               
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                Life Can Get Tough, And Sometimes We All Need A Little More Support. Whether It's Housing, Food Assistance, Mental Health Resources, Or Emergency Aid — Explore Trusted Organizations Ready To Help You Beyond Material Needs.
+                Life can get tough, and sometimes we all need a little more support. Whether it's housing, food assistance, mental health resources, or emergency aid — explore trusted organizations ready to help you beyond material needs.
               </p>
               
               <Button 
