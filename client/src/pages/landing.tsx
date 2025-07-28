@@ -496,28 +496,11 @@ export default function Landing() {
             }`}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">A Simple Process To Connect People In Need With Those Who Want To Help.</p>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">A simple process to connect people in need with those who want to help.</p>
             
 
 
-            {/* Quick Actions */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center max-w-lg mx-auto">
-              <Button 
-                variant="outline" 
-                className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
-                onClick={() => setLocation('/products')}
-              >
-                <Search className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
-                Browse Products
-              </Button>
-              <Button 
-                className="bg-navy text-white hover:bg-navy/90 rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
-                onClick={handleCreateList}
-              >
-                <Plus className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
-                {isAuthenticated ? "Create Needs List" : "Get Started"}
-              </Button>
-            </div>
+
           </div>
 
 
@@ -542,8 +525,8 @@ export default function Landing() {
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
                 <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create A Needs List</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build A Needs List Of Essential Items You Or Someone You Know Needs During A Difficult Time.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create a needs list</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build a needs list of essential items you or someone you know needs during a difficult time.</p>
             </div>
 
             {/* Step 2 - Share With Community */}
@@ -558,8 +541,8 @@ export default function Landing() {
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
                 <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share With Community</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Share Your Needs List With Friends, Family, And Your Social Network — And The Broader Community Who Want To Help.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share with community</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Share your needs list with friends, family, and your social network — and the broader community who want to help.</p>
             </div>
 
             {/* Step 3 - Receive Support */}
@@ -574,8 +557,8 @@ export default function Landing() {
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
                 <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive Support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Items Purchased From Your Needs List Are Sent Directly To You Or Your Loved Ones In Need.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive support</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Items purchased from your needs list are sent directly to you or your loved ones in need.</p>
             </div>
 
             {/* Step 4 - Track Fulfillment */}
@@ -590,9 +573,28 @@ export default function Landing() {
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
                 <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track Fulfillment</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily Track Which Items Have Been Fulfilled And Those Still Needed.</p>
+              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track fulfillment</h3>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily track which items have been fulfilled and those still needed.</p>
             </div>
+          </div>
+
+          {/* Quick Actions - Moved below explanation */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center max-w-lg mx-auto mt-12">
+            <Button 
+              className="bg-navy text-white hover:bg-navy/90 rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
+              onClick={handleCreateList}
+            >
+              <Plus className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
+              {isAuthenticated ? "Create Needs List" : "Get Started"}
+            </Button>
+            <Button 
+              variant="outline" 
+              className="bg-white text-coral border-2 border-coral hover:bg-coral hover:text-white rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
+              onClick={() => setLocation('/products')}
+            >
+              <Search className="mr-1 sm:mr-2 h-4 w-4 md:h-5 md:w-5" />
+              Browse Products
+            </Button>
           </div>
 
           {/* Platform Sustainability Alert */}
