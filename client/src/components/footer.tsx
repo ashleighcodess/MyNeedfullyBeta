@@ -104,7 +104,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm">
             <div className="text-white mb-4 md:mb-0">
-              © {currentYear} MyFullyNeedfully.Com All Rights Reserved.
+              © {currentYear} MyNeedfully.Com All Rights Reserved.
             </div>
             <div className="flex space-x-6">
               <Link href="/privacy" className="text-white hover:text-white/80 transition-colors">
