@@ -4152,14 +4152,13 @@ The MyNeedfully Team
       
       // Send reset email using SendGrid
       try {
-        const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${token}`;
         console.log(`Attempting to send password reset email to ${email}`);
-        console.log(`Reset link: ${resetLink}`);
+        console.log(`Reset token: ${token}`);
         
         const emailSent = await emailService.sendPasswordResetEmail(
           user.email,
           `${user.firstName} ${user.lastName}`.trim() || user.email,
-          resetLink
+          token
         );
         
         if (emailSent) {

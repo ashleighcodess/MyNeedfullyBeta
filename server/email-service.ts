@@ -264,10 +264,8 @@ class EmailService {
     userName: string,
     resetToken: string
   ): Promise<boolean> {
-    // Use localhost for development, production domain for production
-    const baseUrl = process.env.NODE_ENV === 'development' 
-      ? 'http://localhost:5000' 
-      : 'https://myneedfully.app';
+    // Always use production domain for password reset links
+    const baseUrl = 'https://myneedfully.app';
     const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
     const subject = `Reset Your MyNeedfully Password`;
     
