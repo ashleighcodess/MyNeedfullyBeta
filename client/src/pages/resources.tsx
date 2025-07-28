@@ -153,7 +153,7 @@ export default function Resources() {
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">Resources</h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-            Helpful Links And Contacts For Those In Need Of Support Beyond Material Items.
+            Helpful links and contacts for those in need of support beyond material items.
           </p>
         </div>
 
@@ -163,8 +163,8 @@ export default function Resources() {
             <div className="absolute top-4 right-4 w-8 h-8 bg-coral/20 rounded-full"></div>
             <h2 className="text-2xl font-bold text-navy mb-4">Finding Help</h2>
             <p className="text-gray-700 mb-6">
-              Beyond Needs Lists, There Are Many Organizations And Programs That Can Provide Assistance During Difficult Times. 
-              We've Compiled This Resource Directory To Help You Find Additional Support.
+              Beyond needs lists, there are many organizations and programs that can provide assistance during difficult times. 
+              We've compiled this resource directory to help you find additional support.
             </p>
           </CardContent>
         </Card>
@@ -205,7 +205,7 @@ export default function Resources() {
             <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-red-800 mb-2">Emergency Notice</h3>
             <p className="text-red-700">
-              If You Or Someone You Know Is In Immediate Danger, Please Call Emergency Services At{" "}
+              If you or someone you know is in immediate danger, please call emergency services at{" "}
               <span className="font-bold bg-red-100 px-2 py-1 rounded">911</span>.
             </p>
           </CardContent>
