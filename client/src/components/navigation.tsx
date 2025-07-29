@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -22,12 +24,36 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationCenterOpen, setNotificationCenterOpen] = useState(false);
   const [userKey, setUserKey] = useState(0); // Force re-render key
+  const { toast } = useToast();
 
   const { data: notifications } = useQuery<any[]>({
     queryKey: ['/api/notifications'],
     enabled: !!user,
     refetchInterval: 60000, // Refresh every 60 seconds instead of aggressive polling
     retry: false,
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('POST', '/api/notifications/mark-all-read'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      toast({
+        title: "All notifications marked as read",
+      });
+    },
+  });
+
+  const clearAllMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('POST', '/api/notifications/clear-all'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      toast({
+        title: "All notifications cleared",
+        description: "Your notification history has been cleared",
+      });
+    },
   });
 
   // Listen for user data updates to force re-render
@@ -435,13 +461,38 @@ export default function Navigation() {
       <Sheet open={notificationCenterOpen} onOpenChange={setNotificationCenterOpen}>
         <SheetContent side="right" className="w-full sm:w-96 overflow-y-auto">
           <SheetHeader>
-            <SheetTitle className="flex items-center">
-              <Bell className="mr-2 h-5 w-5" />
-              Notifications
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {unreadCount}
-                </Badge>
+            <SheetTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Bell className="mr-2 h-5 w-5" />
+                Notifications
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </div>
+              {notifications && notifications.length > 0 && (
+                <div className="flex gap-2">
+                  {unreadCount > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => markAllAsReadMutation.mutate()}
+                      disabled={markAllAsReadMutation.isPending}
+                    >
+                      Mark all read
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => clearAllMutation.mutate()}
+                    disabled={clearAllMutation.isPending}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Clear all
+                  </Button>
+                </div>
               )}
             </SheetTitle>
             <SheetDescription>

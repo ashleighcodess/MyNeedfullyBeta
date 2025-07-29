@@ -51,6 +51,18 @@ export default function MobileNavigation() {
     },
   });
 
+  const clearAllMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('POST', '/api/notifications/clear-all'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      toast({
+        title: "All notifications cleared",
+        description: "Your notification history has been cleared",
+      });
+    },
+  });
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'item_fulfilled':

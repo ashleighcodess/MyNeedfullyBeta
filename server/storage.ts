@@ -875,6 +875,12 @@ export class DatabaseStorage implements IStorage {
       .where(eq(notifications.userId, userId));
   }
 
+  async clearAllNotifications(userId: string): Promise<void> {
+    await db
+      .delete(notifications)
+      .where(eq(notifications.userId, userId));
+  }
+
   // Price Tracking operations
   async createPriceTracking(trackingData: InsertPriceTracking): Promise<PriceTracking> {
     const [tracking] = await db.insert(priceTracking).values(trackingData).returning();

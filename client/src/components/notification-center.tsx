@@ -63,6 +63,18 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
     },
   });
 
+  const clearAllMutation = useMutation({
+    mutationFn: () =>
+      apiRequest('POST', '/api/notifications/clear-all'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+      toast({
+        title: "All notifications cleared",
+        description: "Your notification history has been cleared",
+      });
+    },
+  });
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'item_fulfilled':
@@ -113,15 +125,28 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
                   </Badge>
                 )}
               </div>
-              {unreadCount > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => markAllAsReadMutation.mutate()}
-                  disabled={markAllAsReadMutation.isPending}
-                >
-                  Mark all read
-                </Button>
+              {notifications.length > 0 && (
+                <div className="flex gap-2">
+                  {unreadCount > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => markAllAsReadMutation.mutate()}
+                      disabled={markAllAsReadMutation.isPending}
+                    >
+                      Mark all read
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => clearAllMutation.mutate()}
+                    disabled={clearAllMutation.isPending}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Clear all
+                  </Button>
+                </div>
               )}
             </DialogTitle>
             <DialogDescription className="text-sm text-gray-600">

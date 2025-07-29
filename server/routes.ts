@@ -3678,6 +3678,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post('/api/notifications/clear-all', isAuthenticated, async (req: any, res) => {
+    try {
+      // Handle different authentication providers
+      const userId = req.user.claims?.sub || req.user.profile?.id;
+      await storage.clearAllNotifications(userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error clearing all notifications:", error);
+      res.status(500).json({ message: "Failed to clear all notifications" });
+    }
+  });
+
   // Thank You Notes endpoints
   app.get('/api/thank-you-notes', isAuthenticated, async (req: any, res) => {
     try {
