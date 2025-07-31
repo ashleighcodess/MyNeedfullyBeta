@@ -436,62 +436,38 @@ export default function Landing() {
         <div className="absolute bottom-0 left-0 right-0 h-20 md:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 lg:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            {/* Left side - Text content */}
-            <div className="text-left lg:pr-8">
-              {/* MyNeedfully Logo */}
-              <div className="mb-4 sm:mb-6">
-                <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 md:h-10 w-auto" />
-              </div>
-              
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
-                A Registry for Hardships,
-                <span className="text-coral block"> Relief and Recovery</span>
-              </h1>
-              
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-800 leading-relaxed hero-text-shadow font-medium font-just-sans mb-6 sm:mb-8">
-                Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
-              </p>
-              
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Button 
-                  className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 py-3 text-base shadow-lg font-semibold"
-                  onClick={handleCreateList}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create a Needs List
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 py-3 text-base shadow-lg font-semibold"
-                  onClick={() => setLocation('/browse')}
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  Search for a Needs List
-                </Button>
-              </div>
-            </div>
-            
-            {/* Right side - Visual space for balance */}
-            <div className="hidden lg:block">
-              <div className="relative">
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-coral rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Heart className="text-white h-8 w-8" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-navy mb-2 font-just-sans">
-                      Join Our Community
-                    </h3>
-                    <p className="text-gray-700 text-sm leading-relaxed">
-                      Thousands of families are using MyNeedfully to rebuild after disasters and hardships.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 md:py-24 lg:py-32">
+          {/* MyNeedfully Logo */}
+          <div className="mb-4 sm:mb-6">
+            <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 md:h-10 w-auto mx-auto" />
+          </div>
+          
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
+            A Registry for Hardships,
+            <span className="text-coral block sm:inline"> Relief and Recovery</span>
+          </h1>
+          
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans mb-6 sm:mb-8">
+            Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
+          </p>
+          
+          {/* CTA Buttons under tagline */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto">
+            <Button 
+              className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
+              onClick={handleCreateList}
+            >
+              <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              Create a Needs List
+            </Button>
+            <Button 
+              variant="outline" 
+              className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
+              onClick={() => setLocation('/browse')}
+            >
+              <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              Search for a Needs List
+            </Button>
           </div>
         </div>
         
