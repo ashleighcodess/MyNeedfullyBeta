@@ -392,11 +392,15 @@ export default function AboutUs() {
           {/* Story Content */}
           <div className="max-w-4xl mx-auto space-y-8 animate-slide-in-right">
             <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
-              MyNeedfully was born from personal experience. After a devastating house fire, we were overwhelmed by the kindness of friends, family, and co-workers who wanted to help. But we quickly realized how difficult it was to organize donations, communicate our needs, and navigate the recovery process. Around the same time, we faced another tragedy in the loss of a beloved family member to pancreatic cancer. Once again, our community stepped up, but the process of receiving support felt scattered and overwhelming. We knew there had to be a better way. We created MyNeedfully to simplify giving, connect communities, and provide a dignified way for people in crisis to ask for and receive exactly what they need when they need it most.
+              After a devastating house fire, the founders Jaclyn Rosenberg and her husband Matt were overwhelmed by the outpouring of support from friends, family, and coworkers. People wanted to help, and their generosity was deeply appreciated.
             </p>
             
             <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
-              This platform makes it easy for individuals to create a list of essential and specialty needs, and for others to directly fulfill these needs. By connecting people in need with those who want to help, we enable communities to provide meaningful support in an efficient manner.
+              But in practice, organizing support became complicated. Jaclyn and Matt didn't feel comfortable asking for cash, and without a structured way to communicate their everyday needs, especially for their one-year-old, support ended up being scattered, duplicated, or delayed. They received too many of some things, not enough of others, and lacked a simple way to keep track.
+            </p>
+            
+            <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
+              That's why they created MyNeedfully: to make disaster recovery more manageable, personal, and intentional. With a personalized needs list, survivors can clearly communicate what they need without awkward asks and unnecessary waste and receive real-time, practical support that truly makes a difference.
             </p>
             
             <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
