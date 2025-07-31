@@ -442,9 +442,13 @@ export default function Landing() {
             <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 md:h-10 w-auto mx-auto" />
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
             Registry for Disaster and Crisis Recovery
           </h1>
+          
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-700 mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
+            Organize Community Support with a Custom List of Needs
+          </h2>
           
           <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans mb-6 sm:mb-8">
             Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
