@@ -531,7 +531,7 @@ export default function Landing() {
                 <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create a needs list</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build a needs list of essential items you or someone you know needs during a difficult time.</p>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build your own disaster recovery registry with essential items like clothes, toiletries, baby supplies, furniture, or gift cards after a fire, flood, or other crisis.</p>
             </div>
 
             {/* Step 2 - Share With Community */}
