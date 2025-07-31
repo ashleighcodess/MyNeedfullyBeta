@@ -461,7 +461,7 @@ export default function Landing() {
               onClick={handleCreateList}
             >
               <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Create a Needs List
+              Create a Registry
             </Button>
             <Button 
               variant="outline" 
