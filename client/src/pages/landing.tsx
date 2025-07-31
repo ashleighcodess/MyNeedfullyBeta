@@ -499,7 +499,7 @@ export default function Landing() {
                 : 'opacity-0 transform translate-y-8'
             }`}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4 font-just-sans">How MyNeedfully Works</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4 font-just-sans">How Our Disaster Recovery Registry Works</h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">A simple process to connect people in need with those who want to help.</p>
             
 
