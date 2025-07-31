@@ -234,7 +234,7 @@ export default function AboutUs() {
           <div className="absolute inset-0 bg-white/90"></div>
           <div className="relative z-10 py-12 px-8">
             <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">About MyNeedfully</h1>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-4">A Disaster Recovery Registry That Connects People in Need with Those Ready to Help</p>
+            <p className="text-gray-700 max-w-3xl mx-auto mb-4 text-[18px]">A Disaster Recovery Registry That Connects People in Need with Those Ready to Help</p>
           </div>
         </div>
 
