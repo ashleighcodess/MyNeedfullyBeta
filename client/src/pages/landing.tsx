@@ -564,7 +564,7 @@ export default function Landing() {
                 <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Items purchased from your needs list are sent directly to you or your loved ones in need.</p>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Supporters purchase items directly from your list through trusted online retailers. Everything ships straight to your temporary housing, a family member's home, or wherever you're staying.</p>
             </div>
 
             {/* Step 4 - Track Fulfillment */}
@@ -580,7 +580,7 @@ export default function Landing() {
                 <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track fulfillment</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily track which items have been fulfilled and those still needed.</p>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">See which items have been purchased and what's still needed. Update your list as your recovery progresses.</p>
             </div>
           </div>
 
