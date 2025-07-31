@@ -443,8 +443,7 @@ export default function Landing() {
           </div>
           
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
-            A Registry for Hardships,
-            <span className="text-coral block sm:inline"> Relief and Recovery</span>
+            Registry for Disaster and Crisis Recovery
           </h1>
           
           <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans mb-6 sm:mb-8">
