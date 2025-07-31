@@ -614,7 +614,7 @@ export default function Landing() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-navy font-just-sans">
-                    <span className="font-semibold">Transparency Note:</span> Product links on MyNeedfully are affiliate links. We may earn a small commission when items are purchased at no extra cost to you. As an Amazon Associate, we earn from qualifying purchases.
+                    <span className="font-semibold">Transparency Note:</span> MyNeedfully is free to use. Some product links on the site are affiliate links, which means we may earn a small commission—at no extra cost to you—when items are purchased through a needs list. As an Amazon Associate, we earn from qualifying purchases. This helps us keep MyNeedfully free for everyone.
                   </p>
                 </div>
               </div>
