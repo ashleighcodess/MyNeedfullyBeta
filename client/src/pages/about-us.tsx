@@ -249,35 +249,6 @@ export default function AboutUs() {
               <h2 className="text-3xl md:text-4xl text-navy mb-8 animate-slide-up font-just-sans leading-tight">
                 Our <span className="font-bold">vision</span> is a world where no one faces their crisis alone, where <span className="font-bold">communities</span> meet individual needs with compassion, and recovery is eased by direct and meaningful <span className="font-bold">support.</span>
               </h2>
-              
-              {/* Ready to Help Section */}
-              <div className="mt-12 animate-fade-in-up">
-                <div className="text-coral text-sm font-bold tracking-widest uppercase mb-6">
-                  READY TO HELP
-                </div>
-                
-                <div className="space-y-6 text-lg text-gray-700 font-just-sans leading-relaxed">
-                  <p>
-                    Housing disasters like fires, floods, hurricanes, and tornadoes are traumatic and overwhelming. In the aftermath, survivors face immense loss and the exhausting challenge of recovery. They're often left trying to organize support while navigating displacement, emotional stress, and rebuilding their lives.
-                  </p>
-                  
-                  <p>
-                    At the same time, communities want to help, but they often don't know how. Donations can become scattered, duplicated, or mistimed. The intention is generous, but the impact isn't always aligned with what's actually needed.
-                  </p>
-                  
-                  <p className="font-semibold text-navy">
-                    That's where MyNeedfully comes in.
-                  </p>
-                  
-                  <p>
-                    MyNeedfully simplifies the recovery process. We provide a free, easy-to-use platform where people affected by disasters can create and share a personalized needs list just like a gift registry. Whether it's clothing, baby supplies, toiletries, furniture, or gift cards, survivors can communicate exactly what they need, and supporters can send help that's timely, specific, and meaningful.
-                  </p>
-                  
-                  <p>
-                    The platform is free for users. MyNeedfully is a for-profit company that earns revenue through affiliate links with trusted e-commerce retailers. That means we can remain accessible to everyone without relying on donations or charging fees.
-                  </p>
-                </div>
-              </div>
             </div>
             
             <div className="flex justify-center lg:justify-end animate-slide-in-right" data-image-section>
@@ -352,6 +323,47 @@ export default function AboutUs() {
             </Card>
           </div>
         </div>
+
+        {/* Ready to Help Section - Full Width */}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <div className="text-coral text-sm font-bold tracking-widest uppercase mb-6">
+                READY TO HELP
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl text-navy mb-8 font-just-sans leading-tight">
+                How MyNeedfully <span className="font-bold">Simplifies</span> Disaster Recovery
+              </h2>
+            </div>
+            
+            <div className="max-w-4xl mx-auto space-y-8 text-lg text-gray-700 font-just-sans leading-relaxed">
+              <p>
+                Housing disasters like fires, floods, hurricanes, and tornadoes are traumatic and overwhelming. In the aftermath, survivors face immense loss and the exhausting challenge of recovery. They're often left trying to organize support while navigating displacement, emotional stress, and rebuilding their lives.
+              </p>
+              
+              <p>
+                At the same time, communities want to help, but they often don't know how. Donations can become scattered, duplicated, or mistimed. The intention is generous, but the impact isn't always aligned with what's actually needed.
+              </p>
+              
+              <div className="text-center py-8">
+                <p className="text-2xl font-semibold text-navy">
+                  That's where MyNeedfully comes in.
+                </p>
+              </div>
+              
+              <p>
+                MyNeedfully simplifies the recovery process. We provide a free, easy-to-use platform where people affected by disasters can create and share a personalized needs list just like a gift registry. Whether it's clothing, baby supplies, toiletries, furniture, or gift cards, survivors can communicate exactly what they need, and supporters can send help that's timely, specific, and meaningful.
+              </p>
+              
+              <div className="bg-white p-8 rounded-xl shadow-lg border-l-4 border-coral">
+                <p className="text-gray-700 mb-0">
+                  The platform is free for users. MyNeedfully is a for-profit company that earns revenue through affiliate links with trusted e-commerce retailers. That means we can remain accessible to everyone without relying on donations or charging fees.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Personal Story Section */}
         <div className="mb-12 animate-fade-in">
