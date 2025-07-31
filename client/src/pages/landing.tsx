@@ -459,6 +459,7 @@ export default function Landing() {
             <Button 
               className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
               onClick={handleCreateList}
+              data-metadata="registry"
             >
               <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Create a Needs List
