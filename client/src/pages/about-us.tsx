@@ -369,7 +369,7 @@ export default function AboutUs() {
         <div className="mb-12 animate-fade-in">
           {/* Header and Image */}
           <div className="text-center mb-12">
-            <div className="text-coral text-sm font-bold tracking-widest uppercase mb-4">
+            <div className="text-coral text-sm font-bold tracking-widest uppercase mb-4 pt-5">
               OUR STORY
             </div>
             
