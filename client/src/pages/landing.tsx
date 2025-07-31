@@ -451,7 +451,7 @@ export default function Landing() {
           </h2>
           
           <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans mb-6 sm:mb-8">
-            Create and share a needs list to help yourself, loved ones, or community members get support during tough times.
+            A Needs List is your personal recovery registry — a simple, shareable way to request help after a fire, flood, or crisis. Just like a baby or wedding registry but designed for relief and recovery.
           </p>
           
           {/* CTA Buttons under tagline */}
