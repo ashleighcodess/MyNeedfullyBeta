@@ -636,9 +636,9 @@ export default function Landing() {
               <h2 className="text-2xl md:text-[32px] font-bold text-navy mb-6">
                 Our <span className="text-coral">mission</span> is to simplify disaster recovery<br />
                 by helping people affected by fires, floods,<br />
-                and other emergencies receive exactly<br />
-                what they need while empowering<br />
-                communities to provide <span className="text-coral">meaningful, timely support.</span>
+                and other emergencies receive exactly what they need<br />
+                while empowering communities to provide<br />
+                <span className="text-coral">meaningful, timely support.</span>
               </h2>
               
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">MyNeedfully was born from personal experience.</p>
