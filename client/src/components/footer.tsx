@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "wouter";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import logoPath from "@assets/Logo_1_1751586675899.png";
+import logoPath from "@assets/MyNeedfully_1754922279088.png";
 
 export default function Footer() {
   const { isAuthenticated } = useAuth();
