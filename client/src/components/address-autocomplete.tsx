@@ -1,13 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import Autocomplete from "react-google-autocomplete";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
-
-interface AddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
-}
+import { MapPin } from "lucide-react";
 
 interface AddressAutocompleteProps {
   value?: string;
@@ -33,95 +26,138 @@ export default function AddressAutocomplete({
   className = "",
 }: AddressAutocompleteProps) {
   const [inputValue, setInputValue] = useState(value || "");
-
-  // Fetch Google Maps API key
-  const { data: config } = useQuery({
-    queryKey: ['/api/config/google-maps-key'],
-    retry: false,
-  });
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setInputValue(value || "");
   }, [value]);
 
-  const parseAddressComponents = (addressComponents: AddressComponent[]) => {
-    const addressData = {
-      fullAddress: "",
-      streetNumber: "",
-      route: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "",
-    };
+  // Search addresses using OpenStreetMap Nominatim API
+  const searchAddresses = async (query: string) => {
+    if (query.length < 3) {
+      setSuggestions([]);
+      setShowDropdown(false);
+      return;
+    }
 
-    addressComponents.forEach((component) => {
-      const types = component.types;
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&countrycodes=us&q=${encodeURIComponent(query)}`
+      );
+      const data = await response.json();
       
-      if (types.includes("street_number")) {
-        addressData.streetNumber = component.long_name;
-      } else if (types.includes("route")) {
-        addressData.route = component.long_name;
-      } else if (types.includes("locality")) {
-        addressData.city = component.long_name;
-      } else if (types.includes("administrative_area_level_1")) {
-        addressData.state = component.short_name;
-      } else if (types.includes("postal_code")) {
-        addressData.zipCode = component.long_name;
-      } else if (types.includes("country")) {
-        addressData.country = component.short_name;
-      }
-    });
+      const addressSuggestions = data
+        .filter((item: any) => item.display_name && item.address)
+        .map((item: any) => item.display_name)
+        .slice(0, 6);
 
-    return addressData;
-  };
-
-  const handlePlaceSelected = (place: any) => {
-    if (place.formatted_address) {
-      const addressData = parseAddressComponents(place.address_components || []);
-      addressData.fullAddress = place.formatted_address;
-      
-      setInputValue(place.formatted_address);
-      onChange?.(place.formatted_address);
-      onAddressSelect?.(addressData);
+      setSuggestions(addressSuggestions);
+      setShowDropdown(addressSuggestions.length > 0);
+    } catch (error) {
+      console.warn('Address search failed:', error);
+      setSuggestions([]);
+      setShowDropdown(false);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Parse address from Nominatim response
+  const parseAddressFromString = (fullAddress: string) => {
+    // Basic parsing - this could be enhanced
+    const parts = fullAddress.split(', ');
+    
+    return {
+      fullAddress,
+      streetNumber: "", // Would need more sophisticated parsing
+      route: parts[0] || "",
+      city: parts[parts.length - 4] || "",
+      state: parts[parts.length - 3] || "",
+      zipCode: parts[parts.length - 2] || "",
+      country: "US",
+    };
+  };
+
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputValue && inputValue.length > 2) {
+        searchAddresses(inputValue);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     onChange?.(newValue);
+    
+    if (newValue.length < 3) {
+      setShowDropdown(false);
+    }
   };
 
-  // If Google Maps API key is not available, fall back to regular input
-  if (!config?.apiKey) {
-    return (
-      <Input
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder={placeholder}
-        className={className}
-      />
-    );
-  }
+  const handleSuggestionClick = (suggestion: string) => {
+    setInputValue(suggestion);
+    onChange?.(suggestion);
+    setShowDropdown(false);
+    
+    // Parse and pass address data if callback provided
+    if (onAddressSelect) {
+      const addressData = parseAddressFromString(suggestion);
+      onAddressSelect(addressData);
+    }
+  };
 
   return (
-    <Autocomplete
-      apiKey={config.apiKey}
-      onPlaceSelected={handlePlaceSelected}
-      onChange={handleInputChange}
-      value={inputValue}
-      options={{
-        types: ["address"],
-        componentRestrictions: { country: "us" },
-        fields: ["address_components", "formatted_address", "geometry"],
-      }}
-      placeholder={placeholder}
-      className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
-      style={{
-        width: "100%",
-        fontSize: "14px",
-      }}
-    />
+    <div className="relative">
+      <div className="relative">
+        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Input
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          className={`pl-10 ${className}`}
+          onFocus={() => {
+            if (suggestions.length > 0) {
+              setShowDropdown(true);
+            }
+          }}
+          onBlur={() => {
+            // Delay hiding dropdown to allow clicks
+            setTimeout(() => setShowDropdown(false), 200);
+          }}
+        />
+        {loading && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-coral"></div>
+          </div>
+        )}
+      </div>
+      
+      {/* Address Suggestions Dropdown */}
+      {showDropdown && suggestions.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+          {suggestions.map((suggestion, index) => (
+            <button
+              key={index}
+              type="button"
+              className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-md last:rounded-b-md"
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              <div className="flex items-center">
+                <MapPin className="h-3 w-3 text-gray-400 mr-2 flex-shrink-0" />
+                <span className="text-sm truncate">{suggestion}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
