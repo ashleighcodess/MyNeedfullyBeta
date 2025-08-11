@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Mail, User, Lock, Heart, ArrowRight } from "lucide-react";
-import logoIcon from "@assets/Logo_5_1751660244282.png";
+import logoIcon from "@assets/MyNeedfully_1754922279088.png";
 
 // Form schemas
 const loginSchema = z.object({
@@ -219,9 +219,8 @@ export default function AuthPage() {
             <img 
               src={logoIcon} 
               alt="MyNeedfully Logo" 
-              className="w-8 h-8 mr-2"
+              className="h-10 w-auto"
             />
-            <h1 className="text-2xl font-bold text-gray-900">MyNeedfully</h1>
           </div>
           <p className="text-gray-600">Connect hearts, fulfill needs</p>
         </div>
