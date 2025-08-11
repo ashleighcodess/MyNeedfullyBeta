@@ -1266,7 +1266,7 @@ export default function Profile() {
                     w.status === 'completed' || 
                     w.status === 'cancelled' || 
                     w.status === 'paused' ||
-                    w.isPublic === false
+                    w.isPublic === false === false
                   ) || [];
 
                   if (archivedWishlists.length === 0) {
