@@ -450,10 +450,8 @@ export default function Landing() {
             Organize Community Support with a Custom List of Needs
           </h2>
           
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans mb-6 sm:mb-8">A Needs List is your personal recovery registry — a simple, shareable way to request help after a fire, flood, or crisis. </p>
-          
           {/* CTA Buttons under tagline */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
             <Button 
               className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
               onClick={handleCreateList}
@@ -471,6 +469,8 @@ export default function Landing() {
               Search for a Needs List
             </Button>
           </div>
+
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans">A Needs List is your personal recovery registry — a simple, shareable way to request help after a fire, flood, or crisis. </p>
         </div>
         
         {/* Seamless gradient transition overlay */}
