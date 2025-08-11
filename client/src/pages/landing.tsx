@@ -67,7 +67,7 @@ const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
     <path d="M12 13.5c-1.5-1.5-4-1.5-4 0.5s2.5 3.5 4 5c1.5-1.5 4-4 4-5s-2.5-2-4-0.5z" fill="currentColor" opacity="1" />
   </svg>
 );
-import logoPath from "@assets/Logo_1_1751586675899.png";
+import logoPath from "@assets/MyNeedfully_1754922279088.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
