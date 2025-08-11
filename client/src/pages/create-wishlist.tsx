@@ -232,7 +232,7 @@ export default function CreateNeedsList() {
   };
 
   const nextStep = async () => {
-    const isValid = await form.trigger(step === 1 ? ["title", "description", "story", "category", "urgencyLevel", "location"] : ["shippingAddress"]);
+    const isValid = await form.trigger(step === 1 ? ["title", "story", "category", "urgencyLevel", "location"] : ["shippingAddress"]);
     if (isValid) {
       setStep(step + 1);
     }
@@ -459,19 +459,37 @@ export default function CreateNeedsList() {
                   <FormField
                     control={form.control}
                     name="story"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Your Story *</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Share more details about your situation. Being open and honest helps build trust with potential donors..."
-                            className="min-h-[150px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const currentLength = field.value?.length || 0;
+                      const minLength = 50;
+                      const maxLength = 2000;
+                      const isValid = currentLength >= minLength;
+                      
+                      return (
+                        <FormItem>
+                          <FormLabel>Your Story *</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Share more details about your situation. Being open and honest helps build trust with potential donors..."
+                              className="min-h-[150px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <div className="flex justify-between items-center text-sm mt-1">
+                            <div className={`${isValid ? 'text-green-600' : 'text-amber-600'}`}>
+                              {currentLength < minLength 
+                                ? `${minLength - currentLength} more characters needed`
+                                : `✓ Minimum requirement met`
+                              }
+                            </div>
+                            <div className={`${currentLength > maxLength ? 'text-red-600' : 'text-gray-500'}`}>
+                              {currentLength}/{maxLength}
+                            </div>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
                   />
 
                   {/* Image Upload Section */}
