@@ -102,6 +102,9 @@ export default function CreateNeedsList() {
   const [step, setStep] = useState(1);
   const [storyImages, setStoryImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const form = useForm<CreateNeedsListForm>({
     resolver: zodResolver(createNeedsListSchema),
@@ -230,6 +233,57 @@ export default function CreateNeedsList() {
   const onSubmit = (data: CreateNeedsListForm) => {
     createNeedsListMutation.mutate(data);
   };
+
+  // Location search function with debouncing
+  const searchLocations = async (query: string) => {
+    if (query.length < 2) {
+      setLocationSuggestions([]);
+      setShowLocationDropdown(false);
+      return;
+    }
+
+    setLocationLoading(true);
+    try {
+      // Use OpenStreetMap Nominatim API for free geocoding
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=8&countrycodes=us&q=${encodeURIComponent(query + ', United States')}`
+      );
+      const data = await response.json();
+      
+      const suggestions = data
+        .filter((item: any) => item.address?.city || item.address?.town || item.address?.village)
+        .map((item: any) => {
+          const city = item.address?.city || item.address?.town || item.address?.village;
+          const state = item.address?.state;
+          return state ? `${city}, ${state}` : city;
+        })
+        .filter((location: string, index: number, self: string[]) => 
+          self.indexOf(location) === index // Remove duplicates
+        )
+        .slice(0, 6); // Limit to 6 suggestions
+
+      setLocationSuggestions(suggestions);
+      setShowLocationDropdown(suggestions.length > 0);
+    } catch (error) {
+      console.warn('Location search failed:', error);
+      setLocationSuggestions([]);
+      setShowLocationDropdown(false);
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const locationValue = form.watch('location');
+      if (locationValue && locationValue.length > 1) {
+        searchLocations(locationValue);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [form.watch('location')]);
 
   const nextStep = async () => {
     const isValid = await form.trigger(step === 1 ? ["title", "story", "category", "urgencyLevel", "location"] : ["shippingAddress"]);
@@ -580,7 +634,7 @@ export default function CreateNeedsList() {
                     )}
                   />
 
-                  {/* Location */}
+                  {/* Location with Autofill */}
                   <FormField
                     control={form.control}
                     name="location"
@@ -592,11 +646,54 @@ export default function CreateNeedsList() {
                             <div className="relative">
                               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                               <Input 
-                                placeholder="e.g., Austin, TX or ZIP code"
+                                placeholder="Start typing your city or state..."
                                 {...field}
                                 className="pl-10"
+                                onChange={(e) => {
+                                  field.onChange(e.target.value);
+                                  if (e.target.value.length < 2) {
+                                    setShowLocationDropdown(false);
+                                  }
+                                }}
+                                onFocus={() => {
+                                  if (locationSuggestions.length > 0) {
+                                    setShowLocationDropdown(true);
+                                  }
+                                }}
+                                onBlur={() => {
+                                  // Delay hiding dropdown to allow clicks
+                                  setTimeout(() => setShowLocationDropdown(false), 200);
+                                }}
                               />
+                              {locationLoading && (
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-coral"></div>
+                                </div>
+                              )}
+                              
+                              {/* Location Suggestions Dropdown */}
+                              {showLocationDropdown && locationSuggestions.length > 0 && (
+                                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                  {locationSuggestions.map((suggestion, index) => (
+                                    <button
+                                      key={index}
+                                      type="button"
+                                      className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-md last:rounded-b-md"
+                                      onClick={() => {
+                                        field.onChange(suggestion);
+                                        setShowLocationDropdown(false);
+                                      }}
+                                    >
+                                      <div className="flex items-center">
+                                        <MapPin className="h-3 w-3 text-gray-400 mr-2" />
+                                        <span className="text-sm">{suggestion}</span>
+                                      </div>
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
                             </div>
+                            
                             <div className="flex items-center gap-2">
                               <Button
                                 type="button"
@@ -607,7 +704,6 @@ export default function CreateNeedsList() {
                                     navigator.geolocation.getCurrentPosition(
                                       async (position) => {
                                         try {
-                                          // Use a geocoding service to get location from coordinates
                                           const response = await fetch(
                                             `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`
                                           );
@@ -618,6 +714,7 @@ export default function CreateNeedsList() {
                                           } else if (data.locality && data.principalSubdivision) {
                                             field.onChange(`${data.locality}, ${data.principalSubdivision}`);
                                           }
+                                          setShowLocationDropdown(false);
                                         } catch (error) {
                                           console.warn('Reverse geocoding failed:', error);
                                         }
@@ -644,7 +741,10 @@ export default function CreateNeedsList() {
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => field.onChange(location)}
+                              onClick={() => {
+                                field.onChange(location);
+                                setShowLocationDropdown(false);
+                              }}
                               className="text-xs"
                             >
                               {location}
