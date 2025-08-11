@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription, SheetHeader } from "@/components/ui/sheet";
 import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, BarChart3, List, Shield } from "lucide-react";
-import logoPath from "@assets/Logo_1 copy_1751749982849.png";
+import logoPath from "@assets/MyNeedfully_1754922279088.png";
 import NotificationCenter from "./notification-center";
 
 export default function Navigation() {

@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import logoImage from "@assets/Logo_7_1752018484130.png";
+import logoImage from "@assets/MyNeedfully_1754922279088.png";
 import { 
   Plus, 
   Heart, 

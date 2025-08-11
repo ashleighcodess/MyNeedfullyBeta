@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import logo5 from "@assets/Logo_5_1751660244282.png";
-import logo6 from "@assets/Logo_6_1751660244283.png";
+import logo5 from "@assets/MyNeedfully_1754922279088.png";
+import logo6 from "@assets/MyNeedfully_1754922279088.png";
 
 interface BrandLoaderProps {
   size?: "sm" | "md" | "lg" | "xl";
