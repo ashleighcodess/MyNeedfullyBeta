@@ -472,27 +472,15 @@ export default function Navigation() {
                 )}
               </div>
               {notifications && notifications.length > 0 && (
-                <div className="flex gap-2">
-                  {unreadCount > 0 && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => markAllAsReadMutation.mutate()}
-                      disabled={markAllAsReadMutation.isPending}
-                    >
-                      Mark all read
-                    </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => clearAllMutation.mutate()}
-                    disabled={clearAllMutation.isPending}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    Clear all
-                  </Button>
-                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => clearAllMutation.mutate()}
+                  disabled={clearAllMutation.isPending}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  Clear all
+                </Button>
               )}
             </SheetTitle>
             <SheetDescription>

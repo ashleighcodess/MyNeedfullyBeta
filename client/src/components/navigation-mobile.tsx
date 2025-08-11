@@ -408,16 +408,7 @@ export default function MobileNavigation() {
                 </Badge>
               )}
             </div>
-            {unreadCount > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => markAllAsReadMutation.mutate()}
-                disabled={markAllAsReadMutation.isPending}
-              >
-                Mark all read
-              </Button>
-            )}
+            
           </div>
           
           <div className="py-4">
