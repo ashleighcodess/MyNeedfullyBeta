@@ -86,13 +86,53 @@ export default function AddressAutocomplete({
       streetAddress = parts[0];
     }
     
+    // Enhanced city parsing - Nominatim uses various field names for cities
+    let city = "";
+    let state = "";
+    let zipCode = "";
+    
+    if (nominatimData?.address) {
+      const addr = nominatimData.address;
+      city = addr.city || addr.town || addr.village || addr.municipality || 
+             addr.hamlet || addr.suburb || addr.neighbourhood || "";
+      state = addr.state || addr.province || addr.region || "";
+      zipCode = addr.postcode || "";
+    }
+    
+    // Fallback: parse from display name if address object doesn't have city
+    if (!city && fullAddress) {
+      const addressParts = fullAddress.split(', ');
+      // For US addresses, format is usually: Street, City, State ZIP
+      if (addressParts.length >= 3) {
+        // Find the part that looks like a city (before state)
+        for (let i = 1; i < addressParts.length - 1; i++) {
+          const part = addressParts[i].trim();
+          // Skip if it looks like a street (contains numbers) or state abbreviation
+          if (!part.match(/^\d/) && part.length > 2 && !part.match(/^[A-Z]{2}$/)) {
+            city = part;
+            break;
+          }
+        }
+        
+        // Extract state and zip from last part (e.g., "TX 77070")
+        const lastPart = addressParts[addressParts.length - 1];
+        const stateZipMatch = lastPart.match(/([A-Za-z\s]+)\s*(\d+)/);
+        if (stateZipMatch && !state) {
+          state = stateZipMatch[1].trim();
+        }
+        if (stateZipMatch && !zipCode) {
+          zipCode = stateZipMatch[2];
+        }
+      }
+    }
+
     return {
       fullAddress: streetAddress, // Only street address, not full address
       streetNumber: nominatimData?.address?.house_number || "",
       route: nominatimData?.address?.road || streetAddress,
-      city: nominatimData?.address?.city || nominatimData?.address?.town || nominatimData?.address?.village || "",
-      state: nominatimData?.address?.state || "",
-      zipCode: nominatimData?.address?.postcode || "",
+      city: city,
+      state: state,
+      zipCode: zipCode,
       country: "US",
     };
   };
