@@ -26,7 +26,7 @@ export default function AddressAutocomplete({
   className = "",
 }: AddressAutocompleteProps) {
   const [inputValue, setInputValue] = useState(value || "");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<{display: string, data: any}[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -51,7 +51,10 @@ export default function AddressAutocomplete({
       
       const addressSuggestions = data
         .filter((item: any) => item.display_name && item.address)
-        .map((item: any) => item.display_name)
+        .map((item: any) => ({
+          display: item.display_name,
+          data: item
+        }))
         .slice(0, 6);
 
       setSuggestions(addressSuggestions);
@@ -65,18 +68,31 @@ export default function AddressAutocomplete({
     }
   };
 
-  // Parse address from Nominatim response
-  const parseAddressFromString = (fullAddress: string) => {
-    // Basic parsing - this could be enhanced
+  // Parse address from Nominatim response to extract street address only
+  const parseAddressFromString = (fullAddress: string, nominatimData?: any) => {
     const parts = fullAddress.split(', ');
     
+    // Extract just the street address (house number + street name) for Address Line 1
+    let streetAddress = "";
+    if (nominatimData?.address) {
+      const addr = nominatimData.address;
+      const houseNumber = addr.house_number || "";
+      const streetName = addr.road || "";
+      streetAddress = `${houseNumber} ${streetName}`.trim();
+    }
+    
+    // If we couldn't parse from nominatim data, use first part
+    if (!streetAddress && parts.length > 0) {
+      streetAddress = parts[0];
+    }
+    
     return {
-      fullAddress,
-      streetNumber: "", // Would need more sophisticated parsing
-      route: parts[0] || "",
-      city: parts[parts.length - 4] || "",
-      state: parts[parts.length - 3] || "",
-      zipCode: parts[parts.length - 2] || "",
+      fullAddress: streetAddress, // Only street address, not full address
+      streetNumber: nominatimData?.address?.house_number || "",
+      route: nominatimData?.address?.road || streetAddress,
+      city: nominatimData?.address?.city || nominatimData?.address?.town || nominatimData?.address?.village || "",
+      state: nominatimData?.address?.state || "",
+      zipCode: nominatimData?.address?.postcode || "",
       country: "US",
     };
   };
@@ -102,14 +118,16 @@ export default function AddressAutocomplete({
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setInputValue(suggestion);
-    onChange?.(suggestion);
+  const handleSuggestionClick = (suggestion: {display: string, data: any}) => {
+    // Parse the address to get just the street address
+    const addressData = parseAddressFromString(suggestion.display, suggestion.data);
+    
+    setInputValue(addressData.fullAddress);
+    onChange?.(addressData.fullAddress);
     setShowDropdown(false);
     
-    // Parse and pass address data if callback provided
+    // Pass parsed address data to callback
     if (onAddressSelect) {
-      const addressData = parseAddressFromString(suggestion);
       onAddressSelect(addressData);
     }
   };
@@ -152,7 +170,7 @@ export default function AddressAutocomplete({
             >
               <div className="flex items-center">
                 <MapPin className="h-3 w-3 text-gray-400 mr-2 flex-shrink-0" />
-                <span className="text-sm truncate">{suggestion}</span>
+                <span className="text-sm truncate">{suggestion.display}</span>
               </div>
             </button>
           ))}
