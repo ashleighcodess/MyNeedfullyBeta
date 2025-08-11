@@ -465,48 +465,59 @@ export default function CreateNeedsList() {
                   <FormField
                     control={form.control}
                     name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Needs List Title *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="e.g., Help Our Family After House Fire"
-                            {...field}
-                            className="text-lg"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const currentLength = field.value?.length || 0;
+                      const isValid = currentLength >= 5;
+                      const fieldError = form.formState.errors.title;
+                      
+                      return (
+                        <FormItem>
+                          <FormLabel>Needs List Title *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., Help Our Family After House Fire"
+                              {...field}
+                              className="text-lg"
+                            />
+                          </FormControl>
+                          {fieldError && !isValid && <FormMessage />}
+                        </FormItem>
+                      );
+                    }}
                   />
 
                   {/* Category */}
                   <FormField
                     control={form.control}
                     name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select category" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {CATEGORIES.map((category) => (
-                              <SelectItem key={category.value} value={category.value}>
-                                <div className="flex items-center space-x-2">
-                                  <i className={`${category.icon} text-coral`}></i>
-                                  <span>{category.label}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const isValid = !!field.value;
+                      const fieldError = form.formState.errors.category;
+                      
+                      return (
+                        <FormItem>
+                          <FormLabel>Category *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {CATEGORIES.map((category) => (
+                                <SelectItem key={category.value} value={category.value}>
+                                  <div className="flex items-center space-x-2">
+                                    <i className={`${category.icon} text-coral`}></i>
+                                    <span>{category.label}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {fieldError && !isValid && <FormMessage />}
+                        </FormItem>
+                      );
+                    }}
                   />
 
                   {/* Story */}
@@ -540,7 +551,7 @@ export default function CreateNeedsList() {
                               {currentLength}/{maxLength}
                             </div>
                           </div>
-                          <FormMessage />
+                          {form.formState.errors.story && !isValid && <FormMessage />}
                         </FormItem>
                       );
                     }}
