@@ -1807,6 +1807,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         needsListData.category = 'other';
       }
       
+      // Set description from story if description is not provided
+      if (!needsListData.description && needsListData.story) {
+        needsListData.description = needsListData.story.substring(0, 200) + (needsListData.story.length > 200 ? '...' : '');
+      }
+      
       let wishlistData;
       try {
         wishlistData = insertWishlistSchema.parse({ ...needsListData, userId });
@@ -1876,8 +1881,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("❌ Error message:", error?.message);
       console.error("❌ Error stack:", error?.stack);
       console.error("❌ Request body:", req.body);
-      console.error("❌ User ID:", userId);
-      console.error("❌ Wishlist data:", wishlistWithImages);
+      console.error("❌ User ID:", req.user?.profile?.id || req.user?.claims?.sub);
+      console.error("❌ Wishlist data:", typeof wishlistWithImages !== 'undefined' ? wishlistWithImages : wishlistData);
       if (error instanceof z.ZodError) {
         console.error("❌ Validation errors:", error.errors);
         return res.status(400).json({ message: "Invalid data", errors: error.errors });

@@ -78,7 +78,7 @@ export const wishlists = pgTable("wishlists", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").references(() => users.id).notNull(),
   title: text("title").notNull(),
-  description: text("description").notNull(),
+  description: text("description"),
   story: text("story"), // Detailed story/background
   storyImages: text("story_images").array(), // Image paths for storytelling
   category: categoryEnum("category").notNull(),
