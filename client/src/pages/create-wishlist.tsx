@@ -591,19 +591,10 @@ export default function CreateNeedsList() {
                           <div className="space-y-2">
                             <div className="relative">
                               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                              <AddressAutocomplete
-                                value={field.value}
-                                onChange={field.onChange}
-                                onAddressSelect={(addressData) => {
-                                  // Format as "City, State" for location field
-                                  const locationString = addressData.city && addressData.state 
-                                    ? `${addressData.city}, ${addressData.state}`
-                                    : field.value;
-                                  field.onChange(locationString);
-                                }}
-                                placeholder="Start typing your city or zip code..."
+                              <Input 
+                                placeholder="e.g., Austin, TX or ZIP code"
+                                {...field}
                                 className="pl-10"
-                                types={['(cities)']} // Focus on cities for location
                               />
                             </div>
                             <div className="flex items-center gap-2">
@@ -614,28 +605,22 @@ export default function CreateNeedsList() {
                                 onClick={() => {
                                   if (navigator.geolocation) {
                                     navigator.geolocation.getCurrentPosition(
-                                      (position) => {
-                                        // Use reverse geocoding to get city, state from coordinates
-                                        const geocoder = new google.maps.Geocoder();
-                                        geocoder.geocode(
-                                          { 
-                                            location: { 
-                                              lat: position.coords.latitude, 
-                                              lng: position.coords.longitude 
-                                            } 
-                                          },
-                                          (results, status) => {
-                                            if (status === 'OK' && results?.[0]) {
-                                              const addressComponents = results[0].address_components;
-                                              const city = addressComponents.find(c => c.types.includes('locality'))?.long_name;
-                                              const state = addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.short_name;
-                                              
-                                              if (city && state) {
-                                                field.onChange(`${city}, ${state}`);
-                                              }
-                                            }
+                                      async (position) => {
+                                        try {
+                                          // Use a geocoding service to get location from coordinates
+                                          const response = await fetch(
+                                            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`
+                                          );
+                                          const data = await response.json();
+                                          
+                                          if (data.city && data.principalSubdivision) {
+                                            field.onChange(`${data.city}, ${data.principalSubdivision}`);
+                                          } else if (data.locality && data.principalSubdivision) {
+                                            field.onChange(`${data.locality}, ${data.principalSubdivision}`);
                                           }
-                                        );
+                                        } catch (error) {
+                                          console.warn('Reverse geocoding failed:', error);
+                                        }
                                       },
                                       (error) => {
                                         console.warn('Geolocation error:', error);
