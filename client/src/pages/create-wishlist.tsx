@@ -21,7 +21,6 @@ import AddressAutocomplete from "@/components/address-autocomplete";
 
 const createNeedsListSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100, "Title too long"),
-  description: z.string().min(20, "Description must be at least 20 characters").max(1000, "Description too long"),
   story: z.string().min(50, "Please share more details about your situation").max(2000, "Story too long"),
   category: z.string().min(1, "Please select a category"),
   urgencyLevel: z.enum(["low", "medium", "high", "urgent"]),
@@ -108,7 +107,6 @@ export default function CreateNeedsList() {
     resolver: zodResolver(createNeedsListSchema),
     defaultValues: {
       title: "",
-      description: "",
       story: "",
       category: "",
       urgencyLevel: "medium",
@@ -428,20 +426,30 @@ export default function CreateNeedsList() {
                     )}
                   />
 
-                  {/* Description */}
+                  {/* Category */}
                   <FormField
                     control={form.control}
-                    name="description"
+                    name="category"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Brief Description *</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Provide a brief overview of what you need and why..."
-                            className="min-h-[100px]"
-                            {...field}
-                          />
-                        </FormControl>
+                        <FormLabel>Category *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CATEGORIES.map((category) => (
+                              <SelectItem key={category.value} value={category.value}>
+                                <div className="flex items-center space-x-2">
+                                  <i className={`${category.icon} text-coral`}></i>
+                                  <span>{category.label}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -525,65 +533,34 @@ export default function CreateNeedsList() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Category */}
-                    <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Category *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select category" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {CATEGORIES.map((category) => (
-                                <SelectItem key={category.value} value={category.value}>
-                                  <div className="flex items-center space-x-2">
-                                    <i className={`${category.icon} text-coral`}></i>
-                                    <span>{category.label}</span>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Urgency Level */}
-                    <FormField
-                      control={form.control}
-                      name="urgencyLevel"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Urgency Level *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select urgency" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {URGENCY_LEVELS.map((level) => (
-                                <SelectItem key={level.value} value={level.value}>
-                                  <div className={`flex items-center space-x-2 px-2 py-1 rounded ${getUrgencyColor(level.value)}`}>
-                                    <AlertCircle className="h-4 w-4" />
-                                    <span>{level.label}</span>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  {/* Urgency Level */}
+                  <FormField
+                    control={form.control}
+                    name="urgencyLevel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Urgency Level *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select urgency" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {URGENCY_LEVELS.map((level) => (
+                              <SelectItem key={level.value} value={level.value}>
+                                <div className={`flex items-center space-x-2 px-2 py-1 rounded ${getUrgencyColor(level.value)}`}>
+                                  <AlertCircle className="h-4 w-4" />
+                                  <span>{level.label}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   {/* Location */}
                   <FormField
