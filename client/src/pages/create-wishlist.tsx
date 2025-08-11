@@ -588,16 +588,71 @@ export default function CreateNeedsList() {
                       <FormItem>
                         <FormLabel>Location *</FormLabel>
                         <FormControl>
-                          <div className="relative">
-                            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                            <Input 
-                              placeholder="e.g., Austin, TX"
-                              {...field}
-                              className="pl-10"
-                            />
+                          <div className="space-y-2">
+                            <div className="relative">
+                              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                              <AddressAutocomplete
+                                value={field.value}
+                                onChange={field.onChange}
+                                onAddressSelect={(addressData) => {
+                                  // Format as "City, State" for location field
+                                  const locationString = addressData.city && addressData.state 
+                                    ? `${addressData.city}, ${addressData.state}`
+                                    : field.value;
+                                  field.onChange(locationString);
+                                }}
+                                placeholder="Start typing your city or zip code..."
+                                className="pl-10"
+                                types={['(cities)']} // Focus on cities for location
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(
+                                      (position) => {
+                                        // Use reverse geocoding to get city, state from coordinates
+                                        const geocoder = new google.maps.Geocoder();
+                                        geocoder.geocode(
+                                          { 
+                                            location: { 
+                                              lat: position.coords.latitude, 
+                                              lng: position.coords.longitude 
+                                            } 
+                                          },
+                                          (results, status) => {
+                                            if (status === 'OK' && results?.[0]) {
+                                              const addressComponents = results[0].address_components;
+                                              const city = addressComponents.find(c => c.types.includes('locality'))?.long_name;
+                                              const state = addressComponents.find(c => c.types.includes('administrative_area_level_1'))?.short_name;
+                                              
+                                              if (city && state) {
+                                                field.onChange(`${city}, ${state}`);
+                                              }
+                                            }
+                                          }
+                                        );
+                                      },
+                                      (error) => {
+                                        console.warn('Geolocation error:', error);
+                                      }
+                                    );
+                                  }
+                                }}
+                                className="text-xs flex items-center gap-1"
+                              >
+                                <MapPin className="h-3 w-3" />
+                                Use My Location
+                              </Button>
+                            </div>
                           </div>
                         </FormControl>
                         <div className="flex flex-wrap gap-2 mt-2">
+                          <span className="text-xs text-gray-500 w-full mb-1">Quick Select:</span>
                           {SAMPLE_LOCATIONS.map((location) => (
                             <Button
                               key={location}
