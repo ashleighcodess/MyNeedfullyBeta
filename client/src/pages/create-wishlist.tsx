@@ -273,7 +273,6 @@ export default function CreateNeedsList() {
 
   return (
     <div className="min-h-screen bg-warm-bg">
-      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -787,7 +786,7 @@ export default function CreateNeedsList() {
               </div>
               <div className="space-y-2">
                 <p>• Keep item descriptions detailed</p>
-                <p>• Update your wishlist regularly</p>
+                <p>• Update your needs list regularly</p>
                 <p>• Thank your donors personally</p>
               </div>
             </div>
