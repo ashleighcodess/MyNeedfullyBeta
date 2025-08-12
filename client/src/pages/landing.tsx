@@ -442,16 +442,12 @@ export default function Landing() {
             <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 md:h-10 w-auto mx-auto" />
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-6 sm:mb-8 leading-tight hero-text-shadow font-just-sans">
             A Registry for Disaster and Crisis Recovery
           </h1>
           
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-700 mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
-            A Needs List is a personal recovery registry – a simple, shareable way to organize community support after a fire, flood, or crisis
-          </h2>
-          
           {/* CTA Buttons under tagline */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-4 sm:mb-6">
             <Button 
               className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
               onClick={handleCreateList}
@@ -469,6 +465,10 @@ export default function Landing() {
               Search for a Needs List
             </Button>
           </div>
+          
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-700 mb-6 sm:mb-8 leading-tight hero-text-shadow font-just-sans">
+            A Needs List is a personal recovery registry – a simple, shareable way to organize community support after a fire, flood, or crisis
+          </h2>
         </div>
         
         {/* Seamless gradient transition overlay */}
