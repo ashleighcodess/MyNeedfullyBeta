@@ -108,11 +108,13 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       
       <CardContent className="p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-start justify-between mb-3 sm:mb-4">
-          <Badge className={`${getUrgencyColor(wishlist.urgencyLevel)} text-xs sm:text-sm`}>
-            {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
-          </Badge>
-          <span className="hidden sm:inline text-xs sm:text-sm text-gray-500">{completionPercentage}% Complete</span>
+        <div className="flex items-start justify-between mb-3 sm:mb-4 gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Badge className={`${getUrgencyColor(wishlist.urgencyLevel)} text-xs sm:text-sm`}>
+              {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
+            </Badge>
+          </div>
+          <span className="hidden sm:inline text-xs sm:text-sm text-gray-500 whitespace-nowrap ml-2">{completionPercentage}% Complete</span>
         </div>
         
         {/* Title and Description */}
