@@ -143,11 +143,10 @@ export default function MyNeedsLists() {
                 {activeWishlists.map((wishlist: any) => (
                   <div key={wishlist.id} className="relative">
                     <WishlistCard wishlist={wishlist} />
-                    <div className="absolute top-1 right-1 sm:top-2 sm:right-2 z-10">
-                      <Badge className="bg-green-500 text-white text-xs shadow-sm">
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-green-500 text-white text-xs">
                         <Eye className="mr-1 h-3 w-3" />
-                        <span className="hidden xs:inline">Active</span>
-                        <span className="xs:hidden">👁</span>
+                        Active
                       </Badge>
                     </div>
                   </div>
@@ -230,33 +229,29 @@ export default function MyNeedsLists() {
                   {archivedWishlists.map((wishlist: any) => (
                     <div key={wishlist.id} className="relative">
                       <WishlistCard wishlist={wishlist} isOwner={true} />
-                      <div className="absolute top-1 right-1 sm:top-2 sm:right-2 z-10">
+                      <div className="absolute top-2 right-2">
                         {wishlist.status === 'completed' && (
-                          <Badge className="bg-green-500 text-white text-xs shadow-sm">
+                          <Badge className="bg-green-500 text-white text-xs">
                             <Check className="mr-1 h-3 w-3" />
-                            <span className="hidden xs:inline">Complete</span>
-                            <span className="xs:hidden">✓</span>
+                            Complete
                           </Badge>
                         )}
                         {wishlist.status === 'cancelled' && (
-                          <Badge className="bg-red-500 text-white text-xs shadow-sm">
+                          <Badge className="bg-red-500 text-white text-xs">
                             <X className="mr-1 h-3 w-3" />
-                            <span className="hidden xs:inline">Cancelled</span>
-                            <span className="xs:hidden">✗</span>
+                            Cancelled
                           </Badge>
                         )}
                         {wishlist.status === 'paused' && (
-                          <Badge className="bg-yellow-500 text-white text-xs shadow-sm">
+                          <Badge className="bg-yellow-500 text-white text-xs">
                             <Pause className="mr-1 h-3 w-3" />
-                            <span className="hidden xs:inline">Paused</span>
-                            <span className="xs:hidden">⏸</span>
+                            Paused
                           </Badge>
                         )}
                         {wishlist.isPublic === false && wishlist.status === 'active' && (
-                          <Badge className="bg-gray-500 text-white text-xs shadow-sm">
+                          <Badge className="bg-gray-500 text-white text-xs">
                             <EyeOff className="mr-1 h-3 w-3" />
-                            <span className="hidden xs:inline">Private</span>
-                            <span className="xs:hidden">👁</span>
+                            Private
                           </Badge>
                         )}
                       </div>
