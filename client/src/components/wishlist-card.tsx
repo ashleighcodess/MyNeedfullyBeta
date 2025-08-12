@@ -114,7 +114,6 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
               {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
             </Badge>
           </div>
-          <span className="hidden sm:inline text-xs sm:text-sm text-gray-500 whitespace-nowrap">{completionPercentage}% Complete</span>
         </div>
         
         {/* Title and Description */}
