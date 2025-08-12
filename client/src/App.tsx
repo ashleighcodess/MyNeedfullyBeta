@@ -82,7 +82,7 @@ const preloadHighPriorityPages = () => {
 // Component to handle scroll-to-top on route changes
 function ScrollToTop() {
   const [location] = useLocation();
-  
+
   useEffect(() => {
     try {
       window.scrollTo(0, 0);
@@ -90,7 +90,7 @@ function ScrollToTop() {
       console.warn("Scroll to top failed:", error);
     }
   }, [location]);
-  
+
   return null;
 }
 
@@ -132,7 +132,7 @@ function HomeRoute() {
 // Component for dashboard route logic - show user dashboard for authenticated users
 function DashboardRoute() {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   // Show loading state while authentication is being determined
   if (isLoading) {
     return (
@@ -156,7 +156,7 @@ function Router() {
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
       <NotificationHandler />
-      
+
       <Switch>
         {/* Admin route with no header/footer */}
         <Route path="/admin">
@@ -168,7 +168,7 @@ function Router() {
             <AdminDashboard />
           </Suspense>
         </Route>
-        
+
         {/* All other routes with header and footer */}
         <Route>
           <Navigation />
@@ -218,7 +218,7 @@ function Router() {
                 <Route path="/products" component={ProductSearch} />
                 <Route path="/product-search" component={ProductSearch} />
                 <Route path="/search" component={ProductSearch} />
-                
+
                 {/* Authenticated routes */}
                 <Route path="/my-needs-lists" component={MyNeedsLists} />
                 <Route path="/my-lists" component={MyNeedsLists} />
@@ -234,14 +234,14 @@ function Router() {
                 <Route path="/community" component={CommunityImpact} />
                 <Route path="/community-impact" component={CommunityImpact} />
                 <Route path="/impact" component={CommunityImpact} />
-                
+
                 {/* Home route - show Landing for unauthenticated, Home for authenticated */}
                 <Route path="/" component={HomeRoute} />
-                
+
                 {/* Dashboard route for authenticated users */}
                 <Route path="/dashboard" component={DashboardRoute} />
                 <Route path="/quick-actions" component={QuickActions} />
-                
+
                 <Route component={NotFound} />
               </Switch>
             </Suspense>
@@ -272,7 +272,7 @@ function App() {
         event.preventDefault();
         return;
       }
-      
+
       console.warn('Unhandled promise rejection (handled):', event.reason);
       event.preventDefault();
     };
@@ -285,14 +285,14 @@ function App() {
         event.preventDefault();
         return;
       }
-      
+
       console.warn('Error caught:', event.error);
       event.preventDefault();
     };
 
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
     window.addEventListener('error', handleError);
-    
+
     return () => {
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
       window.removeEventListener('error', handleError);

@@ -85,10 +85,22 @@ const Navigation = memo(function Navigation() {
   const navigationItems = useMemo(() => [
     { href: "/about-us", label: "About Us", icon: User, dataTip: null, hideWhenAuthenticated: true },
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
-    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", hideWhenAuthenticated: false },
+    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list" },
     { href: "/my-needs-lists", label: "My Needs Lists", icon: List, dataTip: "my-needs-lists", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
   ], []);
+
+  // Ensure we always have visible navigation items
+  const visibleItems = navigationItems.filter(item => 
+    (!item.requiresAuth || user) && 
+    (!item.hideWhenAuthenticated || !user)
+  );
+
+  // If no items are visible, show basic navigation
+  const itemsToShow = visibleItems.length > 0 ? visibleItems : [
+    { href: "/browse", label: "Find Needs Lists", icon: Search },
+    { href: "/about-us", label: "About Us", icon: User }
+  ];
 
   const isActiveLink = useCallback((href: string) => {
     return location === href || location.startsWith(href + '/');
@@ -103,12 +115,9 @@ const Navigation = memo(function Navigation() {
             <img src={logoPath} alt="MyNeedfully Logo" className="h-12 w-auto" />
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navigationItems.filter(item => 
-              (!item.requiresAuth || user) && 
-              (!item.hideWhenAuthenticated || !user)
-            ).map((item) => (
+          {/* Desktop Navigation - Show on medium screens and up */}
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+            {itemsToShow.map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}
@@ -225,8 +234,8 @@ const Navigation = memo(function Navigation() {
               </div>
             )}
 
-            {/* Always show hamburger menu on small screens */}
-            <div className="block sm:hidden">
+            {/* Show hamburger menu on medium screens and below */}
+            <div className="block md:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button size="sm" className="bg-coral text-white border-2 border-coral hover:bg-coral/90 p-2">
@@ -348,8 +357,8 @@ const Navigation = memo(function Navigation() {
               </Sheet>
             </div>
 
-            {/* Desktop navigation items */}
-            <div className="hidden sm:flex items-center space-x-4">
+            {/* Desktop navigation items - Show on medium screens and up */}
+            <div className="hidden md:flex items-center space-x-4">
               {/* Desktop Notifications */}
               {user && (
                 <div className="relative" data-tip="notifications">
