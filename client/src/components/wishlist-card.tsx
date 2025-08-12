@@ -108,11 +108,11 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       
       <CardContent className="p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <div className="flex items-start justify-between mb-3 sm:mb-4">
           <Badge className={`${getUrgencyColor(wishlist.urgencyLevel)} text-xs sm:text-sm`}>
             {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
           </Badge>
-          <span className="text-xs sm:text-sm text-gray-500">{completionPercentage}% Complete</span>
+          <span className="hidden sm:inline text-xs sm:text-sm text-gray-500">{completionPercentage}% Complete</span>
         </div>
         
         {/* Title and Description */}
@@ -138,12 +138,15 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
             </div>
           </div>
           
-          {wishlist.viewCount !== undefined && (
-            <div className="flex items-center">
-              <Eye className="mr-1 h-3 w-3" />
-              {wishlist.viewCount}
-            </div>
-          )}
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            {wishlist.viewCount !== undefined && (
+              <div className="flex items-center">
+                <Eye className="mr-1 h-3 w-3" />
+                {wishlist.viewCount}
+              </div>
+            )}
+            <span className="sm:hidden text-xs text-gray-500">{completionPercentage}% Complete</span>
+          </div>
         </div>
 
         {/* Creator Info */}
