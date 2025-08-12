@@ -469,8 +469,6 @@ export default function Landing() {
               Search for a Needs List
             </Button>
           </div>
-
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans">A Needs List is your personal recovery registry — a simple, shareable way to request help after a fire, flood, or crisis. </p>
         </div>
         
         {/* Seamless gradient transition overlay */}
