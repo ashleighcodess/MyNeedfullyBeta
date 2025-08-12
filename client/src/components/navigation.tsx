@@ -116,19 +116,20 @@ const Navigation = memo(function Navigation() {
           </div>
 
           {/* Desktop Navigation - Show on medium screens and up */}
-          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6">
             {itemsToShow.map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+                  className={`flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors cursor-pointer ${
                     isActiveLink(item.href)
                       ? 'text-coral bg-coral/10' 
                       : 'text-gray-700 hover:text-coral hover:bg-coral/5'
                   }`}
                 >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.label}</span>
+                  <item.icon className="h-3 w-3 lg:h-4 lg:w-4" />
+                  <span className="hidden lg:inline">{item.label}</span>
+                  <span className="lg:hidden text-xs">{item.label.split(' ')[0]}</span>
                 </div>
               </Link>
             ))}
