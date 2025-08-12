@@ -466,7 +466,7 @@ export default function Landing() {
             </Button>
           </div>
           
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-700 mb-6 sm:mb-8 leading-tight font-just-sans" style={{ textShadow: '0 1px 3px rgba(255, 255, 255, 0.8)' }}>
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-gray-600 mb-6 sm:mb-8 leading-relaxed font-just-sans" style={{ textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)' }}>
             A Needs List is a personal recovery registry – a simple, shareable way to organize community support after a fire, flood, or crisis
           </h2>
         </div>
