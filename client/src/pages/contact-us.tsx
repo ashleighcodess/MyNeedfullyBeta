@@ -128,7 +128,7 @@ export default function ContactUs() {
           </div>
 
           {/* Right Side - Contact Form */}
-          <div className="bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-lg shadow-lg p-8">
+          <div className="bg-gradient-to-br from-orange-300 to-orange-400 rounded-lg shadow-lg p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="fullName" className="text-white font-medium mb-2 block">
