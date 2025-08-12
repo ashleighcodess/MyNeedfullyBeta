@@ -447,7 +447,7 @@ export default function Landing() {
           </h1>
           
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-700 mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
-            Organize Community Support with a Custom List of Needs
+            A Needs List is a personal recovery registry – a simple, shareable way to organize community support after a fire, flood, or crisis
           </h2>
           
           {/* CTA Buttons under tagline */}
