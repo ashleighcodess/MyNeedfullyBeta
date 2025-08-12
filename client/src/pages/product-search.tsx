@@ -358,11 +358,16 @@ export default function ProductSearch() {
     return null;
   }, [popularProducts]);
 
-  // Fetch user's wishlists for authenticated users
-  const { data: userWishlists } = useQuery<WishlistWithItemCount[]>({
+  // Fetch user's wishlists for authenticated users - only active lists
+  const { data: allUserWishlists } = useQuery<WishlistWithItemCount[]>({
     queryKey: ['/api/user/wishlists'],
     enabled: !!isAuthenticated, // Only fetch when user is authenticated
   });
+
+  // Filter to only show active wishlists in selection modal
+  const userWishlists = allUserWishlists?.filter((wishlist: any) => 
+    wishlist.status === 'active'
+  );
 
 
 
