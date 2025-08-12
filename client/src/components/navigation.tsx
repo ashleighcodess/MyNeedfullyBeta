@@ -100,7 +100,7 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
-            <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
+            <img src={logoPath} alt="MyNeedfully Logo" className="h-12 w-auto" />
           </div>
           
           {/* Desktop Navigation */}
