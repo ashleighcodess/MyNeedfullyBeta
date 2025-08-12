@@ -147,7 +147,6 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
                 {wishlist.viewCount}
               </div>
             )}
-            <span className="sm:hidden text-xs text-gray-500">{completionPercentage}% Complete</span>
           </div>
         </div>
 
@@ -179,6 +178,9 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{wishlist.fulfilledItems} fulfilled</span>
             <span>{wishlist.totalItems} total items</span>
+          </div>
+          <div className="flex justify-end mt-2">
+            <span className="text-xs text-gray-500">{completionPercentage}% Complete</span>
           </div>
         </div>
         
