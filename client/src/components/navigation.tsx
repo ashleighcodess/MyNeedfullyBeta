@@ -112,23 +112,23 @@ const Navigation = memo(function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
-            <img src={logoPath} alt="MyNeedfully Logo" className="h-12 w-auto" />
+            <img src={logoPath} alt="MyNeedfully Logo" className="h-8 sm:h-10 md:h-12 w-auto" />
           </div>
 
           {/* Desktop Navigation - Show on medium screens and up */}
-          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6">
             {itemsToShow.map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+                  className={`flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors cursor-pointer ${
                     isActiveLink(item.href)
                       ? 'text-coral bg-coral/10' 
                       : 'text-gray-700 hover:text-coral hover:bg-coral/5'
                   }`}
                 >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.label}</span>
+                  <item.icon className="h-3 w-3 lg:h-4 lg:w-4" />
+                  <span className="text-xs lg:text-sm">{item.label}</span>
                 </div>
               </Link>
             ))}
