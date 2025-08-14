@@ -578,8 +578,7 @@ export default function Landing() {
                 <Share2 className="text-white h-10 w-10" />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share with community</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily share your personalized list with friends, family, neighbors, or community groups via text, email, or social media.
-</p>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily share your personalized list with friends, family, neighbors, or community groups via text, email, or social media.</p>
             </div>
 
             {/* Step 3 - Receive Support */}
