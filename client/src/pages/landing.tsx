@@ -474,10 +474,6 @@ export default function Landing() {
             Registry for Disaster and Crisis Recovery
           </h1>
           
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-gray-700 mb-4 sm:mb-6 leading-tight hero-text-shadow font-just-sans">
-            Organize Community Support with a Custom List of Needs
-          </h2>
-          
           {/* CTA Buttons under tagline */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
             <Button 
