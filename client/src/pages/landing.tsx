@@ -197,12 +197,11 @@ export default function Landing() {
   const { isVisible: isSupportWobbleVisible, elementRef: supportWobbleRef } = useWobbleAnimation();
   const { isVisible: isHowWorksVisible, elementRef: howWorksRef } = useWobbleAnimation();
   
-  // Optimized: Disable featured wishlists query for initial load performance
-  // Re-enable this for production when needed
+  // Featured wishlists query - only shows section when admin has featured lists
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
     queryKey: ['/api/featured-wishlists'],
-    enabled: false, // Disabled for performance
-    refetchInterval: 300000, // Refresh every 5 minutes instead of every few seconds
+    enabled: true, // Re-enabled to show only admin-selected featured lists
+    refetchInterval: 300000, // Refresh every 5 minutes
     staleTime: 240000, // Consider data stale after 4 minutes
   });
   
@@ -286,51 +285,8 @@ export default function Landing() {
 
 
 
-  // Use database featured wishlists or fallback to sample data if none are featured
-  const featuredWishlists = featuredWishlistsData && featuredWishlistsData.length > 0 
-    ? featuredWishlistsData 
-    : [
-        {
-          id: 1,
-          title: "Help the Johnson Family Rebuild",
-          description: "After losing everything in a house fire, this family of four needs basic essentials including clothing, school supplies, and household items.",
-          location: "Austin, TX",
-          urgencyLevel: "urgent",
-          completionPercentage: 85,
-          totalItems: 23,
-          imageUrl: "https://images.unsplash.com/photo-1609220136736-443140cffec6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-        },
-        {
-          id: 2,
-          title: "Back-to-School Support",
-          description: "Local nonprofit helping 50 underprivileged children get ready for school with supplies, uniforms, and backpacks.",
-          location: "Denver, CO",
-          urgencyLevel: "high",
-          completionPercentage: 42,
-          totalItems: 150,
-          imageUrl: "https://images.unsplash.com/photo-1497486751825-1233686d5d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-        },
-        {
-          id: 3,
-          title: "Senior Care Essentials",
-          description: "Margaret, 78, needs assistance with medical supplies and daily living aids after her recent recovery from surgery.",
-          location: "Seattle, WA",
-          urgencyLevel: "medium",
-          completionPercentage: 67,
-          totalItems: 12,
-          imageUrl: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400"
-        },
-        {
-          id: 4,
-          title: "Hurricane Recovery Support",
-          description: "Local shelter needs emergency supplies including blankets, water, non-perishable food, and basic hygiene items for displaced families.",
-          location: "Miami, FL",
-          urgencyLevel: "urgent",
-          completionPercentage: 23,
-          totalItems: 87,
-          imageUrl: hurricaneRecoveryImage
-        }
-      ];
+  // Only use database featured wishlists - no fallback data
+  const featuredWishlists = featuredWishlistsData || [];
 
   // Real-time activity data from platform - disabled for performance
   // const { data: recentActivity = [] } = useQuery<any[]>({
