@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
@@ -32,218 +31,194 @@ export default function PrivacyPolicy() {
           <h1 className="text-3xl sm:text-4xl font-bold text-navy mb-4" style={{fontFamily: 'JUST Sans, sans-serif'}}>
             Privacy Policy
           </h1>
+          <p className="text-gray-600" style={{fontFamily: 'JUST Sans, sans-serif'}}>
+            Last updated: July 10, 2025
+          </p>
         </div>
 
         <div className="space-y-6">
           <Card>
-            <CardContent className="prose max-w-none pt-6">
-              <p className="mb-6">
-                MyNeedfully, LLC ("We", "Us", or "Our") understands and respects your need for privacy. This Privacy Policy describes the type of personal information We may collect, how We use it, who We share it with, how long We keep it, and your rights and choices with respect to your personal information. By using Our platform, you agree to this Privacy Policy.
-              </p>
-              
-              <p className="mb-6">
-                This Privacy Policy applies to Our website and any mobile applications. The Privacy Policy is intended to be read together with our Terms of Use, both of which together with the website constitutes the entire agreement by and between you and MyNeedfully, LLC. You are encouraged to read this Privacy Policy in full to understand Our privacy practices before you decide to use Our services.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
             <CardHeader>
-              <CardTitle>Personal Information You Provide</CardTitle>
+              <CardTitle>1. Information We Collect</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
-              <p className="mb-4">
-                Personal information is any information that relates to you or that can be used to identify you. We may collect different information depending on how you use our services, i.e., as a Patron or as a Donor. We collect personal information when you register for an account, create a Needs List, submit photos/videos or other content to Our platform. If you provide Us with information about another person, you affirmatively represent that you obtained the person's permission or, in the case of a minor, that you are the parent or legal guardian of the minor. We will never collect financial information from you including, but not limited to, banking information, credit card information, etc. However, if you use Our services as a Donor, you may be required to disclose that information to Our Third-Party Vendors in order to fulfill someone's needs.
-              </p>
+              <h4 className="font-semibold mb-2">Personal Information:</h4>
+              <ul className="list-disc pl-6 space-y-1 mb-4">
+                <li>Name, email address, and profile information</li>
+                <li>Shipping addresses for needs lists</li>
+                <li>Profile photos and needs list images</li>
+                <li>Communication preferences</li>
+              </ul>
               
-              <p className="mb-4 font-semibold">The personal information We may collect directly from you includes:</p>
-              <ul className="list-disc pl-6 space-y-1 mb-6">
-                <li>your name, address, phone number, and email address</li>
-                <li>account information - user name and password</li>
-                <li>information about the hardship or crisis leading to your use of Our platform</li>
-                <li>visual and audio information such as photographs and videos, as well as social media postings shared</li>
-                <li>identities of persons in addition to or other than you in need of assistance</li>
-                <li>demographic information you voluntarily provide to assist with fulfillment of your Needs List</li>
-                <li>your preferences as to Third-Party Vendors to fulfill your needs</li>
+              <h4 className="font-semibold mb-2">Platform Activity:</h4>
+              <ul className="list-disc pl-6 space-y-1 mb-4">
+                <li>Needs lists created and supported</li>
+                <li>Messages and thank you notes</li>
+                <li>Platform usage analytics</li>
+                <li>Search queries and product interactions</li>
               </ul>
 
-              <p className="mb-4">
-                In addition to the information which you voluntarily share, when you use Our services and visit Our website, We automatically collect certain information about you for advertising as well as to analyze and evaluate use of Our website. This is done through third-party tools, such as cookies.
-              </p>
-
-              <p className="mb-4 font-semibold">This type of information obtained includes:</p>
-              <ul className="list-disc pl-6 space-y-1 mb-6">
-                <li>online identifiers including your IP address, cookie IDs, mobile ad identifiers, device IDs and similar identifying information</li>
-                <li>information regarding your browser, device and operating system</li>
-                <li>web pages you view and links you click on Our website</li>
-                <li>access of emails We send you and whether they are forwarded</li>
-                <li>search terms to connect to Our website as well as searched within Our website</li>
-                <li>dates and times of visits to Our website</li>
-                <li>geolocation data</li>
-                <li>links and URLs that refer visitors to Our website</li>
-              </ul>
-
-              <p className="mb-4 font-semibold">We may also obtain information about you through third-parties, including:</p>
+              <h4 className="font-semibold mb-2">Technical Information:</h4>
               <ul className="list-disc pl-6 space-y-1">
-                <li>social media and other account credentials you provide or use to access Our service through a third-party website or service</li>
-                <li>Third-Party Vendors who require your personal information</li>
-                <li>other unaffiliated third-parties who received your personal information from advertising networks, media monitoring companies and publicly available sources</li>
+                <li>IP address and device information</li>
+                <li>Browser type and version</li>
+                <li>Cookies and session data</li>
+                <li>Log files and error reports</li>
               </ul>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>How We Use Your Information</CardTitle>
+              <CardTitle>2. How We Use Your Information</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
-              <p className="mb-4">We use your information for the following purposes:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>to communicate with you, maintain and manage your account, complete transactions, respond to your inquiries, comments and suggestions</li>
-                <li>to resolve support issues that may arise while you are using Our services</li>
-                <li>to enforce Our Terms of Use</li>
-                <li>to analyze your use of Our services to improve the functionality and quality of Our services</li>
-                <li>to comply with legal and contractual obligations</li>
-                <li>to personalize your use of Our services by incorporating your Needs List specifications with recommendations for potential Donors and expanding our Third-Party Vendors to accommodate your needs</li>
-                <li>to market and advertise Our services to you and others and to personalize Our ads to you</li>
-                <li>to track industry standard performance metrics including email opens and clicks</li>
-                <li>to prevent fraud and unauthorized transactions and identify potential hackers and other unauthorized users</li>
-                <li>to maintain a record of the services you use and monitor and analyze trends, usage and activity on Our platform</li>
-                <li>to provide Our services to you on a continuing basis</li>
+                <li><strong>Platform Operation:</strong> To provide core platform functionality, user authentication, and account management</li>
+                <li><strong>Communication:</strong> To send notifications about donations, thank you notes, and platform updates</li>
+                <li><strong>Improvement:</strong> To analyze platform usage and improve user experience</li>
+                <li><strong>Safety:</strong> To prevent fraud, abuse, and ensure platform security</li>
+                <li><strong>Legal Compliance:</strong> To comply with applicable laws and regulations</li>
+                <li><strong>Marketing:</strong> To send promotional emails (with your consent, which you can withdraw)</li>
               </ul>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>How We May Share Your Information</CardTitle>
+              <CardTitle>3. Information Sharing</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
-              <p className="mb-4">
-                Whenever We share your personal information, We limit what We share to only the information which is needed by the third-party. We may share your personal information with:
+              <h4 className="font-semibold mb-2">We share information in the following situations:</h4>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong>Public Information:</strong> Needs lists, stories, and first names are publicly visible on the platform</li>
+                <li><strong>With Supporters:</strong> Shipping addresses are shared with supporters who fulfill needs</li>
+                <li><strong>Service Providers:</strong> With trusted third parties who help operate our platform (hosting, email, analytics)</li>
+                <li><strong>Legal Requirements:</strong> When required by law or to protect platform safety</li>
+                <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets</li>
+              </ul>
+              
+              <p className="mt-4 font-semibold">
+                We never sell your personal information to third parties for marketing purposes.
               </p>
-              <ul className="list-disc pl-6 space-y-2 mb-6">
-                <li>Third-Party Vendors (1) to fulfill Needs List items by Donors, (2) technical service providers to allow Our website to operate securely, (3) analytic service providers to ensure functionality, (4) payment processors to complete transactions between Donors and Patrons</li>
-                <li>Social Media Platforms and other applications you may use to access Our platform</li>
-                <li>Public Authorities as may be required by law and to enforce Our Terms of Use and to protect Our rights and the rights of others</li>
-                <li>Other Entities for due diligence in the event We reorganize, sell, merge, transfer, assign or otherwise dispose of Our business assets</li>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>4. Third-Party Services</CardTitle>
+            </CardHeader>
+            <CardContent className="prose max-w-none">
+              <h4 className="font-semibold mb-2">Authentication Providers:</h4>
+              <ul className="list-disc pl-6 space-y-1 mb-4">
+                <li>Replit OAuth for secure authentication</li>
+                <li>Google OAuth (optional login method)</li>
+                <li>Facebook OAuth (optional login method)</li>
               </ul>
 
-              <p className="mb-4">
-                We may also share your personal information with third-parties for advertising purposes. These companies collect information from you through cookies on Our website as well as when We share your email address, and other information with them directly, including
-              </p>
-              <ul className="list-disc pl-6 space-y-2 mb-6">
-                <li>Social Media Platforms to support Our advertising and marketing efforts</li>
-                <li>Marketing and Advertising Vendors to tailor ads to your interests and the interests of others similarly situated</li>
-                <li>Other Vendors may be provided with your name and mailing address for marketing Our website or other services which may be of interest to you and others in similar situations</li>
+              <h4 className="font-semibold mb-2">Affiliate Partners:</h4>
+              <ul className="list-disc pl-6 space-y-1 mb-4">
+                <li>Amazon Associates Program</li>
+                <li>Walmart Affiliate Program</li>
+                <li>Target Affiliate Program</li>
               </ul>
 
-              <p>
-                You should be aware that any information which you include on the public portion of Our website is publicly available unless you password protect it. Any information which you include on social media is also available to Us and third-parties.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>How Long We Keep Your Personal Information</CardTitle>
-            </CardHeader>
-            <CardContent className="prose max-w-none">
-              <p>
-                We will retain your personal information for as long as we consider it necessary to achieve your use of Our services, as long as required to comply with the Privacy Policy, or as long as We are required and/or permitted to retain such information by law for such things as complying with Our legal, accounting and reporting requirements. Once your account is no longer active, We will identify your information as "private" which will hide your information from search engines.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Rights Regarding Personal Information</CardTitle>
-            </CardHeader>
-            <CardContent className="prose max-w-none">
-              <p className="mb-4">You have choices when it comes to collecting, using and sharing your personal information.</p>
-              <ul className="list-disc pl-6 space-y-2 mb-6">
-                <li>You may choose not to receive marketing emails or other communications from Us by clicking on the "unsubscribe" link in Our marketing emails or by updating your preferences in the account settings</li>
-                <li>If you do not want Google analytics to gather information about you while you are on Our website, you can install the Google analytics opt-out browser which must be accessed at the start of each session on Our portal</li>
-                <li>You may elect not to receive text messages from Us by responding STOP to any text message you receive from Us</li>
-                <li>You have the right to request that we correct or delete your personal information</li>
+              <h4 className="font-semibold mb-2">Other Services:</h4>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>SendGrid for email delivery</li>
+                <li>Neon Database for data storage</li>
+                <li>Google Analytics for usage insights</li>
               </ul>
+            </CardContent>
+          </Card>
 
-              <p className="mb-4">
-                In order to exercise any of this rights, please contact Us at info@myneedfully.com. We shall provide you with a response within 45 days of any request.
-              </p>
+          <Card>
+            <CardHeader>
+              <CardTitle>5. Data Security</CardTitle>
+            </CardHeader>
+            <CardContent className="prose max-w-none">
+              <ul className="list-disc pl-6 space-y-2">
+                <li>All data is transmitted using SSL/TLS encryption</li>
+                <li>Passwords are securely hashed and never stored in plain text</li>
+                <li>Database access is restricted and monitored</li>
+                <li>Regular security audits and updates</li>
+                <li>Session management with secure cookies</li>
+                <li>Rate limiting to prevent abuse</li>
+              </ul>
+            </CardContent>
+          </Card>
 
-              <p className="mb-4">
-                We are not required to authenticate any opt-out request. Same may be denied if We have a good faith, reasonable, and documented belief that the opt-out request is fraudulent. The person making the opt-out request believed to be fraudulent will receive a notice from Us advising as to why the request is denied together with the reason why the request is believed to be fraudulent.
-              </p>
-
-              <p>
-                If you disagree with Our response to any request, you may contact the New Jersey Division of Consumer Affairs in the Department of Law and Public Safety to submit a complaint.
+          <Card>
+            <CardHeader>
+              <CardTitle>6. Your Privacy Rights</CardTitle>
+            </CardHeader>
+            <CardContent className="prose max-w-none">
+              <h4 className="font-semibold mb-2">You have the right to:</h4>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong>Access:</strong> Request a copy of your personal data</li>
+                <li><strong>Correction:</strong> Update or correct your personal information</li>
+                <li><strong>Deletion:</strong> Request deletion of your account and data</li>
+                <li><strong>Portability:</strong> Export your data in a readable format</li>
+                <li><strong>Opt-out:</strong> Unsubscribe from marketing emails</li>
+                <li><strong>Restrict Processing:</strong> Limit how we use your data</li>
+              </ul>
+              
+              <p className="mt-4">
+                To exercise these rights, contact us at privacy@MyNeedfully.com or through your account settings.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Changes To Our Privacy Policy</CardTitle>
+              <CardTitle>7. Children's Privacy</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                We may make changes to Our Privacy Policy to further ensure protection for you. When a change is made, it will appear on the Privacy Policy page as to when an update was made. We may also email you if there are material changes made to these policies. You always retain your right to opt out of Our use of your personal information.
+                MyNeedfully is not intended for children under 18. We do not knowingly collect personal information from 
+                children under 18. If you believe a child has provided us with personal information, please contact us 
+                immediately so we can remove the information.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Policies of Third-Party Vendors</CardTitle>
+              <CardTitle>8. International Users</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                We work through Third-Party Vendors who have their own privacy policies. You should review the Third-Party Vendor's privacy policies. We are not responsible for the terms of their policies and the inclusion of any link to the website of a Third-Party Vendor is not an endorsement of their site or service.
+                MyNeedfully is based in the United States. If you are accessing our platform from outside the US, 
+                please be aware that your information may be transferred to, stored, and processed in the United States 
+                where our servers are located and our central database is operated.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Dispute Resolution and Governing Law</CardTitle>
+              <CardTitle>9. Policy Updates</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                We are a New Jersey limited liability company and the laws of the State of New Jersey shall control any and all disputes which may arise. By using Our platform, you consent to the use and transfer of information as set forth herein. You also consent to binding arbitration to resolve any dispute. For more information regarding the binding arbitration provision, see Our Terms of Use.
+                We may update this Privacy Policy from time to time. We will notify you of any material changes by 
+                posting the new Privacy Policy on this page and updating the "Last updated" date. We encourage you 
+                to review this Privacy Policy periodically.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Children's Privacy</CardTitle>
+              <CardTitle>10. Contact Us</CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                We do not knowingly collect any personal information from children under the age of 18 and no one under the age of 18 may use Our platform without the direct supervision and approval of a parent or legal guardian. We utilize parental controls on the portal and parents/legal guardians may use these controls to prevent your child from submitting information without your consent. If we are notified that We collected information from a child under the age of 18 without consent, We will delete the information as quickly as possible. If you believe anyone under the age of 18 provided us with personal information, please contact Us at info@myneedfully.com.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Non-Discrimination</CardTitle>
-            </CardHeader>
-            <CardContent className="prose max-w-none">
-              <p>
-                We do not process any personal information which violates the laws of the State of New Jersey and/or federal laws which prohibit unlawful discrimination against consumers. With respect to Patrons, Donors, and any other potential users of Our platform, We do not discriminate based upon race, religion, sex (including pregnancy, sexual orientation and gender identity), national origin, nationality, ancestry, color, age, marital status, civil union status, domestic partnership status, and/or any other potential discriminatory basis. Our goal is to assist those in need and provide a platform for such needs to be fulfilled by Donors.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Us</CardTitle>
-            </CardHeader>
-            <CardContent className="prose max-w-none">
-              <p>
-                If you have any questions about this Privacy Policy, please email Us at info@myneedfully.com.
+                If you have any questions about this Privacy Policy or our data practices, please contact us at:
+                <br />
+                Email: privacy@MyNeedfully.com
+                <br />
+                Website: myneedfully.app
               </p>
             </CardContent>
           </Card>

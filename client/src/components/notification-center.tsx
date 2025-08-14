@@ -126,15 +126,27 @@ export default function NotificationCenter({ isOpen, onClose }: NotificationCent
                 )}
               </div>
               {notifications.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => clearAllMutation.mutate()}
-                  disabled={clearAllMutation.isPending}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  Clear all
-                </Button>
+                <div className="flex gap-2">
+                  {unreadCount > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => markAllAsReadMutation.mutate()}
+                      disabled={markAllAsReadMutation.isPending}
+                    >
+                      Mark all read
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => clearAllMutation.mutate()}
+                    disabled={clearAllMutation.isPending}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Clear all
+                  </Button>
+                </div>
               )}
             </DialogTitle>
             <DialogDescription className="text-sm text-gray-600">

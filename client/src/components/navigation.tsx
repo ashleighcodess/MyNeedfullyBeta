@@ -1,7 +1,7 @@
-import { useState, useEffect, memo, useMemo, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +18,7 @@ import { Bell, Menu, User, Users, Settings, LogOut, Heart, Plus, Search, Zap, Ba
 import logoPath from "@assets/MyNeedfully_1754922279088.png";
 import NotificationCenter from "./notification-center";
 
-const Navigation = memo(function Navigation() {
+export default function Navigation() {
   const { user } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -36,24 +36,24 @@ const Navigation = memo(function Navigation() {
   const markAllAsReadMutation = useMutation({
     mutationFn: () =>
       apiRequest('POST', '/api/notifications/mark-all-read'),
-    onSuccess: useCallback(() => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
       toast({
         title: "All notifications marked as read",
       });
-    }, [queryClient, toast]),
+    },
   });
 
   const clearAllMutation = useMutation({
     mutationFn: () =>
       apiRequest('POST', '/api/notifications/clear-all'),
-    onSuccess: useCallback(() => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
       toast({
         title: "All notifications cleared",
         description: "Your notification history has been cleared",
       });
-    }, [queryClient, toast]),
+    },
   });
 
   // Listen for user data updates to force re-render
@@ -61,15 +61,15 @@ const Navigation = memo(function Navigation() {
     const handleUserUpdate = () => {
       setUserKey(prev => prev + 1);
     };
-
+    
     const handleUserLogout = () => {
       setUserKey(prev => prev + 1);
       // Force profile picture refresh on logout
     };
-
+    
     window.addEventListener('userDataUpdated', handleUserUpdate);
     window.addEventListener('userLoggedOut', handleUserLogout);
-
+    
     return () => {
       window.removeEventListener('userDataUpdated', handleUserUpdate);
       window.removeEventListener('userLoggedOut', handleUserLogout);
@@ -78,33 +78,21 @@ const Navigation = memo(function Navigation() {
 
   const unreadCount = notifications?.filter((n: any) => !n.isRead).length || 0;
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
     window.location.href = "/api/logout";
-  }, []);
+  };
 
-  const navigationItems = useMemo(() => [
+  const navigationItems = [
     { href: "/about-us", label: "About Us", icon: User, dataTip: null, hideWhenAuthenticated: true },
     { href: "/browse", label: "Find Needs Lists", icon: Search, dataTip: "browse-needs" },
-    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list" },
+    { href: "/create", label: "Create Needs List", icon: Plus, dataTip: "create-needs-list", hideWhenAuthenticated: false },
     { href: "/my-needs-lists", label: "My Needs Lists", icon: List, dataTip: "my-needs-lists", requiresAuth: true },
     { href: "/products", label: "Find Products", icon: Heart, dataTip: "product-search", requiresAuth: true },
-  ], []);
-
-  // Ensure we always have visible navigation items
-  const visibleItems = navigationItems.filter(item => 
-    (!item.requiresAuth || user) && 
-    (!item.hideWhenAuthenticated || !user)
-  );
-
-  // If no items are visible, show basic navigation
-  const itemsToShow = visibleItems.length > 0 ? visibleItems : [
-    { href: "/browse", label: "Find Needs Lists", icon: Search },
-    { href: "/about-us", label: "About Us", icon: User }
   ];
 
-  const isActiveLink = useCallback((href: string) => {
+  const isActiveLink = (href: string) => {
     return location === href || location.startsWith(href + '/');
-  }, [location]);
+  };
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
@@ -112,23 +100,26 @@ const Navigation = memo(function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
-            <img src={logoPath} alt="MyNeedfully Logo" className="h-8 sm:h-10 md:h-12 w-auto" />
+            <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
           </div>
-
-          {/* Desktop Navigation - Show on medium screens and up */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6">
-            {itemsToShow.map((item) => (
+          
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            {navigationItems.filter(item => 
+              (!item.requiresAuth || user) && 
+              (!item.hideWhenAuthenticated || !user)
+            ).map((item) => (
               <Link key={item.href} href={item.href}>
                 <div 
                   {...(item.dataTip && { 'data-tip': item.dataTip })}
-                  className={`flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors cursor-pointer ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
                     isActiveLink(item.href)
                       ? 'text-coral bg-coral/10' 
                       : 'text-gray-700 hover:text-coral hover:bg-coral/5'
                   }`}
                 >
-                  <item.icon className="h-3 w-3 lg:h-4 lg:w-4" />
-                  <span className="text-xs lg:text-sm">{item.label}</span>
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
                 </div>
               </Link>
             ))}
@@ -165,7 +156,7 @@ const Navigation = memo(function Navigation() {
                     </span>
                   )}
                 </div>
-
+                
                 {/* Mobile User Avatar */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -233,9 +224,9 @@ const Navigation = memo(function Navigation() {
                 </DropdownMenu>
               </div>
             )}
-
-            {/* Show hamburger menu on medium screens and below */}
-            <div className="block md:hidden">
+            
+            {/* Always show hamburger menu on small screens */}
+            <div className="block sm:hidden">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button size="sm" className="bg-coral text-white border-2 border-coral hover:bg-coral/90 p-2">
@@ -263,7 +254,7 @@ const Navigation = memo(function Navigation() {
                         </div>
                       </Link>
                     ))}
-
+                    
                     {user ? (
                       <div className="border-t pt-4">
                         <Link href="/profile">
@@ -357,8 +348,8 @@ const Navigation = memo(function Navigation() {
               </Sheet>
             </div>
 
-            {/* Desktop navigation items - Show on medium screens and up */}
-            <div className="hidden md:flex items-center space-x-4">
+            {/* Desktop navigation items */}
+            <div className="hidden sm:flex items-center space-x-4">
               {/* Desktop Notifications */}
               {user && (
                 <div className="relative" data-tip="notifications">
@@ -481,22 +472,34 @@ const Navigation = memo(function Navigation() {
                 )}
               </div>
               {notifications && notifications.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => clearAllMutation.mutate()}
-                  disabled={clearAllMutation.isPending}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  Clear all
-                </Button>
+                <div className="flex gap-2">
+                  {unreadCount > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => markAllAsReadMutation.mutate()}
+                      disabled={markAllAsReadMutation.isPending}
+                    >
+                      Mark all read
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => clearAllMutation.mutate()}
+                    disabled={clearAllMutation.isPending}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Clear all
+                  </Button>
+                </div>
               )}
             </SheetTitle>
             <SheetDescription>
               View and manage your notifications
             </SheetDescription>
           </SheetHeader>
-
+          
           <div className="py-4">
             {notifications && notifications.length > 0 ? (
               <div className="space-y-3">
@@ -537,6 +540,4 @@ const Navigation = memo(function Navigation() {
       </Sheet>
     </nav>
   );
-});
-
-export default Navigation;
+}

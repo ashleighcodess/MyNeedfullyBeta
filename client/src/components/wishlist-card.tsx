@@ -108,12 +108,11 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
       
       <CardContent className="p-4 sm:p-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 sm:mb-4 gap-2">
-          <div className="flex flex-wrap gap-2">
-            <Badge className={`${getUrgencyColor(wishlist.urgencyLevel)} text-xs sm:text-sm`}>
-              {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
-            </Badge>
-          </div>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <Badge className={`${getUrgencyColor(wishlist.urgencyLevel)} text-xs sm:text-sm`}>
+            {wishlist.urgencyLevel.charAt(0).toUpperCase() + wishlist.urgencyLevel.slice(1)}
+          </Badge>
+          <span className="text-xs sm:text-sm text-gray-500">{completionPercentage}% Complete</span>
         </div>
         
         {/* Title and Description */}
@@ -139,14 +138,12 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
             </div>
           </div>
           
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            {wishlist.viewCount !== undefined && (
-              <div className="flex items-center">
-                <Eye className="mr-1 h-3 w-3" />
-                {wishlist.viewCount}
-              </div>
-            )}
-          </div>
+          {wishlist.viewCount !== undefined && (
+            <div className="flex items-center">
+              <Eye className="mr-1 h-3 w-3" />
+              {wishlist.viewCount}
+            </div>
+          )}
         </div>
 
         {/* Creator Info */}
@@ -177,9 +174,6 @@ export default function WishlistCard({ wishlist, showActions = true, isOwner = f
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{wishlist.fulfilledItems} fulfilled</span>
             <span>{wishlist.totalItems} total items</span>
-          </div>
-          <div className="flex justify-end mt-2">
-            <span className="text-xs text-gray-500">{completionPercentage}% Complete</span>
           </div>
         </div>
         
