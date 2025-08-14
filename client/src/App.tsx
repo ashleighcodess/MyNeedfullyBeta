@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 // import { useWebSocket } from "@/lib/websocket";
 import { useEffect, Suspense, lazy } from "react";
 import Navigation from "@/components/navigation";
+import { PerformanceDebugger } from "@/components/PerformanceDebugger";
 
 // Preload critical pages immediately
 const Landing = lazy(() => import("@/pages/landing"));
@@ -306,6 +307,9 @@ function App() {
           <Toaster />
           <Router />
           <QuickTips />
+          
+          {/* Performance monitoring in development */}
+          <PerformanceDebugger />
         </TooltipProvider>
       </QueryClientProvider>
     );
