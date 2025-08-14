@@ -67,46 +67,12 @@ const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
     <path d="M12 13.5c-1.5-1.5-4-1.5-4 0.5s2.5 3.5 4 5c1.5-1.5 4-4 4-5s-2.5-2-4-0.5z" fill="currentColor" opacity="1" />
   </svg>
 );
-
-// Custom SVG Icons for How It Works Section
-const GiftIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,12 20,18 4,18 4,12"></polyline>
-    <rect x="2" y="7" width="20" height="5"></rect>
-    <line x1="12" y1="22" x2="12" y2="2"></line>
-    <path d="M12,2 C11,2 9,4 9,6 L12,6 C12,4 14,2 15,2 C16.1,2 17,2.9 17,4 C17,5.1 16.1,6 15,6 L12,6"></path>
-    <path d="M12,2 C13,2 15,4 15,6 L12,6 C12,4 10,2 9,2 C7.9,2 7,2.9 7,4 C7,5.1 7.9,6 9,6 L12,6"></path>
-  </svg>
-);
-
-const ShareIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="18" cy="5" r="3"></circle>
-    <circle cx="6" cy="12" r="3"></circle>
-    <circle cx="18" cy="19" r="3"></circle>
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-  </svg>
-);
-
-const HeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-  </svg>
-);
-
-const ShieldIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-    <path d="m9 12 2 2 4-4"></path>
-  </svg>
-);
 import logoPath from "@assets/MyNeedfully_1754922279088.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
-
+import { ResponsiveImage } from "@/components/ui/responsive-image";
 
 // Custom hook for scroll-triggered wobble animation
 const useWobbleAnimation = () => {
@@ -459,9 +425,12 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
         {/* Community illustration background - reduced on mobile */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 sm:opacity-80 md:opacity-100"
-          style={{ backgroundImage: `url(${heroImagePath})` }}
+        <ResponsiveImage
+          src={heroImagePath}
+          alt="MyNeedfully community support - families helping families in times of need"
+          priority={true}
+          className="absolute inset-0 w-full h-full object-cover opacity-60 sm:opacity-80 md:opacity-100"
+          sizes="100vw"
         />
         
         {/* Enhanced overlay for better mobile text readability */}
@@ -558,8 +527,8 @@ export default function Landing() {
               }`}
               style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
             >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral/90">
-                <Gift className="text-white h-10 w-10" />
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create a needs list</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build your own disaster recovery registry with essential items like clothes, toiletries, baby supplies, furniture, or gift cards after a fire, flood, or other crisis.</p>
@@ -574,11 +543,12 @@ export default function Landing() {
               }`}
               style={{ transitionDelay: isHowWorksVisible ? '600ms' : '0ms' }}
             >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral/90">
-                <Share2 className="text-white h-10 w-10" />
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share with community</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily share your personalized list with friends, family, neighbors, or community groups via text, email, or social media.</p>
+              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily share your personalized list with friends, family, neighbors, or community groups via text, email, or social media.
+</p>
             </div>
 
             {/* Step 3 - Receive Support */}
@@ -590,8 +560,8 @@ export default function Landing() {
               }`}
               style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
             >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral/90">
-                <Heart className="text-white h-10 w-10" />
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive support</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Supporters purchase items directly from your list through trusted online retailers. Everything ships straight to your temporary housing, a family member's home, or wherever you're staying.</p>
@@ -606,8 +576,8 @@ export default function Landing() {
               }`}
               style={{ transitionDelay: isHowWorksVisible ? '1000ms' : '0ms' }}
             >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral/90">
-                <CheckCircle className="text-white h-10 w-10" />
+              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
+                <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track fulfillment</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">See which items have been purchased and what's still needed. Update your list as your recovery progresses.</p>
