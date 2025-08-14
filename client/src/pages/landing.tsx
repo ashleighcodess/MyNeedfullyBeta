@@ -525,7 +525,7 @@ export default function Landing() {
               style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
             >
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+                <Gift className="text-white h-10 w-10" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create a needs list</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build your own disaster recovery registry with essential items like clothes, toiletries, baby supplies, furniture, or gift cards after a fire, flood, or other crisis.</p>
@@ -541,7 +541,7 @@ export default function Landing() {
               style={{ transitionDelay: isHowWorksVisible ? '600ms' : '0ms' }}
             >
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+                <Share2 className="text-white h-10 w-10" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share with community</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily share your personalized list with friends, family, neighbors, or community groups via text, email, or social media.
@@ -558,7 +558,7 @@ export default function Landing() {
               style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
             >
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+                <Heart className="text-white h-10 w-10" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive support</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Supporters purchase items directly from your list through trusted online retailers. Everything ships straight to your temporary housing, a family member's home, or wherever you're staying.</p>
@@ -574,7 +574,7 @@ export default function Landing() {
               style={{ transitionDelay: isHowWorksVisible ? '1000ms' : '0ms' }}
             >
               <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+                <Shield className="text-white h-10 w-10" strokeWidth={2} />
               </div>
               <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track fulfillment</h3>
               <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">See which items have been purchased and what's still needed. Update your list as your recovery progresses.</p>
