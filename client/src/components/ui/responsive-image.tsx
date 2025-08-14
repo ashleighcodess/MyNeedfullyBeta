@@ -74,7 +74,7 @@ export const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         width={width}
         height={height}
         loading={priority ? 'eager' : 'lazy'}
-        {...(priority && { fetchPriority: 'high' } as any)}
+        {...(priority && { fetchpriority: 'high' } as any)}
         decoding="async"
         onLoad={handleLoad}
         onError={handleError}

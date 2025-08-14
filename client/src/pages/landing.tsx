@@ -72,7 +72,7 @@ import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_17515863
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState } from "react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
-import { ResponsiveImage } from "@/components/ui/responsive-image";
+
 
 // Custom hook for scroll-triggered wobble animation
 const useWobbleAnimation = () => {
@@ -425,12 +425,9 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
         {/* Community illustration background - reduced on mobile */}
-        <ResponsiveImage
-          src={heroImagePath}
-          alt="MyNeedfully community support - families helping families in times of need"
-          priority={true}
-          className="absolute inset-0 w-full h-full object-cover opacity-60 sm:opacity-80 md:opacity-100"
-          sizes="100vw"
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 sm:opacity-80 md:opacity-100"
+          style={{ backgroundImage: `url(${heroImagePath})` }}
         />
         
         {/* Enhanced overlay for better mobile text readability */}
