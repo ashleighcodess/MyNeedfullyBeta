@@ -1,0 +1,98 @@
+/* Critical CSS for homepage performance */
+
+/* Critical font face declarations */
+@font-face {
+  font-family: 'JUST Sans';
+  src: url('/fonts/JUST Sans Regular_1751669842095.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JUST Sans';
+  src: url('/fonts/JUST Sans SemiBold_1751669842095.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Critical base styles */
+.font-just-sans {
+  font-family: 'JUST Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Critical colors */
+.text-navy {
+  color: #1e3a8a;
+}
+
+.text-coral {
+  color: #ff6b6b;
+}
+
+.bg-coral {
+  background-color: #ff6b6b;
+}
+
+.bg-warm-bg {
+  background-color: #fef7f0;
+}
+
+/* Critical layout utilities */
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Hero specific critical styles */
+.hero-text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Critical button styles */
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}

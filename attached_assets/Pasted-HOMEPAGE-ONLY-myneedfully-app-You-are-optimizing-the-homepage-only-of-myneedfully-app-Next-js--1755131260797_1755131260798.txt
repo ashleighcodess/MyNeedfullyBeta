@@ -1,0 +1,136 @@
+HOMEPAGE ONLY (myneedfully.app)
+
+You are optimizing the homepage only of myneedfully.app (Next.js + React + Tailwind on Vercel). Goal: Lighthouse desktop ≥95 across Performance, Accessibility, Best Practices, SEO—with zero visual/UX changes.
+
+Non-Negotiable Guardrails
+
+Do not change layout, spacing, copy, or interactions.
+
+Do not change routes, APIs, data shapes, or auth.
+
+Any risky optimization must be skipped and documented.
+
+Workflow
+
+Create branch: perf/homepage-lighthouse-95.
+
+Baseline: Run Lighthouse (desktop) against the homepage (prod + local). Save JSON reports to /perf-reports/homepage/before.
+
+Screenshot: Capture above-the-fold before/after to verify pixel parity.
+
+Work only in files that affect the homepage route. Do not touch other routes.
+
+Targeted Homepage Tasks
+1) LCP (Largest Contentful Paint)
+
+Identify the LCP element on the homepage. Ensure it renders ASAP.
+
+If LCP is an image/hero:
+
+Use next/image with priority, accurate width/height, and sizes for responsive behavior.
+
+Ensure AVIF/WEBP are enabled.
+
+Preload that image only if it’s the consistent LCP.
+
+If LCP is text:
+
+Ensure its webfont is loaded via next/font (self-hosted), subsetting to needed glyphs, display: swap.
+
+Avoid layout shift by defining font fallbacks and consistent metrics.
+
+2) Fonts
+
+Replace any Google Fonts <link> with next/font. Remove external CSS font loads.
+
+Subset to used weights/styles only. Verify no FOIT/FOUT (use fallback stack).
+
+Confirm no unnecessary font preloads remain.
+
+3) Images (above the fold first)
+
+Convert any above-the-fold PNG/JPG to modern formats where safe; maintain visual fidelity.
+
+Replace any <img> with next/image. Provide explicit dimensions or fill + sizes.
+
+Ensure all media reserves space (aspect-ratio) to prevent CLS.
+
+4) JavaScript & Hydration
+
+Identify heavy, non-critical homepage components (e.g., carousels, charts, maps, modals).
+
+Dynamically import them with next/dynamic and ssr:false only if they are client-only and not critical to first paint.
+
+Remove unused deps; confirm tree-shaking. If a heavy lib is used minimally, import the specific module (no whole-library imports).
+
+5) Third-Party Scripts (Homepage)
+
+Audit <Script> tags. For non-critical scripts, use next/script with strategy="afterInteractive" or "lazyOnload".
+
+Mark all feasible scripts async/defer.
+
+Remove dormant/unused tags (only if unquestionably unused).
+
+6) CSS & Tailwind
+
+Confirm Tailwind purge is effective (no wide globs pulling unused classes).
+
+Remove any render-blocking custom CSS not needed above the fold.
+
+Avoid large inline CSS in the page component; use modules if present (no visual changes).
+
+7) Caching & Headers (Vercel/Next)
+
+In next.config.js, set:
+
+Cache-Control: max-age=31536000, immutable for /_next/static/*.
+
+Long-cache for /public/* assets where appropriate.
+
+Verify Brotli/Gzip compression defaults on Vercel are active.
+
+8) Preload/Preconnect (Homepage only)
+
+Preload only the LCP asset and critical font files actually used above the fold.
+
+Remove stale/over-broad preconnects and preloads.
+
+9) Accessibility & Best Practices (quick homepage pass)
+
+All images have descriptive alt.
+
+Interactive elements have accessible names.
+
+No console errors; no mixed content; HTTPS for all resources.
+
+10) SEO (homepage only, no content changes)
+
+Ensure one <h1> with logical heading order.
+
+Keep existing title/description; ensure canonical is correct.
+
+If JSON-LD exists, keep it unchanged unless a safe fix is obvious.
+
+Acceptance Criteria (Homepage)
+
+Desktop Lighthouse (homepage): Perf ≥95, A11y ≥95, Best Practices ≥95, SEO ≥95.
+
+Core Web Vitals (local desktop run): LCP ≤1.8s, CLS ≤0.01, INP well under 200ms.
+
+No visual or behavioral changes above the fold (verify via before/after screenshots).
+
+No new build warnings or runtime console errors.
+
+MUST pass human “visual check = PASS” by comparing preview deployment to production on multiple screen sizes before merge.
+
+Deliverables
+
+PR to perf/homepage-lighthouse-95 with a CHANGELOG describing each change and why it’s safe.
+
+/perf-reports/homepage/before and /perf-reports/homepage/after JSONs + a 5-line summary of gains.
+
+One bundle analysis screenshot noting any homepage-specific reductions/splits.
+
+Rollback notes per optimization.
+
+If any target can’t be met without risk, stop at the safest high score and document blockers + recommended next steps.

@@ -1,0 +1,143 @@
+HOMEPAGE ONLY (myneedfully.app on Replit)
+
+You are optimizing the homepage only of myneedfully.app (Next.js + React + Tailwind deployed on Replit).
+Goal: Lighthouse desktop ≥95 across Performance, Accessibility, Best Practices, SEO — with zero visual/UX changes.
+
+Non-Negotiable Guardrails
+
+Do not change layout, spacing, copy, or interactions.
+
+Do not change routes, APIs, data shapes, or authentication.
+
+Any risky optimization must be skipped and documented.
+
+Never merge changes without human confirmation.
+
+Workflow (Replit-specific)
+
+Create a new Git branch: perf/homepage-lighthouse-95. Do not push directly to main.
+
+Run a baseline Lighthouse desktop audit against the current live homepage and local dev build. Save JSON results to /perf-reports/homepage/before.
+
+Take a before screenshot of the above-the-fold area for pixel comparison.
+
+Limit all edits to files affecting the homepage route. Leave other pages untouched.
+
+Deploy branch to a Replit preview environment — never directly to production.
+
+Run smoke test checklist (see below) on preview before requesting merge.
+
+Homepage Optimization Targets
+1) Largest Contentful Paint (LCP)
+
+Identify homepage LCP element; render it ASAP.
+
+If LCP is an image:
+
+Use next/image with priority, proper width/height, and sizes.
+
+Enable AVIF/WEBP; preload only if consistently LCP.
+
+If LCP is text:
+
+Use next/font with subsetting and display: swap.
+
+Prevent font-induced layout shift.
+
+2) Fonts
+
+Replace Google Fonts <link> with next/font.
+
+Subset only needed weights/styles. Remove unused preloads.
+
+3) Images
+
+Convert above-the-fold PNG/JPG to AVIF/WEBP if visually identical.
+
+Replace <img> with next/image; set dimensions or fill+sizes.
+
+Reserve layout space to avoid CLS.
+
+4) JavaScript & Hydration
+
+Dynamically import non-critical, client-only components (next/dynamic, ssr:false).
+
+Tree-shake unused dependencies. Replace heavy libs with lighter alternatives if safe.
+
+5) Third-Party Scripts
+
+Load non-essential scripts with next/script (strategy="afterInteractive" or "lazyOnload").
+
+Remove dormant/unused tags only if 100% certain they are not required.
+
+6) CSS & Tailwind
+
+Ensure Tailwind purge removes unused classes.
+
+Remove render-blocking CSS not needed above the fold.
+
+7) Caching & Compression
+
+Confirm Replit deployment serves static assets compressed (Brotli/Gzip).
+
+Long-cache static assets (/_next/static/*, /public/*).
+
+8) Preload/Preconnect
+
+Preload only LCP asset + critical fonts.
+
+Remove stale/unnecessary preconnects.
+
+9) Accessibility & Best Practices
+
+All images must have descriptive alt text.
+
+Interactive elements must have accessible names.
+
+No mixed content or console errors.
+
+10) SEO
+
+One <h1> per page; correct heading hierarchy.
+
+Keep current <title> and <meta> description.
+
+Ensure canonical link is correct.
+
+Acceptance Criteria
+
+Lighthouse desktop (homepage): Perf ≥95, A11y ≥95, Best Practices ≥95, SEO ≥95.
+
+Core Web Vitals: LCP ≤1.8s, CLS ≤0.01, INP <200ms in local desktop test.
+
+No visual or behavioral changes above the fold.
+
+MUST pass human “visual check = PASS”: Compare preview to live on multiple screen sizes before merge.
+
+Replit Preview Smoke Test Checklist (MUST RUN before merge)
+
+ Load homepage in preview; compare above-the-fold screenshot with live — must be pixel-perfect.
+
+ Click all visible navigation links on homepage; confirm they route correctly.
+
+ Test all visible forms/inputs; confirm no console errors.
+
+ Check that images load without broken links.
+
+ Open dev tools → Network tab; confirm no 404s or missing files.
+
+ Run Lighthouse desktop audit on preview; confirm targets met.
+
+ If any test fails, stop and request human review instead of merging.
+
+Deliverables
+
+PR from perf/homepage-lighthouse-95 to main with a CHANGELOG explaining each change and why it’s safe.
+
+/perf-reports/homepage/before and /perf-reports/homepage/after JSON files + short summary of performance gains.
+
+Screenshot comparisons proving pixel match above the fold.
+
+Rollback instructions for each change.
+
+If any target cannot be safely reached, stop at the highest safe score and list blockers + recommendations.

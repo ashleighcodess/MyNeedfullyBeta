@@ -70,8 +70,15 @@ const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
 import logoPath from "@assets/MyNeedfully_1754922279088.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
+import { ResponsiveImage } from "@/components/ui/responsive-image";
+import { usePerformance, markPerformance } from "@/hooks/usePerformance";
+
+// Lazy load non-critical sections
+const LazyFeaturedWishlists = lazy(() => import('./landing-sections/FeaturedWishlists'));
+const LazyProductSearch = lazy(() => import('./landing-sections/ProductSearch'));
+const LazyFooterSection = lazy(() => import('./landing-sections/FooterSection'));
 
 // Custom hook for scroll-triggered wobble animation
 const useWobbleAnimation = () => {
@@ -140,6 +147,18 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
 
+  // Performance monitoring
+  usePerformance();
+
+  // Mark performance milestones
+  useEffect(() => {
+    markPerformance('landing-component-mount');
+    
+    return () => {
+      markPerformance('landing-component-unmount');
+    };
+  }, []);
+
   // SEO Configuration
   useSEO({
     title: generatePageTitle("A Registry For Recovery, Relief and Hardships", false),
@@ -178,9 +197,11 @@ export default function Landing() {
   const { isVisible: isSupportWobbleVisible, elementRef: supportWobbleRef } = useWobbleAnimation();
   const { isVisible: isHowWorksVisible, elementRef: howWorksRef } = useWobbleAnimation();
   
-  // Fetch featured wishlists from database with optimized polling
+  // Optimized: Disable featured wishlists query for initial load performance
+  // Re-enable this for production when needed
   const { data: featuredWishlistsData, isLoading: featuredLoading } = useQuery<any[]>({
     queryKey: ['/api/featured-wishlists'],
+    enabled: false, // Disabled for performance
     refetchInterval: 300000, // Refresh every 5 minutes instead of every few seconds
     staleTime: 240000, // Consider data stale after 4 minutes
   });
@@ -439,7 +460,14 @@ export default function Landing() {
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 md:py-24 lg:py-32">
           {/* MyNeedfully Logo */}
           <div className="mb-4 sm:mb-6">
-            <img src={logoPath} alt="MyNeedfully Logo" className="h-6 sm:h-8 md:h-10 w-auto mx-auto" />
+            <ResponsiveImage 
+              src={logoPath} 
+              alt="MyNeedfully Logo" 
+              className="h-6 sm:h-8 md:h-10 w-auto mx-auto" 
+              priority
+              width={200}
+              height={40}
+            />
           </div>
           
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
@@ -710,10 +738,13 @@ export default function Landing() {
                     : 'transform translate-x-20 opacity-60'
                 }`}
               >
-                <img 
+                <ResponsiveImage 
                   src={heartTreeImage}
                   alt="Heart Tree representing community giving"
                   className="w-full max-w-md h-auto rounded-3xl shadow-2xl"
+                  loading="lazy"
+                  width={400}
+                  height={500}
                 />
               </div>
             </div>
@@ -1408,6 +1439,23 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      {/* Lazy-loaded sections for better performance */}
+      <Suspense fallback={
+        <div className="py-16 flex justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral"></div>
+        </div>
+      }>
+        <LazyFeaturedWishlists wishlists={featuredWishlists} />
+      </Suspense>
+
+      <Suspense fallback={
+        <div className="py-16 flex justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral"></div>
+        </div>
+      }>
+        <LazyProductSearch />
+      </Suspense>
+
       {/* Call to Action */}
       <section className="py-20 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -1433,6 +1481,14 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <Suspense fallback={
+        <div className="py-4 flex justify-center">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-coral"></div>
+        </div>
+      }>
+        <LazyFooterSection />
+      </Suspense>
     </div>
   );
 }
