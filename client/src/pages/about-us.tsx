@@ -264,7 +264,7 @@ export default function AboutUs() {
             </div>
           </div>
           
-          {/* Statistics Cards */}
+          {/* ARCHIVED: Statistics Cards - Hidden until we get real data, preserved for future restoration
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-8" data-stats-section>
             <Card className="text-left bg-orange-200 border-orange-200 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
               <CardContent className="p-4 sm:p-6">
@@ -322,6 +322,7 @@ export default function AboutUs() {
               </CardContent>
             </Card>
           </div>
+          */}
         </div>
 
         {/* Ready to Help Section - Full Width */}
