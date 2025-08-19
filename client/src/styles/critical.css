@@ -62,7 +62,14 @@
 
 /* Hero specific critical styles */
 .hero-text-shadow {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Remove text shadow on mobile for better readability with new background */
+@media (max-width: 640px) {
+  .hero-text-shadow {
+    text-shadow: none;
+  }
 }
 
 /* Hero background responsive behavior */

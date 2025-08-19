@@ -411,7 +411,7 @@ export default function Landing() {
         
         {/* Mobile-optimized background */}
         <div 
-          className="block sm:hidden absolute inset-0 bg-center bg-cover bg-no-repeat"
+          className="block sm:hidden absolute inset-0 bg-center bg-cover bg-no-repeat opacity-60"
           style={{ 
             backgroundImage: `url(${heroMobileImagePath})`,
             backgroundAttachment: 'scroll'
@@ -419,7 +419,7 @@ export default function Landing() {
         />
         
         {/* Enhanced overlay for better mobile text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/50 to-white/70 sm:from-white/50 sm:via-white/30 sm:to-white/50 md:from-white/40 md:via-white/20 md:to-white/40 lg:from-white/30 lg:via-white/15 lg:to-white/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/20 to-white/30 sm:from-white/50 sm:via-white/30 sm:to-white/50 md:from-white/40 md:via-white/20 md:to-white/40 lg:from-white/30 lg:via-white/15 lg:to-white/30" />
         
         {/* Smooth transition overlay to white space below */}
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 lg:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
