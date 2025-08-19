@@ -580,6 +580,11 @@ export default function Landing() {
                 </div>
               </div>
 
+              {/* Mobile connecting line 1-2 */}
+              <div className="lg:hidden flex justify-center py-4">
+                <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
+              </div>
+
               {/* Step 2 - Share */}
               <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative">
                 <div className="relative">
@@ -647,6 +652,11 @@ export default function Landing() {
                   </p>
 
                 </div>
+              </div>
+
+              {/* Mobile connecting line 2-3 */}
+              <div className="lg:hidden flex justify-center py-4">
+                <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
               </div>
 
               {/* Step 3 - Receive */}
@@ -718,6 +728,11 @@ export default function Landing() {
                 </div>
               </div>
 
+              {/* Mobile connecting line 3-4 */}
+              <div className="lg:hidden flex justify-center py-4">
+                <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
+              </div>
+
               {/* Step 4 - Track */}
               <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative">
                 <div className="relative">
@@ -766,12 +781,7 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Mobile vertical connecting lines between each step */}
-            <div className="lg:hidden absolute inset-0 flex flex-col items-center justify-between pointer-events-none">
-              <div className="w-0.5 h-12 bg-gradient-to-b from-coral to-coral-light opacity-60 mt-32"></div>
-              <div className="w-0.5 h-12 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
-              <div className="w-0.5 h-12 bg-gradient-to-b from-coral to-coral-light opacity-60 mb-32"></div>
-            </div>
+
           </div>
 
           {/* Quick Actions - Moved below explanation */}
