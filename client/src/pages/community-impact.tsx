@@ -324,7 +324,7 @@ export default function CommunityImpact() {
                 {formatNumber(animatedStats.familiesHelped)}
               </div>
               <p className="text-purple-200 text-sm">
-                +25% from last month
+                Families receiving support
               </p>
             </CardContent>
           </Card>
@@ -342,7 +342,7 @@ export default function CommunityImpact() {
                 {formatCurrency(animatedStats.donationValue)}
               </div>
               <p className="text-orange-200 text-sm">
-                +22% from last month
+                Total donated value
               </p>
             </CardContent>
           </Card>
