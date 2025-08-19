@@ -42,12 +42,23 @@ export default function CommunityImpact() {
     donationValue: 0
   });
 
-  // Use realistic development data for community statistics  
-  const finalStats = {
-    totalSupport: 1547,
-    itemsFulfilled: 892,  
-    familiesHelped: 234,
-    donationValue: 45780
+  // Fetch real platform statistics
+  const { data: platformStats, isLoading: statsLoading, error: statsError } = useQuery({
+    queryKey: ['/api/platform-stats'],
+    retry: 1,
+  });
+
+  // Use platform stats or fallback to initial values
+  const finalStats = platformStats ? {
+    totalSupport: platformStats.totalSupport || 0,
+    itemsFulfilled: platformStats.itemsFulfilled || 0,  
+    familiesHelped: platformStats.familiesHelped || 0,
+    donationValue: platformStats.donationValue || 0
+  } : {
+    totalSupport: 0,
+    itemsFulfilled: 0,  
+    familiesHelped: 0,
+    donationValue: 0
   };
 
   // Sample recent activity data
@@ -214,7 +225,30 @@ export default function CommunityImpact() {
         </div>
 
         {/* Key Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {statsLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardHeader className="pb-2">
+                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : statsError ? (
+          <div className="text-center py-12">
+            <div className="text-red-600 mb-4">
+              <Activity className="h-12 w-12 mx-auto mb-2" />
+              <p className="text-lg font-semibold">Unable to load statistics</p>
+              <p className="text-sm text-gray-600">Please check back later or contact support if this persists.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white overflow-hidden relative">
             <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-6 translate-x-6"></div>
             <CardHeader className="pb-2">
@@ -286,7 +320,8 @@ export default function CommunityImpact() {
               </p>
             </CardContent>
           </Card>
-        </div>
+          </div>
+        )}
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">

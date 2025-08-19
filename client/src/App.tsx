@@ -23,6 +23,7 @@ const EditProfile = lazy(() => import("@/pages/edit-profile").catch(() => ({ def
 const PrivacySettings = lazy(() => import("@/pages/privacy-settings").catch(() => ({ default: () => <div>Error loading Privacy page</div> })));
 const Settings = lazy(() => import("@/pages/settings").catch(() => ({ default: () => <div>Error loading Settings page</div> })));
 const AdminDashboard = lazy(() => import("@/pages/admin").catch(() => ({ default: () => <div>Error loading Admin page</div> })));
+const AdminStats = lazy(() => import("@/pages/admin-stats").catch(() => ({ default: () => <div>Error loading Admin Stats page</div> })));
 const AboutUs = lazy(() => import("@/pages/about-us").catch(() => ({ default: () => <div>Error loading About page</div> })));
 const Resources = lazy(() => import("@/pages/resources").catch(() => ({ default: () => <div>Error loading Resources page</div> })));
 const Signup = lazy(() => import("@/pages/signup").catch(() => ({ default: () => <div>Error loading Signup page</div> })));
@@ -132,7 +133,7 @@ function Router() {
       <NotificationHandler />
       
       <Switch>
-        {/* Admin route with no header/footer */}
+        {/* Admin routes with no header/footer */}
         <Route path="/admin">
           <Suspense fallback={
             <div className="min-h-screen bg-warm-bg flex items-center justify-center">
@@ -140,6 +141,16 @@ function Router() {
             </div>
           }>
             <AdminDashboard />
+          </Suspense>
+        </Route>
+        
+        <Route path="/admin/stats">
+          <Suspense fallback={
+            <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+            </div>
+          }>
+            <AdminStats />
           </Suspense>
         </Route>
         

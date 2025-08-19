@@ -217,6 +217,23 @@ export const emailVerificationTokens = pgTable("email_verification_tokens", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Platform Statistics - Admin controlled community impact metrics
+export const platformStats = pgTable("platform_stats", {
+  id: serial("id").primaryKey(),
+  totalSupport: integer("total_support").notNull().default(0), // Total support actions taken
+  itemsFulfilled: integer("items_fulfilled").notNull().default(0), // Total items fulfilled
+  familiesHelped: integer("families_helped").notNull().default(0), // Total families assisted
+  donationValue: integer("donation_value").notNull().default(0), // Total donation value in cents
+  needsListCreated: integer("needs_list_created").notNull().default(0), // Total needs lists created
+  needsListFulfilled: integer("needs_list_fulfilled").notNull().default(0), // Total needs lists completed
+  smilesSpread: integer("smiles_spread").notNull().default(0), // Positive interactions/thank you notes
+  productsDelivered: integer("products_delivered").notNull().default(0), // Total products delivered
+  updatedBy: varchar("updated_by").references(() => users.id), // Admin who made the update
+  notes: text("notes"), // Optional notes about the update
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   wishlists: many(wishlists),
@@ -281,6 +298,8 @@ export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTo
 
 export const insertEmailVerificationTokenSchema = createInsertSchema(emailVerificationTokens).partial();
 
+export const insertPlatformStatsSchema = createInsertSchema(platformStats).partial();
+
 // Types
 export type UpsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -302,6 +321,8 @@ export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSc
 export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type InsertEmailVerificationToken = z.infer<typeof insertEmailVerificationTokenSchema>;
 export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
+export type InsertPlatformStats = z.infer<typeof insertPlatformStatsSchema>;
+export type PlatformStats = typeof platformStats.$inferSelect;
 
 // Extended types for queries with additional computed fields
 export type WishlistWithItemCount = Wishlist & {

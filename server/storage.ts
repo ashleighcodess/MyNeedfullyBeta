@@ -9,6 +9,7 @@ import {
   analyticsEvents,
   passwordResetTokens,
   emailVerificationTokens,
+  platformStats,
   type User,
   type UpsertUser,
   type Wishlist,
@@ -30,6 +31,8 @@ import {
   type InsertPasswordResetToken,
   type EmailVerificationToken,
   type InsertEmailVerificationToken,
+  type PlatformStats,
+  type InsertPlatformStats,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, and, or, like, sql, count, sum, gte, lte, getTableColumns } from "drizzle-orm";
@@ -138,6 +141,10 @@ export interface IStorage {
 
   // Community Impact operations
   getCommunityStats(startDate: Date, endDate: Date): Promise<any>;
+
+  // Platform Statistics operations
+  getPlatformStats(): Promise<PlatformStats | null>;
+  updatePlatformStats(updates: Partial<InsertPlatformStats>): Promise<PlatformStats>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1128,6 +1135,57 @@ export class DatabaseStorage implements IStorage {
         )
       )
       .orderBy(desc(analyticsEvents.createdAt));
+  }
+
+  // Platform Statistics operations
+  async getPlatformStats(): Promise<PlatformStats | null> {
+    const [stats] = await db
+      .select()
+      .from(platformStats)
+      .orderBy(desc(platformStats.updatedAt))
+      .limit(1);
+    
+    return stats || null;
+  }
+
+  async updatePlatformStats(updates: Partial<InsertPlatformStats>): Promise<PlatformStats> {
+    // Check if stats exist
+    const existingStats = await this.getPlatformStats();
+    
+    if (existingStats) {
+      // Update existing stats
+      const [updatedStats] = await db
+        .update(platformStats)
+        .set({
+          ...updates,
+          updatedAt: new Date()
+        })
+        .where(eq(platformStats.id, existingStats.id))
+        .returning();
+      
+      return updatedStats;
+    } else {
+      // Create new stats record
+      const [newStats] = await db
+        .insert(platformStats)
+        .values({
+          totalSupport: updates.totalSupport || 0,
+          itemsFulfilled: updates.itemsFulfilled || 0,
+          familiesHelped: updates.familiesHelped || 0,
+          donationValue: updates.donationValue || 0,
+          needsListCreated: updates.needsListCreated || 0,
+          needsListFulfilled: updates.needsListFulfilled || 0,
+          smilesSpread: updates.smilesSpread || 0,
+          productsDelivered: updates.productsDelivered || 0,
+          updatedBy: updates.updatedBy,
+          notes: updates.notes,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        .returning();
+      
+      return newStats;
+    }
   }
 }
 

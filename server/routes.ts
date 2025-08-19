@@ -4291,6 +4291,66 @@ The MyNeedfully Team
     }
   });
 
+  // Platform Statistics routes
+  app.get('/api/platform-stats', async (req, res) => {
+    try {
+      const stats = await storage.getPlatformStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Failed to get platform stats:", error);
+      res.status(500).json({ message: "Failed to get platform statistics" });
+    }
+  });
+
+  // Admin-only route to update platform statistics
+  app.post('/api/admin/platform-stats', isAuthenticated, async (req: any, res) => {
+    try {
+      // Check if user is admin
+      const userId = req.user?.id || req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user || user.userType !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const {
+        totalSupport,
+        itemsFulfilled,
+        familiesHelped,
+        donationValue,
+        needsListCreated,
+        needsListFulfilled,
+        smilesSpread,
+        productsDelivered,
+        notes
+      } = req.body;
+
+      // Update platform statistics
+      const updatedStats = await storage.updatePlatformStats({
+        totalSupport,
+        itemsFulfilled,
+        familiesHelped,
+        donationValue,
+        needsListCreated,
+        needsListFulfilled,
+        smilesSpread,
+        productsDelivered,
+        updatedBy: userId,
+        notes,
+        updatedAt: new Date()
+      });
+
+      console.log(`📊 Platform stats updated by admin: ${user.email || user.id}`);
+      res.json(updatedStats);
+    } catch (error) {
+      console.error("Failed to update platform stats:", error);
+      res.status(500).json({ message: "Failed to update platform statistics" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Set up WebSocket server with authentication
