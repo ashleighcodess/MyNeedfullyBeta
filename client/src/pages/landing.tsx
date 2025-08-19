@@ -576,9 +576,7 @@ export default function Landing() {
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Build a disaster recovery registry with essential items you need
                   </p>
-                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-xs sm:text-sm font-semibold">Click to get started →</span>
-                  </div>
+
                 </div>
               </div>
 
@@ -647,9 +645,7 @@ export default function Landing() {
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Easily share your list with friends, family, and community groups
                   </p>
-                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-xs sm:text-sm font-semibold">Share instantly →</span>
-                  </div>
+
                 </div>
               </div>
 
@@ -718,9 +714,7 @@ export default function Landing() {
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Supporters purchase items directly and ship to your location
                   </p>
-                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-xs sm:text-sm font-semibold">Get help now →</span>
-                  </div>
+
                 </div>
               </div>
 
@@ -767,9 +761,7 @@ export default function Landing() {
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Monitor fulfillment and update your list as recovery progresses
                   </p>
-                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-xs sm:text-sm font-semibold">See progress →</span>
-                  </div>
+
                 </div>
               </div>
             </div>
