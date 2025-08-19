@@ -838,8 +838,6 @@ export default function Landing() {
                 Our <span className="text-coral">mission</span> is to simplify disaster recovery by helping people affected by fires, floods, and other emergencies receive exactly what they need while empowering communities to <span className="text-coral">provide meaningful, timely support.</span>
               </h2>
               
-              <p className="text-gray-600 text-lg mb-8 leading-relaxed">MyNeedfully was born from personal experience.</p>
-              
               {/* Animated Ticker Stats */}
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {/* Needs List Fulfilled */}
