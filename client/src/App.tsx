@@ -97,11 +97,20 @@ function NotificationHandler() {
   return null;
 }
 
-// Component for home route logic - always show Landing page (public marketing page)
+// Component for home route logic - show Landing for unauthenticated, Home for authenticated users
 function HomeRoute() {
-  // Always show the public landing page regardless of authentication status
-  // This allows logged-in users to view the main marketing page when clicking logo
-  return <Landing />;
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  // Show landing page for unauthenticated users, home page for authenticated users
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto mb-4"></div>
+      </div>
+    );
+  }
+  
+  return isAuthenticated ? <Home /> : <Landing />;
 }
 
 // Component for dashboard route logic - show user dashboard for authenticated users
