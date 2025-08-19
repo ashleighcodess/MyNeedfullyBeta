@@ -418,10 +418,10 @@ export default function Landing() {
             <ResponsiveImage 
               src={logoPath} 
               alt="MyNeedfully Logo" 
-              className="h-6 sm:h-8 md:h-10 w-auto mx-auto" 
+              className="h-12 sm:h-16 md:h-20 w-auto mx-auto" 
               priority
-              width={200}
-              height={40}
+              width={300}
+              height={60}
             />
           </div>
           
