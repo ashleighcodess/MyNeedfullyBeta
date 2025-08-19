@@ -838,9 +838,8 @@ export default function Landing() {
                 Our <span className="text-coral">mission</span> is to simplify disaster recovery by helping people affected by fires, floods, and other emergencies receive exactly what they need while empowering communities to <span className="text-coral">provide meaningful, timely support.</span>
               </h2>
               
-              {/* Animated Ticker Stats */}
+              {/* ARCHIVED: Animated Ticker Stats - Hidden until we get real data, preserved for future restoration
               <div className="grid grid-cols-2 gap-4 mb-8">
-                {/* Needs List Fulfilled */}
                 <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
@@ -853,7 +852,6 @@ export default function Landing() {
                   </div>
                 </div>
                 
-                {/* Needs List Created */}
                 <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-coral/10 p-2 rounded-lg mr-3">
@@ -866,7 +864,6 @@ export default function Landing() {
                   </div>
                 </div>
                 
-                {/* Smiles Spread */}
                 <div className="bg-white border-2 border-gray-200 p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-coral/10 p-2 rounded-lg mr-3">
@@ -879,7 +876,6 @@ export default function Landing() {
                   </div>
                 </div>
                 
-                {/* Products Delivered */}
                 <div className="bg-coral text-white p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105">
                   <div className="flex items-center mb-2">
                     <div className="bg-white/20 p-2 rounded-lg mr-3">
@@ -892,6 +888,7 @@ export default function Landing() {
                   </div>
                 </div>
               </div>
+              */}
               
               <Button 
                 className="bg-transparent border-2 border-navy text-navy hover:bg-navy hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300"
