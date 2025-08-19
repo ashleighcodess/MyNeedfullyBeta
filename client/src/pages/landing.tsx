@@ -78,7 +78,6 @@ import { usePerformance, markPerformance } from "@/hooks/usePerformance";
 
 // Lazy load non-critical sections
 const LazyFeaturedWishlists = lazy(() => import('./landing-sections/FeaturedWishlists'));
-const LazyFooterSection = lazy(() => import('./landing-sections/FooterSection'));
 
 // Custom hook for scroll-triggered wobble animation
 const useWobbleAnimation = () => {
@@ -1631,13 +1630,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      <Suspense fallback={
-        <div className="py-4 flex justify-center">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-coral"></div>
-        </div>
-      }>
-        <LazyFooterSection />
-      </Suspense>
     </div>
   );
 }
