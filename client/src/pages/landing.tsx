@@ -462,7 +462,7 @@ export default function Landing() {
             </Button>
           </div>
 
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed hero-text-shadow font-medium font-just-sans">A Needs List provides a simple way to organize and share your recovery needs with your community.</p>
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed font-medium font-just-sans">A Needs List provides a simple way to organize and share your recovery needs with your community.</p>
         </div>
         
         {/* Seamless gradient transition overlay */}
