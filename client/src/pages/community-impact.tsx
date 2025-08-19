@@ -42,8 +42,45 @@ export default function CommunityImpact() {
     donationValue: 0
   });
 
+  // Helper functions for formatting
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const formatNumber = (value: number) => {
+    return new Intl.NumberFormat('en-US').format(value);
+  };
+
+  const formatMoney = (value: number) => {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(0)}K`;
+    }
+    return formatNumber(value);
+  };
+
   // Fetch real platform statistics
-  const { data: platformStats, isLoading: statsLoading, error: statsError } = useQuery({
+  const { data: platformStats, isLoading: statsLoading, error: statsError } = useQuery<{
+    id: number;
+    totalSupport: number;
+    itemsFulfilled: number;
+    familiesHelped: number;
+    donationValue: number;
+    needsListCreated: number;
+    needsListFulfilled: number;
+    smilesSpread: number;
+    productsDelivered: number;
+    updatedBy: string | null;
+    notes: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }>({
     queryKey: ['/api/platform-stats'],
     retry: 1,
   });
@@ -175,19 +212,6 @@ export default function CommunityImpact() {
     { level: "Medium", count: Math.floor(platformStats.needsListCreated * 0.30), percentage: 30 },
     { level: "Low", count: Math.floor(platformStats.needsListCreated * 0.17), percentage: 17 }
   ] : [];
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const formatNumber = (value: number) => {
-    return new Intl.NumberFormat('en-US').format(value);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
