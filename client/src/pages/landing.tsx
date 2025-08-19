@@ -815,7 +815,7 @@ export default function Landing() {
                        }}></div>
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Create a Needs List on someone's behalf and/or fulfill an ask from an existing Need List</h3>
-                <p className="text-gray-600 text-sm">Support others by fulfilling their needs or create lists to help family, friends, or community members</p>
+                <p className="text-gray-600 text-sm">Support others in needs by creating a Needs Lists or giving to an existing Needs List</p>
               </div>
 
               {/* Mobile connecting line 3 */}
