@@ -491,76 +491,288 @@ export default function Landing() {
 
 
           <div 
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ease-out ${
+            className={`relative transition-all duration-1000 ease-out ${
               isHowWorksVisible 
                 ? 'opacity-100 transform translate-y-0' 
                 : 'opacity-0 transform translate-y-12'
             }`}
             style={{ transitionDelay: isHowWorksVisible ? '200ms' : '0ms' }}
           >
-            {/* Step 1 - Create A Needs List */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Gift className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
+            {/* Interactive Flow Steps */}
+            <div className="flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 lg:space-x-6">
+              
+              {/* Step 1 - Create */}
+              <div className="flex flex-col items-center group cursor-pointer" onClick={handleCreateList}>
+                <div className="relative">
+                  {/* Animated Circle with Progress Ring */}
+                  <div className="w-32 h-32 relative">
+                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#f3f4f6"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#ff6b6b"
+                        strokeWidth="8"
+                        strokeDasharray="339.3"
+                        strokeDashoffset={isHowWorksVisible ? "0" : "339.3"}
+                        className="transition-all duration-2000 ease-out"
+                        style={{ transitionDelay: isHowWorksVisible ? '400ms' : '0ms' }}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Gift className="text-white h-10 w-10" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Flowing Arrow to Next Step */}
+                  <div className="hidden lg:block absolute top-14 -right-8 w-16 h-4">
+                    <svg className="w-full h-full" viewBox="0 0 64 16">
+                      <path
+                        d="M0 8 L56 8 M48 2 L56 8 L48 14"
+                        stroke="#ff6b6b"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-all duration-1000 ${
+                          isHowWorksVisible ? 'opacity-70' : 'opacity-0'
+                        }`}
+                        style={{ 
+                          transitionDelay: isHowWorksVisible ? '1000ms' : '0ms',
+                          strokeDasharray: '70',
+                          strokeDashoffset: isHowWorksVisible ? '0' : '70'
+                        }}
+                      />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-6 max-w-xs">
+                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                    Create Your List
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Build a disaster recovery registry with essential items you need
+                  </p>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-sm font-semibold">Click to get started →</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Create a needs list</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Build your own disaster recovery registry with essential items like clothes, toiletries, baby supplies, furniture, or gift cards after a fire, flood, or other crisis.</p>
+
+              {/* Step 2 - Share */}
+              <div className="flex flex-col items-center group cursor-pointer">
+                <div className="relative">
+                  {/* Animated Circle with Progress Ring */}
+                  <div className="w-32 h-32 relative">
+                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#f3f4f6"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#ff6b6b"
+                        strokeWidth="8"
+                        strokeDasharray="339.3"
+                        strokeDashoffset={isHowWorksVisible ? "0" : "339.3"}
+                        className="transition-all duration-2000 ease-out"
+                        style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Share2 className="text-white h-10 w-10" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Flowing Arrow to Next Step */}
+                  <div className="hidden lg:block absolute top-14 -right-8 w-16 h-4">
+                    <svg className="w-full h-full" viewBox="0 0 64 16">
+                      <path
+                        d="M0 8 L56 8 M48 2 L56 8 L48 14"
+                        stroke="#ff6b6b"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-all duration-1000 ${
+                          isHowWorksVisible ? 'opacity-70' : 'opacity-0'
+                        }`}
+                        style={{ 
+                          transitionDelay: isHowWorksVisible ? '1400ms' : '0ms',
+                          strokeDasharray: '70',
+                          strokeDashoffset: isHowWorksVisible ? '0' : '70'
+                        }}
+                      />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-6 max-w-xs">
+                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                    Share with Community
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Easily share your list with friends, family, and community groups
+                  </p>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-sm font-semibold">Share instantly →</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 - Receive */}
+              <div className="flex flex-col items-center group cursor-pointer">
+                <div className="relative">
+                  {/* Animated Circle with Progress Ring */}
+                  <div className="w-32 h-32 relative">
+                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#f3f4f6"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#ff6b6b"
+                        strokeWidth="8"
+                        strokeDasharray="339.3"
+                        strokeDashoffset={isHowWorksVisible ? "0" : "339.3"}
+                        className="transition-all duration-2000 ease-out"
+                        style={{ transitionDelay: isHowWorksVisible ? '1200ms' : '0ms' }}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Heart className="text-white h-10 w-10" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Flowing Arrow to Next Step */}
+                  <div className="hidden lg:block absolute top-14 -right-8 w-16 h-4">
+                    <svg className="w-full h-full" viewBox="0 0 64 16">
+                      <path
+                        d="M0 8 L56 8 M48 2 L56 8 L48 14"
+                        stroke="#ff6b6b"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-all duration-1000 ${
+                          isHowWorksVisible ? 'opacity-70' : 'opacity-0'
+                        }`}
+                        style={{ 
+                          transitionDelay: isHowWorksVisible ? '1800ms' : '0ms',
+                          strokeDasharray: '70',
+                          strokeDashoffset: isHowWorksVisible ? '0' : '70'
+                        }}
+                      />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-6 max-w-xs">
+                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                    Receive Support
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Supporters purchase items directly and ship to your location
+                  </p>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-sm font-semibold">Get help now →</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 4 - Track */}
+              <div className="flex flex-col items-center group cursor-pointer">
+                <div className="relative">
+                  {/* Animated Circle with Progress Ring */}
+                  <div className="w-32 h-32 relative">
+                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#f3f4f6"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        fill="none"
+                        stroke="#ff6b6b"
+                        strokeWidth="8"
+                        strokeDasharray="339.3"
+                        strokeDashoffset={isHowWorksVisible ? "0" : "339.3"}
+                        className="transition-all duration-2000 ease-out"
+                        style={{ transitionDelay: isHowWorksVisible ? '1600ms' : '0ms' }}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Shield className="text-white h-10 w-10" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-6 max-w-xs">
+                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                    Track Progress
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Monitor fulfillment and update your list as recovery progresses
+                  </p>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-sm font-semibold">See progress →</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Step 2 - Share With Community */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '600ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Share2 className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
-              </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Share with community</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Easily share your personalized list with friends, family, neighbors, or community groups via text, email, or social media.
-</p>
-            </div>
-
-            {/* Step 3 - Receive Support */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '800ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Heart className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
-              </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Receive support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">Supporters purchase items directly from your list through trusted online retailers. Everything ships straight to your temporary housing, a family member's home, or wherever you're staying.</p>
-            </div>
-
-            {/* Step 4 - Track Fulfillment */}
-            <div 
-              className={`bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 text-center transform group ${
-                isHowWorksVisible 
-                  ? 'opacity-100 translate-y-0 hover:scale-105' 
-                  : 'opacity-0 translate-y-8'
-              }`}
-              style={{ transitionDelay: isHowWorksVisible ? '1000ms' : '0ms' }}
-            >
-              <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center mx-auto mb-6 transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-coral-dark">
-                <Shield className="text-white h-10 w-10 stroke-2" strokeWidth={2} />
-              </div>
-              <h3 className="text-xl font-bold text-navy mb-4 font-just-sans group-hover:text-coral transition-colors duration-300">Track fulfillment</h3>
-              <p className="text-gray-600 text-sm leading-relaxed font-just-sans font-light">See which items have been purchased and what's still needed. Update your list as your recovery progresses.</p>
+            {/* Mobile Flow Indicators */}
+            <div className="lg:hidden flex flex-col items-center space-y-4 mt-8">
+              {[1, 2, 3, 4].map((step, index) => (
+                <div key={step} className="flex items-center">
+                  {index < 3 && (
+                    <div className="w-1 h-12 bg-gradient-to-b from-coral to-coral-light mx-auto opacity-70"></div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
