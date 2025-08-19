@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Mail, User, Lock, Heart, ArrowRight } from "lucide-react";
+import { Mail, User, Lock, Heart, ArrowRight, Eye, EyeOff } from "lucide-react";
 import logoIcon from "@assets/MyNeedfully_1754922279088.png";
 
 // Form schemas
@@ -41,6 +41,8 @@ export default function AuthPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("login");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
   
   // Check for authentication error in URL and show toast
   useEffect(() => {
@@ -279,10 +281,17 @@ export default function AuthPage() {
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                               <Input
                                 {...field}
-                                type="password"
+                                type={showLoginPassword ? "text" : "password"}
                                 placeholder="Enter your password"
-                                className="pl-10"
+                                className="pl-10 pr-10"
                               />
+                              <button
+                                type="button"
+                                onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                              >
+                                {showLoginPassword ? <EyeOff /> : <Eye />}
+                              </button>
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -442,10 +451,17 @@ export default function AuthPage() {
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                               <Input
                                 {...field}
-                                type="password"
+                                type={showSignupPassword ? "text" : "password"}
                                 placeholder="Create a password"
-                                className="pl-10"
+                                className="pl-10 pr-10"
                               />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignupPassword(!showSignupPassword)}
+                                className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                              >
+                                {showSignupPassword ? <EyeOff /> : <Eye />}
+                              </button>
                             </div>
                           </FormControl>
                           <FormMessage />
