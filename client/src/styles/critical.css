@@ -66,32 +66,19 @@
 }
 
 /* Hero background responsive behavior */
-.hero-bg-mobile {
+.hero-bg-desktop {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: scroll;
+  opacity: 0.9;
 }
 
-/* Mobile responsive background optimizations */
-@media (max-width: 768px) {
-  .hero-bg-mobile {
-    background-size: cover !important;
-    background-position: center top !important;
-    opacity: 0.8 !important;
-  }
-  
+/* Mobile hero background - uses dedicated mobile image */
+@media (max-width: 640px) {
   /* Ensure hero section doesn't stretch too much on mobile */
   .min-h-\[90vh\] {
     min-height: 85vh;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-bg-mobile {
-    background-size: cover !important;
-    background-position: center top !important;
-    opacity: 0.7 !important;
   }
 }
 

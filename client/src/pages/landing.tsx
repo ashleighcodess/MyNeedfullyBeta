@@ -69,6 +69,7 @@ const BoxHeartIcon = ({ className = "h-6 w-6" }: { className?: string }) => (
 );
 import logoPath from "@assets/MyNeedfully_1754922279088.png";
 import heroImagePath from "@assets/3b5b7b7c-182b-4d1a-8f03-f40b23139585_1751586386544.png";
+import heroMobileImagePath from "@assets/ChatGPT Image Aug 19, 2025, 10_42_30 AM_1755614554538.png";
 import heartTreeImage from "@assets/NeedfullyHeartTree_1751655258585.png";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl } from "@/lib/seo";
@@ -399,11 +400,20 @@ export default function Landing() {
     <div className="min-h-screen bg-warm-bg">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Community illustration background - reduced on mobile */}
+        {/* Desktop/Tablet background */}
         <div 
-          className="absolute inset-0 bg-center bg-no-repeat hero-bg-mobile"
+          className="hidden sm:block absolute inset-0 bg-center bg-no-repeat hero-bg-desktop"
           style={{ 
             backgroundImage: `url(${heroImagePath})`,
+            backgroundAttachment: 'scroll'
+          }}
+        />
+        
+        {/* Mobile-optimized background */}
+        <div 
+          className="block sm:hidden absolute inset-0 bg-center bg-cover bg-no-repeat"
+          style={{ 
+            backgroundImage: `url(${heroMobileImagePath})`,
             backgroundAttachment: 'scroll'
           }}
         />
