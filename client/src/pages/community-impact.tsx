@@ -13,7 +13,9 @@ import {
   Award,
   Target,
   Zap,
-  Activity
+  Activity,
+  BarChart3,
+  AlertTriangle
 } from "lucide-react";
 import { 
   LineChart, 
@@ -98,59 +100,17 @@ export default function CommunityImpact() {
     donationValue: 0
   };
 
-  // Dynamic activity data based on platform statistics
-  const recentActivity = platformStats ? [
-    {
-      id: "1",
-      supporter: "Community",
-      action: "fulfilled",
-      item: `${formatNumber(platformStats.itemsFulfilled)} items`,
-      timeAgo: "ongoing",
-      location: "Platform-wide",
-      impact: `Helping ${formatNumber(platformStats.familiesHelped)} families`,
-      type: "purchase"
-    },
-    {
-      id: "2",
-      supporter: "Supporters",
-      action: "contributed",
-      item: `$${formatMoney(platformStats.donationValue)}`,
-      timeAgo: "total",
-      location: "Community",
-      impact: "Making meaningful impact together",
-      type: "gratitude"
-    },
-    {
-      id: "3",
-      supporter: "Members",
-      action: "created",
-      item: `${formatNumber(platformStats.needsListCreated)} needs lists`,
-      timeAgo: "platform total",
-      location: "Nationwide",
-      impact: "Sharing stories and connecting with community",
-      type: "creation"
-    },
-    {
-      id: "4",
-      supporter: "Platform",
-      action: "delivered",
-      item: `${formatNumber(platformStats.productsDelivered)} products`,
-      timeAgo: "successfully",
-      location: "Multiple locations",
-      impact: "Direct support to families in need",
-      type: "purchase"
-    },
-    {
-      id: "5",
-      supporter: "Community",
-      action: "spread",
-      item: `${formatNumber(platformStats.smilesSpread)} smiles`,
-      timeAgo: "through gratitude",
-      location: "Hearts everywhere",
-      impact: "Building connections and showing appreciation",
-      type: "gratitude"
-    }
-  ] : [];
+  // Real activity data - fetch from actual platform activity
+  const recentActivity: Array<{
+    id: string;
+    supporter: string;
+    action: string;
+    item: string;
+    timeAgo: string;
+    location: string;
+    impact: string;
+    type: string;
+  }> = [];
 
   // Animated counter effect
   useEffect(() => {
@@ -185,33 +145,16 @@ export default function CommunityImpact() {
     }
   }, [finalStats]);
 
-  // Dynamic trend data based on platform statistics - create a growth pattern
-  const impactOverTime = platformStats ? [
-    { month: "Jan", families: Math.floor(platformStats.familiesHelped * 0.2), items: Math.floor(platformStats.itemsFulfilled * 0.15), value: Math.floor(platformStats.donationValue * 0.1) },
-    { month: "Feb", families: Math.floor(platformStats.familiesHelped * 0.35), items: Math.floor(platformStats.itemsFulfilled * 0.28), value: Math.floor(platformStats.donationValue * 0.22) },
-    { month: "Mar", families: Math.floor(platformStats.familiesHelped * 0.5), items: Math.floor(platformStats.itemsFulfilled * 0.45), value: Math.floor(platformStats.donationValue * 0.38) },
-    { month: "Apr", families: Math.floor(platformStats.familiesHelped * 0.68), items: Math.floor(platformStats.itemsFulfilled * 0.62), value: Math.floor(platformStats.donationValue * 0.55) },
-    { month: "May", families: Math.floor(platformStats.familiesHelped * 0.82), items: Math.floor(platformStats.itemsFulfilled * 0.78), value: Math.floor(platformStats.donationValue * 0.73) },
-    { month: "Jun", families: platformStats.familiesHelped, items: platformStats.itemsFulfilled, value: platformStats.donationValue }
+  // Real trend data - only show current month data when available
+  const impactOverTime = platformStats && (platformStats.familiesHelped > 0 || platformStats.itemsFulfilled > 0) ? [
+    { month: "This Month", families: platformStats.familiesHelped, items: platformStats.itemsFulfilled, value: platformStats.donationValue }
   ] : [];
 
-  // Dynamic category breakdown based on platform data
-  const categoryBreakdown = platformStats ? [
-    { name: "Essential Items", value: 32, count: Math.floor(platformStats.itemsFulfilled * 0.32), color: "#FF6B6B" },
-    { name: "Family Support", value: 28, count: Math.floor(platformStats.itemsFulfilled * 0.28), color: "#4ECDC4" },
-    { name: "Emergency Relief", value: 18, count: Math.floor(platformStats.itemsFulfilled * 0.18), color: "#45B7D1" },
-    { name: "Child Care", value: 12, count: Math.floor(platformStats.itemsFulfilled * 0.12), color: "#96CEB4" },
-    { name: "Medical Support", value: 6, count: Math.floor(platformStats.itemsFulfilled * 0.06), color: "#FECA57" },
-    { name: "Other Needs", value: 4, count: Math.floor(platformStats.itemsFulfilled * 0.04), color: "#DDA0DD" }
-  ] : [];
+  // Real category breakdown - fetch from actual wishlist data
+  const categoryBreakdown: Array<{name: string; value: number; count: number; color: string}> = [];
 
-  // Dynamic urgency distribution based on needs lists
-  const urgencyDistribution = platformStats ? [
-    { level: "Urgent", count: Math.floor(platformStats.needsListCreated * 0.18), percentage: 18 },
-    { level: "High", count: Math.floor(platformStats.needsListCreated * 0.35), percentage: 35 },
-    { level: "Medium", count: Math.floor(platformStats.needsListCreated * 0.30), percentage: 30 },
-    { level: "Low", count: Math.floor(platformStats.needsListCreated * 0.17), percentage: 17 }
-  ] : [];
+  // Real urgency distribution - fetch from actual wishlist data  
+  const urgencyDistribution: Array<{level: string; count: number; percentage: number}> = [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
@@ -369,22 +312,30 @@ export default function CommunityImpact() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={impactOverTime}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Area 
-                        type="monotone" 
-                        dataKey="families" 
-                        stackId="1"
-                        stroke="#FF6B6B" 
-                        fill="#FF6B6B" 
-                        fillOpacity={0.6}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  {impactOverTime.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <AreaChart data={impactOverTime}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Area 
+                          type="monotone" 
+                          dataKey="families" 
+                          stackId="1"
+                          stroke="#FF6B6B" 
+                          fill="#FF6B6B" 
+                          fillOpacity={0.6}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-20 text-gray-500">
+                      <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-lg font-semibold mb-2">No Impact Data Yet</h3>
+                      <p className="text-sm">Community impact trends will appear here as platform activity grows.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -397,23 +348,31 @@ export default function CommunityImpact() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={categoryBreakdown}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}%`}
-                      >
-                        {categoryBreakdown.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {categoryBreakdown.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={categoryBreakdown}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={100}
+                          dataKey="value"
+                          label={({ name, value }) => `${name}: ${value}%`}
+                        >
+                          {categoryBreakdown.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-20 text-gray-500">
+                      <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-lg font-semibold mb-2">No Category Data Yet</h3>
+                      <p className="text-sm">Support category breakdown will be shown here as donations are made.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -506,29 +465,37 @@ export default function CommunityImpact() {
                 <CardTitle>Support Trends Over Time</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={impactOverTime}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="families" 
-                      stroke="#FF6B6B" 
-                      strokeWidth={3}
-                      name="Families Helped"
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="items" 
-                      stroke="#4ECDC4" 
-                      strokeWidth={3}
-                      name="Items Fulfilled"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                {impactOverTime.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={400}>
+                    <LineChart data={impactOverTime}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line 
+                        type="monotone" 
+                        dataKey="families" 
+                        stroke="#FF6B6B" 
+                        strokeWidth={3}
+                        name="Families Helped"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="items" 
+                        stroke="#4ECDC4" 
+                        strokeWidth={3}
+                        name="Items Fulfilled"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center py-32 text-gray-500">
+                    <TrendingUp className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                    <h3 className="text-xl font-semibold mb-2">No Trend Data Available</h3>
+                    <p>Platform activity trends will be displayed here as community engagement grows.</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -540,15 +507,23 @@ export default function CommunityImpact() {
                   <CardTitle>Category Distribution</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={categoryBreakdown}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#FF6B6B" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {categoryBreakdown.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={categoryBreakdown}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="count" fill="#FF6B6B" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-20 text-gray-500">
+                      <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-lg font-semibold mb-2">No Category Data</h3>
+                      <p className="text-sm">Category distribution will appear as donations are made.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -557,30 +532,38 @@ export default function CommunityImpact() {
                   <CardTitle>Urgency Levels</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {urgencyDistribution.map((item, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Badge 
-                            variant={item.level === "Urgent" ? "destructive" : 
-                                   item.level === "High" ? "default" : "secondary"}
-                          >
-                            {item.level}
-                          </Badge>
-                          <span className="font-medium">{item.count} needs lists</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-32 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-coral h-2 rounded-full transition-all duration-1000"
-                              style={{ width: `${item.percentage}%` }}
-                            ></div>
+                  {urgencyDistribution.length > 0 ? (
+                    <div className="space-y-4">
+                      {urgencyDistribution.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Badge 
+                              variant={item.level === "Urgent" ? "destructive" : 
+                                     item.level === "High" ? "default" : "secondary"}
+                            >
+                              {item.level}
+                            </Badge>
+                            <span className="font-medium">{item.count} needs lists</span>
                           </div>
-                          <span className="text-sm text-gray-600">{item.percentage}%</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-32 bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-coral h-2 rounded-full transition-all duration-1000"
+                                style={{ width: `${item.percentage}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-sm text-gray-600">{item.percentage}%</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-20 text-gray-500">
+                      <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-lg font-semibold mb-2">No Urgency Data</h3>
+                      <p className="text-sm">Urgency level distribution will be shown when needs lists are created.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -595,32 +578,40 @@ export default function CommunityImpact() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 hover:shadow-md transition-all">
-                      <div className={`p-3 rounded-full ${
-                        activity.type === "purchase" ? "bg-green-100 text-green-600" :
-                        activity.type === "creation" ? "bg-blue-100 text-blue-600" :
-                        activity.type === "gratitude" ? "bg-yellow-100 text-yellow-600" :
-                        "bg-purple-100 text-purple-600"
-                      }`}>
-                        {activity.type === "purchase" && <Package className="h-5 w-5" />}
-                        {activity.type === "creation" && <Users className="h-5 w-5" />}
-                        {activity.type === "gratitude" && <Heart className="h-5 w-5" />}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-semibold text-gray-900">
-                          <span className="text-coral">{activity.supporter}</span> {activity.action} <span className="text-navy">{activity.item}</span>
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">{activity.impact}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="text-xs text-gray-500">{activity.timeAgo}</span>
-                          <span className="text-xs bg-coral/10 text-coral px-2 py-1 rounded-full">{activity.location}</span>
+                {recentActivity.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentActivity.map((activity) => (
+                      <div key={activity.id} className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 hover:shadow-md transition-all">
+                        <div className={`p-3 rounded-full ${
+                          activity.type === "purchase" ? "bg-green-100 text-green-600" :
+                          activity.type === "creation" ? "bg-blue-100 text-blue-600" :
+                          activity.type === "gratitude" ? "bg-yellow-100 text-yellow-600" :
+                          "bg-purple-100 text-purple-600"
+                        }`}>
+                          {activity.type === "purchase" && <Package className="h-5 w-5" />}
+                          {activity.type === "creation" && <Users className="h-5 w-5" />}
+                          {activity.type === "gratitude" && <Heart className="h-5 w-5" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">
+                            <span className="text-coral">{activity.supporter}</span> {activity.action} <span className="text-navy">{activity.item}</span>
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">{activity.impact}</p>
+                          <div className="flex items-center gap-4 mt-2">
+                            <span className="text-xs text-gray-500">{activity.timeAgo}</span>
+                            <span className="text-xs bg-coral/10 text-coral px-2 py-1 rounded-full">{activity.location}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-24 text-gray-500">
+                    <Calendar className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                    <h3 className="text-xl font-semibold mb-2">No Recent Activity</h3>
+                    <p>Community activity and interactions will be displayed here as the platform grows.</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
