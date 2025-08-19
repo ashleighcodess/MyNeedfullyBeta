@@ -733,7 +733,7 @@ export default function Landing() {
           
           <div className="relative" ref={journeyRef}>
             {/* Journey Steps */}
-            <div className="flex flex-col md:grid md:grid-cols-4 gap-8 md:gap-4">
+            <div className="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-8">
               {/* Step 1 */}
               <div className="flex flex-col items-center text-center group">
                 <div className="relative mb-6">
@@ -828,20 +828,7 @@ export default function Landing() {
                      }}></div>
               </div>
 
-              {/* Step 4 */}
-              <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
-                  <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-600">
-                    <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 0v1m-2 0V6a2 2 0 00-2 0v1m2 0V5.5a2 2 0 10-2 0v1.5m2 0h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill Someone's Need By Giving Their Needs List</h3>
-                <p className="text-gray-600 text-sm">Complete the circle of giving by supporting others in need</p>
-              </div>
+
             </div>
           </div>
         </div>
