@@ -814,8 +814,8 @@ export default function Landing() {
                          transitionDelay: '0.6s'
                        }}></div>
                 </div>
-                <h3 className="text-lg font-semibold text-navy mb-2">Fulfill A Need And Create A Personalized Needs List</h3>
-                <p className="text-gray-600 text-sm">Choose items to support and optionally create your own needs list</p>
+                <h3 className="text-lg font-semibold text-navy mb-2">Create a Needs List on someone's behalf and/or fulfill an ask from an existing Need List</h3>
+                <p className="text-gray-600 text-sm">Support others by fulfilling their needs or create lists to help family, friends, or community members</p>
               </div>
 
               {/* Mobile connecting line 3 */}
