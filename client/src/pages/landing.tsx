@@ -402,14 +402,19 @@ export default function Landing() {
         {/* Community illustration background - reduced on mobile */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 sm:opacity-80 md:opacity-100"
-          style={{ backgroundImage: `url(${heroImagePath})` }}
+          style={{ 
+            backgroundImage: `url(${heroImagePath})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundAttachment: 'scroll'
+          }}
         />
         
         {/* Enhanced overlay for better mobile text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-white/60 sm:from-white/40 sm:via-white/20 sm:to-white/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/50 to-white/70 sm:from-white/50 sm:via-white/30 sm:to-white/50 md:from-white/40 md:via-white/20 md:to-white/40 lg:from-white/30 lg:via-white/15 lg:to-white/30" />
         
         {/* Smooth transition overlay to white space below */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 md:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 lg:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 md:py-24 lg:py-32">
@@ -453,7 +458,7 @@ export default function Landing() {
         </div>
         
         {/* Seamless gradient transition overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 md:h-32 bg-gradient-to-b from-transparent via-orange-50/30 to-orange-100/60 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 lg:h-32 bg-gradient-to-b from-transparent via-orange-50/30 to-orange-100/60 pointer-events-none"></div>
       </section>
       {/* How It Works - Enhanced with Microanimations */}
       <section 

@@ -65,6 +65,32 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Mobile responsive background optimizations */
+@media (max-width: 768px) {
+  .bg-cover {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-attachment: scroll !important;
+  }
+  
+  /* Ensure hero section doesn't stretch too much on mobile */
+  .min-h-\[90vh\] {
+    min-height: 85vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .bg-cover {
+    background-size: cover !important;
+    background-position: center 30% !important;
+  }
+  
+  /* Adjust overlay opacity for better mobile readability */
+  .absolute.inset-0 {
+    background-attachment: scroll !important;
+  }
+}
+
 /* Animation for loading spinner */
 @keyframes spin {
   to {
