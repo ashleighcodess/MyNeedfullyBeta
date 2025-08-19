@@ -65,12 +65,18 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Hero background responsive behavior */
+.hero-bg-mobile {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
 /* Mobile responsive background optimizations */
 @media (max-width: 768px) {
-  .bg-cover {
-    background-size: cover !important;
-    background-position: center center !important;
-    background-attachment: scroll !important;
+  .hero-bg-mobile {
+    background-size: 110% !important;
+    background-position: center 35% !important;
   }
   
   /* Ensure hero section doesn't stretch too much on mobile */
@@ -80,14 +86,9 @@
 }
 
 @media (max-width: 480px) {
-  .bg-cover {
-    background-size: cover !important;
+  .hero-bg-mobile {
+    background-size: 120% !important;
     background-position: center 30% !important;
-  }
-  
-  /* Adjust overlay opacity for better mobile readability */
-  .absolute.inset-0 {
-    background-attachment: scroll !important;
   }
 }
 
