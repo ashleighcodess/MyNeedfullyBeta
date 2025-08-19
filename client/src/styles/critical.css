@@ -75,8 +75,8 @@
 /* Mobile responsive background optimizations */
 @media (max-width: 768px) {
   .hero-bg-mobile {
-    background-size: cover !important;
-    background-position: center 20% !important;
+    background-size: 80% auto !important;
+    background-position: center center !important;
   }
   
   /* Ensure hero section doesn't stretch too much on mobile */
@@ -87,8 +87,8 @@
 
 @media (max-width: 480px) {
   .hero-bg-mobile {
-    background-size: cover !important;
-    background-position: center 15% !important;
+    background-size: 70% auto !important;
+    background-position: center center !important;
   }
 }
 
