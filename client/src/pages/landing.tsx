@@ -401,7 +401,7 @@ export default function Landing() {
       <section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
         {/* Community illustration background - reduced on mobile */}
         <div 
-          className="absolute inset-0 bg-center bg-no-repeat opacity-60 sm:opacity-80 md:opacity-100 hero-bg-mobile"
+          className="absolute inset-0 bg-center bg-no-repeat hero-bg-mobile"
           style={{ 
             backgroundImage: `url(${heroImagePath})`,
             backgroundAttachment: 'scroll'
