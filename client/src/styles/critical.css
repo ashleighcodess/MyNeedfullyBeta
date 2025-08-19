@@ -95,6 +95,22 @@
   }
 }
 
+/* Mobile flow connecting lines */
+@media (max-width: 1024px) {
+  .mobile-flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 24px;
+    background: linear-gradient(to bottom, #ff6b6b, #ffa8a8);
+    opacity: 0.6;
+    z-index: 1;
+  }
+}
+
 /* Animation for loading spinner */
 @keyframes spin {
   to {

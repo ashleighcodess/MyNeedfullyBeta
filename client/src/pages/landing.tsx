@@ -499,14 +499,14 @@ export default function Landing() {
             style={{ transitionDelay: isHowWorksVisible ? '200ms' : '0ms' }}
           >
             {/* Interactive Flow Steps */}
-            <div className="flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 lg:space-x-6">
+            <div className="flex flex-col lg:flex-row items-center justify-center space-y-12 lg:space-y-0 lg:space-x-6 px-4 sm:px-6">
               
               {/* Step 1 - Create */}
-              <div className="flex flex-col items-center group cursor-pointer" onClick={handleCreateList}>
+              <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative" onClick={handleCreateList}>
                 <div className="relative">
                   {/* Animated Circle with Progress Ring */}
-                  <div className="w-32 h-32 relative">
-                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 relative">
+                    <svg className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 transform -rotate-90" viewBox="0 0 120 120">
                       <circle
                         cx="60"
                         cy="60"
@@ -530,8 +530,8 @@ export default function Landing() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
-                        <Gift className="text-white h-10 w-10" />
+                      <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Gift className="text-white h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10" />
                       </div>
                     </div>
                   </div>
@@ -559,25 +559,25 @@ export default function Landing() {
                   </div>
                 </div>
                 
-                <div className="text-center mt-6 max-w-xs">
-                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                <div className="text-center mt-4 sm:mt-6 max-w-xs px-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-navy mb-2 sm:mb-3 group-hover:text-coral transition-colors duration-300">
                     Create Your List
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Build a disaster recovery registry with essential items you need
                   </p>
-                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-sm font-semibold">Click to get started →</span>
+                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-xs sm:text-sm font-semibold">Click to get started →</span>
                   </div>
                 </div>
               </div>
 
               {/* Step 2 - Share */}
-              <div className="flex flex-col items-center group cursor-pointer">
+              <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative">
                 <div className="relative">
                   {/* Animated Circle with Progress Ring */}
-                  <div className="w-32 h-32 relative">
-                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 relative">
+                    <svg className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 transform -rotate-90" viewBox="0 0 120 120">
                       <circle
                         cx="60"
                         cy="60"
@@ -601,8 +601,8 @@ export default function Landing() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
-                        <Share2 className="text-white h-10 w-10" />
+                      <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Share2 className="text-white h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10" />
                       </div>
                     </div>
                   </div>
@@ -630,25 +630,25 @@ export default function Landing() {
                   </div>
                 </div>
                 
-                <div className="text-center mt-6 max-w-xs">
-                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                <div className="text-center mt-4 sm:mt-6 max-w-xs px-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-navy mb-2 sm:mb-3 group-hover:text-coral transition-colors duration-300">
                     Share with Community
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Easily share your list with friends, family, and community groups
                   </p>
-                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-sm font-semibold">Share instantly →</span>
+                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-xs sm:text-sm font-semibold">Share instantly →</span>
                   </div>
                 </div>
               </div>
 
               {/* Step 3 - Receive */}
-              <div className="flex flex-col items-center group cursor-pointer">
+              <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative">
                 <div className="relative">
                   {/* Animated Circle with Progress Ring */}
-                  <div className="w-32 h-32 relative">
-                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 relative">
+                    <svg className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 transform -rotate-90" viewBox="0 0 120 120">
                       <circle
                         cx="60"
                         cy="60"
@@ -672,8 +672,8 @@ export default function Landing() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
-                        <Heart className="text-white h-10 w-10" />
+                      <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Heart className="text-white h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10" />
                       </div>
                     </div>
                   </div>
@@ -701,25 +701,25 @@ export default function Landing() {
                   </div>
                 </div>
                 
-                <div className="text-center mt-6 max-w-xs">
-                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                <div className="text-center mt-4 sm:mt-6 max-w-xs px-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-navy mb-2 sm:mb-3 group-hover:text-coral transition-colors duration-300">
                     Receive Support
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Supporters purchase items directly and ship to your location
                   </p>
-                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-sm font-semibold">Get help now →</span>
+                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-xs sm:text-sm font-semibold">Get help now →</span>
                   </div>
                 </div>
               </div>
 
               {/* Step 4 - Track */}
-              <div className="flex flex-col items-center group cursor-pointer">
+              <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative">
                 <div className="relative">
                   {/* Animated Circle with Progress Ring */}
-                  <div className="w-32 h-32 relative">
-                    <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 relative">
+                    <svg className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 transform -rotate-90" viewBox="0 0 120 120">
                       <circle
                         cx="60"
                         cy="60"
@@ -743,36 +743,30 @@ export default function Landing() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
-                        <Shield className="text-white h-10 w-10" />
+                      <div className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-coral rounded-full flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:bg-coral-dark">
+                        <Shield className="text-white h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10" />
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="text-center mt-6 max-w-xs">
-                  <h3 className="text-xl font-bold text-navy mb-3 group-hover:text-coral transition-colors duration-300">
+                <div className="text-center mt-4 sm:mt-6 max-w-xs px-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-navy mb-2 sm:mb-3 group-hover:text-coral transition-colors duration-300">
                     Track Progress
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                     Monitor fulfillment and update your list as recovery progresses
                   </p>
-                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-coral text-sm font-semibold">See progress →</span>
+                  <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-coral text-xs sm:text-sm font-semibold">See progress →</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Mobile Flow Indicators */}
-            <div className="lg:hidden flex flex-col items-center space-y-4 mt-8">
-              {[1, 2, 3, 4].map((step, index) => (
-                <div key={step} className="flex items-center">
-                  {index < 3 && (
-                    <div className="w-1 h-12 bg-gradient-to-b from-coral to-coral-light mx-auto opacity-70"></div>
-                  )}
-                </div>
-              ))}
+            {/* Mobile vertical connecting lines between each step */}
+            <div className="lg:hidden">
+              {/* These will be positioned between each step above using absolute positioning in CSS */}
             </div>
           </div>
 
