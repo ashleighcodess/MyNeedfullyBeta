@@ -493,6 +493,7 @@ export default function Landing() {
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">MyNeedfully helps people recovering from house fires, floods, and other emergencies create personalized needs lists, so they get exactly what they need when they need it. Whether you're rebuilding after a disaster or looking to support someone in crisis, MyNeedfully makes giving and receiving fast, simple, and effective.</p>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-just-sans font-light mb-8">Create a needs list to support your recovery or browse public lists to send help. Our disaster recovery platform makes it easy to connect people in need with those who want to help—near or far.</p>
             
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-navy mt-8 mb-6 font-just-sans">How to Create a Needs List</h3>
 
 
 
