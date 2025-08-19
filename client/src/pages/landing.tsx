@@ -765,8 +765,10 @@ export default function Landing() {
             </div>
 
             {/* Mobile vertical connecting lines between each step */}
-            <div className="lg:hidden">
-              {/* These will be positioned between each step above using absolute positioning in CSS */}
+            <div className="lg:hidden absolute inset-0 flex flex-col items-center justify-between pointer-events-none">
+              <div className="w-0.5 h-12 bg-gradient-to-b from-coral to-coral-light opacity-60 mt-32"></div>
+              <div className="w-0.5 h-12 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
+              <div className="w-0.5 h-12 bg-gradient-to-b from-coral to-coral-light opacity-60 mb-32"></div>
             </div>
           </div>
 

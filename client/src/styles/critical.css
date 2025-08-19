@@ -100,14 +100,23 @@
   .mobile-flow-step:not(:last-child)::after {
     content: '';
     position: absolute;
-    bottom: -24px;
+    bottom: -48px;
     left: 50%;
     transform: translateX(-50%);
-    width: 2px;
-    height: 24px;
+    width: 3px;
+    height: 48px;
     background: linear-gradient(to bottom, #ff6b6b, #ffa8a8);
-    opacity: 0.6;
+    opacity: 0.8;
     z-index: 1;
+    border-radius: 2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .mobile-flow-step:not(:last-child)::after {
+    bottom: -36px;
+    height: 36px;
+    width: 2px;
   }
 }
 
