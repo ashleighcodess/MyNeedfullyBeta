@@ -458,7 +458,7 @@ export default function Landing() {
       {/* How It Works - Enhanced with Microanimations */}
       <section 
         id="how" 
-        className="py-12 md:py-20 relative bg-cover bg-center bg-no-repeat"
+        className="py-8 md:py-12 relative bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${warmBackgroundImage})`,
           backgroundSize: 'cover',
@@ -470,7 +470,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div 
             ref={howWorksRef}
-            className={`text-center mb-16 transition-all duration-1000 ease-out ${
+            className={`text-center mb-10 transition-all duration-1000 ease-out ${
               isHowWorksVisible 
                 ? 'opacity-100 transform translate-y-0' 
                 : 'opacity-0 transform translate-y-8'
@@ -601,7 +601,7 @@ export default function Landing() {
         </div>
       </section>
       {/* About Us Section */}
-      <section ref={aboutRef} className="py-20 bg-warm-bg">
+      <section ref={aboutRef} className="py-12 bg-warm-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left side - Content and Stats */}
@@ -703,14 +703,14 @@ export default function Landing() {
         </div>
       </section>
       {/* User Journey Map */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-4xl font-bold text-navy mb-4">Your Journey To Fulfill Someone's Need</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps to make a meaningful difference in someone's life</p>
             
             {/* Search Bar */}
-            <div className="max-w-2xl mx-auto mt-8 mb-6 md:mb-8">
+            <div className="max-w-2xl mx-auto mt-6 mb-4 md:mb-6">
               <Card className="p-2 shadow-xl">
                 <form onSubmit={handleNeedsListSearch} className="flex flex-col md:flex-row gap-2">
                   <div className="flex-1 relative">
@@ -733,10 +733,10 @@ export default function Landing() {
           
           <div className="relative" ref={journeyRef}>
             {/* Journey Steps */}
-            <div className="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-8">
+            <div className="flex flex-col md:grid md:grid-cols-3 gap-6 md:gap-6">
               {/* Step 1 */}
               <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
+                <div className="relative mb-4">
                   <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -766,7 +766,7 @@ export default function Landing() {
 
               {/* Step 2 */}
               <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
+                <div className="relative mb-4">
                   <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-200">
                     <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -798,7 +798,7 @@ export default function Landing() {
 
               {/* Step 3 */}
               <div className="flex flex-col items-center text-center group">
-                <div className="relative mb-6">
+                <div className="relative mb-4">
                   <div className="w-24 h-24 bg-coral-light border-2 border-coral rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 animation-delay-400">
                     <div className="w-12 h-12 bg-coral rounded-lg flex items-center justify-center">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -835,9 +835,9 @@ export default function Landing() {
       </section>
 
       {/* Featured Needs Section */}
-      <section id="browse" className="py-20 bg-white">
+      <section id="browse" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-4">Featured Needs</h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Real families and organizations who need your support right now</p>
           </div>
@@ -1157,10 +1157,10 @@ export default function Landing() {
             */}
       {/* What Do People Use MyNeedfully For? - Hidden in production until ready to launch */}
       {import.meta.env.VITE_SHOW_CATEGORY_SECTION !== 'false' && (
-        <section className="py-20 bg-gray-50">
+        <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-4xl font-bold text-navy mb-6">What Do People Use MyNeedfully For?</h2>
             <p className="max-w-4xl mx-auto text-lg text-gray-600 leading-relaxed">
               What matters most is getting the support you need, when you need it. Our platform is designed to empower people with simple tools and a transparent process, so giving feels personal and impactful every time.
@@ -1396,10 +1396,10 @@ export default function Landing() {
       
 
       {/* Call to Action */}
-      <section className="py-20 bg-navy text-white">
+      <section className="py-12 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Make a Difference?</h2>
-          <p className="text-xl mb-8 opacity-90">Join thousands of caring people who are helping families and communities rebuild, recover, and thrive.</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">Ready to Make a Difference?</h2>
+          <p className="text-xl mb-6 opacity-90">Join thousands of caring people who are helping families and communities rebuild, recover, and thrive.</p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
