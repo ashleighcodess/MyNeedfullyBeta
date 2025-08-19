@@ -288,7 +288,7 @@ export default function CommunityImpact() {
                 {formatNumber(animatedStats.totalSupport)}
               </div>
               <p className="text-blue-200 text-sm">
-                +12% from last month
+                Community support actions
               </p>
             </CardContent>
           </Card>
@@ -306,7 +306,7 @@ export default function CommunityImpact() {
                 {formatNumber(animatedStats.itemsFulfilled)}
               </div>
               <p className="text-green-200 text-sm">
-                +18% from last month
+                Items delivered to families
               </p>
             </CardContent>
           </Card>
