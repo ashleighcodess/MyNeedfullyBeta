@@ -893,9 +893,7 @@ export default function Landing() {
               <Button 
                 className="bg-transparent border-2 border-navy text-navy hover:bg-navy hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300"
                 onClick={() => setLocation('/about')}
-              >
-                Discover More
-              </Button>
+              >Learn More</Button>
             </div>
             
             {/* Right side - Heart Tree Image with Wobble Animation */}
@@ -1052,7 +1050,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Featured Needs Section */}
       <section id="browse" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1174,7 +1171,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ARCHIVED: Common Needs Section - Hidden but preserved for future restoration 
             
             <section className="py-20 bg-white">
@@ -1610,10 +1606,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-
-      
-
       {/* Call to Action */}
       <section className="py-12 bg-navy text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -1639,7 +1631,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       <Suspense fallback={
         <div className="py-4 flex justify-center">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-coral"></div>
