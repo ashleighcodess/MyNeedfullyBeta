@@ -441,10 +441,10 @@ export default function Landing() {
           </div>
           
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
-            A Disaster Recovery Registry that Connects People in Need with Those Ready to Help
+            A Disaster Recovery Registry that Connects People in Need with Those Ready&nbsp;to&nbsp;Help
           </h1>
           
-          <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-6 sm:mb-8">A Needs List provides a simple way to organize and share your recovery needs with your community.</p>
+          <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-6 sm:mb-8">A Needs List provides a simple way to organize and share your recovery needs with&nbsp;your&nbsp;community.</p>
           
           {/* CTA Buttons under tagline */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
