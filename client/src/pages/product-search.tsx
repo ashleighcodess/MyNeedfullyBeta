@@ -870,13 +870,6 @@ export default function ProductSearch() {
                             <p className="text-sm text-gray-600">
                               Showing {displayProducts.length} of {totalResults} results
                             </p>
-                            {displayProducts && displayProducts.length > 0 && (
-                              <p className="text-xs text-gray-500">
-                                Retailers: Amazon ({displayProducts.filter((p: any) => p.retailer === 'amazon').length}), 
-                                Walmart ({displayProducts.filter((p: any) => p.retailer === 'walmart').length}), 
-                                Target ({displayProducts.filter((p: any) => p.retailer === 'target').length})
-                              </p>
-                            )}
                           </div>
                         )}
                       </div>
