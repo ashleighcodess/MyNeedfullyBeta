@@ -1361,14 +1361,18 @@ export default function Profile() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                               {archivedWishlists.filter((w: any) => w.status === 'cancelled').map((wishlist: any) => (
                                 <div key={wishlist.id} className="relative">
-                                  <WishlistCard wishlist={wishlist} isOwner={true} />
+                                  {/* Card with consistent padding to create space for button */}
+                                  <div className="pb-14">
+                                    <WishlistCard wishlist={wishlist} isOwner={true} />
+                                  </div>
                                   <div className="absolute top-2 right-2 flex space-x-2">
                                     <Badge className="bg-red-500 text-white">
                                       <X className="mr-1 h-3 w-3" />
                                       Cancelled
                                     </Badge>
                                   </div>
-                                  <div className="absolute bottom-2 left-2 right-2">
+                                  {/* Button positioned in the reserved space at bottom */}
+                                  <div className="absolute bottom-0 left-2 right-2">
                                     <Button
                                       size="sm"
                                       onClick={() => {
@@ -1377,7 +1381,7 @@ export default function Profile() {
                                         }
                                       }}
                                       disabled={restoreWishlistMutation.isPending}
-                                      className="w-full bg-green-600 hover:bg-green-700 text-white mt-2"
+                                      className="w-full bg-green-600 hover:bg-green-700 text-white"
                                     >
                                       <RefreshCw className="mr-1 h-3 w-3" />
                                       Restore
