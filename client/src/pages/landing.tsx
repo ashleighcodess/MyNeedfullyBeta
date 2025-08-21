@@ -18,7 +18,7 @@ import essentialClothingImage from "@assets/essentialclothin_1751658676599.jpg";
 import babyEssentialsImage from "@assets/babyandfamily_1751658729999.jpg";
 import crisisHygieneImage from "@assets/crisishygiene_1751658766232.jpg";
 import familyTreeImage from "@assets/Familywithtree_1751744939187.png";
-import warmBackgroundImage from "@assets/HowIcons (1) - Edited_1755814576166.png";
+import warmBackgroundImage from "@assets/new_how_icons_background.png";
 import hurricaneRecoveryImage from "@assets/Familywithtree_1751744939187.png";
 
 // Custom Person Carry Box SVG Component for Products Delivered
