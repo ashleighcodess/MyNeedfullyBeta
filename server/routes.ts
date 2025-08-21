@@ -2483,9 +2483,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mark wishlist item as fulfilled
   app.patch('/api/wishlist-items/:itemId/fulfill', isAuthenticated, async (req: any, res) => {
+    const itemId = parseInt(req.params.itemId);
+    const fulfilledBy = req.user.profile?.id || req.user.claims?.sub;
+    
     try {
-      const itemId = parseInt(req.params.itemId);
-      const fulfilledBy = req.user.profile?.id || req.user.claims?.sub;
       
       console.log('🔄 Fulfilling item:', { itemId, fulfilledBy });
       console.log('📦 Request body:', req.body);
