@@ -1034,7 +1034,7 @@ export default function Landing() {
                        }}></div>
                 </div>
                 <h3 className="text-lg font-semibold text-navy mb-2">Create or Fulfill a Needs List</h3>
-                <p className="text-gray-600 text-sm">Support others in needs by creating a Needs Lists or giving to an existing Needs List</p>
+                <p className="text-gray-600 text-sm">Support others by creating a Needs List for someone or contributing to an existing one.</p>
               </div>
 
               {/* Mobile connecting line 3 */}
