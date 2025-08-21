@@ -403,10 +403,6 @@ export default function AboutUs() {
             <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
               That's why they created MyNeedfully: to make disaster recovery more manageable, personal, and intentional. With a personalized needs list, survivors can clearly communicate what they need without awkward asks and unnecessary waste and receive real-time, practical support that truly makes a difference.
             </p>
-            
-            <p className="text-lg text-gray-700 font-just-sans leading-relaxed">
-              MyNeedfully is a for-profit company. To sustain our platform and keep it free to use, we participate in affiliate marketing programs. This means that when supporters purchase items through needs lists, we may earn a small commission–at no additional cost to the user. As an Amazon Associate, we earn from qualifying purchases. This affiliate model helps us maintain and grow MyNeedfully while continuing to serve individuals and communities with care and integrity.
-            </p>
           </div>
         </div>
 
