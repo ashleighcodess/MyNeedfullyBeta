@@ -412,6 +412,9 @@ export default function ProductSearch() {
       setPage(1);
       setAllProducts([]); // Clear accumulated products for new search
       setActiveSearch(searchQuery.trim()); // Set activeSearch to trigger results display
+      
+      // Force query invalidation to ensure fresh API results (not cached pre-loaded products)
+      queryClient.invalidateQueries({ queryKey: ['/api/search'] });
     }
   };
 
@@ -428,26 +431,34 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Display products - show accumulated products for pagination, or cached products for immediate display
+  // Display products - prioritize live search results, only show cached when no active search
   const displayProducts = useMemo(() => {
-    // Priority 1: If we have accumulated products from pagination, use them
-    if (allProducts.length > 0) {
-      return allProducts;
+    // If there's an active search or debounced query, NEVER show cached products
+    const hasActiveSearch = (activeSearch && activeSearch.length > 2) || (debouncedQuery && debouncedQuery.length > 2);
+    
+    if (hasActiveSearch) {
+      // Priority 1: Show accumulated products from pagination for active searches
+      if (allProducts.length > 0) {
+        return allProducts;
+      }
+      
+      // Priority 2: Show live API search results for active searches
+      if (searchResults?.data && searchResults.data.length > 0) {
+        return searchResults.data;
+      }
+      
+      // Priority 3: If search is loading or no results yet, show empty array (no cached products during search)
+      return [];
     }
     
-    // Priority 2: If we have search results from live API, use them (for first load)
-    if (searchResults?.data && searchResults.data.length > 0) {
-      return searchResults.data;
-    }
-    
-    // Priority 3: Show cached products for immediate display
-    const cached = getCachedProducts(debouncedQuery || "Basic Essentials");
+    // Only show cached products when NO search is active (initial page load state)
+    const cached = getCachedProducts("Basic Essentials");
     if (cached?.data && cached.data.length > 0) {
       return cached.data;
     }
     
     return [];
-  }, [allProducts, searchResults, debouncedQuery, getCachedProducts]);
+  }, [allProducts, searchResults, activeSearch, debouncedQuery, getCachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -797,7 +808,7 @@ export default function ProductSearch() {
                   setAllProducts([]); // Clear accumulated products for new category search
                   setShowCategories(false); // Hide categories on mobile after selection
                   
-                  // Force query invalidation to trigger immediate search
+                  // Force query invalidation to ensure fresh multi-retailer API results
                   queryClient.invalidateQueries({ queryKey: ['/api/search'] });
                 }}
               >
