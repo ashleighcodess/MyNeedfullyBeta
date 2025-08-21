@@ -385,22 +385,26 @@ export default function ProductSearch() {
         throw new Error('Search failed');
       }
       return await response.json();
-    },
-    onSuccess: (data) => {
+    }
+  });
+
+  // Update pagination states when search results change (TanStack Query v5 compatible)
+  useEffect(() => {
+    if (searchResults) {
       // Update pagination states
-      setHasMoreResults(data.hasMore || false);
-      setTotalResults(data.total || 0);
+      setHasMoreResults(searchResults.hasMore || false);
+      setTotalResults(searchResults.total || 0);
       
       // Accumulate products for "load more" functionality
       if (page === 1) {
         // First page - replace products
-        setAllProducts(data.data || []);
+        setAllProducts(searchResults.data || []);
       } else {
         // Additional pages - append products
-        setAllProducts(prev => [...prev, ...(data.data || [])]);
+        setAllProducts(prev => [...prev, ...(searchResults.data || [])]);
       }
     }
-  });
+  }, [searchResults, page]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
