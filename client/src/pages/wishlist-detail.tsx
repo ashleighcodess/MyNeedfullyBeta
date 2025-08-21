@@ -474,6 +474,11 @@ export default function WishlistDetail() {
     mutationFn: () =>
       apiRequest('PATCH', `/api/wishlists/${id}`, { status: 'cancelled' }),
     onSuccess: () => {
+      // CRITICAL: Invalidate browse page cache to remove archived wishlist immediately
+      queryClient.invalidateQueries({ queryKey: ['/api/wishlists'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/wishlists'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/featured-wishlists'] });
+      
       toast({
         title: "Needs List Archived",
         description: "Your needs list has been moved to the archive. You can find it in your profile's Archive section.",
