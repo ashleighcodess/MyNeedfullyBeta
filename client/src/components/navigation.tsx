@@ -99,9 +99,11 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
-            <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
-          </div>
+          <Link href="/">
+            <div className="flex items-center cursor-pointer">
+              <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
+            </div>
+          </Link>
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
