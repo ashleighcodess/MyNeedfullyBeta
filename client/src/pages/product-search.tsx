@@ -102,6 +102,7 @@ export default function ProductSearch() {
   const [searchCache, setSearchCache] = useState(new Map());
   const [hasMoreResults, setHasMoreResults] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
+  const [allProducts, setAllProducts] = useState<any[]>([]); // Accumulated products for pagination
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
 
@@ -366,7 +367,7 @@ export default function ProductSearch() {
 
 
 
-  // Simple search query without heavy caching
+  // Simple search query with pagination support
   const { data: searchResults, isLoading, error } = useQuery({
     queryKey: ['/api/search', debouncedQuery, category, page],
     enabled: !!debouncedQuery && debouncedQuery.length > 2,
@@ -385,12 +386,27 @@ export default function ProductSearch() {
       }
       return await response.json();
     },
+    onSuccess: (data) => {
+      // Update pagination states
+      setHasMoreResults(data.hasMore || false);
+      setTotalResults(data.total || 0);
+      
+      // Accumulate products for "load more" functionality
+      if (page === 1) {
+        // First page - replace products
+        setAllProducts(data.data || []);
+      } else {
+        // Additional pages - append products
+        setAllProducts(prev => [...prev, ...(data.data || [])]);
+      }
+    }
   });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim() && searchQuery.trim().length > 2) {
       setPage(1);
+      setAllProducts([]); // Clear accumulated products for new search
       setActiveSearch(searchQuery.trim()); // Set activeSearch to trigger results display
     }
   };
@@ -399,6 +415,7 @@ export default function ProductSearch() {
     setCategory(value);
     if (activeSearch) {
       setPage(1);
+      setAllProducts([]); // Clear accumulated products for new category
     }
   };
 
@@ -407,21 +424,26 @@ export default function ProductSearch() {
     setPage(prev => prev + 1);
   };
 
-  // Display products - show cached products immediately, replace with live results when searching
+  // Display products - show accumulated products for pagination, or cached products for immediate display
   const displayProducts = useMemo(() => {
-    // Priority 1: If we have search results from live API, use them
+    // Priority 1: If we have accumulated products from pagination, use them
+    if (allProducts.length > 0) {
+      return allProducts;
+    }
+    
+    // Priority 2: If we have search results from live API, use them (for first load)
     if (searchResults?.data && searchResults.data.length > 0) {
       return searchResults.data;
     }
     
-    // Priority 2: Show cached products for immediate display
+    // Priority 3: Show cached products for immediate display
     const cached = getCachedProducts(debouncedQuery || "Basic Essentials");
     if (cached?.data && cached.data.length > 0) {
       return cached.data;
     }
     
     return [];
-  }, [debouncedQuery, searchResults, getCachedProducts]);
+  }, [allProducts, searchResults, debouncedQuery, getCachedProducts]);
 
   const formatPrice = (price: any) => {
     if (!price) return 'Price not available';
@@ -768,6 +790,7 @@ export default function ProductSearch() {
                   setActiveSearch(category.label);
                   setCategory(category.value);
                   setPage(1);
+                  setAllProducts([]); // Clear accumulated products for new category search
                   setShowCategories(false); // Hide categories on mobile after selection
                   
                   // Force query invalidation to trigger immediate search

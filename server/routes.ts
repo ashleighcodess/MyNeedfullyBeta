@@ -577,10 +577,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allProducts = results.flatMap(result => result.products);
       const shuffledProducts = allProducts.sort(() => Math.random() - 0.5);
 
-      console.log(`✅ ULTRA FAST Multi-Retailer: ${allProducts.length} products (${results.map(r => `${r.retailer}: ${r.products.length}`).join(', ')}) in ${endTime - startTime}ms`);
+      // Pagination support
+      const pageNum = parseInt(page as string) || 1;
+      const productsPerPage = 20; // 20 products per page for good loading experience
+      const startIndex = (pageNum - 1) * productsPerPage;
+      const endIndex = startIndex + productsPerPage;
+      const paginatedProducts = shuffledProducts.slice(startIndex, endIndex);
+      const hasMore = shuffledProducts.length > endIndex;
+
+      console.log(`✅ ULTRA FAST Multi-Retailer: ${allProducts.length} total products (${results.map(r => `${r.retailer}: ${r.products.length}`).join(', ')}) in ${endTime - startTime}ms`);
+      console.log(`📄 Page ${pageNum}: showing ${paginatedProducts.length} products (${startIndex + 1}-${startIndex + paginatedProducts.length}), hasMore: ${hasMore}`);
       
       return res.json({
-        data: shuffledProducts.slice(0, 60) // Limit to 60 total products
+        data: paginatedProducts,
+        total: shuffledProducts.length,
+        page: pageNum,
+        hasMore: hasMore
       });
 
     } catch (error) {
