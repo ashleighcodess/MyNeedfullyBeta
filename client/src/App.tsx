@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 // import { useWebSocket } from "@/lib/websocket";
 import { useEffect, Suspense, lazy } from "react";
 import usePageTracking from "@/analytics/usePageTracking";
+import { enableGA4Debug, testGA4Events } from "@/analytics/debug";
 import Navigation from "@/components/navigation";
 
 // Lazy load pages to prevent import errors from breaking the app
@@ -136,6 +137,16 @@ function Router() {
   
   // Initialize GA4 page tracking
   usePageTracking();
+  
+  // Enable GA4 debug mode in development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      enableGA4Debug();
+      // Make test function available globally for manual testing
+      (window as any).testGA4Events = testGA4Events;
+      console.log('🔍 GA4 Debug mode enabled. Run testGA4Events() in console to test events.');
+    }
+  }, []);
 
   // Don't block the entire app for auth loading - most features work without auth
   // Individual components can handle their own auth requirements
