@@ -226,6 +226,9 @@ function Router() {
                 <Route path="/community-impact" component={CommunityImpact} />
                 <Route path="/impact" component={CommunityImpact} />
                 
+                {/* Landing route - always show Landing page */}
+                <Route path="/landing" component={Landing} />
+                
                 {/* Home route - show Landing for unauthenticated, Home for authenticated */}
                 <Route path="/" component={HomeRoute} />
                 

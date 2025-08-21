@@ -99,7 +99,14 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
+          <div className="flex items-center cursor-pointer" onClick={() => {
+            // Always redirect to landing page regardless of auth status
+            if (user) {
+              window.location.href = "/landing";
+            } else {
+              window.location.href = "/";
+            }
+          }}>
             <img src={logoPath} alt="MyNeedfully Logo" className="h-8 w-auto" />
           </div>
           
