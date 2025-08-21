@@ -651,7 +651,7 @@ export default function Landing() {
                     Share with Community
                   </h3>
                   <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                    Easily share your list with friends, family, and community groups
+                    Easily share your list with friends, family, and community
                   </p>
 
                 </div>
