@@ -11,6 +11,7 @@ import {
   User,
   Calendar
 } from "lucide-react";
+import { trackOutboundPurchaseClick } from "@/analytics/ga4";
 
 interface ProductCardProps {
   item: {
@@ -33,13 +34,15 @@ interface ProductCardProps {
   onFulfill?: () => void;
   canFulfill?: boolean;
   isLoading?: boolean;
+  wishlistId?: number;
 }
 
 export default function ProductCard({ 
   item, 
   onFulfill, 
   canFulfill = false, 
-  isLoading = false 
+  isLoading = false,
+  wishlistId 
 }: ProductCardProps) {
   const formatPrice = (price?: number, currency = 'USD') => {
     if (!price) return 'Price not available';
@@ -187,7 +190,13 @@ export default function ProductCard({
                 variant="outline" 
                 size="sm" 
                 className="w-full border-coral text-coral hover:bg-coral/10"
-                onClick={() => window.open(item.productUrl, '_blank')}
+                onClick={() => {
+                  trackOutboundPurchaseClick({
+                    retailer: item.retailer || 'unknown',
+                    list_id: wishlistId?.toString() || 'unknown'
+                  });
+                  window.open(item.productUrl, '_blank');
+                }}
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
                 View Product

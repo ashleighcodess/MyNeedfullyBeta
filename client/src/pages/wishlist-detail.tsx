@@ -46,6 +46,7 @@ import {
   ImageOff
 } from "lucide-react";
 import { useSEO, generatePageTitle, generatePageDescription, generateKeywords, generateCanonicalUrl, generateWishlistStructuredData, generateOgImage } from "@/lib/seo";
+import { trackOutboundPurchaseClick } from "@/analytics/ga4";
 
 // Retailer logos
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -1182,6 +1183,10 @@ export default function WishlistDetail() {
                                 <div className="text-center py-2">
                                   <button 
                                     onClick={() => {
+                                      trackOutboundPurchaseClick({
+                                        retailer: isGiftCard.retailer?.toLowerCase() || 'gift-card',
+                                        list_id: id || 'unknown'
+                                      });
                                       setSelectedGiftCard({
                                         ...isGiftCard,
                                         itemId: item.id
@@ -1215,6 +1220,10 @@ export default function WishlistDetail() {
                                     </div>
                                     <button 
                                       onClick={() => {
+                                        trackOutboundPurchaseClick({
+                                          retailer: 'amazon',
+                                          list_id: id || 'unknown'
+                                        });
                                         setSelectedProduct({
                                           title: item.title,
                                           price: getRetailerPrice(item.id, 'amazon') || 'Price not available',
@@ -1247,6 +1256,10 @@ export default function WishlistDetail() {
                                     </div>
                                     <button 
                                       onClick={() => {
+                                        trackOutboundPurchaseClick({
+                                          retailer: 'target',
+                                          list_id: id || 'unknown'
+                                        });
                                         setSelectedProduct({
                                           title: item.title,
                                           price: getRetailerPrice(item.id, 'target') || 'Price not available',
@@ -1279,6 +1292,10 @@ export default function WishlistDetail() {
                                     </div>
                                     <button 
                                       onClick={() => {
+                                        trackOutboundPurchaseClick({
+                                          retailer: 'walmart',
+                                          list_id: id || 'unknown'
+                                        });
                                         setSelectedProduct({
                                           title: item.title,
                                           price: getRetailerPrice(item.id, 'walmart') || 'Price not available',
@@ -1533,6 +1550,7 @@ export default function WishlistDetail() {
           }}
           onPurchaseConfirm={() => fulfillItemMutation.mutate(selectedProduct.itemId)}
           itemId={selectedProduct.itemId}
+          wishlistId={id}
         />
       )}
 

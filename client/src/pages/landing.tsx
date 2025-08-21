@@ -7,6 +7,7 @@ import { Search, Gift, Heart, Users, Plus, MapPin, Clock, Zap, Mail, Share2, Shi
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { trackCtaClick } from "@/analytics/ga4";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faSmile } from "@fortawesome/free-solid-svg-icons";
 import amazonLogo from "@assets/amazon_1751644244382.png";
@@ -266,6 +267,7 @@ export default function Landing() {
   }, [startTickerAnimation]);
 
   const handleCreateList = () => {
+    trackCtaClick('create_needs_list');
     if (isAuthenticated) {
       setLocation("/create");
     } else {
@@ -275,6 +277,7 @@ export default function Landing() {
 
   const handleNeedsListSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    trackCtaClick('find_needs_list');
     if (searchQuery.trim()) {
       setLocation(`/browse?q=${encodeURIComponent(searchQuery)}`);
     } else {

@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 // import { useWebSocket } from "@/lib/websocket";
 import { useEffect, Suspense, lazy } from "react";
+import usePageTracking from "@/analytics/usePageTracking";
 import Navigation from "@/components/navigation";
 
 // Lazy load pages to prevent import errors from breaking the app
@@ -132,6 +133,9 @@ function DashboardRoute() {
 function Router() {
   // WebSocket temporarily disabled for deployment stability
   // useWebSocket();
+  
+  // Initialize GA4 page tracking
+  usePageTracking();
 
   // Don't block the entire app for auth loading - most features work without auth
   // Individual components can handle their own auth requirements

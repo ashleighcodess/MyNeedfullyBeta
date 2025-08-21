@@ -68,21 +68,14 @@
       .transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(0.4,0,0.2,1);transition-duration:150ms}
     </style>
     
-    <!-- Google Analytics - optimized loading -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RWQ7CLHN43"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(){ dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', 'G-RWQ7CLHN43', {
-        send_page_view: false
-      });
-      
-      // Load GA script after page load
-      window.addEventListener('load', function() {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-RWQ7CLHN43';
-        document.head.appendChild(script);
+        send_page_view: false  // SPA: manual page_view tracking
       });
     </script>
     

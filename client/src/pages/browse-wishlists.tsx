@@ -2,6 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { trackCtaClick } from "@/analytics/ga4";
 import WishlistCard from "@/components/wishlist-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,6 +49,12 @@ export default function BrowseWishlists() {
   // Search handler
   const handleSearch = useCallback(async (query: string) => {
     setIsSearching(true);
+    
+    // Track GA4 search event
+    if (query.trim()) {
+      trackCtaClick('browse_needs_lists');
+    }
+    
     setSearchQuery(query);
     
     // Update URL without navigation

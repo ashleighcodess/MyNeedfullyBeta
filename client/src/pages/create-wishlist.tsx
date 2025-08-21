@@ -18,6 +18,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { CATEGORIES, URGENCY_LEVELS, SAMPLE_LOCATIONS } from "@/lib/constants";
 import { Plus, Save, MapPin, AlertCircle, Heart, Upload, X, Camera } from "lucide-react";
 import AddressAutocomplete from "@/components/address-autocomplete";
+import { trackNeedsListCreated } from "@/analytics/ga4";
 
 const createNeedsListSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100, "Title too long"),
@@ -105,6 +106,7 @@ export default function CreateNeedsList() {
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [formStartTime] = useState<Date>(new Date());
 
   const form = useForm<CreateNeedsListForm>({
     resolver: zodResolver(createNeedsListSchema),
@@ -201,6 +203,14 @@ export default function CreateNeedsList() {
     onSuccess: (wishlist) => {
       queryClient.invalidateQueries({ queryKey: ['/api/wishlists'] });
       queryClient.invalidateQueries({ queryKey: [`/api/users/${user?.id}/wishlists`] });
+      
+      // Track GA4 event for needs list creation
+      const timeToComplete = Math.round((new Date().getTime() - formStartTime.getTime()) / 1000);
+      trackNeedsListCreated({
+        list_id: wishlist.id,
+        items_count: 0, // Initially 0 items, user will add them separately
+        time_to_complete_sec: timeToComplete
+      });
       
       toast({
         title: "Needs List Created!",

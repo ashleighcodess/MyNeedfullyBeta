@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Package, MapPin, Check, Copy } from "lucide-react";
+import { trackPurchaseSelfReported } from "@/analytics/ga4";
 
 interface PurchaseConfirmationModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ interface PurchaseConfirmationModalProps {
   };
   onPurchaseConfirm: () => void;
   itemId: number;
+  wishlistId?: string;
 }
 
 export default function PurchaseConfirmationModal({
@@ -35,7 +37,8 @@ export default function PurchaseConfirmationModal({
   product,
   wishlistOwner,
   onPurchaseConfirm,
-  itemId
+  itemId,
+  wishlistId
 }: PurchaseConfirmationModalProps) {
   const [showShippingAddress, setShowShippingAddress] = useState(false);
   const [isPurchased, setIsPurchased] = useState(false);
@@ -69,6 +72,14 @@ export default function PurchaseConfirmationModal({
 
   const handlePurchaseConfirmation = () => {
     setIsPurchased(true);
+    
+    // Track GA4 purchase self-reported event
+    trackPurchaseSelfReported({
+      retailer: product.retailer,
+      list_id: wishlistId || 'unknown',
+      items_count: 1
+    });
+    
     onPurchaseConfirm();
     setTimeout(() => {
       onClose();
