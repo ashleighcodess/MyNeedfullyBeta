@@ -1,0 +1,175 @@
+Update the MyNeedfully project to implement Google Analytics 4 (GA4) event tracking.
+
+GA4 Measurement ID: G-RWQ7CLHN43
+The GA4 base code is already in /client/index.html at lines 72–87. Keep it there and ensure it initializes correctly for an SPA (single-page app). Then add page view tracking on route changes and wire up custom events.
+
+1) Ensure GA4 base tag loads
+
+Confirm /client/index.html has this code (replace any old version with this):
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RWQ7CLHN43"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-RWQ7CLHN43', {
+    send_page_view: false  // SPA: manual page_view tracking
+  });
+</script>
+
+2) Create GA4 helper functions
+
+Create src/analytics/ga4.js:
+
+export function gaReady() {
+  return typeof window !== 'undefined' && typeof window.gtag === 'function';
+}
+
+export function pageView(path, locationHref) {
+  if (!gaReady()) return;
+  window.gtag('event', 'page_view', {
+    page_path: path,
+    page_location: locationHref
+  });
+}
+
+export function trackCtaClick(cta_id) {
+  if (!gaReady()) return;
+  window.gtag('event', 'cta_click', { cta_id });
+}
+
+export function trackNeedsListCreated({ list_id, items_count, time_to_complete_sec }) {
+  if (!gaReady()) return;
+  window.gtag('event', 'needs_list_created', {
+    list_id,
+    items_count,
+    time_to_complete_sec,
+    cta_id: 'create_needs_list'
+  });
+}
+
+export function trackOutboundPurchaseClick({ retailer, list_id }) {
+  if (!gaReady()) return;
+  window.gtag('event', 'outbound_purchase_click', {
+    retailer,
+    list_id
+  });
+}
+
+export function trackPurchaseSelfReported({ retailer, list_id, items_count }) {
+  if (!gaReady()) return;
+  window.gtag('event', 'purchase_self_reported', {
+    retailer,
+    list_id,
+    items_count
+  });
+}
+
+3) Add page view tracking on route changes
+
+Create src/analytics/usePageTracking.js:
+
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { pageView } from './ga4';
+
+export default function usePageTracking() {
+  const location = useLocation();
+
+  useEffect(() => {
+    pageView(location.pathname + location.search, window.location.href);
+  }, [location]);
+}
+
+
+In src/App.jsx:
+
+import React from 'react';
+import usePageTracking from './analytics/usePageTracking';
+
+export default function App() {
+  usePageTracking();
+  return (
+    // existing app JSX
+  );
+}
+
+4) Wire up events to UI actions
+
+Create Needs List button
+
+import { trackCtaClick, trackNeedsListCreated } from '../analytics/ga4';
+
+async function onCreateNeedsListClick() {
+  trackCtaClick('create_needs_list');
+  const result = await createNeedsList(); // should return { listId, itemsCount, timeToCompleteSec }
+  trackNeedsListCreated({
+    list_id: result.listId,
+    items_count: result.itemsCount,
+    time_to_complete_sec: result.timeToCompleteSec
+  });
+}
+
+
+Find Needs List button
+
+import { trackCtaClick } from '../analytics/ga4';
+
+function onFindNeedsListClick() {
+  trackCtaClick('find_needs_list');
+}
+
+
+Buy at Retailer link
+
+import { trackOutboundPurchaseClick } from '../analytics/ga4';
+
+<a
+  href={outboundUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={() => {
+    trackOutboundPurchaseClick({
+      retailer: retailerName,
+      list_id: currentListId
+    });
+  }}
+>
+  Buy at Retailer
+</a>
+
+
+I purchased this product button
+
+import { trackPurchaseSelfReported } from '../analytics/ga4';
+
+<button
+  onClick={() => {
+    trackPurchaseSelfReported({
+      retailer: retailerName,
+      list_id: currentListId,
+      items_count: itemsInList
+    });
+  }}
+>
+  I purchased this product
+</button>
+
+5) Testing
+
+Open GA4 → Configure → DebugView.
+
+Click through flows and verify events appear:
+
+cta_click
+
+needs_list_created
+
+outbound_purchase_click
+
+purchase_self_reported
+
+Confirm parameters: cta_id, retailer, list_id, items_count, time_to_complete_sec.
+
+End of instructions. Implement exactly as above.
