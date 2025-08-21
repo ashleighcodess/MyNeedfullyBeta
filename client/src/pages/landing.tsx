@@ -444,7 +444,7 @@ export default function Landing() {
             A Disaster Recovery Registry that Connects People in Need with Those Ready to Help
           </h1>
           
-          <p className="text-lg sm:text-xl md:text-2xl text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-6 sm:mb-8">A Needs List provides a simple way to organize and share your recovery needs with your community.</p>
+          <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-6 sm:mb-8">A Needs List provides a simple way to organize and share your recovery needs with your community.</p>
           
           {/* CTA Buttons under tagline */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
