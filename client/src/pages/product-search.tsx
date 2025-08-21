@@ -1001,10 +1001,6 @@ export default function ProductSearch() {
                         </>
                       )}
                     </Button>
-                    
-                    <p className="text-sm text-gray-500 mt-2">
-                      Loading 10 more items at a time for better performance
-                    </p>
                   </div>
                 )}
                 
