@@ -807,7 +807,7 @@ export default function Landing() {
           </div>
 
           {/* Platform Sustainability Alert */}
-          <div className="max-w-3xl mx-auto mt-12">
+          <div className="max-w-5xl mx-auto mt-12">
             <div className="bg-coral/5 border border-coral/20 rounded-lg p-4 relative z-10">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
@@ -816,7 +816,7 @@ export default function Landing() {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm text-navy font-just-sans">
+                  <p className="text-xs text-navy font-just-sans">
                     <span className="font-semibold">Transparency Note:</span> MyNeedfully is free to use. Some product links on the site are affiliate links, which means we may earn a small commission—at no extra cost to you—when items are purchased through a needs list. As an Amazon Associate, we earn from qualifying purchases. This helps us keep MyNeedfully free for everyone.
                   </p>
                 </div>
