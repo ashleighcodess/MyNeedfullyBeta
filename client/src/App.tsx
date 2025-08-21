@@ -99,11 +99,11 @@ function NotificationHandler() {
   return null;
 }
 
-// Component for home route logic - show Landing for unauthenticated, Home for authenticated users
+// Component for home route logic - always show Landing page (regular home page)
 function HomeRoute() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   
-  // Show landing page for unauthenticated users, home page for authenticated users
+  // Show loading state while authentication is being determined
   if (isLoading) {
     return (
       <div className="min-h-screen bg-warm-bg flex items-center justify-center">
@@ -112,7 +112,8 @@ function HomeRoute() {
     );
   }
   
-  return isAuthenticated ? <Home /> : <Landing />;
+  // Always show the regular home page (Landing) regardless of authentication status
+  return <Landing />;
 }
 
 // Component for dashboard route logic - show user dashboard for authenticated users
