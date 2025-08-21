@@ -242,9 +242,10 @@ export default function WishlistDetail() {
     }
   };
 
-  // Fetch real recent activity data from API with optimized polling
+  // Fetch wishlist-specific recent activity data from API with optimized polling
   const { data: recentActivitiesData, isLoading: activitiesLoading } = useQuery({
-    queryKey: ['/api/activity/recent'],
+    queryKey: [`/api/wishlists/${id}/activity`],
+    enabled: !!id,
     refetchInterval: 180000, // Refresh every 3 minutes for better performance
     staleTime: 120000, // Consider data stale after 2 minutes
   });
@@ -438,7 +439,7 @@ export default function WishlistDetail() {
       apiRequest('PATCH', `/api/wishlist-items/${itemId}/fulfill`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}`] });
-      queryClient.invalidateQueries({ queryKey: ['/api/activity/recent'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/wishlists/${id}/activity`] });
       queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user/donations'] });
       toast({

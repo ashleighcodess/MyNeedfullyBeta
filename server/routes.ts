@@ -933,6 +933,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Wishlist-specific Activity for Wishlist Detail Pages
+  app.get('/api/wishlists/:id/activity', async (req, res) => {
+    try {
+      const wishlistId = parseInt(req.params.id);
+      
+      if (!wishlistId) {
+        return res.status(400).json({ message: "Invalid wishlist ID" });
+      }
+
+      // Get recent analytics events specific to this wishlist
+      const recentAnalytics = await db.select({
+        id: analyticsEvents.id,
+        eventType: analyticsEvents.eventType,
+        data: analyticsEvents.data,
+        createdAt: analyticsEvents.createdAt,
+        userId: analyticsEvents.userId
+      })
+      .from(analyticsEvents)
+      .where(
+        and(
+          sql`${analyticsEvents.data}->>'wishlistId' = ${wishlistId.toString()}`,
+          sql`${analyticsEvents.eventType} IN ('donation', 'wishlist_item_fulfilled', 'wishlist_shared', 'thank_you_note_sent')`
+        )
+      )
+      .orderBy(desc(analyticsEvents.createdAt))
+      .limit(10);
+
+      console.log(`Found ${recentAnalytics.length} recent analytics events for wishlist ${wishlistId}`);
+
+      // Get user details for each activity
+      const recentActivity = [];
+      
+      for (const analytics of recentAnalytics) {
+        try {
+          const userData = analytics.userId ? await db.select({
+            firstName: users.firstName,
+            lastName: users.lastName
+          }).from(users).where(eq(users.id, analytics.userId)).limit(1) : null;
+          
+          let activityItem;
+          
+          // Format activity based on event type
+          if (analytics.eventType === 'donation' || analytics.eventType === 'wishlist_item_fulfilled') {
+            const data = analytics.data as any;
+            const supporter = userData?.[0] ? `${userData[0].firstName || 'Anonymous'} ${userData[0].lastName || ''}`.trim() : 'A supporter';
+            
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: supporter,
+              action: 'purchased',
+              item: data.itemName || 'an item',
+              timeAgo: getTimeAgo(analytics.createdAt),
+              type: 'donation'
+            };
+          } else if (analytics.eventType === 'wishlist_shared') {
+            const data = analytics.data as any;
+            const sharer = userData?.[0] ? `${userData[0].firstName || 'Someone'} ${userData[0].lastName || ''}`.trim() : 'Someone';
+            
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: sharer,
+              action: 'shared',
+              item: 'this needs list',
+              timeAgo: getTimeAgo(analytics.createdAt),
+              type: 'share'
+            };
+          } else if (analytics.eventType === 'thank_you_note_sent') {
+            const data = analytics.data as any;
+            const thanker = userData?.[0] ? `${userData[0].firstName || 'The recipient'} ${userData[0].lastName || ''}`.trim() : 'The recipient';
+            
+            activityItem = {
+              id: `activity-${analytics.id}`,
+              supporter: thanker,
+              action: 'sent a thank you note for',
+              item: data.itemName || 'support received',
+              timeAgo: getTimeAgo(analytics.createdAt),
+              type: 'thanks'
+            };
+          }
+
+          if (activityItem) {
+            recentActivity.push(activityItem);
+          }
+        } catch (userError) {
+          console.error('Error fetching user data for activity:', userError);
+          // Add activity without user details
+          recentActivity.push({
+            id: `activity-${analytics.id}`,
+            supporter: 'Someone',
+            action: 'took action on',
+            item: 'this needs list',
+            timeAgo: getTimeAgo(analytics.createdAt),
+            type: 'activity'
+          });
+        }
+      }
+
+      console.log(`Returning ${recentActivity.length} formatted activities for wishlist ${wishlistId}`);
+
+      // If no activity for this specific wishlist, show encouraging message
+      if (recentActivity.length === 0) {
+        const fallbackActivity = [
+          {
+            id: "wishlist-placeholder-1",
+            supporter: "Be the first!",
+            action: "support",
+            item: "this needs list",
+            timeAgo: "Start now",
+            type: "invitation"
+          }
+        ];
+        return res.json(fallbackActivity);
+      }
+
+      res.json(recentActivity);
+    } catch (error) {
+      console.error("Error fetching wishlist activity:", error);
+      res.status(500).json({ message: "Failed to fetch wishlist activity" });
+    }
+  });
+
   // Community Impact API routes
   app.get('/api/community/stats', async (req, res) => {
     try {
