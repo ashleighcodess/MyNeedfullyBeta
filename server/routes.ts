@@ -531,16 +531,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ])
         .then((products: any) => ({ 
           retailer: 'walmart', 
-          products: products.map((product: any) => ({
+          products: Array.isArray(products) ? products.map((product: any) => ({
             title: product.title,
             price: product.price,
-            image: product.image_url || product.image,
+            image: product.image_url || product.image || product.thumbnail,
             link: product.product_url || product.link,
             retailer: 'walmart',
             retailer_name: 'Walmart',
             rating: product.rating,
             reviews_count: product.reviews_count
-          }))
+          })) : []
         }))
         .catch(() => ({ retailer: 'walmart', products: [] }));
         
@@ -553,16 +553,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ])
         .then((products: any) => ({ 
           retailer: 'target', 
-          products: products.map((product: any) => ({
+          products: Array.isArray(products) ? products.map((product: any) => ({
             title: product.title,
             price: product.price,
-            image: product.image_url || product.image,
+            image: product.image_url || product.image || product.thumbnail,
             link: product.product_url || product.link,
             retailer: 'target',
             retailer_name: 'Target',
             rating: product.rating,
             reviews: product.reviews
-          }))
+          })) : []
         }))
         .catch(() => ({ retailer: 'target', products: [] }));
         
