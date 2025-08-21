@@ -482,6 +482,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // In-memory cache for ultra-fast pagination
+  const searchCache = new Map<string, { 
+    products: any[], 
+    timestamp: number 
+  }>();
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
   // ULTRA FAST Multi-Retailer Search Endpoint (Amazon + Walmart + Target)
   app.get('/api/search', async (req, res) => {
     try {
@@ -491,7 +498,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Search query is required" });
       }
 
-      console.log(`🚀 ULTRA FAST Multi-Retailer search for: "${query}"`);
+      const pageNum = parseInt(page as string) || 1;
+      const cacheKey = `search:${query}:${req.query.category || ''}:${req.query.min_price || ''}:${req.query.max_price || ''}`;
+      
+      // Check cache for instant pagination (Load More optimization)
+      const cached = searchCache.get(cacheKey);
+      if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+        // INSTANT response from cache - perfect for Load More!
+        const productsPerPage = 20;
+        const startIndex = (pageNum - 1) * productsPerPage;
+        const endIndex = startIndex + productsPerPage;
+        const paginatedProducts = cached.products.slice(startIndex, endIndex);
+        const hasMore = cached.products.length > endIndex;
+        
+        console.log(`⚡ INSTANT Cache Hit: Page ${pageNum}, ${paginatedProducts.length} products, hasMore: ${hasMore} (${cached.products.length} total cached)`);
+        
+        return res.json({
+          data: paginatedProducts,
+          total: cached.products.length,
+          page: pageNum,
+          hasMore: hasMore
+        });
+      }
+
+      console.log(`🚀 ULTRA FAST Multi-Retailer search for: "${query}" (Cache Miss - Page ${pageNum})`);
       const startTime = Date.now();
 
       // Parallel search across all three retailers with 3-second timeout
@@ -577,8 +607,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allProducts = results.flatMap(result => result.products);
       const shuffledProducts = allProducts.sort(() => Math.random() - 0.5);
 
+      // Cache results for ultra-fast pagination
+      searchCache.set(cacheKey, {
+        products: shuffledProducts,
+        timestamp: Date.now()
+      });
+
+      // Clean up old cache entries (memory management)
+      if (searchCache.size > 100) {
+        const oldestKey = searchCache.keys().next().value;
+        searchCache.delete(oldestKey);
+      }
+
       // Pagination support
-      const pageNum = parseInt(page as string) || 1;
       const productsPerPage = 20; // 20 products per page for good loading experience
       const startIndex = (pageNum - 1) * productsPerPage;
       const endIndex = startIndex + productsPerPage;
@@ -587,6 +628,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`✅ ULTRA FAST Multi-Retailer: ${allProducts.length} total products (${results.map(r => `${r.retailer}: ${r.products.length}`).join(', ')}) in ${endTime - startTime}ms`);
       console.log(`📄 Page ${pageNum}: showing ${paginatedProducts.length} products (${startIndex + 1}-${startIndex + paginatedProducts.length}), hasMore: ${hasMore}`);
+      console.log(`💾 Cached ${shuffledProducts.length} products for instant pagination`);
       
       return res.json({
         data: paginatedProducts,
