@@ -807,7 +807,7 @@ export default function Landing() {
           </div>
 
           {/* Platform Sustainability Alert */}
-          <div className="max-w-4xl mx-auto mt-12">
+          <div className="max-w-3xl mx-auto mt-12">
             <div className="bg-coral/5 border border-coral/20 rounded-lg p-4 relative z-10">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
