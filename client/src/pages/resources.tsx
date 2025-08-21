@@ -65,6 +65,22 @@ export default function Resources() {
   
   // Streamlined resource categories for faster loading
   const resourceCategories = useMemo(() => ({
+    emergency: {
+      title: "Emergency",
+      icon: AlertTriangle,
+      resources: [
+        { name: "Emergency Services", phone: "911", website: "" },
+        { name: "Red Cross", phone: "(800) 733-2767", website: "https://www.redcross.org" },
+        { name: "988 Suicide & Crisis Lifeline", phone: "988", website: "https://988lifeline.org/" },
+        { name: "Disaster Distress Helpline (SAMHSA)", phone: "(800) 985-5990", website: "https://www.samhsa.gov/find-help/disaster-distress-helpline" },
+        { name: "United Way 2-1-1", phone: "211", website: "https://www.211.org/" },
+        { name: "National Domestic Violence Hotline", phone: "(800) 799-7233", website: "https://www.thehotline.org/" },
+        { name: "National Runaway Safeline", phone: "(800) 786-2929", website: "https://www.1800runaway.org/" },
+        { name: "Poison Control", phone: "(800) 222-1222", website: "https://www.poison.org/" },
+        { name: "DisasterAssistance.gov", phone: "Online Resource", website: "https://www.disasterassistance.gov/" },
+        { name: "FEMA (Federal Emergency Management Agency)", phone: "(800) 621-3362", website: "https://www.fema.gov/" }
+      ]
+    },
     housing: {
       title: "Housing",
       icon: Home,
@@ -121,22 +137,6 @@ export default function Resources() {
         { name: "National Disability Rights Network (NDRN)", phone: "(202) 408-9514", website: "https://www.ndrn.org/" },
         { name: "Modest Needs", phone: "(844) 667-3776", website: "https://www.modestneeds.org/" }
       ]
-    },
-    emergency: {
-      title: "Emergency",
-      icon: AlertTriangle,
-      resources: [
-        { name: "Emergency Services", phone: "911", website: "" },
-        { name: "Red Cross", phone: "(800) 733-2767", website: "https://www.redcross.org" },
-        { name: "988 Suicide & Crisis Lifeline", phone: "988", website: "https://988lifeline.org/" },
-        { name: "Disaster Distress Helpline (SAMHSA)", phone: "(800) 985-5990", website: "https://www.samhsa.gov/find-help/disaster-distress-helpline" },
-        { name: "United Way 2-1-1", phone: "211", website: "https://www.211.org/" },
-        { name: "National Domestic Violence Hotline", phone: "(800) 799-7233", website: "https://www.thehotline.org/" },
-        { name: "National Runaway Safeline", phone: "(800) 786-2929", website: "https://www.1800runaway.org/" },
-        { name: "Poison Control", phone: "(800) 222-1222", website: "https://www.poison.org/" },
-        { name: "DisasterAssistance.gov", phone: "Online Resource", website: "https://www.disasterassistance.gov/" },
-        { name: "FEMA (Federal Emergency Management Agency)", phone: "(800) 621-3362", website: "https://www.fema.gov/" }
-      ]
     }
   }), []);
 
@@ -170,7 +170,7 @@ export default function Resources() {
         </Card>
 
         {/* Resources Tabs */}
-        <Tabs defaultValue="housing" className="w-full">
+        <Tabs defaultValue="emergency" className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-8 bg-gray-100 p-1 rounded-lg">
             {Object.entries(resourceCategories).map(([key, category]) => {
               const IconComponent = category.icon;
