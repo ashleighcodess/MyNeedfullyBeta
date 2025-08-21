@@ -527,9 +527,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (serpApiService) {
         const walmartPromise = Promise.race([
           serpApiService.searchWalmart(query as string, '60602', 10), // Reduced to 10 for ultra speed
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 4000)) // 4s timeout - more reliable
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 2000)) // 2s timeout for speed
         ])
-        .then((products: any) => ({ retailer: 'walmart', products }))
+        .then((products: any) => ({ 
+          retailer: 'walmart', 
+          products: products.map((product: any) => ({
+            title: product.title,
+            price: product.price,
+            image: product.image_url || product.image,
+            link: product.product_url || product.link,
+            retailer: 'walmart',
+            retailer_name: 'Walmart',
+            rating: product.rating,
+            reviews_count: product.reviews_count
+          }))
+        }))
         .catch(() => ({ retailer: 'walmart', products: [] }));
         
         searchPromises.push(walmartPromise);
@@ -537,9 +549,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // 3. Target Search (SerpAPI) - Ultra speed optimized
         const targetPromise = Promise.race([
           serpApiService.searchTarget(query as string, '10001', 10), // Reduced to 10 for ultra speed
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 4000)) // 4s timeout - more reliable
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 2000)) // 2s timeout for speed
         ])
-        .then((products: any) => ({ retailer: 'target', products }))
+        .then((products: any) => ({ 
+          retailer: 'target', 
+          products: products.map((product: any) => ({
+            title: product.title,
+            price: product.price,
+            image: product.image_url || product.image,
+            link: product.product_url || product.link,
+            retailer: 'target',
+            retailer_name: 'Target',
+            rating: product.rating,
+            reviews: product.reviews
+          }))
+        }))
         .catch(() => ({ retailer: 'target', products: [] }));
         
         searchPromises.push(targetPromise);
