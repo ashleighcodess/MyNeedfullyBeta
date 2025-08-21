@@ -440,8 +440,8 @@ export default function Landing() {
             />
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
-            Registry for Disaster and Crisis Recovery
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
+            A Disaster Recovery Registry that Connects People in Need with Those Ready to Help
           </h1>
           
           {/* CTA Buttons under tagline */}
