@@ -106,7 +106,7 @@ export class SerpAPIService {
         google_domain: 'google.com',
         gl: 'us',
         hl: 'en',
-        num: Math.min(limit, 10).toString(), // Ultra speed - max 10 results
+        num: Math.min(limit, 40).toString(), // Increased limit for better coverage
 
         output: 'json',
         no_cache: false, // Use cache when available

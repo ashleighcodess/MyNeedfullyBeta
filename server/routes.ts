@@ -556,8 +556,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const serpApiService = getSerpAPIService();
       if (serpApiService) {
         const walmartPromise = Promise.race([
-          serpApiService.searchWalmart(query as string, '60602', 10), // Reduced to 10 for ultra speed
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 2000)) // 2s timeout for speed
+          serpApiService.searchWalmart(query as string, '60602', 30), // Increased to 30 for better coverage
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Walmart timeout')), 4000)) // 4s timeout for more results
         ])
         .then((products: any) => ({ 
           retailer: 'walmart', 
@@ -578,8 +578,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // 3. Target Search (SerpAPI) - Ultra speed optimized
         const targetPromise = Promise.race([
-          serpApiService.searchTarget(query as string, '10001', 10), // Reduced to 10 for ultra speed
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 2000)) // 2s timeout for speed
+          serpApiService.searchTarget(query as string, '10001', 30), // Increased to 30 for better coverage
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Target timeout')), 4000)) // 4s timeout for more results
         ])
         .then((products: any) => ({ 
           retailer: 'target', 
