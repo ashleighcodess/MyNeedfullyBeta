@@ -185,21 +185,19 @@ export default function PurchaseConfirmationModal({
         
         {/* Content */}
         <div className="p-4 sm:p-6">
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold leading-none tracking-tight mb-2">
-              {isPurchased ? "Thank you for your support!" : `You're headed to ${getRetailerName()}...`}
-            </h2>
-            <p className="text-sm text-gray-600">
-              {isPurchased 
-                ? "Your purchase will help someone in need" 
-                : "Complete your purchase and return here to confirm"
-              }
-            </p>
-          </div>
         
-        <div className="py-4">
           {!isPurchased ? (
-            <>
+            <div className="py-4">
+              {/* Header for non-purchased state */}
+              <div className="mb-6 text-center">
+                <h2 className="text-lg font-semibold leading-none tracking-tight mb-2">
+                  You're headed to {getRetailerName()}...
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Complete your purchase and return here to confirm
+                </p>
+              </div>
+
               {/* Content Section */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                 {/* Purchase Instructions */}
@@ -297,7 +295,7 @@ export default function PurchaseConfirmationModal({
                   <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> apply.
                 </p>
               </div>
-            </>
+            </div>
           ) : (
             /* Purchase Confirmation */
             <div className="text-center py-8">
@@ -307,12 +305,14 @@ export default function PurchaseConfirmationModal({
               <h3 className="text-lg font-semibold text-green-800 mb-2">
                 Item Marked as Purchased!
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 mb-2">
                 Thank you for supporting {wishlistOwner.firstName}. This item will be marked as fulfilled.
+              </p>
+              <p className="text-sm text-gray-500">
+                Your purchase will help someone in need
               </p>
             </div>
           )}
-        </div>
         </div>
       </DialogContent>
     </Dialog>
