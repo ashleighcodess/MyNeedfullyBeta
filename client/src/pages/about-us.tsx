@@ -359,7 +359,7 @@ export default function AboutUs() {
               
               <div className="bg-white p-8 rounded-xl shadow-lg border-l-4 border-coral">
                 <p className="text-gray-700 mb-0">
-                  The platform is free for users. MyNeedfully is a for-profit company that earns revenue through affiliate links with trusted e-commerce retailers. That means we can remain accessible to everyone without relying on donations or charging fees.
+                  MyNeedfully is a for-profit company and free platform for users. To sustain our platform and keep it free to use, we participate in affiliate marketing programs. This means that when supporters purchase items through needs lists, we may earn a small commission–at no additional cost to the user. As an Amazon Associate, we earn from qualifying purchases. This affiliate model helps us maintain and grow MyNeedfully's impact on individuals and communities.
                 </p>
               </div>
             </div>
