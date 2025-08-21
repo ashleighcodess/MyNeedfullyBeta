@@ -512,7 +512,7 @@ export default function Landing() {
             style={{ transitionDelay: isHowWorksVisible ? '200ms' : '0ms' }}
           >
             {/* Interactive Flow Steps */}
-            <div className="flex flex-col lg:flex-row items-center justify-center space-y-12 lg:space-y-0 lg:space-x-6 px-4 sm:px-6">
+            <div className="flex flex-col lg:flex-row items-center justify-center space-y-6 lg:space-y-0 lg:space-x-6 px-4 sm:px-6">
               
               {/* Step 1 - Create */}
               <div className="flex flex-col items-center group cursor-pointer mobile-flow-step relative" onClick={handleCreateList}>
@@ -584,8 +584,8 @@ export default function Landing() {
               </div>
 
               {/* Mobile connecting line 1-2 */}
-              <div className="lg:hidden flex justify-center py-4">
-                <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
+              <div className="lg:hidden flex justify-center py-2">
+                <div className="w-0.5 h-6 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
               </div>
 
               {/* Step 2 - Share */}
@@ -658,8 +658,8 @@ export default function Landing() {
               </div>
 
               {/* Mobile connecting line 2-3 */}
-              <div className="lg:hidden flex justify-center py-4">
-                <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
+              <div className="lg:hidden flex justify-center py-2">
+                <div className="w-0.5 h-6 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
               </div>
 
               {/* Step 3 - Receive */}
@@ -732,8 +732,8 @@ export default function Landing() {
               </div>
 
               {/* Mobile connecting line 3-4 */}
-              <div className="lg:hidden flex justify-center py-4">
-                <div className="w-0.5 h-8 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
+              <div className="lg:hidden flex justify-center py-2">
+                <div className="w-0.5 h-6 bg-gradient-to-b from-coral to-coral-light opacity-60"></div>
               </div>
 
               {/* Step 4 - Track */}
