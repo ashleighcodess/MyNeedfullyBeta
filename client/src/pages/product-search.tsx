@@ -789,11 +789,14 @@ export default function ProductSearch() {
                 onClick={() => {
                   console.log('Category clicked:', category.label);
                   
-                  // Handle Gift Cards category specially
+                  // Handle Gift Cards category specially - NO search, just show pre-loaded gift cards
                   if (category.value === 'gift_cards') {
                     setShowGiftCards(true);
                     setActiveSearch(''); // Clear regular search results
+                    setSearchQuery(''); // Clear search input
+                    setDebouncedQuery(''); // Clear debounced query to prevent search
                     setCategory(category.value);
+                    setAllProducts([]); // Clear any accumulated products
                     setShowCategories(false);
                     return;
                   }
