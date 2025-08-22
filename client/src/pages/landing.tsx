@@ -427,45 +427,64 @@ export default function Landing() {
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 lg:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-8 sm:py-12 md:py-16 lg:py-20">
-          {/* Text content background for better readability */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg">
-            {/* MyNeedfully Logo */}
-            <div className="mb-4 sm:mb-6">
-              <ResponsiveImage 
-                src={logoPath} 
-                alt="MyNeedfully Logo" 
-                className="h-12 sm:h-16 md:h-20 w-auto mx-auto" 
-                priority
-                width={300}
-                height={60}
-              />
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left side - Text content */}
+            <div className="text-center lg:text-left">
+              {/* Text content background for better readability */}
+              <div className="bg-white/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg">
+                {/* MyNeedfully Logo */}
+                <div className="mb-4 sm:mb-6">
+                  <ResponsiveImage 
+                    src={logoPath} 
+                    alt="MyNeedfully Logo" 
+                    className="h-12 sm:h-16 md:h-20 w-auto mx-auto lg:mx-0" 
+                    priority
+                    width={300}
+                    height={60}
+                  />
+                </div>
+                
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight font-just-sans">
+                  A Disaster Recovery Registry that Connects People in Need with Those Ready&nbsp;to&nbsp;Help
+                </h1>
+                
+                <p className="text-sm sm:text-base md:text-lg text-navy leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12">MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
+                
+                {/* CTA Buttons under tagline */}
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start items-center mb-6 sm:mb-8">
+                  <Button 
+                    className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
+                    onClick={handleCreateList}
+                    data-metadata="registry"
+                  >
+                    <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    Create a Needs List
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
+                    onClick={() => setLocation('/browse')}
+                  >
+                    <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    Search for a Needs List
+                  </Button>
+                </div>
+              </div>
             </div>
             
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight font-just-sans">
-              A Disaster Recovery Registry that Connects People in Need with Those Ready&nbsp;to&nbsp;Help
-            </h1>
-            
-            <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12">MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
-            
-            {/* CTA Buttons under tagline */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
-              <Button 
-                className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
-                onClick={handleCreateList}
-                data-metadata="registry"
-              >
-                <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Create a Needs List
-              </Button>
-              <Button 
-                variant="outline" 
-                className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
-                onClick={() => setLocation('/browse')}
-              >
-                <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Search for a Needs List
-              </Button>
+            {/* Right side - Decorative image */}
+            <div className="hidden lg:flex justify-center items-center">
+              <div className="relative overflow-hidden w-full max-w-md h-auto rounded-3xl shadow-2xl">
+                <ResponsiveImage 
+                  src={heartTreeImage}
+                  alt="Heart Tree representing community giving and support"
+                  className="w-full h-auto"
+                  priority
+                  width={400}
+                  height={500}
+                />
+              </div>
             </div>
           </div>
         </div>
