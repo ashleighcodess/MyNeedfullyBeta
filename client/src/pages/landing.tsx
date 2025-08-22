@@ -461,7 +461,7 @@ export default function Landing() {
             
             <p className="text-sm sm:text-base md:text-lg text-navy leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12" style={{
               textShadow: '0 2px 8px rgba(0,0,0,0.12)'
-            }}>MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
+            }}>MyNeedfully provides a simple way to organize for disaster recovery and&nbsp;share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
             
             {/* CTA Buttons under tagline */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-start items-start mb-6 sm:mb-8">
