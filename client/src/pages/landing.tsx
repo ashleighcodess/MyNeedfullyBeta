@@ -420,36 +420,51 @@ export default function Landing() {
           }}
         />
         
-        {/* Enhanced overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/50 to-white/60 sm:from-white/70 sm:via-white/60 sm:to-white/70 md:from-white/65 md:via-white/55 md:to-white/65 lg:from-white/60 lg:via-white/50 lg:to-white/60" />
+        {/* Gradient Scrim - Left-to-right gradient overlay behind text only */}
+        <div 
+          className="absolute inset-0 bg-white/94 lg:bg-none pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.88) 38%, rgba(255,255,255,0.00) 68%)'
+          }}
+        />
+        
+        {/* Mobile solid scrim override */}
+        <div className="absolute inset-0 bg-white/94 lg:hidden pointer-events-none" />
         
         {/* Smooth transition overlay to white space below */}
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 lg:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-8 sm:py-12 md:py-16 lg:py-20">
-          {/* Text content background for better readability */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg">
+        <div className="relative z-10 flex items-center min-h-[62vh] px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 lg:py-20">
+          {/* COMMENTED OUT: Clean White Card - replaced with gradient scrim */}
+          {/* <div className="bg-white/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg"> */}
+          
+          {/* Text content with gradient scrim background */}
+          <div className="max-w-[720px] text-left">
             {/* MyNeedfully Logo */}
             <div className="mb-4 sm:mb-6">
               <ResponsiveImage 
                 src={logoPath} 
                 alt="MyNeedfully Logo" 
-                className="h-12 sm:h-16 md:h-20 w-auto mx-auto" 
+                className="h-12 sm:h-16 md:h-20 w-auto" 
                 priority
                 width={300}
                 height={60}
               />
             </div>
             
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight font-just-sans">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight font-just-sans" style={{
+              textShadow: '0 2px 8px rgba(0,0,0,0.12)'
+            }}>
               A Disaster Recovery Registry that Connects People in Need with Those Ready&nbsp;to&nbsp;Help
             </h1>
             
-            <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12">MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
+            <p className="text-sm sm:text-base md:text-lg text-navy leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12" style={{
+              textShadow: '0 2px 8px rgba(0,0,0,0.12)'
+            }}>MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
             
             {/* CTA Buttons under tagline */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-start items-start mb-6 sm:mb-8">
               <Button 
                 className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
                 onClick={handleCreateList}
@@ -467,6 +482,8 @@ export default function Landing() {
                 Search for a Needs List
               </Button>
             </div>
+          {/* END COMMENTED OUT: Clean White Card */}
+          {/* </div> */}
           </div>
         </div>
         
