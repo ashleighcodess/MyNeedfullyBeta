@@ -420,50 +420,53 @@ export default function Landing() {
           }}
         />
         
-        {/* Enhanced overlay for better mobile text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/20 to-white/30 sm:from-white/50 sm:via-white/30 sm:to-white/50 md:from-white/40 md:via-white/20 md:to-white/40 lg:from-white/30 lg:via-white/15 lg:to-white/30" />
+        {/* Enhanced overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/50 to-white/60 sm:from-white/70 sm:via-white/60 sm:to-white/70 md:from-white/65 md:via-white/55 md:to-white/65 lg:from-white/60 lg:via-white/50 lg:to-white/60" />
         
         {/* Smooth transition overlay to white space below */}
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 lg:h-32 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Hero Content */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 sm:py-16 md:py-24 lg:py-32">
-          {/* MyNeedfully Logo */}
-          <div className="mb-4 sm:mb-6">
-            <ResponsiveImage 
-              src={logoPath} 
-              alt="MyNeedfully Logo" 
-              className="h-12 sm:h-16 md:h-20 w-auto mx-auto" 
-              priority
-              width={300}
-              height={60}
-            />
-          </div>
-          
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight hero-text-shadow font-just-sans">
-            A Disaster Recovery Registry that Connects People in Need with Those Ready&nbsp;to&nbsp;Help
-          </h1>
-          
-          <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12">MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
-          
-          {/* CTA Buttons under tagline */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
-            <Button 
-              className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
-              onClick={handleCreateList}
-              data-metadata="registry"
-            >
-              <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Create a Needs List
-            </Button>
-            <Button 
-              variant="outline" 
-              className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
-              onClick={() => setLocation('/browse')}
-            >
-              <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              Search for a Needs List
-            </Button>
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-8 sm:py-12 md:py-16 lg:py-20">
+          {/* Text content background for better readability */}
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg">
+            {/* MyNeedfully Logo */}
+            <div className="mb-4 sm:mb-6">
+              <ResponsiveImage 
+                src={logoPath} 
+                alt="MyNeedfully Logo" 
+                className="h-12 sm:h-16 md:h-20 w-auto mx-auto" 
+                priority
+                width={300}
+                height={60}
+              />
+            </div>
+            
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-navy mb-3 sm:mb-4 leading-tight font-just-sans">
+              A Disaster Recovery Registry that Connects People in Need with Those Ready&nbsp;to&nbsp;Help
+            </h1>
+            
+            <p className="text-sm sm:text-base md:text-lg text-navy max-w-5xl mx-auto leading-relaxed font-medium font-just-sans mb-8 sm:mb-10 md:mb-12">MyNeedfully provides a simple way to organize for disaster recovery and share for community support through the creation and fulfillment of a personalized&nbsp;Needs&nbsp;List.</p>
+            
+            {/* CTA Buttons under tagline */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-lg mx-auto mb-6 sm:mb-8">
+              <Button 
+                className="bg-coral text-white hover:bg-coral/90 rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
+                onClick={handleCreateList}
+                data-metadata="registry"
+              >
+                <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                Create a Needs List
+              </Button>
+              <Button 
+                variant="outline" 
+                className="bg-white/90 text-navy border-2 border-navy hover:bg-navy hover:text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-lg w-full sm:w-auto font-semibold"
+                onClick={() => setLocation('/browse')}
+              >
+                <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                Search for a Needs List
+              </Button>
+            </div>
           </div>
         </div>
         
